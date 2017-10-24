@@ -8,11 +8,13 @@ public class Graph<T> where T : class
     private readonly Dictionary<Pair, Edge> _edges = new Dictionary<Pair, Edge>();
     private int _nodeIDCount;
 
-    public void AddNode(T data)
+    public int AddNode(T data)
     {
         Node node = new Node(_nodeIDCount, data);
         _nodes.Add(node.NodeID, node);
         _nodeIDCount++;
+
+        return node.NodeID;
     }
 
     public bool RemoveNode(int nodeID)
