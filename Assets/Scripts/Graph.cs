@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class Graph<T> where T : class
+public class Graph<T> : MonoBehaviour where T : class
 {
     private readonly Dictionary<int, Node> _nodes = new Dictionary<int, Node>();
     private readonly Dictionary<Pair, Edge> _edges = new Dictionary<Pair, Edge>();
