@@ -12,26 +12,38 @@ public class TerrainGenerator : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-	    List<BiomeData> biomeData = new List<BiomeData>();
+	    List<BiomeData> biomeData = new List<BiomeData>
+	    {
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f)),
+	        new BiomeData(new Vector2(Random.Range(0f, Width), Random.Range(0f, Height)), 1, Random.Range(0, 1f), Random.Range(0, 1f))
+        };
 
-	    var x = Random.Range(-Width / 2f, Width / 2f);
-	    var y = Random.Range(-Height / 2f, Height / 2f);
-	    biomeData.Add(new BiomeData(new Vector2(x, y), 1, Random.Range(0, 1f), Random.Range(0, 1f)));
         _terrainStructure = new TerrainStructure(biomeData, Width, Height);
 	    _terrainStructure.DrawGraph();
-
-	    x = Random.Range(-Width / 2f, Width / 2f);
-	    y = Random.Range(-Height / 2f, Height / 2f);
-	    biomeData.Add(new BiomeData(new Vector2(x, y), 1, Random.Range(0, 1f), Random.Range(0, 1f)));
-	    _terrainStructure = new TerrainStructure(biomeData, Width, Height);
-	    _terrainStructure.DrawGraph();
-
-	    x = Random.Range(-Width / 2f, Width / 2f);
-	    y = Random.Range(-Height / 2f, Height / 2f);
-	    biomeData.Add(new BiomeData(new Vector2(x, y), 1, Random.Range(0, 1f), Random.Range(0, 1f)));
-	    _terrainStructure = new TerrainStructure(biomeData, Width, Height);
-	    _terrainStructure.DrawGraph();
-
     }
 	
 	// Update is called once per frame
