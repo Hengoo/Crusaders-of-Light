@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(MapPreview))]
+[CustomEditor(typeof(MapPreviewOld))]
 public class MapPreviewEditor : Editor {
     public override void OnInspectorGUI()
     {

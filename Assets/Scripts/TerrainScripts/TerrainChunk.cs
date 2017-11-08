@@ -25,17 +25,17 @@ public class TerrainChunk
     private bool hasSetCollider;
     private float maxViewDistance;
 
-    private HeightMapSettings heightMapSettings;
+    private BiomeSettings _biomeSettings;
     private MeshSettings meshSettings;
     private Transform viewer;
 
-    public TerrainChunk(Vector2 coord, HeightMapSettings heightMapSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer,
+    public TerrainChunk(Vector2 coord, BiomeSettings biomeSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer,
         Material material)
     {
         this.coord = coord;
         this.detailLevels = detailLevels;
         this.colliderLODIndex = colliderLODIndex;
-        this.heightMapSettings = heightMapSettings;
+        this._biomeSettings = biomeSettings;
         this.meshSettings = meshSettings;
         this.viewer = viewer;
 
@@ -70,7 +70,7 @@ public class TerrainChunk
     public void Load()
     {
         ThreadedDataRequester.RequestData(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine,
-            heightMapSettings, sampleCenter), OnHeightMapReceived);
+            _biomeSettings, sampleCenter), OnHeightMapReceived);
 
     }
 

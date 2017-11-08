@@ -15,7 +15,7 @@ public class MapPreviewOld : MonoBehaviour
     public DrawMode drawMode;
 
     public MeshSettings meshSettings;
-    public HeightMapSettings heightMapSettings;
+    public BiomeSettings BiomeSettings;
     public TextureData textureData;
 
     public Material terrainMaterial;
@@ -26,8 +26,8 @@ public class MapPreviewOld : MonoBehaviour
     public void DrawMapInEditor()
     {
         textureData.ApplyToMaterial(terrainMaterial);
-        textureData.UpdateMeshHeights(terrainMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
-        HeightMap heightMap = HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, Vector2.zero);
+        textureData.UpdateMeshHeights(terrainMaterial, BiomeSettings.MinHeight, BiomeSettings.MaxHeight);
+        HeightMap heightMap = HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, BiomeSettings, Vector2.zero);
         switch (drawMode)
         {
             case DrawMode.NoiseMap:
@@ -78,10 +78,10 @@ public class MapPreviewOld : MonoBehaviour
             meshSettings.OnValuesUpdated += OnValuesUpdated;
         }
 
-        if (heightMapSettings)
+        if (BiomeSettings)
         {
-            heightMapSettings.OnValuesUpdated -= OnValuesUpdated;
-            heightMapSettings.OnValuesUpdated += OnValuesUpdated;
+            BiomeSettings.OnValuesUpdated -= OnValuesUpdated;
+            BiomeSettings.OnValuesUpdated += OnValuesUpdated;
         }
         if (textureData)
         {

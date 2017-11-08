@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class HeightMapGenerator : MonoBehaviour {
 
-    public static HeightMap GenerateHeightMap(int width, int height, HeightMapSettings settings, Vector2 sampleCenter)
+    public static HeightMap GenerateHeightMap(int width, int height, BiomeSettings settings, Vector2 sampleCenter)
     {
-        AnimationCurve heightCurve_threadSafe = new AnimationCurve(settings.heightCurve.keys);
+        AnimationCurve heightCurve_threadSafe = new AnimationCurve(settings.HeightCurve.keys);
 
         float minValue = float.MaxValue;
         float maxValue = float.MinValue;
 
-        float[,] values = Noise.GenerateNoiseMap(width, height, settings.noiseSettings, sampleCenter);
+        float[,] values = Noise.GenerateNoiseMap(width, height, settings.NoiseSettings, sampleCenter);
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
             {
-                values[i, j] *= heightCurve_threadSafe.Evaluate(values[i, j]) * settings.heightMultiplier;
+                values[i, j] *= heightCurve_threadSafe.Evaluate(values[i, j]) * settings.HeightMultiplier;
 
                 maxValue = Mathf.Max(values[i, j], maxValue);
                 minValue = Mathf.Min(values[i, j], minValue);

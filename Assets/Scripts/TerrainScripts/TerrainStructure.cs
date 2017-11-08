@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 public class TerrainStructure
 {
-    private readonly Graph<BiomeData> _biomes = new Graph<BiomeData>();
+    private readonly Graph<Biome> _biomes = new Graph<Biome>();
     private readonly List<int> _biomeIDs = new List<int>();
 
-    public TerrainStructure(List<BiomeData> biomes, int height, int width)
+    public TerrainStructure(List<BiomeSettings> availableBiomes, BiomeDistribution biomeDistribution)
     {
         //Add all points to the graph
-        foreach (var biome in biomes)
+        foreach (var biome in DistributeBiomes(availableBiomes, biomeDistribution))
         {
             _biomeIDs.Add(_biomes.AddNode(biome));
         }
 
         // Calculate connectivity between biome
-        List<Triangle> triangles = DelaunayTriangulation(height, width);
+        List<Triangle> triangles = DelaunayTriangulation(biomeDistribution.MapWidth, biomeDistribution.MapHeight);
 
         // Add biome connectivity to graph
         foreach (var triangle in triangles)
@@ -29,18 +30,45 @@ public class TerrainStructure
         }
     }
 
-    private List<Triangle> DelaunayTriangulation(int height, int width)
+
+    /* 
+     * Distribute points using Grid Jitter technique
+     * - Number of points is cellsX * cellsY
+     * - Grid origin is assumed to be at world 0,0,0 and increases in +X and +Z
+     */
+    private List<Biome> DistributeBiomes(List<BiomeSettings> availableBiomes, BiomeDistribution biomeDistribution)
+    {
+        var result = new Biome[biomeDistribution.XCells * biomeDistribution.YCells];
+        var cellSize = new Vector2((float)biomeDistribution.MapWidth / biomeDistribution.XCells, (float)biomeDistribution.MapHeight / biomeDistribution.YCells);
+        for (int y = 0; y < biomeDistribution.YCells; y++)
+        {
+            for (int x = 0; x < biomeDistribution.XCells; x++)
+            {
+                var posX = Random.Range(x * cellSize.x + biomeDistribution.CellOffset, (x + 1) * cellSize.x - biomeDistribution.CellOffset);
+                var posY = Random.Range(y * cellSize.y + biomeDistribution.CellOffset, (y + 1) * cellSize.y - biomeDistribution.CellOffset);
+                var biomeIndex = Random.Range(0, availableBiomes.Count);
+                result[x + y * biomeDistribution.XCells] = new Biome(new Vector2(posX, posY), availableBiomes[biomeIndex]);
+            }
+        }
+
+        return new List<Biome>(result);
+    }
+
+    /* 
+     * Calculate Delaunay to determinate biome conectivity
+     */
+    private List<Triangle> DelaunayTriangulation(int width, int height)
     {
         // Encompassing biomes for Bowyer-Watson
-        var left = _biomes.AddNode(new BiomeData(new Vector2(-width*0.5f, 0), 0, 0, 0));
-        var right = _biomes.AddNode(new BiomeData(new Vector2(width*1.5f, 0), 0, 0, 0));
-        var top = _biomes.AddNode(new BiomeData(new Vector2(width*0.5f, height * 2f), 0, 0, 0));
+        var left = _biomes.AddNode(new Biome(new Vector2(-height*0.5f, 0), new BiomeSettings()));
+        var right = _biomes.AddNode(new Biome(new Vector2(height*1.5f, 0), new BiomeSettings()));
+        var top = _biomes.AddNode(new Biome(new Vector2(height*0.5f, width * 2f), new BiomeSettings()));
         var superTriangle = new Triangle(left, right, top);
 
         // Add super triangle
         HashSet<Triangle> result = new HashSet<Triangle> { superTriangle };
         HashSet<Triangle> badTriangles = new HashSet<Triangle>();
-        List<Edge> polygon = new List<Edge>();
+        List<TriangleEdge> polygon = new List<TriangleEdge>();
 
         // Bowyer-Watson - iterate through all points
         List<Triangle> tempResult;
@@ -107,7 +135,9 @@ public class TerrainStructure
         return result.ToList();
     }
 
-    //http://mathworld.wolfram.com/Circumcircle.html
+    /*
+     * http://mathworld.wolfram.com/Circumcircle.html
+     */
     private bool IsInCircumcircle(Vector2 q, Triangle triangle)
     {
         var p0 = _biomes.GetNodeData(triangle.P0).Center;
@@ -146,11 +176,7 @@ public class TerrainStructure
         return (q - new Vector2(center.x, center.z)).sqrMagnitude <= radius * radius;
     }
 
-    private float Det(Vector2 left, Vector2 right)
-    {
-        return left.x * right.y - left.y * right.x;
-    }
-
+    /* Sample Biome Data from a given position */
     public BiomeSample SampleBiomeData(Vector2 position)
     {
         //TODO implement sampling
@@ -162,7 +188,7 @@ public class TerrainStructure
         return SampleBiomeData(new Vector2(x,y));
     }
 
-    public GameObject DrawGraph()
+    public GameObject DrawBiomeGraph()
     {
         var graphObj = new GameObject("GraphInstance");
         foreach (var biome in _biomeIDs)
@@ -240,21 +266,21 @@ public class TerrainStructure
             return P0 + " " + P1 + " " + P2;
         }
 
-        public Edge[] GetEdges()
+        public TriangleEdge[] GetEdges()
         {
-            var result = new Edge[3];
-            result[0] = new Edge(P0, P1);
-            result[1] = new Edge(P1, P2);
-            result[2] = new Edge(P2, P0);
+            var result = new TriangleEdge[3];
+            result[0] = new TriangleEdge(P0, P1);
+            result[1] = new TriangleEdge(P1, P2);
+            result[2] = new TriangleEdge(P2, P0);
             return result;
         }
     }
 
-    private struct Edge
+    private struct TriangleEdge
     {
         public readonly int From, To;
 
-        public Edge(int from, int to) : this()
+        public TriangleEdge(int from, int to) : this()
         {
             From = from;
             To = to;
@@ -267,7 +293,7 @@ public class TerrainStructure
                 return false;
             }
 
-            var otherEdge = (Edge)obj;
+            var otherEdge = (TriangleEdge)obj;
             return From == otherEdge.From && To == otherEdge.To
                    || From == otherEdge.To && To == otherEdge.From;
         }
@@ -277,6 +303,7 @@ public class TerrainStructure
             return From + To * 31;
         }
     }
+
 }
 
 public struct BiomeSample
@@ -289,19 +316,24 @@ public struct BiomeSample
     }
 }
 
-public class BiomeData
+public class Biome
 {
     public readonly Vector2 Center;
-    public readonly float Influence;
-    public readonly float Humidity;
-    public readonly float Temperature;
-    public readonly NoiseSettings NoiseSettings;
+    public readonly BiomeSettings BiomeSettings;
 
-    public BiomeData(Vector2 center, float influence, float humidity, float temperature)
+    public Biome(Vector2 center, BiomeSettings biomeSettings)
     {
         Center = center;
-        Influence = influence;
-        Humidity = humidity;
-        Temperature = temperature;
+        BiomeSettings = biomeSettings;
     }
+}
+
+[Serializable]
+public class BiomeDistribution
+{
+    [Range(100, 10000)] public int MapWidth = 1000;
+    [Range(100, 10000)] public int MapHeight = 1000;
+    [Range(0, 100)] public int XCells = 10;
+    [Range(0, 100)] public int YCells = 10;
+    [Range(0, 1000f)] public float CellOffset = 10;
 }

@@ -13,7 +13,7 @@ public class TerrainGenerator : MonoBehaviour
     public LODInfo[] detailLevels;
 
     public MeshSettings meshSettings;
-    public HeightMapSettings heightMapSettings;
+    public BiomeSettings BiomeSettings;
     public TextureData textureSettings;
 
     public Transform viewer;
@@ -31,7 +31,7 @@ public class TerrainGenerator : MonoBehaviour
     void Start()
     {
         textureSettings.ApplyToMaterial(mapMaterial);
-        textureSettings.UpdateMeshHeights(mapMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
+        textureSettings.UpdateMeshHeights(mapMaterial, BiomeSettings.MinHeight, BiomeSettings.MaxHeight);
 
         float maxViewDst = detailLevels[detailLevels.Length - 1].visibleDstThreshold;
         meshWorldSize = meshSettings.meshWorldSize;
@@ -84,7 +84,7 @@ public class TerrainGenerator : MonoBehaviour
                     }
                     else
                     {
-                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
+                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, BiomeSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
                         terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
                         newChunk.onVisibilityChanged += OnVisibilityChanged;
                         newChunk.Load();
