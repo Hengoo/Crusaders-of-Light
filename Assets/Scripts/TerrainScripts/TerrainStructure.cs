@@ -164,12 +164,13 @@ public class TerrainStructure
 
     public GameObject DrawGraph()
     {
-        var graphObj = new GameObject("Graph");
+        var graphObj = new GameObject("GraphInstance");
         foreach (var biome in _biomeIDs)
         {
             var pos = _biomes.GetNodeData(biome).Center;
             var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             go.name = "Biome id: " + biome;
+            go.GetComponent<Collider>().enabled = false;
             go.transform.parent = graphObj.transform;
             go.transform.position = new Vector3(pos.x, 0, pos.y);
             go.transform.localScale = Vector3.one * 20;
@@ -270,6 +271,11 @@ public class TerrainStructure
             return From == otherEdge.From && To == otherEdge.To
                    || From == otherEdge.To && To == otherEdge.From;
         }
+
+        public override int GetHashCode()
+        {
+            return From + To * 31;
+        }
     }
 }
 
@@ -289,6 +295,7 @@ public class BiomeData
     public readonly float Influence;
     public readonly float Humidity;
     public readonly float Temperature;
+    public readonly NoiseSettings NoiseSettings;
 
     public BiomeData(Vector2 center, float influence, float humidity, float temperature)
     {
