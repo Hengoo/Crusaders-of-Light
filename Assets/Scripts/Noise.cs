@@ -14,17 +14,7 @@ public static class Noise
         float amplitude = 1;
         float frequency = 1;
 
-        System.Random prng = new System.Random(settings.seed);
-        Vector2[] octaveOffsets = new Vector2[settings.octaves];
-        for (int i = 0; i < settings.octaves; i++)
-        {
-            float offsetX = prng.Next(-100000, 100000) + settings.offset.x + sampleCenter.x;
-            float offsetY = prng.Next(-100000, 100000) - settings.offset.y - sampleCenter.y;
-            octaveOffsets[i] = new Vector2(offsetX, offsetY);
-
-            maxPossibleHeight += amplitude;
-            amplitude *= settings.persistance;
-        }
+        System.Random prng = new System.Random(GameController.Instance.Seed);
 
         float maxLocalNoiseHeight = float.MinValue;
         float minLocalNoiseHeight = float.MaxValue;
@@ -39,6 +29,17 @@ public static class Noise
                 amplitude = 1;
                 frequency = 1;
                 float noiseHeight = 0;
+
+                Vector2[] octaveOffsets = new Vector2[settings.octaves];
+                for (int i = 0; i < settings.octaves; i++)
+                {
+                    float offsetX = prng.Next(-100000, 100000) + settings.offset.x + sampleCenter.x;
+                    float offsetY = prng.Next(-100000, 100000) - settings.offset.y - sampleCenter.y;
+                    octaveOffsets[i] = new Vector2(offsetX, offsetY);
+
+                    maxPossibleHeight += amplitude;
+                    amplitude *= settings.persistance;
+                }
 
                 for (int i = 0; i < settings.octaves; i++)
                 {
@@ -82,8 +83,7 @@ public class NoiseSettings
     [Range(0, 1)]
     public float persistance = .6f;
     public float lacunarity = 2;
-
-    public int seed;
+    
     public Vector2 offset;
 
     public void ValidateValues()

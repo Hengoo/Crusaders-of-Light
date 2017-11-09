@@ -177,15 +177,115 @@ public class TerrainStructure
     }
 
     /* Sample Biome Data from a given position */
-    public BiomeSample SampleBiomeData(Vector2 position)
+    public BiomeConditions SampleBiomeData(Vector2 position)
     {
-        //TODO implement sampling
-        return new BiomeSample(0, 0);
+        var triangle = FindTriangle(position);
+        if (triangle.P0 == -1)
+            return new BiomeConditions(0, 0);
+
+
+        var baryCoord = BarycentricCoordinates(position, triangle);
+        var node0 = _biomes.GetNodeData(triangle.P0).BiomeSettings;
+        var node1 = _biomes.GetNodeData(triangle.P1).BiomeSettings;
+        var node2 = _biomes.GetNodeData(triangle.P2).BiomeSettings;
+
+        return BiomeSettings.BarInterpConditions(baryCoord, node0, node1, node2);
     }
 
-    public BiomeSample SampleBiomeData(float x, float y)
+    /* Sample Noise Data from a given position */
+    public NoiseSettings SampleNoiseSettings(Vector2 position)
     {
-        return SampleBiomeData(new Vector2(x,y));
+        var triangle = FindTriangle(position);
+        if (triangle.P0 == -1)
+            return new NoiseSettings();
+
+
+        var baryCoord = BarycentricCoordinates(position, triangle);
+        var node0 = _biomes.GetNodeData(triangle.P0).BiomeSettings;
+        var node1 = _biomes.GetNodeData(triangle.P1).BiomeSettings;
+        var node2 = _biomes.GetNodeData(triangle.P2).BiomeSettings;
+
+        return BiomeSettings.BarInterpNoise(baryCoord, node0, node1, node2);
+    }
+
+    /* Find triangle that contains point */
+    private Triangle FindTriangle(Vector2 point)
+    {
+        var sortedDistances = new SortedList<float, int>();
+
+        /* Find first closest point */
+        foreach (var biome in _biomeIDs)
+        {
+            float dist = (_biomes.GetNodeData(biome).Center - point).SqrMagnitude();
+            sortedDistances.Add(dist, biome);
+        }
+
+        var p0 = sortedDistances.Values[0];
+        var triangles = new List<Triangle>();
+        var neighbours = _biomes.GetNeighbours(p0);
+
+        /* Find the triangles of p0 */
+        for (var i = 0; i < neighbours.Length; i++)
+        {
+            triangles.Add(new Triangle(p0, neighbours[i], neighbours[(i + i) % neighbours.Length]));
+        }
+
+        Triangle match = new Triangle(-1, -1, -1);
+        foreach (var triangle in triangles)
+        {
+            if (PointInTriangle(point, triangle))
+            {
+                match = triangle;
+                break;
+            }
+        }
+
+        return match;
+    }
+
+    private bool PointInTriangle(Vector2 P, Triangle triangle)
+    {
+        var A = _biomes.GetNodeData(triangle.P0).Center;
+        var B = _biomes.GetNodeData(triangle.P1).Center;
+        var C = _biomes.GetNodeData(triangle.P2).Center;
+
+        // Compute vectors        
+        var v0 = C - A;
+        var v1 = B - A;
+        var v2 = P - A;
+
+        // Compute dot products
+        var dot00 = Vector2.Dot(v0, v0);
+        var dot01 = Vector2.Dot(v0, v1);
+        var dot02 = Vector2.Dot(v0, v2);
+        var dot11 = Vector2.Dot(v1, v1);
+        var dot12 = Vector2.Dot(v1, v2);
+
+        // Compute barycentric coordinates
+        var invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+        var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+        var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+        // Check if point is in triangle
+        return (u >= 0) && (v >= 0) && (u + v < 1);
+    }
+
+    private Vector3 BarycentricCoordinates(Vector2 p, Triangle tri)
+    {
+        var p0 = _biomes.GetNodeData(tri.P0).Center;
+        var p1 = _biomes.GetNodeData(tri.P1).Center;
+        var p2 = _biomes.GetNodeData(tri.P2).Center;
+
+        var x = ((p1 - p).x * (p2 - p).y - (p1 - p).y * (p2 - p).x) / 2f;
+        var y = ((p2 - p).x * (p0 - p).y - (p2 - p).y * (p0 - p).x) / 2f;
+        var z = ((p0 - p).x * (p1 - p).y - (p0 - p).y * (p1 - p).x) / 2f;
+
+
+        var q0 = p1 - p0;
+        var q1 = p2 - p0;
+        var a = (q0.x * q1.y - q0.y * q1.x)/2;
+
+        return new Vector3(x, y, z)/a;
     }
 
     public GameObject DrawBiomeGraph()
@@ -302,29 +402,6 @@ public class TerrainStructure
         {
             return From + To * 31;
         }
-    }
-
-}
-
-public struct BiomeSample
-{
-    public readonly float Humidity, Temperature;
-    public BiomeSample(float humidity, float temperature)
-    {
-        Humidity = humidity;
-        Temperature = temperature;
-    }
-}
-
-public class Biome
-{
-    public readonly Vector2 Center;
-    public readonly BiomeSettings BiomeSettings;
-
-    public Biome(Vector2 center, BiomeSettings biomeSettings)
-    {
-        Center = center;
-        BiomeSettings = biomeSettings;
     }
 }
 

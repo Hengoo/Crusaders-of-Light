@@ -1,17 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HeightMapGenerator : MonoBehaviour {
 
-    public static HeightMap GenerateHeightMap(int width, int height, BiomeSettings settings, Vector2 sampleCenter)
+    public static HeightMap GenerateHeightMap(int width, int height, Vector2 sampleCenter)
     {
-        AnimationCurve heightCurve_threadSafe = new AnimationCurve(settings.HeightCurve.keys);
 
         float minValue = float.MaxValue;
         float maxValue = float.MinValue;
 
-        float[,] values = Noise.GenerateNoiseMap(width, height, settings.NoiseSettings, sampleCenter);
+        float[,] values = Noise.GenerateNoiseMap(width, height, sampleCenter);
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)

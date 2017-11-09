@@ -20,6 +20,7 @@ public class MapPreview : MonoBehaviour
     public bool DebugMode = false;
 
     public GameObject Graph;
+    public MeshRenderer Mesh;
 
 
     /* Debug variables */
@@ -50,7 +51,9 @@ public class MapPreview : MonoBehaviour
         if (!DebugMode || Application.isPlaying)
             return;
 
+        ClearDisplay();
         Random.InitState(Seed);
+        _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeDistribution);
         switch (DrawMode)
         {
             case DrawModeEnum.BiomeGraph:
@@ -66,17 +69,19 @@ public class MapPreview : MonoBehaviour
 
     void DrawMesh()
     {
-
+        MeshGenerator.GenerateTerrainMesh(HeightMapGenerator.GenerateHeightMap());
     }
 
     void DrawGraph()
     {
-        for(int i = 0; i < Graph.transform.childCount; i++)
-            StartCoroutine(DestroyInEditor(Graph.transform.GetChild(i).gameObject));
-        
-        _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeDistribution);
         var newGraphInstance = _terrainStructure.DrawBiomeGraph();
         newGraphInstance.transform.parent = Graph.transform;
+    }
+
+    void ClearDisplay()
+    {
+        for (int i = 0; i < Graph.transform.childCount; i++)
+            StartCoroutine(DestroyInEditor(Graph.transform.GetChild(i).gameObject));
     }
 
     IEnumerator DestroyInEditor(GameObject obj)
