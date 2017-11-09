@@ -1,81 +1,38 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
 [CreateAssetMenu()]
-public class BiomeSettings : UpdatableData
+public class BiomeSettings : MonoBehaviour
 {
-    public NoiseSettings NoiseSettings;
-    
-    public bool UseFalloff;
-    public float HeightMultiplier;
-    public AnimationCurve HeightCurve;
-
     public BiomeConditions BiomeConditions;
     public float Influence;
 
-    public float MinHeight
+    public BiomeSettings(BiomeConditions biomeConditions, float influence)
     {
-        get
-        {
-            return HeightMultiplier * HeightCurve.Evaluate(0);
-        }
+        BiomeConditions = biomeConditions;
+        Influence = influence;
     }
 
-    public float MaxHeight
+    public static BiomeConditions BarInterpConditions(Vector2 pos, Biome b0, Biome b1, Biome b2)
     {
-        get
-        {
-            return HeightMultiplier * HeightCurve.Evaluate(1);
-        }
-    }
-
-    public static BiomeConditions BarInterpConditions(Vector3 baryCoord, BiomeSettings n0, BiomeSettings n1, BiomeSettings n2)
-    {
-
-        var temp = n0.BiomeConditions.Temperature * baryCoord.x
-                   + n1.BiomeConditions.Temperature * baryCoord.y
-                   + n2.BiomeConditions.Temperature * baryCoord.z;
-        var hum = n0.BiomeConditions.Humidity * baryCoord.x
-                  + n1.BiomeConditions.Humidity * baryCoord.y
-                  + n2.BiomeConditions.Humidity * baryCoord.z;
+        var bar = pos.Barycentric(b0.Center, b1.Center, b2.Center);
+        
+        var temp = b0.BiomeSettings.BiomeConditions.Temperature * bar.x
+                   + b1.BiomeSettings.BiomeConditions.Temperature * bar.y
+                   + b2.BiomeSettings.BiomeConditions.Temperature * bar.z;
+        var hum = b0.BiomeSettings.BiomeConditions.Humidity * bar.x
+                  + b1.BiomeSettings.BiomeConditions.Humidity * bar.y
+                  + b2.BiomeSettings.BiomeConditions.Humidity * bar.z;
 
         return new BiomeConditions(hum, temp);
     }
-
-    public static NoiseSettings BarInterpNoise(Vector3 baryCoord, BiomeSettings n0, BiomeSettings n1, BiomeSettings n2)
-    {
-        var noiseSettings = new NoiseSettings
-        {
-            lacunarity = n0.NoiseSettings.lacunarity * baryCoord.x
-                         + n1.NoiseSettings.lacunarity * baryCoord.y
-                         + n2.NoiseSettings.lacunarity * baryCoord.z,
-            persistance = n0.NoiseSettings.persistance * baryCoord.x
-                          + n1.NoiseSettings.persistance * baryCoord.y
-                          + n2.NoiseSettings.persistance * baryCoord.z,
-            scale = n0.NoiseSettings.scale * baryCoord.x
-                         + n1.NoiseSettings.scale * baryCoord.y
-                         + n2.NoiseSettings.scale * baryCoord.z,
-            octaves = n0.NoiseSettings.octaves
-
-
-        };
-
-        return noiseSettings;
-    }
-
-#if UNITY_EDITOR
-    protected override void OnValidate()
-    {
-        NoiseSettings.ValidateValues();
-        base.OnValidate();
-    }
-#endif
 }
 
+[Serializable]
 public struct BiomeConditions
 {
-    public readonly float Humidity, Temperature;
+    [Range(0, 1f)] public float Humidity;
+    [Range(0, 1f)] public float Temperature;
     public BiomeConditions(float humidity, float temperature)
     {
         Humidity = humidity;

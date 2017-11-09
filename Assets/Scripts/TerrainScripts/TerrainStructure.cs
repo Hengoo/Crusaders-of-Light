@@ -55,14 +55,15 @@ public class TerrainStructure
     }
 
     /* 
-     * Calculate Delaunay to determinate biome conectivity
+     * Calculate Delaunay to determinate biome conectivity using Bowyer-Watson
      */
     private List<Triangle> DelaunayTriangulation(int width, int height)
     {
         // Encompassing biomes for Bowyer-Watson
-        var left = _biomes.AddNode(new Biome(new Vector2(-height*0.5f, 0), new BiomeSettings()));
-        var right = _biomes.AddNode(new Biome(new Vector2(height*1.5f, 0), new BiomeSettings()));
-        var top = _biomes.AddNode(new Biome(new Vector2(height*0.5f, width * 2f), new BiomeSettings()));
+        var tempConditions = new BiomeConditions(1,1);
+        var left = _biomes.AddNode(new Biome(new Vector2(-height*0.5f, 0), new BiomeSettings(tempConditions, 0)));
+        var right = _biomes.AddNode(new Biome(new Vector2(height*1.5f, 0), new BiomeSettings(tempConditions, 0)));
+        var top = _biomes.AddNode(new Biome(new Vector2(height*0.5f, width * 2f), new BiomeSettings(tempConditions, 0)));
         var superTriangle = new Triangle(left, right, top);
 
         // Add super triangle
@@ -170,10 +171,10 @@ public class TerrainStructure
 
         //var equation = a * (Math.Pow(bx / (2*a), 2) + Math.Pow(by / (2 * a), 2)) - (bx * bx) / (4 * a) - (by * by) / (4 * a) + c;
 
-        var center = new Vector3(-(float)(bx/(2*a)), 0, -(float)(by/(2*a)));
+        var center = new Vector2(-(float)(bx/(2*a)), -(float)(by/(2*a)));
         var radius = Math.Sqrt(bx * bx + by * by + 4 * a * c) / (2 * Mathf.Abs((float) a));
 
-        return (q - new Vector2(center.x, center.z)).sqrMagnitude <= radius * radius;
+        return (q - center).sqrMagnitude <= radius * radius;
     }
 
     /* Sample Biome Data from a given position */
@@ -183,29 +184,12 @@ public class TerrainStructure
         if (triangle.P0 == -1)
             return new BiomeConditions(0, 0);
 
+        
+        var node0 = _biomes.GetNodeData(triangle.P0);
+        var node1 = _biomes.GetNodeData(triangle.P1);
+        var node2 = _biomes.GetNodeData(triangle.P2);
 
-        var baryCoord = BarycentricCoordinates(position, triangle);
-        var node0 = _biomes.GetNodeData(triangle.P0).BiomeSettings;
-        var node1 = _biomes.GetNodeData(triangle.P1).BiomeSettings;
-        var node2 = _biomes.GetNodeData(triangle.P2).BiomeSettings;
-
-        return BiomeSettings.BarInterpConditions(baryCoord, node0, node1, node2);
-    }
-
-    /* Sample Noise Data from a given position */
-    public NoiseSettings SampleNoiseSettings(Vector2 position)
-    {
-        var triangle = FindTriangle(position);
-        if (triangle.P0 == -1)
-            return new NoiseSettings();
-
-
-        var baryCoord = BarycentricCoordinates(position, triangle);
-        var node0 = _biomes.GetNodeData(triangle.P0).BiomeSettings;
-        var node1 = _biomes.GetNodeData(triangle.P1).BiomeSettings;
-        var node2 = _biomes.GetNodeData(triangle.P2).BiomeSettings;
-
-        return BiomeSettings.BarInterpNoise(baryCoord, node0, node1, node2);
+        return BiomeSettings.BarInterpConditions(position, node0, node1, node2);
     }
 
     /* Find triangle that contains point */
@@ -243,49 +227,15 @@ public class TerrainStructure
         return match;
     }
 
-    private bool PointInTriangle(Vector2 P, Triangle triangle)
+    private bool PointInTriangle(Vector2 p, Triangle triangle)
     {
-        var A = _biomes.GetNodeData(triangle.P0).Center;
-        var B = _biomes.GetNodeData(triangle.P1).Center;
-        var C = _biomes.GetNodeData(triangle.P2).Center;
+        var a = _biomes.GetNodeData(triangle.P0).Center;
+        var b = _biomes.GetNodeData(triangle.P1).Center;
+        var c = _biomes.GetNodeData(triangle.P2).Center;
 
-        // Compute vectors        
-        var v0 = C - A;
-        var v1 = B - A;
-        var v2 = P - A;
-
-        // Compute dot products
-        var dot00 = Vector2.Dot(v0, v0);
-        var dot01 = Vector2.Dot(v0, v1);
-        var dot02 = Vector2.Dot(v0, v2);
-        var dot11 = Vector2.Dot(v1, v1);
-        var dot12 = Vector2.Dot(v1, v2);
-
-        // Compute barycentric coordinates
-        var invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-        var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-        var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-
-        // Check if point is in triangle
-        return (u >= 0) && (v >= 0) && (u + v < 1);
-    }
-
-    private Vector3 BarycentricCoordinates(Vector2 p, Triangle tri)
-    {
-        var p0 = _biomes.GetNodeData(tri.P0).Center;
-        var p1 = _biomes.GetNodeData(tri.P1).Center;
-        var p2 = _biomes.GetNodeData(tri.P2).Center;
-
-        var x = ((p1 - p).x * (p2 - p).y - (p1 - p).y * (p2 - p).x) / 2f;
-        var y = ((p2 - p).x * (p0 - p).y - (p2 - p).y * (p0 - p).x) / 2f;
-        var z = ((p0 - p).x * (p1 - p).y - (p0 - p).y * (p1 - p).x) / 2f;
-
-
-        var q0 = p1 - p0;
-        var q1 = p2 - p0;
-        var a = (q0.x * q1.y - q0.y * q1.x)/2;
-
-        return new Vector3(x, y, z)/a;
+        var bar = p.Barycentric(a, b, c);
+        
+        return (bar.x >= 0) && (bar.y >= 0) && (bar.x + bar.y < 1);
     }
 
     public GameObject DrawBiomeGraph()

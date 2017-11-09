@@ -17,11 +17,9 @@ public class MapPreview : MonoBehaviour
     public BiomeDistribution BiomeDistribution;
     public List<BiomeSettings> AvailableBiomes;
     public int Seed = 0;
-    public bool DebugMode = false;
 
     public GameObject Graph;
     public MeshRenderer Mesh;
-
 
     /* Debug variables */
     private TerrainStructure _terrainStructure;
@@ -34,21 +32,18 @@ public class MapPreview : MonoBehaviour
     void OnValidate()
     {
         // Prevent offset from being larger than the cell size
-        BiomeDistribution.CellOffset = 
+        BiomeDistribution.CellOffset =
             Mathf.Min(
-                (float) (BiomeDistribution.MapWidth - 1) / BiomeDistribution.XCells / 2f,
-                (float) (BiomeDistribution.MapHeight - 1) / BiomeDistribution.YCells / 2f,
+                (float)(BiomeDistribution.MapWidth - 1) / BiomeDistribution.XCells / 2f,
+                (float)(BiomeDistribution.MapHeight - 1) / BiomeDistribution.YCells / 2f,
                 BiomeDistribution.CellOffset
-                );
-        
-        //Update Display Settings
-        DrawInEditor();
+            );
     }
 
     /* Redraws preview in the scene editor */
-    void DrawInEditor()
+    public void GeneratePreview()
     {
-        if (!DebugMode || Application.isPlaying)
+        if (Application.isPlaying)
             return;
 
         ClearDisplay();
@@ -69,7 +64,6 @@ public class MapPreview : MonoBehaviour
 
     void DrawMesh()
     {
-        MeshGenerator.GenerateTerrainMesh(HeightMapGenerator.GenerateHeightMap());
     }
 
     void DrawGraph()
