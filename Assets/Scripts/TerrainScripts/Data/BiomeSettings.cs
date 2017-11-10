@@ -18,6 +18,7 @@ public class BiomeSettings : ScriptableObject
     public static BiomeConditions BarInterpConditions(Vector2 pos, Biome b0, Biome b1, Biome b2)
     {
         var bar = pos.Barycentric(b0.Center, b1.Center, b2.Center);
+        
 
         var temp = b0.BiomeSettings.BiomeConditions.Temperature * bar.x
                    + b1.BiomeSettings.BiomeConditions.Temperature * bar.y

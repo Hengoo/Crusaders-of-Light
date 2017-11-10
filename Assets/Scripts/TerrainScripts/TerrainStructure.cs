@@ -253,7 +253,7 @@ public class TerrainStructure
         return (bar.x >= 0) && (bar.y >= 0) && (bar.x + bar.y < 1);
     }
 
-    public GameObject DrawBiomeGraph()
+    public GameObject DrawBiomeGraph(float scale)
     {
         var graphObj = new GameObject("GraphInstance");
         foreach (var biome in _biomeIDs)
@@ -264,7 +264,7 @@ public class TerrainStructure
             go.GetComponent<Collider>().enabled = false;
             go.transform.parent = graphObj.transform;
             go.transform.position = new Vector3(pos.x, 0, pos.y);
-            go.transform.localScale = Vector3.one * 20;
+            go.transform.localScale = Vector3.one * 20 * scale;
         }
         
         foreach (var edge in _biomes.GetAllEdges())
@@ -278,8 +278,8 @@ public class TerrainStructure
             lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
             lr.startColor = Color.white;
             lr.endColor = Color.white;
-            lr.startWidth = 2;
-            lr.endWidth = 2;
+            lr.startWidth = 2 * scale;
+            lr.endWidth = 2 * scale;
             lr.SetPosition(0, start);
             lr.SetPosition(1, end);
         }

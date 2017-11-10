@@ -13,8 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BiomeNoise:
     Persistence: 0
-    LocalMax: 0.379
-    LocalMin: 0
+    LocalMax: 1
+    LocalMin: 0.2
     Lacunarity: 2
   BiomeConditions:
     Humidity: 0.5

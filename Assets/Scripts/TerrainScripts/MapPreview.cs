@@ -65,12 +65,11 @@ public class MapPreview : MonoBehaviour
         var heightMap = HeightMapGenerator.GenerateHeightMap(_terrainStructure, BiomeDistribution);
         var terrainData = new TerrainData();
         
-        terrainData.size = new Vector3(BiomeDistribution.MapResolution, 10, BiomeDistribution.MapResolution);
-
         terrainData.baseMapResolution = BiomeDistribution.MapResolution;
         terrainData.heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeDistribution.MapResolution) + 1;
         terrainData.alphamapResolution = BiomeDistribution.MapResolution;
         terrainData.SetDetailResolution(BiomeDistribution.MapResolution, 16);
+        terrainData.size = new Vector3(BiomeDistribution.MapResolution, 10, BiomeDistribution.MapResolution);
 
         var terrain = Terrain.CreateTerrainGameObject(terrainData);
         terrain.name = "Terrain";
@@ -82,7 +81,7 @@ public class MapPreview : MonoBehaviour
 
     void DrawGraph()
     {
-        var newGraphInstance = _terrainStructure.DrawBiomeGraph();
+        var newGraphInstance = _terrainStructure.DrawBiomeGraph(BiomeDistribution.MapResolution / 500f);
         newGraphInstance.name = "Graph";
         newGraphInstance.transform.parent = transform;
     }

@@ -14,7 +14,7 @@ MonoBehaviour:
   BiomeNoise:
     Persistence: 0
     LocalMax: 0.2
-    LocalMin: 0.1
+    LocalMin: 0.19
     Lacunarity: 2
   BiomeConditions:
     Humidity: 0.5
