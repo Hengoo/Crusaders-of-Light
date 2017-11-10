@@ -19,7 +19,7 @@ public class TerrainStructure
         }
 
         // Calculate connectivity between biome
-        List<Triangle> triangles = DelaunayTriangulation(biomeDistribution.MapWidth, biomeDistribution.MapHeight);
+        List<Triangle> triangles = DelaunayTriangulation(biomeDistribution.MapResolution);
 
         // Add biome connectivity to graph
         foreach (var triangle in triangles)
@@ -30,7 +30,6 @@ public class TerrainStructure
         }
     }
 
-
     /* 
      * Distribute points using Grid Jitter technique
      * - Number of points is cellsX * cellsY
@@ -39,7 +38,7 @@ public class TerrainStructure
     private List<Biome> DistributeBiomes(List<BiomeSettings> availableBiomes, BiomeDistribution biomeDistribution)
     {
         var result = new Biome[biomeDistribution.XCells * biomeDistribution.YCells];
-        var cellSize = new Vector2((float)biomeDistribution.MapWidth / biomeDistribution.XCells, (float)biomeDistribution.MapHeight / biomeDistribution.YCells);
+        var cellSize = new Vector2((float)biomeDistribution.MapResolution / biomeDistribution.XCells, (float)biomeDistribution.MapResolution / biomeDistribution.YCells);
         for (int y = 0; y < biomeDistribution.YCells; y++)
         {
             for (int x = 0; x < biomeDistribution.XCells; x++)
@@ -57,13 +56,14 @@ public class TerrainStructure
     /* 
      * Calculate Delaunay to determinate biome conectivity using Bowyer-Watson
      */
-    private List<Triangle> DelaunayTriangulation(int width, int height)
+    private List<Triangle> DelaunayTriangulation(int resolution)
     {
         // Encompassing biomes for Bowyer-Watson
-        var tempConditions = new BiomeConditions(1,1);
-        var left = _biomes.AddNode(new Biome(new Vector2(-height*0.5f, 0), new BiomeSettings(tempConditions, 0)));
-        var right = _biomes.AddNode(new Biome(new Vector2(height*1.5f, 0), new BiomeSettings(tempConditions, 0)));
-        var top = _biomes.AddNode(new Biome(new Vector2(height*0.5f, width * 2f), new BiomeSettings(tempConditions, 0)));
+        var tempConditions = new BiomeConditions(1, 1);
+        var tempNoise = new BiomeNoise(1, 1, 1, 1);
+        var left = _biomes.AddNode(new Biome(new Vector2(-resolution * 0.5f, 0), new BiomeSettings(tempConditions, tempNoise, 0)));
+        var right = _biomes.AddNode(new Biome(new Vector2(resolution * 1.5f, 0), new BiomeSettings(tempConditions, tempNoise, 0)));
+        var top = _biomes.AddNode(new Biome(new Vector2(resolution * 0.5f, resolution * 2f), new BiomeSettings(tempConditions, tempNoise, 0)));
         var superTriangle = new Triangle(left, right, top);
 
         // Add super triangle
@@ -192,6 +192,19 @@ public class TerrainStructure
         return BiomeSettings.BarInterpConditions(position, node0, node1, node2);
     }
 
+    public BiomeNoise SampleBiomeNoise(Vector2 position)
+    {
+        var triangle = FindTriangle(position);
+        if (triangle.P0 == -1)
+            return new BiomeNoise(0, 0, 0, 0);
+
+        var node0 = _biomes.GetNodeData(triangle.P0);
+        var node1 = _biomes.GetNodeData(triangle.P1);
+        var node2 = _biomes.GetNodeData(triangle.P2);
+
+        return BiomeSettings.BarInterpNoise(position, node0, node1, node2);   
+    }
+
     /* Find triangle that contains point */
     private Triangle FindTriangle(Vector2 point)
     {
@@ -201,6 +214,8 @@ public class TerrainStructure
         foreach (var biome in _biomeIDs)
         {
             float dist = (_biomes.GetNodeData(biome).Center - point).SqrMagnitude();
+            if (sortedDistances.ContainsKey(dist))
+                continue;
             sortedDistances.Add(dist, biome);
         }
 
@@ -353,14 +368,4 @@ public class TerrainStructure
             return From + To * 31;
         }
     }
-}
-
-[Serializable]
-public class BiomeDistribution
-{
-    [Range(100, 10000)] public int MapWidth = 1000;
-    [Range(100, 10000)] public int MapHeight = 1000;
-    [Range(0, 100)] public int XCells = 10;
-    [Range(0, 100)] public int YCells = 10;
-    [Range(0, 1000f)] public float CellOffset = 10;
 }

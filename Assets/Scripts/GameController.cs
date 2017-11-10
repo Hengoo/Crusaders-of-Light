@@ -8,7 +8,7 @@ public class GameController : Singleton<GameController>
     public int Seed = 0;
 
 	// Use this for initialization
-	void Awake () {
+    protected override void Awake () {
 		base.Awake();
         DontDestroyOnLoad(gameObject);
 	}

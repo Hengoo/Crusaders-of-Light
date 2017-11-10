@@ -10,16 +10,14 @@ public class MapPreview : MonoBehaviour
     public enum DrawModeEnum
     {
         BiomeGraph,
-        Mesh
+        Terrain
     }
 
     public DrawModeEnum DrawMode = DrawModeEnum.BiomeGraph;
     public BiomeDistribution BiomeDistribution;
     public List<BiomeSettings> AvailableBiomes;
     public int Seed = 0;
-
-    public GameObject Graph;
-    public MeshRenderer Mesh;
+    
 
     /* Debug variables */
     private TerrainStructure _terrainStructure;
@@ -34,8 +32,8 @@ public class MapPreview : MonoBehaviour
         // Prevent offset from being larger than the cell size
         BiomeDistribution.CellOffset =
             Mathf.Min(
-                (float)(BiomeDistribution.MapWidth - 1) / BiomeDistribution.XCells / 2f,
-                (float)(BiomeDistribution.MapHeight - 1) / BiomeDistribution.YCells / 2f,
+                (float)(BiomeDistribution.MapResolution - 1) / BiomeDistribution.XCells / 2f,
+                (float)(BiomeDistribution.MapResolution - 1) / BiomeDistribution.YCells / 2f,
                 BiomeDistribution.CellOffset
             );
     }
@@ -54,7 +52,7 @@ public class MapPreview : MonoBehaviour
             case DrawModeEnum.BiomeGraph:
                 DrawGraph();
                 break;
-            case DrawModeEnum.Mesh:
+            case DrawModeEnum.Terrain:
                 DrawMesh();
                 break;
             default:
@@ -64,18 +62,45 @@ public class MapPreview : MonoBehaviour
 
     void DrawMesh()
     {
+        var heightMap = HeightMapGenerator.GenerateHeightMap(_terrainStructure, BiomeDistribution);
+        var terrainData = new TerrainData();
+        
+        terrainData.size = new Vector3(BiomeDistribution.MapResolution, 10, BiomeDistribution.MapResolution);
+
+        terrainData.baseMapResolution = BiomeDistribution.MapResolution;
+        terrainData.heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeDistribution.MapResolution) + 1;
+        terrainData.alphamapResolution = BiomeDistribution.MapResolution;
+        terrainData.SetDetailResolution(BiomeDistribution.MapResolution, 16);
+
+        var terrain = Terrain.CreateTerrainGameObject(terrainData);
+        terrain.name = "Terrain";
+        terrain.transform.parent = transform;
+        terrain.transform.position = Vector3.zero;
+        terrain.GetComponent<Terrain>().terrainData.SetHeights(0,0,heightMap);
+
     }
 
     void DrawGraph()
     {
         var newGraphInstance = _terrainStructure.DrawBiomeGraph();
-        newGraphInstance.transform.parent = Graph.transform;
+        newGraphInstance.name = "Graph";
+        newGraphInstance.transform.parent = transform;
     }
 
     void ClearDisplay()
     {
-        for (int i = 0; i < Graph.transform.childCount; i++)
-            StartCoroutine(DestroyInEditor(Graph.transform.GetChild(i).gameObject));
+        var toDelete = new List<GameObject>();
+        foreach (var o in FindObjectsOfType(typeof(GameObject)))
+        {
+            var go = (GameObject) o;
+            if (go.name == "Graph" || go.name == "Terrain")
+                toDelete.Add(go);
+        }
+
+        foreach (var go in toDelete)
+        {
+            StartCoroutine(DestroyInEditor(go));
+        }
     }
 
     IEnumerator DestroyInEditor(GameObject obj)
