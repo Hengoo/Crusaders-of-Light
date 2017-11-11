@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework.Constraints;
+using TriangleNet;
 using UnityEngine;
 using TriangleNet.Geometry;
-using TriangleNet.Topology;
+using TriangleNet.Voronoi;
+using TriangleNet.Tools;
+using Mesh = TriangleNet.Mesh;
 
 public class Triangulation
 {
@@ -65,5 +68,4 @@ public class Triangulation
     {
         return Triangulate(points, new List<List<Vector2>>(), out outIndices, out outVertices);
     }
-
 }

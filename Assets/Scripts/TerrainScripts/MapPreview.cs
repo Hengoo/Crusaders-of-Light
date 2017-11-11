@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -25,17 +26,6 @@ public class MapPreview : MonoBehaviour
     void Start()
     {
         gameObject.SetActive(false);
-    }
-
-    void OnValidate()
-    {
-        // Prevent offset from being larger than the cell size
-        BiomeDistribution.CellOffset =
-            Mathf.Min(
-                (float)(BiomeDistribution.MapResolution - 1) / BiomeDistribution.XCells / 2f,
-                (float)(BiomeDistribution.MapResolution - 1) / BiomeDistribution.YCells / 2f,
-                BiomeDistribution.CellOffset
-            );
     }
 
     /* Redraws preview in the scene editor */
