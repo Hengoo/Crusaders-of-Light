@@ -11,12 +11,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 554611769d52c3f4c856776b08c8bae1, type: 3}
   m_Name: Biome1
   m_EditorClassIdentifier: 
-  BiomeNoise:
-    Persistence: 0
-    LocalMax: 0.2
-    LocalMin: 0.19
+  BiomeHeight:
+    Persistence: 0.3
+    LocalMax: 0.5
+    LocalMin: 0.2
     Lacunarity: 2
+    Scale: 28.7
   BiomeConditions:
     Humidity: 0.5
     Temperature: 0.5
-  Influence: 1

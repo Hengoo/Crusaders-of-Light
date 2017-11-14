@@ -13,10 +13,11 @@ public class TerrainStructure
     private readonly Graph<Biome> _biomes = new Graph<Biome>();
     private readonly List<int> _biomeIDs = new List<int>();
 
-    private static BiomeSettings Water = new BiomeSettings(new BiomeConditions(1,1), new BiomeHeight(0,0,0,0), 1);
+    private BiomeSettings Water;
 
     public TerrainStructure(List<BiomeSettings> availableBiomes, BiomeDistribution biomeDistribution)
     {
+        Water = new BiomeSettings(new BiomeConditions(1,1), new BiomeHeight(0.5f, 0.5f, biomeDistribution.SeaHeight, 0, 20));
         var centers = new List<Vector2f>();
         for(int i = 0; i < biomeDistribution.BiomeSamples; i++)
         {
@@ -28,8 +29,6 @@ public class TerrainStructure
         VoronoiDiagram.LloydRelaxation(biomeDistribution.LloydRelaxation);
 
         /* Assign each site to a biome */
-
-        Debug.Log(VoronoiDiagram.PlotBounds.bottomRight + " " + VoronoiDiagram.PlotBounds.topLeft);
         foreach (var site in VoronoiDiagram.SiteCoords())
         {
             Biome biome;
@@ -51,13 +50,11 @@ public class TerrainStructure
 
             /* Assign biome to site - water if on border */
             biome = isOnBorder ? new Biome(center, Water, true) : new Biome(center, availableBiomes[Random.Range(0, availableBiomes.Count)], false);
-            Debug.Log(isOnBorder ? "Water" : "NOT WATER");
-
             _biomeIDs.Add(_biomes.AddNode(biome));
         }
     }
 
-    public float SampleBiomeHeight(Vector2 position)
+    public BiomeHeight SampleBiomeHeight(Vector2 position)
     {
         Biome closestBiome = null;
         var closestSqrDistance = float.MaxValue;
@@ -75,7 +72,7 @@ public class TerrainStructure
             }
         }
 
-        return closestBiome != null && closestBiome.IsWater ? 0 : .5f;
+        return closestBiome == null ? Water.BiomeHeight : closestBiome.BiomeSettings.BiomeHeight;
     }
 
     public GameObject DrawBiomeGraph(float scale)

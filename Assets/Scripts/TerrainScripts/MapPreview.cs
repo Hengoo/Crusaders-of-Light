@@ -67,6 +67,10 @@ public class MapPreview : MonoBehaviour
         terrain.transform.position = Vector3.zero;
         terrain.GetComponent<Terrain>().terrainData.SetHeights(0,0,heightMap);
 
+        var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        water.transform.localScale = new Vector3(terrainData.size.x/10f, 1, terrainData.size.z/10f);
+        water.transform.parent = terrain.transform;
+        water.transform.localPosition = new Vector3(terrainData.size.x/2, BiomeDistribution.SeaHeight * terrainData.size.y, terrainData.size.z/2);
     }
 
     void DrawGraph()
