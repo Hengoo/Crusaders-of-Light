@@ -18,6 +18,7 @@ public class MapPreview : MonoBehaviour
     public BiomeDistribution BiomeDistribution;
     public List<BiomeSettings> AvailableBiomes;
     public int Seed = 0;
+    public Material WaterMaterial;
     
 
     /* Debug variables */
@@ -68,6 +69,7 @@ public class MapPreview : MonoBehaviour
         terrain.GetComponent<Terrain>().terrainData.SetHeights(0,0,heightMap);
 
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        water.GetComponent<Renderer>().material = WaterMaterial;
         water.transform.localScale = new Vector3(terrainData.size.x/10f, 1, terrainData.size.z/10f);
         water.transform.parent = terrain.transform;
         water.transform.localPosition = new Vector3(terrainData.size.x/2, BiomeDistribution.SeaHeight * terrainData.size.y, terrainData.size.z/2);
