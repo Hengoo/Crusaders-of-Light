@@ -6,11 +6,13 @@ public class BiomeSettings : ScriptableObject
 {
     public BiomeHeight BiomeHeight;
     public BiomeConditions BiomeConditions;
+    public bool NotNavigable = false;
 
-    public BiomeSettings(BiomeConditions biomeConditions, BiomeHeight biomeHeight)
+    public BiomeSettings(BiomeConditions biomeConditions, BiomeHeight biomeHeight, bool notNavigable)
     {
         BiomeConditions = biomeConditions;
         BiomeHeight = biomeHeight;
+        NotNavigable = notNavigable;
     }
 }
 
@@ -61,12 +63,10 @@ public class Biome
 {
     public readonly Vector2 Center;
     public readonly BiomeSettings BiomeSettings;
-    public bool IsWater;
 
-    public Biome(Vector2 center, BiomeSettings biomeSettings, bool isWater)
+    public Biome(Vector2 center, BiomeSettings biomeSettings)
     {
         Center = center;
         BiomeSettings = biomeSettings;
-        IsWater = isWater;
     }
 }

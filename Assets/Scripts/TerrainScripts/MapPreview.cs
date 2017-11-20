@@ -53,7 +53,8 @@ public class MapPreview : MonoBehaviour
 
     void DrawMesh()
     {
-        var heightMap = HeightMapGenerator.GenerateHeightMap(_terrainStructure, BiomeDistribution);
+        var heightMap = HeightMapManager.GenerateHeightMap(_terrainStructure, BiomeDistribution);
+        heightMap = HeightMapManager.SmoothBiomeEdges(heightMap, 1, _terrainStructure.GetBiomeEdges(), 1);
         var terrainData = new TerrainData();
         
         terrainData.baseMapResolution = BiomeDistribution.MapResolution;
@@ -72,7 +73,7 @@ public class MapPreview : MonoBehaviour
         water.GetComponent<Renderer>().material = WaterMaterial;
         water.transform.localScale = new Vector3(terrainData.size.x/10f, 1, terrainData.size.z/10f);
         water.transform.parent = terrain.transform;
-        water.transform.localPosition = new Vector3(terrainData.size.x/2, BiomeDistribution.SeaHeight * terrainData.size.y, terrainData.size.z/2);
+        water.transform.localPosition = new Vector3(terrainData.size.x/2, (BiomeDistribution.SeaHeight + 0.01f )* terrainData.size.y, terrainData.size.z/2);
     }
 
     void DrawGraph()

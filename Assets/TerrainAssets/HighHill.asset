@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 554611769d52c3f4c856776b08c8bae1, type: 3}
-  m_Name: Biome3
+  m_Name: HighHill
   m_EditorClassIdentifier: 
   BiomeHeight:
     Persistence: 0
@@ -20,3 +20,4 @@ MonoBehaviour:
   BiomeConditions:
     Humidity: 0.5
     Temperature: 0.5
+  NotNavigable: 0
