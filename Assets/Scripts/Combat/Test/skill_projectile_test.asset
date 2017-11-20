@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b4bbe9bd59db014bbec37a7db033325, type: 3}
+  m_Name: skill_projectile_test
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.25
+  Cooldown: 0
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: d2c262cf2d327544f9df775ee97e9fd8, type: 2}
+  - {fileID: 11400000, guid: d1ab9d639882d354e9ea7d9c0a5c17f4, type: 2}
+  ProjectilePrefab: {fileID: 114995634086143466, guid: 76aae50d6f7f3e84bac97217cb49fecf,
+    type: 2}

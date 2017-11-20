@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b507ab57d2ed322438bf59df38fee402, type: 3}
+  m_Name: skill_effect_conditional_health_value
+  m_EditorClassIdentifier: 
+  HealthPercentage: 0.5
+  TriggerEffectsWhen: 0
+  SkillEffectsIfTrue:
+  - {fileID: 11400000, guid: 128251b8df5560546977ecf05491d676, type: 2}
+  SkillEffectsIfFalse:
+  - {fileID: 11400000, guid: 11c6dc15d0707954bb2ae3e72272d459, type: 2}
