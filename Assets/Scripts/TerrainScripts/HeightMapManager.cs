@@ -48,20 +48,20 @@ public static class HeightMapManager
         return result;
     }
 
-    public static float[,] SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<LineSegment> lines, int edgeWidth, int squareSize)
+    public static float[,] SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<LineSegment> lines, int lineWidth, int squareSize)
     {
         var result = (float[,])heightMap.Clone();
         int length = heightMap.GetLength(0);
 
-        var cellsToSmooth = new HashSet<Vector2Int>(BresenhamLine(heightMap.GetLength(0), cellSize, lines));
+        var cellsToSmooth = new HashSet<Vector2Int>(BresenhamLine(heightMap.GetLength(0), cellSize, lines, lineWidth));
 
         // Add extra cells to the line thickness
         var tempCopy = new HashSet<Vector2Int>(cellsToSmooth);
         foreach (var current in tempCopy)
         {
-            for (int y = current.y - edgeWidth; y < current.y + edgeWidth; y++)
+            for (int y = current.y - lineWidth; y < current.y + lineWidth; y++)
             {
-                for (int x = current.x - edgeWidth; x <= current.x + edgeWidth; x++)
+                for (int x = current.x - lineWidth; x <= current.x + lineWidth; x++)
                 {
                     if (x < 0 || x >= length || y < 0 || y >= length)
                         continue;
@@ -92,19 +92,19 @@ public static class HeightMapManager
         return result;
     }
 
-    private static IEnumerable<Vector2Int> BresenhamLine(int length, float cellSize, IEnumerable<LineSegment> lines)
+    private static IEnumerable<Vector2Int> BresenhamLine(int resolution, float cellSize, IEnumerable<LineSegment> lines, int lineWidth)
     {
         var result = new HashSet<Vector2Int>();
 
         // Iterate over the edges using Bresenham's Algorithm
         foreach (var line in lines)
         {
-            var startY = Mathf.Min(length - 1, Mathf.FloorToInt(line.p0.x / cellSize));
-            var startX = Mathf.Min(length - 1, Mathf.FloorToInt(line.p0.y / cellSize));
+            var startY = Mathf.Min(resolution - 1, Mathf.FloorToInt(line.p0.x / cellSize));
+            var startX = Mathf.Min(resolution - 1, Mathf.FloorToInt(line.p0.y / cellSize));
             var current = new Vector2Int(startX, startY);
 
-            var endY = Mathf.Min(length - 1, Mathf.FloorToInt(line.p1.x / cellSize));
-            var endX = Mathf.Min(length - 1, Mathf.FloorToInt(line.p1.y / cellSize));
+            var endY = Mathf.Min(resolution - 1, Mathf.FloorToInt(line.p1.x / cellSize));
+            var endX = Mathf.Min(resolution - 1, Mathf.FloorToInt(line.p1.y / cellSize));
             var end = new Vector2Int(endX, endY);
 
 

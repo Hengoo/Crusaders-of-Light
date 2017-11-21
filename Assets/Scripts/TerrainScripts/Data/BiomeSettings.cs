@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu()]
 public class BiomeSettings : ScriptableObject
 {
+    public string UniqueName;
     public BiomeHeight BiomeHeight;
     public BiomeConditions BiomeConditions;
     public bool NotNavigable = false;
+    public List<BiomeSettings> DontBlendWith = new List<BiomeSettings>();
 
     public BiomeSettings(BiomeConditions biomeConditions, BiomeHeight biomeHeight, bool notNavigable)
     {
@@ -59,6 +62,8 @@ public class BiomeDistribution
     [Range(0, 1f)] public float SeaHeight = 0.15f;
     [Range(0, 20)] public int LloydRelaxation = 5;
     [Range(1, 8)] public int Octaves = 3;
+    public BiomeSettings BorderBiome;
+    public BiomeSettings CliffBiome;
 }
 
 public class Biome

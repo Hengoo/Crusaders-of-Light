@@ -11,6 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 554611769d52c3f4c856776b08c8bae1, type: 3}
   m_Name: Hills
   m_EditorClassIdentifier: 
+  UniqueName: Hills
   BiomeHeight:
     Persistence: 0.3
     LocalMax: 0.5
@@ -20,3 +21,7 @@ MonoBehaviour:
   BiomeConditions:
     Humidity: 0.5
     Temperature: 0.5
+  NotNavigable: 0
+  DontBlendWith:
+  - {fileID: 11400000, guid: 0b96cb55724ac1f46bdaf4207bd32742, type: 2}
+  - {fileID: 11400000, guid: 861766d1f31f00c4ba9601f551715601, type: 2}

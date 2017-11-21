@@ -11,6 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 554611769d52c3f4c856776b08c8bae1, type: 3}
   m_Name: Water
   m_EditorClassIdentifier: 
+  UniqueName: Water
   BiomeHeight:
     Persistence: 0.5
     LocalMax: 0.15
@@ -21,3 +22,5 @@ MonoBehaviour:
     Humidity: 0.5
     Temperature: 0.5
   NotNavigable: 1
+  DontBlendWith:
+  - {fileID: 11400000, guid: 0b96cb55724ac1f46bdaf4207bd32742, type: 2}
