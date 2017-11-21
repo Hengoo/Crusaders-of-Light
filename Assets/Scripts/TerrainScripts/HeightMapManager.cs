@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using csDelaunay;
 using TriangleNet.Smoothing;
 using UnityEngine;
@@ -45,67 +46,79 @@ public static class HeightMapManager
         return result;
     }
 
-    public static float[,] SmoothBiomeEdges(float[,] heightMap, float cellSize, IEnumerable<Edge> edges, int neighborCount)
+    public static float[,] SmoothHeightMapWithEdges(float[,] heightMap, float cellSize, IEnumerable<Edge> edges, int neighborCount)
     {
         var result = (float[,])heightMap.Clone();
         int length = heightMap.GetLength(0);
 
         var cellsToSmooth = new HashSet<Vector2Int>();
 
-
-        // Find which cells to smooth (border cells)
-        foreach (var edge in edges)
+        // Iterate over the edges using Bresenham's Algorithm
+        foreach (var edge in edges.Where(t => t.Visible()))
         {
-            if (!edge.Visible())
-                continue;
+            var startY = Mathf.Min(length - 1, Mathf.FloorToInt(edge.ClippedEnds[LR.LEFT].x / cellSize));
+            var startX = Mathf.Min(length - 1, Mathf.FloorToInt(edge.ClippedEnds[LR.LEFT].y / cellSize));
+            var current = new Vector2Int(startX, startY);
 
-            var edgeVector = edge.ClippedEnds[LR.LEFT] - edge.ClippedEnds[LR.RIGHT];
+            var endY = Mathf.Min(length - 1, Mathf.FloorToInt(edge.ClippedEnds[LR.RIGHT].x / cellSize));
+            var endX = Mathf.Min(length - 1, Mathf.FloorToInt(edge.ClippedEnds[LR.RIGHT].y / cellSize));
+            var end = new Vector2Int(endX, endY);
+            
+            
+            //https://stackoverflow.com/questions/11678693/all-cases-covered-bresenhams-line-algorithm
+            int w = end.x - current.x;
+            int h = end.y - current.y;
 
-            var x = edgeVector.x;
-            var y = edgeVector.y;
-            var baseX = Mathf.FloorToInt(edge.ClippedEnds[LR.RIGHT].x / cellSize);
-            var baseY = Mathf.FloorToInt(edge.ClippedEnds[LR.RIGHT].y / cellSize);
+            int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
 
-            int offsetX = 0, offsetY = 0;
-            int xDir = 1, yDir = 1;
+            if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
+            if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
+            if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
 
-            if (x < 0)
+            int longest = Mathf.Abs(w);
+            int shortest = Mathf.Abs(h);
+            if (!(longest > shortest))
             {
-                x = -x;
-                xDir = -1;
-                offsetX = Mathf.FloorToInt(edge.ClippedEnds[LR.LEFT].x / cellSize) - baseX;
+                longest = Mathf.Abs(h);
+                shortest = Mathf.Abs(w);
+                if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
+                dx2 = 0;
             }
-            if (y < 0)
+            int numerator = longest >> 1;
+            for (int i = 0; i <= longest; i++)
             {
-                y =  -y;
-                yDir = -1;
-                offsetY = Mathf.FloorToInt(edge.ClippedEnds[LR.LEFT].y / cellSize) - baseY;
-            }
-
-            while (x > 0 && y > 0)
-            {
-                cellsToSmooth.Add(new Vector2Int(baseX + offsetX, baseY + offsetY));
-                if (x > y)
+                for (int y = current.y - neighborCount; y < current.y + neighborCount; y++)
                 {
-                    x -= cellSize;
-                    offsetX += xDir;
+                    for (int x = current.x - neighborCount; x <= current.x + neighborCount; x++)
+                    {
+                        if (x < 0 || x >= length || y < 0 || y >= length)
+                            continue;
+                        
+                        cellsToSmooth.Add(new Vector2Int(x,y));
+                    }
+                }
+
+                numerator += shortest;
+                if (!(numerator < longest))
+                {
+                    numerator -= longest;
+                    current += new Vector2Int(dx1, dy1);
                 }
                 else
                 {
-                    y -= cellSize;
-                    offsetY += yDir;
+                    current += new Vector2Int(dx2, dy2);
                 }
-
-                Debug.Log(baseX + offsetX + " " + baseY + offsetY);
             }
 
         }
 
+
         // Smooth cells using a 2*neighborcount + 1 square around each cell
         foreach (var cell in cellsToSmooth)
         {
-            int count = 0;
-            float sum = 0;
+            Debug.Log("Accessing element: " + cell);
+            var count = 0;
+            var sum = 0.0f;
             for (int y = cell.y - neighborCount; y < cell.y + neighborCount; y++)
             {
                 for (int x = cell.x - neighborCount; x <= cell.x + neighborCount; x++)
@@ -113,12 +126,11 @@ public static class HeightMapManager
                     if (x < 0 || x >= length || y < 0 || y >= length)
                         continue;
 
-                    sum += heightMap[y, x];
+                    sum += heightMap[x, y];
                     count++;
                 }
             }
-
-            result[cell.y, cell.x] = sum / count;
+            result[cell.x, cell.y] = sum / count;
         }
         return result;
     }

@@ -19,6 +19,7 @@ public class MapPreview : MonoBehaviour
     public List<BiomeSettings> AvailableBiomes;
     public int Seed = 0;
     public Material WaterMaterial;
+    public bool SmoothEdges = false;
     
 
     /* Debug variables */
@@ -54,7 +55,8 @@ public class MapPreview : MonoBehaviour
     void DrawMesh()
     {
         var heightMap = HeightMapManager.GenerateHeightMap(_terrainStructure, BiomeDistribution);
-        heightMap = HeightMapManager.SmoothBiomeEdges(heightMap, 1, _terrainStructure.GetBiomeEdges(), 1);
+        if(SmoothEdges)
+            heightMap = HeightMapManager.SmoothHeightMapWithEdges(heightMap, 1, _terrainStructure.GetBiomeEdges(), 2);
         var terrainData = new TerrainData();
         
         terrainData.baseMapResolution = BiomeDistribution.MapResolution;

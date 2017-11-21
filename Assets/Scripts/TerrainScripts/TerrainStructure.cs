@@ -80,13 +80,14 @@ public class TerrainStructure
 
     public IEnumerable<Edge> GetBiomeEdges()
     {
-        var result = new HashSet<Edge>();
+        var result = new List<Edge>();
         foreach (var site in _biomeIDs.Keys)
         {
-            foreach (var edge in VoronoiDiagram.Edges)
-            {
-                result.Add(edge);
-            }
+            
+        }
+        foreach (var edge in VoronoiDiagram.Edges)
+        {
+            result.Add(edge);
         }
         return result;
     }
@@ -134,6 +135,7 @@ public class TerrainStructure
             go.transform.localScale = Vector3.one * 20 * scale;
         }
 
+        
         foreach (var edge in VoronoiDiagram.VoronoiDiagram())
         {
             var start = new Vector3(edge.p0.x, 0, edge.p0.y);
