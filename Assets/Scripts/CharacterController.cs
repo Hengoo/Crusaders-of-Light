@@ -36,7 +36,7 @@ public class CharacterController : MonoBehaviour
 	void FixedUpdate()
 	{
 		float speedfaktor = 10;
-		Vector3 targetVel = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")) * speedfaktor;
+		Vector3 targetVel = new Vector3(Input.GetAxisRaw("Horizontal"), -0.3f, Input.GetAxisRaw("Vertical")) * speedfaktor;
 		velPID.UpdateTarget(targetVel, 1);
 
 		Quaternion targetRot;

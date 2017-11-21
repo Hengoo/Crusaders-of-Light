@@ -1,72 +1,42 @@
 fileFormatVersion: 2
-guid: ed6cb3f060734a54c985a4711838acb7
-timeCreated: 1509714834
+guid: fb10f154cfb821647a1d4559aa1e0016
+timeCreated: 1511270202
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: Body1
-    100002: Body1_001
-    100004: //RootNode
-    100006: Coat
-    100008: Head
-    100010: Scarf
-    100012: Sphere
-    100014: test1
-    100016: test2
-    100018: Body
-    100020: HandL
-    100022: HandR
-    400000: Body1
-    400002: Body1_001
-    400004: //RootNode
-    400006: Coat
-    400008: Head
-    400010: Scarf
-    400012: Sphere
-    400014: test1
-    400016: test2
-    400018: Body
-    400020: HandL
-    400022: HandR
-    2300000: Body1
-    2300002: Body1_001
-    2300004: Coat
-    2300006: Head
-    2300008: Scarf
-    2300010: Sphere
-    2300012: test1
-    2300014: test2
-    2300016: HandL
-    2300018: HandR
-    3300000: Body1
-    3300002: Body1_001
-    3300004: Coat
-    3300006: Head
-    3300008: Scarf
-    3300010: Sphere
-    3300012: test1
-    3300014: test2
-    3300016: HandL
-    3300018: HandR
-    4300000: Body1_001
-    4300002: Body1
-    4300004: Scarf
-    4300006: Head
-    4300008: Coat
-    4300010: test2
-    4300012: Sphere
-    4300014: test1
-    4300016: HandR
-    4300018: HandL
+    100000: //RootNode
+    100002: Cube_000
+    100004: Cube_001
+    100006: Cube_002
+    100008: Cube_003
+    400000: //RootNode
+    400002: Cube_000
+    400004: Cube_001
+    400006: Cube_002
+    400008: Cube_003
+    2300000: Cube_000
+    2300002: Cube_001
+    2300004: Cube_002
+    2300006: Cube_003
+    2300008: //RootNode
+    3300000: Cube_000
+    3300002: Cube_001
+    3300004: Cube_002
+    3300006: Cube_003
+    3300008: //RootNode
+    4300000: Cube_002
+    4300002: Cube_000
+    4300004: Cube_001
+    4300006: Cube_003
     7400000: Default Take
     9500000: //RootNode
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: unnamed
-    second: {fileID: 2100000, guid: d864d2271349b7d4692f8e7edff3887e, type: 2}
+      name: Material
+    second: {fileID: 2100000, guid: ccfbb5af3659da745b7940f49baf2818, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
