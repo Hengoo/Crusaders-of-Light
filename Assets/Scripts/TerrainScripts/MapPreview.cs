@@ -15,13 +15,9 @@ public class MapPreview : MonoBehaviour
     }
 
     public DrawModeEnum DrawMode = DrawModeEnum.BiomeGraph;
-    public BiomeDistribution BiomeDistribution;
+    public BiomeConfiguration BiomeConfiguration;
     public List<BiomeSettings> AvailableBiomes;
     public int Seed = 0;
-    public Material WaterMaterial;
-    public bool SmoothEdges = false;
-    public int EdgeWidth = 1;
-    public int SquareSize = 2;
     
 
     /* Debug variables */
@@ -40,7 +36,7 @@ public class MapPreview : MonoBehaviour
 
         ClearDisplay();
         Random.InitState(Seed);
-        _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeDistribution);
+        _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeConfiguration);
         switch (DrawMode)
         {
             case DrawModeEnum.BiomeGraph:
@@ -56,16 +52,29 @@ public class MapPreview : MonoBehaviour
 
     void DrawMesh()
     {
-        var heightMap = HeightMapManager.GenerateHeightMap(_terrainStructure, BiomeDistribution);
-        if(SmoothEdges)
-            heightMap = HeightMapManager.SmoothHeightMapWithLines(heightMap, 1, _terrainStructure.GetSmoothBiomeEdges(), EdgeWidth, SquareSize);
+        var heightMap = HeightMapManager.GenerateHeightMap(_terrainStructure, BiomeConfiguration);
+        if (BiomeConfiguration.SmoothEdges)
+        {
+            //Smooth biome borders
+            heightMap = HeightMapManager.SmoothHeightMapWithLines(heightMap, BiomeConfiguration.MapSize / BiomeConfiguration.HeightMapResolution, _terrainStructure.GetBiomeSmoothBorders(), BiomeConfiguration.EdgeWidth, BiomeConfiguration.SquareSize);
+
+            //Rough biome borders
+            //heightMap = HeightMapManager.SmoothHeightMapWithLines(heightMap, BiomeConfiguration.MapSize / BiomeConfiguration.HeightMapResolution, _terrainStructure.GetBiomeBorders(), 3, 2);
+
+            //Overall smoothing
+            if (BiomeConfiguration.OverallSmoothing > 0)
+            {
+                heightMap = HeightMapManager.SmoothHeightMap(heightMap, BiomeConfiguration.OverallSmoothing);
+                heightMap = HeightMapManager.SmoothHeightMap(heightMap, BiomeConfiguration.OverallSmoothing);
+            }
+        }
         var terrainData = new TerrainData();
         
-        terrainData.baseMapResolution = BiomeDistribution.HeightMapResolution;
-        terrainData.heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeDistribution.HeightMapResolution) + 1;
-        terrainData.alphamapResolution = BiomeDistribution.HeightMapResolution;
-        terrainData.SetDetailResolution(BiomeDistribution.HeightMapResolution, 32);
-        terrainData.size = new Vector3(BiomeDistribution.MapSize, BiomeDistribution.MapHeight, BiomeDistribution.MapSize);
+        terrainData.baseMapResolution = BiomeConfiguration.HeightMapResolution;
+        terrainData.heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeConfiguration.HeightMapResolution) + 1;
+        terrainData.alphamapResolution = BiomeConfiguration.HeightMapResolution;
+        terrainData.SetDetailResolution(BiomeConfiguration.HeightMapResolution, 32);
+        terrainData.size = new Vector3(BiomeConfiguration.MapSize, BiomeConfiguration.MapHeight, BiomeConfiguration.MapSize);
 
         var terrain = Terrain.CreateTerrainGameObject(terrainData);
         terrain.name = "Terrain";
@@ -74,15 +83,15 @@ public class MapPreview : MonoBehaviour
         terrain.GetComponent<Terrain>().terrainData.SetHeights(0,0,heightMap);
 
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        water.GetComponent<Renderer>().material = WaterMaterial;
+        water.GetComponent<Renderer>().material = BiomeConfiguration.WaterMaterial;
         water.transform.localScale = new Vector3(terrainData.size.x/10f, 1, terrainData.size.z/10f);
         water.transform.parent = terrain.transform;
-        water.transform.localPosition = new Vector3(terrainData.size.x/2, (BiomeDistribution.SeaHeight + 0.01f )* terrainData.size.y, terrainData.size.z/2);
+        water.transform.localPosition = new Vector3(terrainData.size.x/2, (BiomeConfiguration.SeaHeight + 0.01f )* terrainData.size.y, terrainData.size.z/2);
     }
 
     void DrawGraph()
     {
-        var newGraphInstance = _terrainStructure.DrawBiomeGraph(BiomeDistribution.HeightMapResolution / 500f);
+        var newGraphInstance = _terrainStructure.DrawBiomeGraph(BiomeConfiguration.HeightMapResolution / 500f);
         newGraphInstance.name = "Graph";
         newGraphInstance.transform.parent = transform;
     }

@@ -8,20 +8,20 @@ using UnityEngine.Assertions.Comparers;
 
 public static class HeightMapManager
 {
-    public static float[,] GenerateHeightMap(TerrainStructure terrainStrucure, BiomeDistribution biomeDistribution)
+    public static float[,] GenerateHeightMap(TerrainStructure terrainStrucure, BiomeConfiguration biomeConfiguration)
     {
-        var result = new float[biomeDistribution.HeightMapResolution, biomeDistribution.HeightMapResolution];
+        var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution];
 
-        var cellSize = biomeDistribution.MapSize / biomeDistribution.HeightMapResolution;
+        var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
-        var octavesOffset = new Vector2[biomeDistribution.Octaves];
+        var octavesOffset = new Vector2[biomeConfiguration.Octaves];
         for (var i = 0; i < octavesOffset.Length; i++)
             octavesOffset[i] = new Vector2(Random.Range(-100000f, 100000f), Random.Range(-100000f, 100000f));
 
         /* Generate heightmap */
-        for (var y = 0; y < biomeDistribution.HeightMapResolution; y++)
+        for (var y = 0; y < biomeConfiguration.HeightMapResolution; y++)
         {
-            for (var x = 0; x < biomeDistribution.HeightMapResolution; x++)
+            for (var x = 0; x < biomeConfiguration.HeightMapResolution; x++)
             {
                 var biomeHeight = terrainStrucure.SampleBiomeHeight(new Vector2(x * cellSize, y * cellSize));
                 var amplitude = 1f;
@@ -30,8 +30,8 @@ public static class HeightMapManager
 
                 for (int i = 0; i < octavesOffset.Length; i++)
                 {
-                    var sampleX = (x + octavesOffset[i].x) / biomeDistribution.MapSize * frequency * (biomeHeight.Scale * cellSize);
-                    var sampleY = (y + octavesOffset[i].y) / biomeDistribution.MapSize * frequency * (biomeHeight.Scale * cellSize);
+                    var sampleX = (x + octavesOffset[i].x) / biomeConfiguration.MapSize * frequency * (biomeHeight.Scale * cellSize);
+                    var sampleY = (y + octavesOffset[i].y) / biomeConfiguration.MapSize * frequency * (biomeHeight.Scale * cellSize);
 
                     /* Noise between -1 and 1 */
                     noiseHeight += (Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1) * amplitude;
@@ -42,6 +42,36 @@ public static class HeightMapManager
                 float normalizedHeight = Mathf.InverseLerp(-1f, 1f, noiseHeight);
                 float globalHeight = (biomeHeight.LocalMax - biomeHeight.LocalMin) * normalizedHeight + biomeHeight.LocalMin;
                 result[y, x] = globalHeight;
+            }
+        }
+
+        return result;
+    }
+
+
+    public static float[,] SmoothHeightMap(float[,] heightMap, int squareSize)
+    {
+        var result = (float[,])heightMap.Clone();
+        var length = heightMap.GetLength(0);
+
+        for (var y = 0; y < length; y++)
+        {
+            for (var x = 0; x < length; x++)
+            {
+                var count = 0;
+                var sum = 0.0f;
+                for (var yN = y - squareSize; yN < y + squareSize; yN++)
+                {
+                    for (var xN = x - squareSize; xN <= x + squareSize; xN++)
+                    {
+                        if (xN < 0 || xN >= length || yN < 0 || yN >= length)
+                            continue;
+
+                        sum += heightMap[xN, yN];
+                        count++;
+                    }
+                }
+                result[x, y] = sum / count;
             }
         }
 

@@ -52,7 +52,7 @@ public class BiomeHeight
 
 
 [Serializable]
-public class BiomeDistribution
+public class BiomeConfiguration
 {
     [Range(16, 1024)] public int HeightMapResolution = 128;
     [Range(16, 1024)] public float MapSize = 128;
@@ -60,10 +60,16 @@ public class BiomeDistribution
     [Range(10, 1000)] public int BiomeSamples = 50;
     [Range(0, 1f)] public float MaxHeight = 0.707f;
     [Range(0, 1f)] public float SeaHeight = 0.15f;
+    [Range(0, 50f)] public float BorderNoise = 10f;
     [Range(0, 20)] public int LloydRelaxation = 5;
     [Range(1, 8)] public int Octaves = 3;
     public BiomeSettings BorderBiome;
     public BiomeSettings CliffBiome;
+    public Material WaterMaterial;
+    [Range(0, 5)] public int OverallSmoothing = 2;
+    public bool SmoothEdges = false;
+    [Range(0, 20)] public int EdgeWidth = 6;
+    [Range(0, 20)] public int SquareSize = 5;
 }
 
 public class Biome
