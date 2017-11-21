@@ -8,44 +8,46 @@ using Random = UnityEngine.Random;
 
 public class TerrainStructure
 {
-    public Voronoi VoronoiDiagram;
-
+    private readonly Voronoi _voronoiDiagram;
     private readonly Graph<Biome> _biomeGraph = new Graph<Biome>();
+    private readonly BiomeSettings _water;
+    private readonly BiomeDistribution _biomeDistribution;
 
     //Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<Vector2f, int> _biomeIDs = new Dictionary<Vector2f, int>();
 
-    private readonly BiomeSettings _water;
-
     public TerrainStructure(List<BiomeSettings> availableBiomes, BiomeDistribution biomeDistribution)
     {
+        _biomeDistribution = biomeDistribution;
         _water = new BiomeSettings(new BiomeConditions(1, 1),
             new BiomeHeight(0.5f, 0.5f, biomeDistribution.SeaHeight, 0, 20), true);
+
+
         var centers = new List<Vector2f>();
         for (int i = 0; i < biomeDistribution.BiomeSamples; i++)
         {
-            var x = Random.Range(0f, biomeDistribution.MapResolution);
-            var y = Random.Range(0f, biomeDistribution.MapResolution);
+            var x = Random.Range(0f, biomeDistribution.MapSize);
+            var y = Random.Range(0f, biomeDistribution.MapSize);
             centers.Add(new Vector2f(x, y));
         }
-        VoronoiDiagram = new Voronoi(centers,
-            new Rectf(0, 0, biomeDistribution.MapResolution, biomeDistribution.MapResolution));
-        VoronoiDiagram.LloydRelaxation(biomeDistribution.LloydRelaxation);
+        _voronoiDiagram = new Voronoi(centers,
+            new Rectf(0, 0, biomeDistribution.MapSize, biomeDistribution.MapSize));
+        _voronoiDiagram.LloydRelaxation(biomeDistribution.LloydRelaxation);
 
         /* Assign each site to a biome */
-        foreach (var site in VoronoiDiagram.SiteCoords())
+        foreach (var site in _voronoiDiagram.SiteCoords())
         {
             bool isOnBorder = false;
             var center = new Vector2(site.x, site.y);
-            var segments = VoronoiDiagram.VoronoiBoundarayForSite(site);
+            var segments = _voronoiDiagram.VoronoiBoundarayForSite(site);
 
             foreach (var segment in segments)
             {
-                if (segment.p0.x <= VoronoiDiagram.PlotBounds.left || segment.p0.x >= VoronoiDiagram.PlotBounds.right
-                    || segment.p0.y <= VoronoiDiagram.PlotBounds.top || segment.p0.y >= VoronoiDiagram.PlotBounds.bottom
-                    || segment.p1.x <= VoronoiDiagram.PlotBounds.left || segment.p1.x >= VoronoiDiagram.PlotBounds.right
-                    || segment.p1.y <= VoronoiDiagram.PlotBounds.top ||
-                    segment.p1.y >= VoronoiDiagram.PlotBounds.bottom)
+                if (segment.p0.x <= _voronoiDiagram.PlotBounds.left || segment.p0.x >= _voronoiDiagram.PlotBounds.right
+                    || segment.p0.y <= _voronoiDiagram.PlotBounds.top || segment.p0.y >= _voronoiDiagram.PlotBounds.bottom
+                    || segment.p1.x <= _voronoiDiagram.PlotBounds.left || segment.p1.x >= _voronoiDiagram.PlotBounds.right
+                    || segment.p1.y <= _voronoiDiagram.PlotBounds.top ||
+                    segment.p1.y >= _voronoiDiagram.PlotBounds.bottom)
                 {
                     isOnBorder = true;
                     break;
@@ -56,7 +58,7 @@ public class TerrainStructure
             var biome = isOnBorder
                 ? new Biome(center, _water)
                 : new Biome(center, availableBiomes[Random.Range(0, availableBiomes.Count)]);
-            
+
 
             _biomeIDs.Add(site, _biomeGraph.AddNode(biome));
         }
@@ -67,7 +69,7 @@ public class TerrainStructure
             var biome = _biomeGraph.GetNodeData(id.Value);
             if (biome.BiomeSettings.NotNavigable) continue;
 
-            foreach (var neighbor in VoronoiDiagram.NeighborSitesForSite(new Vector2f(biome.Center.x, biome.Center.y)))
+            foreach (var neighbor in _voronoiDiagram.NeighborSitesForSite(new Vector2f(biome.Center.x, biome.Center.y)))
             {
                 var neighborBiome = _biomeGraph.GetNodeData(_biomeIDs[neighbor]);
                 if (!neighborBiome.BiomeSettings.NotNavigable)
@@ -83,9 +85,9 @@ public class TerrainStructure
         var result = new List<Edge>();
         foreach (var site in _biomeIDs.Keys)
         {
-            
+
         }
-        foreach (var edge in VoronoiDiagram.Edges)
+        foreach (var edge in _voronoiDiagram.Edges)
         {
             result.Add(edge);
         }
@@ -135,8 +137,8 @@ public class TerrainStructure
             go.transform.localScale = Vector3.one * 20 * scale;
         }
 
-        
-        foreach (var edge in VoronoiDiagram.VoronoiDiagram())
+
+        foreach (var edge in _voronoiDiagram.VoronoiDiagram())
         {
             var start = new Vector3(edge.p0.x, 0, edge.p0.y);
             var end = new Vector3(edge.p1.x, 0, edge.p1.y);

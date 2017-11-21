@@ -20,6 +20,8 @@ public class MapPreview : MonoBehaviour
     public int Seed = 0;
     public Material WaterMaterial;
     public bool SmoothEdges = false;
+    public int EdgeWidth = 1;
+    public int SquareSize = 2;
     
 
     /* Debug variables */
@@ -56,14 +58,14 @@ public class MapPreview : MonoBehaviour
     {
         var heightMap = HeightMapManager.GenerateHeightMap(_terrainStructure, BiomeDistribution);
         if(SmoothEdges)
-            heightMap = HeightMapManager.SmoothHeightMapWithEdges(heightMap, 1, _terrainStructure.GetBiomeEdges(), 2);
+            heightMap = HeightMapManager.SmoothHeightMapWithEdges(heightMap, 1, _terrainStructure.GetBiomeEdges(), EdgeWidth, SquareSize);
         var terrainData = new TerrainData();
         
-        terrainData.baseMapResolution = BiomeDistribution.MapResolution;
-        terrainData.heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeDistribution.MapResolution) + 1;
-        terrainData.alphamapResolution = BiomeDistribution.MapResolution;
-        terrainData.SetDetailResolution(BiomeDistribution.MapResolution, 16);
-        terrainData.size = new Vector3(BiomeDistribution.MapResolution, 10, BiomeDistribution.MapResolution);
+        terrainData.baseMapResolution = BiomeDistribution.HeightMapResolution;
+        terrainData.heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeDistribution.HeightMapResolution) + 1;
+        terrainData.alphamapResolution = BiomeDistribution.HeightMapResolution;
+        terrainData.SetDetailResolution(BiomeDistribution.HeightMapResolution, 32);
+        terrainData.size = new Vector3(BiomeDistribution.MapSize, BiomeDistribution.MapHeight, BiomeDistribution.MapSize);
 
         var terrain = Terrain.CreateTerrainGameObject(terrainData);
         terrain.name = "Terrain";
@@ -80,7 +82,7 @@ public class MapPreview : MonoBehaviour
 
     void DrawGraph()
     {
-        var newGraphInstance = _terrainStructure.DrawBiomeGraph(BiomeDistribution.MapResolution / 500f);
+        var newGraphInstance = _terrainStructure.DrawBiomeGraph(BiomeDistribution.HeightMapResolution / 500f);
         newGraphInstance.name = "Graph";
         newGraphInstance.transform.parent = transform;
     }

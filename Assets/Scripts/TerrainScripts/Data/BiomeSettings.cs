@@ -51,7 +51,9 @@ public class BiomeHeight
 [Serializable]
 public class BiomeDistribution
 {
-    [Range(10, 10000)] public int MapResolution = 128;
+    [Range(16, 1024)] public int HeightMapResolution = 128;
+    [Range(16, 1024)] public float MapSize = 128;
+    [Range(1, 1024)] public float MapHeight = 10;
     [Range(10, 1000)] public int BiomeSamples = 50;
     [Range(0, 1f)] public float MaxHeight = 0.707f;
     [Range(0, 1f)] public float SeaHeight = 0.15f;

@@ -10,26 +10,28 @@ public static class HeightMapManager
 {
     public static float[,] GenerateHeightMap(TerrainStructure terrainStrucure, BiomeDistribution biomeDistribution)
     {
-        var result = new float[biomeDistribution.MapResolution, biomeDistribution.MapResolution];
+        var result = new float[biomeDistribution.HeightMapResolution, biomeDistribution.HeightMapResolution];
+
+        var cellSize = biomeDistribution.MapSize / biomeDistribution.HeightMapResolution;
 
         var octavesOffset = new Vector2[biomeDistribution.Octaves];
         for (var i = 0; i < octavesOffset.Length; i++)
             octavesOffset[i] = new Vector2(Random.Range(-100000f, 100000f), Random.Range(-100000f, 100000f));
 
         /* Generate heightmap */
-        for (var y = 0; y < biomeDistribution.MapResolution; y++)
+        for (var y = 0; y < biomeDistribution.HeightMapResolution; y++)
         {
-            for (var x = 0; x < biomeDistribution.MapResolution; x++)
+            for (var x = 0; x < biomeDistribution.HeightMapResolution; x++)
             {
-                var biomeHeight = terrainStrucure.SampleBiomeHeight(new Vector2(x, y));
+                var biomeHeight = terrainStrucure.SampleBiomeHeight(new Vector2(x * cellSize, y * cellSize));
                 var amplitude = 1f;
                 var frequency = 1f;
                 var noiseHeight = 0f;
 
                 for (int i = 0; i < octavesOffset.Length; i++)
                 {
-                    var sampleX = (x + octavesOffset[i].x) / biomeDistribution.MapResolution * frequency * biomeHeight.Scale;
-                    var sampleY = (y + octavesOffset[i].y) / biomeDistribution.MapResolution * frequency * biomeHeight.Scale;
+                    var sampleX = (x + octavesOffset[i].x) / biomeDistribution.MapSize * frequency * (biomeHeight.Scale * cellSize);
+                    var sampleY = (y + octavesOffset[i].y) / biomeDistribution.MapSize * frequency * (biomeHeight.Scale * cellSize);
 
                     /* Noise between -1 and 1 */
                     noiseHeight += (Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1) * amplitude;
@@ -46,7 +48,7 @@ public static class HeightMapManager
         return result;
     }
 
-    public static float[,] SmoothHeightMapWithEdges(float[,] heightMap, float cellSize, IEnumerable<Edge> edges, int neighborCount)
+    public static float[,] SmoothHeightMapWithEdges(float[,] heightMap, float cellSize, IEnumerable<Edge> edges, int edgeWidth, int squareSize)
     {
         var result = (float[,])heightMap.Clone();
         int length = heightMap.GetLength(0);
@@ -87,9 +89,9 @@ public static class HeightMapManager
             int numerator = longest >> 1;
             for (int i = 0; i <= longest; i++)
             {
-                for (int y = current.y - neighborCount; y < current.y + neighborCount; y++)
+                for (int y = current.y - edgeWidth; y < current.y + edgeWidth; y++)
                 {
-                    for (int x = current.x - neighborCount; x <= current.x + neighborCount; x++)
+                    for (int x = current.x - edgeWidth; x <= current.x + edgeWidth; x++)
                     {
                         if (x < 0 || x >= length || y < 0 || y >= length)
                             continue;
@@ -116,12 +118,11 @@ public static class HeightMapManager
         // Smooth cells using a 2*neighborcount + 1 square around each cell
         foreach (var cell in cellsToSmooth)
         {
-            Debug.Log("Accessing element: " + cell);
             var count = 0;
             var sum = 0.0f;
-            for (int y = cell.y - neighborCount; y < cell.y + neighborCount; y++)
+            for (int y = cell.y - squareSize; y < cell.y + squareSize; y++)
             {
-                for (int x = cell.x - neighborCount; x <= cell.x + neighborCount; x++)
+                for (int x = cell.x - squareSize; x <= cell.x + squareSize; x++)
                 {
                     if (x < 0 || x >= length || y < 0 || y >= length)
                         continue;
