@@ -48,25 +48,66 @@ public static class HeightMapManager
         return result;
     }
 
-    public static float[,] SmoothHeightMapWithEdges(float[,] heightMap, float cellSize, IEnumerable<Edge> edges, int edgeWidth, int squareSize)
+    public static float[,] SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<LineSegment> lines, int edgeWidth, int squareSize)
     {
         var result = (float[,])heightMap.Clone();
         int length = heightMap.GetLength(0);
 
-        var cellsToSmooth = new HashSet<Vector2Int>();
+        var cellsToSmooth = new HashSet<Vector2Int>(BresenhamLine(heightMap.GetLength(0), cellSize, lines));
+
+        // Add extra cells to the line thickness
+        var tempCopy = new HashSet<Vector2Int>(cellsToSmooth);
+        foreach (var current in tempCopy)
+        {
+            for (int y = current.y - edgeWidth; y < current.y + edgeWidth; y++)
+            {
+                for (int x = current.x - edgeWidth; x <= current.x + edgeWidth; x++)
+                {
+                    if (x < 0 || x >= length || y < 0 || y >= length)
+                        continue;
+
+                    cellsToSmooth.Add(new Vector2Int(x, y));
+                }
+            }
+        }
+
+        // Smooth cells using a 2*neighborcount + 1 square around each cell
+        foreach (var cell in cellsToSmooth)
+        {
+            var count = 0;
+            var sum = 0.0f;
+            for (int y = cell.y - squareSize; y < cell.y + squareSize; y++)
+            {
+                for (int x = cell.x - squareSize; x <= cell.x + squareSize; x++)
+                {
+                    if (x < 0 || x >= length || y < 0 || y >= length)
+                        continue;
+
+                    sum += heightMap[x, y];
+                    count++;
+                }
+            }
+            result[cell.x, cell.y] = sum / count;
+        }
+        return result;
+    }
+
+    private static IEnumerable<Vector2Int> BresenhamLine(int length, float cellSize, IEnumerable<LineSegment> lines)
+    {
+        var result = new HashSet<Vector2Int>();
 
         // Iterate over the edges using Bresenham's Algorithm
-        foreach (var edge in edges.Where(t => t.Visible()))
+        foreach (var line in lines)
         {
-            var startY = Mathf.Min(length - 1, Mathf.FloorToInt(edge.ClippedEnds[LR.LEFT].x / cellSize));
-            var startX = Mathf.Min(length - 1, Mathf.FloorToInt(edge.ClippedEnds[LR.LEFT].y / cellSize));
+            var startY = Mathf.Min(length - 1, Mathf.FloorToInt(line.p0.x / cellSize));
+            var startX = Mathf.Min(length - 1, Mathf.FloorToInt(line.p0.y / cellSize));
             var current = new Vector2Int(startX, startY);
 
-            var endY = Mathf.Min(length - 1, Mathf.FloorToInt(edge.ClippedEnds[LR.RIGHT].x / cellSize));
-            var endX = Mathf.Min(length - 1, Mathf.FloorToInt(edge.ClippedEnds[LR.RIGHT].y / cellSize));
+            var endY = Mathf.Min(length - 1, Mathf.FloorToInt(line.p1.x / cellSize));
+            var endX = Mathf.Min(length - 1, Mathf.FloorToInt(line.p1.y / cellSize));
             var end = new Vector2Int(endX, endY);
-            
-            
+
+
             //https://stackoverflow.com/questions/11678693/all-cases-covered-bresenhams-line-algorithm
             int w = end.x - current.x;
             int h = end.y - current.y;
@@ -89,17 +130,7 @@ public static class HeightMapManager
             int numerator = longest >> 1;
             for (int i = 0; i <= longest; i++)
             {
-                for (int y = current.y - edgeWidth; y < current.y + edgeWidth; y++)
-                {
-                    for (int x = current.x - edgeWidth; x <= current.x + edgeWidth; x++)
-                    {
-                        if (x < 0 || x >= length || y < 0 || y >= length)
-                            continue;
-                        
-                        cellsToSmooth.Add(new Vector2Int(x,y));
-                    }
-                }
-
+                result.Add(current);
                 numerator += shortest;
                 if (!(numerator < longest))
                 {
@@ -111,28 +142,8 @@ public static class HeightMapManager
                     current += new Vector2Int(dx2, dy2);
                 }
             }
-
         }
 
-
-        // Smooth cells using a 2*neighborcount + 1 square around each cell
-        foreach (var cell in cellsToSmooth)
-        {
-            var count = 0;
-            var sum = 0.0f;
-            for (int y = cell.y - squareSize; y < cell.y + squareSize; y++)
-            {
-                for (int x = cell.x - squareSize; x <= cell.x + squareSize; x++)
-                {
-                    if (x < 0 || x >= length || y < 0 || y >= length)
-                        continue;
-
-                    sum += heightMap[x, y];
-                    count++;
-                }
-            }
-            result[cell.x, cell.y] = sum / count;
-        }
         return result;
     }
 }

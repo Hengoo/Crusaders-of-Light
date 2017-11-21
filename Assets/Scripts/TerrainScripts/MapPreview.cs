@@ -58,7 +58,7 @@ public class MapPreview : MonoBehaviour
     {
         var heightMap = HeightMapManager.GenerateHeightMap(_terrainStructure, BiomeDistribution);
         if(SmoothEdges)
-            heightMap = HeightMapManager.SmoothHeightMapWithEdges(heightMap, 1, _terrainStructure.GetBiomeEdges(), EdgeWidth, SquareSize);
+            heightMap = HeightMapManager.SmoothHeightMapWithLines(heightMap, 1, _terrainStructure.GetSmoothBiomeEdges(), EdgeWidth, SquareSize);
         var terrainData = new TerrainData();
         
         terrainData.baseMapResolution = BiomeDistribution.HeightMapResolution;

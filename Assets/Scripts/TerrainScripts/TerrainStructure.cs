@@ -80,16 +80,22 @@ public class TerrainStructure
         }
     }
 
-    public IEnumerable<Edge> GetBiomeEdges()
+    public IEnumerable<LineSegment> GetSmoothBiomeEdges()
     {
-        var result = new List<Edge>();
+        var result = new List<LineSegment>();
         foreach (var site in _biomeIDs.Keys)
         {
+            var biome = _biomeGraph;
+            foreach (var edge in _voronoiDiagram.Edges)
+            {
+                if (!edge.Visible())
+                    continue;
 
-        }
-        foreach (var edge in _voronoiDiagram.Edges)
-        {
-            result.Add(edge);
+                var p0 = edge.ClippedEnds[LR.LEFT];
+                var p1 = edge.ClippedEnds[LR.RIGHT];
+                var segment = new LineSegment(p0, p1);
+                result.Add(segment);
+            }
         }
         return result;
     }
