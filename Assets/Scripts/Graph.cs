@@ -8,11 +8,13 @@ public class Graph<T> where T : class
     private readonly Dictionary<Pair, Edge> _edges = new Dictionary<Pair, Edge>();
     private int _nodeIDCount;
 
-    public void AddNode(T data)
+    public int AddNode(T data)
     {
         Node node = new Node(_nodeIDCount, data);
         _nodes.Add(node.NodeID, node);
         _nodeIDCount++;
+
+        return node.NodeID;
     }
 
     public bool RemoveNode(int nodeID)
@@ -45,13 +47,24 @@ public class Graph<T> where T : class
     }
 
 
-    private int[] GetNeighbours(int nodeID)
+    public int[] GetNeighbours(int nodeID)
     {
         if (_nodes.ContainsKey(nodeID))
             return _nodes[nodeID].Neighbors.Select(a => a.NodeID).ToArray();
 
         Debug.Log("Node not found in graph");
         return null;
+    }
+
+    public Vector2Int[] GetAllEdges()
+    { 
+        var result = new Vector2Int[_edges.Count];
+        var edgeArray = _edges.Values.ToArray();
+        for (int i = 0; i < _edges.Count; i++)
+        {
+            result[i] = new Vector2Int(edgeArray[i].Nodes.A, edgeArray[i].Nodes.B);
+        }
+        return result;
     }
 
     public T GetNodeData(int nodeID)
@@ -67,7 +80,8 @@ public class Graph<T> where T : class
 
     public bool AddEdge(int node1, int node2, float weight)
     {
-        if (_nodes.ContainsKey(node1) && _nodes.ContainsKey(node2))
+        bool nodeExist = _nodes.ContainsKey(node1) && _nodes.ContainsKey(node2);
+        if (nodeExist && !_edges.ContainsKey(new Pair(node1, node2)))
         {
             Edge edge = new Edge(node1, node2, weight);
             _nodes[node1].Neighbors.Add(_nodes[node2]);
@@ -76,7 +90,9 @@ public class Graph<T> where T : class
             return true;
         }
 
-        Debug.Log("One of nodes not found in graph");
+        if(!nodeExist)
+            Debug.Log("One or both of nodes not found in graph");
+
         return false;
     }
 
@@ -119,12 +135,17 @@ public class Graph<T> where T : class
     private class Edge
     {
         public readonly Pair Nodes;
-        public float Weight; // always >= 0
+        public float Weight; // always normalized
 
         public Edge(int node1, int node2, float weight)
         {
             Nodes = new Pair(node1, node2);
-            Weight = weight >= 0 ? weight : 0;
+            Weight = Mathf.Clamp01(weight);
+        }
+
+        public override string ToString()
+        {
+            return Nodes.ToString();
         }
     }
 
@@ -159,6 +180,28 @@ public class Graph<T> where T : class
         {
             A = a < b ? a : b;
             B = a > b ? a : b;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            var other = (Pair) obj;
+            return other.A == A && other.B == B;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (A * 397) ^ B;
+            }
+        }
+
+        public override string ToString()
+        {
+            return A + " " + B;
         }
     }
 }
