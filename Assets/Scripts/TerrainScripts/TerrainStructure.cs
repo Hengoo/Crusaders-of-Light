@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using csDelaunay;
+using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,6 +12,8 @@ public class TerrainStructure
     private readonly Voronoi _voronoiDiagram;
     private readonly Graph<Biome> _biomeGraph = new Graph<Biome>();
     private readonly BiomeConfiguration _biomeConfiguration;
+    private readonly WorldStructureTemp _worldStructure;
+    private KeyValuePair<Vector2f, int> _startBiome;
 
     //Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<Vector2f, int> _siteBiomeDictionary = new Dictionary<Vector2f, int>();
@@ -18,8 +21,9 @@ public class TerrainStructure
     public TerrainStructure(List<BiomeSettings> availableBiomes, BiomeConfiguration biomeConfiguration)
     {
         _biomeConfiguration = biomeConfiguration;
-
+        var navigableBiomeIDs = new HashSet<int>();
         var centers = new List<Vector2f>();
+
         for (int i = 0; i < biomeConfiguration.BiomeSamples; i++)
         {
             var x = Random.Range(0f, biomeConfiguration.MapSize);
@@ -55,9 +59,14 @@ public class TerrainStructure
                 ? new Biome(center, _biomeConfiguration.BorderBiome)
                 : new Biome(center, availableBiomes[Random.Range(0, availableBiomes.Count)]);
 
-
-            _siteBiomeDictionary.Add(site, _biomeGraph.AddNode(biome));
+            var biomeID = _biomeGraph.AddNode(biome);
+            _siteBiomeDictionary.Add(site, biomeID);
+            if (!biome.BiomeSettings.NotNavigable)
+                navigableBiomeIDs.Add(biomeID);
         }
+
+        /* MSP */
+        var navigationPaths = GeneratePaths();
 
         /* Create navigation graph - for each biome, add reachable neighbors */
         foreach (var id in _siteBiomeDictionary)
@@ -196,8 +205,6 @@ public class TerrainStructure
         return result;
     }
 
-
-
     private void DrawLineSegments(IEnumerable<LineSegment> lines, float scale, Transform parent)
     {
         foreach (var line in lines)
@@ -216,5 +223,41 @@ public class TerrainStructure
             lr.SetPosition(0, start);
             lr.SetPosition(1, end);
         }
+    }
+
+    private List<KeyValuePair<int, int>> GeneratePaths()
+    {
+        List<KeyValuePair<int, int>> result;
+        var navigableBiomes =
+            _siteBiomeDictionary.Select(a => !_biomeGraph.GetNodeData(a.Value).BiomeSettings.NotNavigable) as Dictionary<Vector2f,int>;
+        _startBiome = navigableBiomes.ToArray()[Random.Range(0, navigableBiomes.Count)];
+
+        result = PrimMSP(_startBiome, navigableBiomes);
+
+        return result;
+    }
+
+    private List<KeyValuePair<int, int>> PrimMSP(KeyValuePair<Vector2f, int> startNode, Dictionary<Vector2f, int> centerNodeDictionary)
+    {
+        var result = new List<KeyValuePair<int, int>>();
+        var tree = new List<KeyValuePair<Vector2f, int>>();
+        centerNodeDictionary.Remove(startNode.Key);
+
+        while (centerNodeDictionary.Count > 0)
+        {
+            KeyValuePair<Vector2f, int> closestNode = centerNodeDictionary.First();
+            float closestSqrDistance = float.MaxValue;
+
+            foreach (var node in tree)
+            {
+                if(node.Key.DistanceSquare(closestNode.Key) < closestSqrDistance)
+            }
+
+            centerNodeDictionary.Remove(closestNode.Key);
+            tree.Add(closestNode);
+            result.Add(new KeyValuePair<int, int>(closestNode.Value, ));
+        }
+
+        return result;
     }
 }
