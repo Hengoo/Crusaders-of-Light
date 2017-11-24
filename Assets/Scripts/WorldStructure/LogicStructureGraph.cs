@@ -29,6 +29,7 @@ public class LogicStructureGraph {
             workingGraph.RemoveNode(i);
         }
 
+        //Iterate over graph, add removed biomes to new areas
         int workingGraphCount = workingGraph.Count();
         while (workingGraphCount > 0)
         {
@@ -72,13 +73,16 @@ public class LogicStructureGraph {
         var areas = new GameObject("Areas");
         areas.transform.parent = result.transform;
 
+        var edgesIn = new GameObject("Inner Edges");
+        edgesIn.transform.parent = result.transform;
+
         /*var edges = new GameObject("Edges");
         edges.transform.parent = result.transform;
 
         var borders = new GameObject("Borders");
         borders.transform.parent = result.transform;*/
 
-        for(int i = 0; i < _AreaGraph.Count(); i++)
+        for (int i = 0; i < _AreaGraph.Count(); i++)
         {
             var pos = _AreaGraph.GetNodeData(i).GetCenter();
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -87,6 +91,32 @@ public class LogicStructureGraph {
             go.transform.parent = areas.transform;
             go.transform.position = new Vector3(pos.x, 0, pos.y);
             go.transform.localScale = Vector3.one * 20 * scale;
+            for(int j = 0; j < _AreaGraph.GetNodeData(i).ContainedBiomes.Count; j++)
+            {
+                var pos_biome = _AreaGraph.GetNodeData(i).ContainedBiomes[j].Center;
+                var go_biome = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                go_biome.name = "Biome id: " + _AreaGraph.GetNodeData(i).ContainedBiomesIDs[j];
+                go_biome.GetComponent<Collider>().enabled = false;
+                go_biome.transform.parent = go.transform;
+                go_biome.transform.position = new Vector3(pos_biome.x, 0, pos_biome.y);
+                go_biome.transform.localScale = Vector3.one * 0.5f;
+            }
+            for (int j = 0; j < _AreaGraph.GetNodeData(i).ContainedBiomes.Count-1; j++)
+            {
+                var start = new Vector3(_AreaGraph.GetNodeData(i).ContainedBiomes[j].Center.x, 0, _AreaGraph.GetNodeData(i).ContainedBiomes[j].Center.y);
+                var end = new Vector3(_AreaGraph.GetNodeData(i).ContainedBiomes[j+1].Center.x, 0, _AreaGraph.GetNodeData(i).ContainedBiomes[j+1].Center.y);
+                GameObject myLine = new GameObject("Line");
+                myLine.transform.position = start;
+                myLine.transform.parent = edgesIn.transform;
+                LineRenderer lr = myLine.AddComponent<LineRenderer>();
+                lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
+                lr.startColor = Color.white;
+                lr.endColor = Color.white;
+                lr.startWidth = 2 * scale;
+                lr.endWidth = 2 * scale;
+                lr.SetPosition(0, start);
+                lr.SetPosition(1, end);
+            }
         }
 
         return result;
