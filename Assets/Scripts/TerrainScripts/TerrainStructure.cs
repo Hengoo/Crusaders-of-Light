@@ -4,6 +4,7 @@ using System.Linq;
 using csDelaunay;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
@@ -66,7 +67,12 @@ public class TerrainStructure
         }
 
         /* MSP */
-        var navigationPaths = GeneratePaths();
+        foreach (var edge in GeneratePaths())
+        {
+            _biomeGraph.AddEdge(edge.Value, edge.Key, 1);
+        }
+
+        return;
 
         /* Create navigation graph - for each biome, add reachable neighbors */
         foreach (var id in _siteBiomeDictionary)
@@ -178,6 +184,12 @@ public class TerrainStructure
             go.transform.parent = biomes.transform;
             go.transform.position = new Vector3(pos.x, 0, pos.y);
             go.transform.localScale = Vector3.one * 20 * scale;
+            if (biome.Value == _startBiome.Value)
+            {
+                var renderer = go.GetComponent<Renderer>();
+                var tempMaterial = new Material(renderer.sharedMaterial) {color = Color.red};
+                renderer.sharedMaterial = tempMaterial;
+            }
         }
 
         DrawLineSegments(_voronoiDiagram.VoronoiDiagram(), scale, voronoi.transform);
@@ -225,37 +237,62 @@ public class TerrainStructure
         }
     }
 
+    /* Generate paths between existing biomes */
     private List<KeyValuePair<int, int>> GeneratePaths()
     {
         List<KeyValuePair<int, int>> result;
-        var navigableBiomes =
-            _siteBiomeDictionary.Select(a => !_biomeGraph.GetNodeData(a.Value).BiomeSettings.NotNavigable) as Dictionary<Vector2f,int>;
-        _startBiome = navigableBiomes.ToArray()[Random.Range(0, navigableBiomes.Count)];
+        var navigableBiomes = new Dictionary<Vector2f, int>();
+        var randomBiomeList = new List<KeyValuePair<Vector2f, int>>();
+        foreach (var pair in _siteBiomeDictionary)
+        {
+            if (!_biomeGraph.GetNodeData(pair.Value).BiomeSettings.NotNavigable)
+            {
+                navigableBiomes.Add(pair.Key, pair.Value);
+                randomBiomeList.Add(pair);
+            }
+        }
+        randomBiomeList.Shuffle();
+        Debug.Log(randomBiomeList.First().Value + " out of " + randomBiomeList.Count + " Numbers ");
+        _startBiome = randomBiomeList.First();
 
         result = PrimMSP(_startBiome, navigableBiomes);
 
         return result;
     }
 
-    private List<KeyValuePair<int, int>> PrimMSP(KeyValuePair<Vector2f, int> startNode, Dictionary<Vector2f, int> centerNodeDictionary)
+    /* Create a Minimum Spanning Tree using Prim's algorithm */
+    private static List<KeyValuePair<int, int>> PrimMSP(KeyValuePair<Vector2f, int> startNode, IDictionary<Vector2f, int> nodes)
     {
         var result = new List<KeyValuePair<int, int>>();
         var tree = new List<KeyValuePair<Vector2f, int>>();
-        centerNodeDictionary.Remove(startNode.Key);
+        nodes.Remove(startNode.Key);
+        tree.Add(startNode);
 
-        while (centerNodeDictionary.Count > 0)
+        //Iterate until all nodes all connected to the tree
+        while (nodes.Count > 0)
         {
-            KeyValuePair<Vector2f, int> closestNode = centerNodeDictionary.First();
+            var current = new KeyValuePair<Vector2f, int>();
+            var closest = new KeyValuePair<Vector2f, int>();
             float closestSqrDistance = float.MaxValue;
 
+            //Find the closest node pair, where one node is in the tree and the other isn't
             foreach (var node in tree)
             {
-                if(node.Key.DistanceSquare(closestNode.Key) < closestSqrDistance)
+                foreach (var outNode in nodes)
+                {
+                    var currentDistance = node.Key.DistanceSquare(outNode.Key);
+                    if (currentDistance < closestSqrDistance)
+                    {
+                        closest = node;
+                        current = outNode;
+                        closestSqrDistance = currentDistance;
+                    }
+                }
             }
 
-            centerNodeDictionary.Remove(closestNode.Key);
-            tree.Add(closestNode);
-            result.Add(new KeyValuePair<int, int>(closestNode.Value, ));
+            nodes.Remove(current.Key);
+            tree.Add(current);
+            result.Add(new KeyValuePair<int, int>(current.Value, closest.Value));
         }
 
         return result;
