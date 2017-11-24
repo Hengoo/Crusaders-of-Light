@@ -11,17 +11,20 @@ public class MapPreview : MonoBehaviour
     public enum DrawModeEnum
     {
         BiomeGraph,
-        Terrain
+        Terrain,
+        AreaGraph
     }
 
     public DrawModeEnum DrawMode = DrawModeEnum.BiomeGraph;
     public BiomeConfiguration BiomeConfiguration;
     public List<BiomeSettings> AvailableBiomes;
     public int Seed = 0;
+    public int MaxBiomesPerArea = 3;
     
 
     /* Debug variables */
     private TerrainStructure _terrainStructure;
+    private LogicStructureGraph _AreaStructure;
 
     void Start()
     {
@@ -37,6 +40,7 @@ public class MapPreview : MonoBehaviour
         ClearDisplay();
         Random.InitState(Seed);
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeConfiguration);
+        _AreaStructure = new LogicStructureGraph();
         switch (DrawMode)
         {
             case DrawModeEnum.BiomeGraph:
@@ -44,6 +48,10 @@ public class MapPreview : MonoBehaviour
                 break;
             case DrawModeEnum.Terrain:
                 DrawMesh();
+                break;
+            case DrawModeEnum.AreaGraph:
+                _AreaStructure.GenerateAreaGraph(_terrainStructure.GetBiomeGraph(),MaxBiomesPerArea);
+                DrawAreaGraph();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -96,13 +104,19 @@ public class MapPreview : MonoBehaviour
         newGraphInstance.transform.parent = transform;
     }
 
+    void DrawAreaGraph() {
+        var newAreaGraphInstance = _AreaStructure.DrawAreaGraph(BiomeConfiguration.HeightMapResolution / 500f);
+        newAreaGraphInstance.name = "Area Graph";
+        newAreaGraphInstance.transform.parent = transform;
+    }
+
     void ClearDisplay()
     {
         var toDelete = new List<GameObject>();
         foreach (var o in FindObjectsOfType(typeof(GameObject)))
         {
             var go = (GameObject) o;
-            if (go.name == "Graph" || go.name == "Terrain")
+            if (go.name == "Graph" || go.name == "Terrain" || go.name == "Area Graph")
                 toDelete.Add(go);
         }
 

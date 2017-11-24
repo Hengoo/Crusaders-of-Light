@@ -15,24 +15,31 @@ public class Graph<T> where T : class
         _nodeIDCount++;
 
         return node.NodeID;
+
     }
+
 
     public bool RemoveNode(int nodeID)
     {
         if (_nodes.ContainsKey(nodeID))
         {
             Node node = _nodes[nodeID];
-            _nodes.Remove(nodeID);
-
+            
             foreach (Node neighbor in _nodes.Where(a => a.Value.Neighbors.Contains(node)).Select(a => a.Value))
             {
                 neighbor.Neighbors.Remove(node);
             }
 
+            List<Pair> edgesToRemove = new List<Pair>();
             foreach (Edge edge in _edges.Where(a => a.Value.Nodes.A == nodeID || a.Value.Nodes.B == nodeID).Select(a => a.Value))
             {
-                _edges.Remove(edge.Nodes);
+                edgesToRemove.Add(edge.Nodes);
             }
+            foreach(Pair p in edgesToRemove)
+            {
+                _edges.Remove(p);
+            }
+            _nodes.Remove(nodeID);
 
             return true;
         }
@@ -65,6 +72,10 @@ public class Graph<T> where T : class
             result[i] = new Vector2Int(edgeArray[i].Nodes.A, edgeArray[i].Nodes.B);
         }
         return result;
+    }
+
+    public int Count() {
+        return _nodes.Count();
     }
 
     public T GetNodeData(int nodeID)

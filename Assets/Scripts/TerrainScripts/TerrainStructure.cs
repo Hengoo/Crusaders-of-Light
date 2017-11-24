@@ -196,7 +196,10 @@ public class TerrainStructure
         return result;
     }
 
-
+    public Graph<Biome> GetBiomeGraph()
+    {
+        return _biomeGraph;
+    }
 
     private void DrawLineSegments(IEnumerable<LineSegment> lines, float scale, Transform parent)
     {
