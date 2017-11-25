@@ -83,6 +83,10 @@ public class MapPreview : MonoBehaviour
         terrain.transform.parent = transform;
         terrain.transform.position = Vector3.zero;
         terrain.GetComponent<Terrain>().terrainData.SetHeights(0,0,heightMap);
+        terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
+        terrain.GetComponent<Terrain>().materialTemplate = BiomeConfiguration.TerrainMaterial;
+
+
 
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
         water.GetComponent<Renderer>().material = BiomeConfiguration.WaterMaterial;
