@@ -13,7 +13,6 @@ public class TerrainStructure
     private readonly Voronoi _voronoiDiagram;
     private readonly Graph<Biome> _biomeGraph = new Graph<Biome>();
     private readonly BiomeConfiguration _biomeConfiguration;
-    private readonly WorldStructureTemp _worldStructure;
     private KeyValuePair<Vector2f, int> _startBiome;
 
     //Mapping of Voronoi library sites and graph IDs
@@ -35,7 +34,7 @@ public class TerrainStructure
             new Rectf(0, 0, biomeConfiguration.MapSize, biomeConfiguration.MapSize));
         _voronoiDiagram.LloydRelaxation(biomeConfiguration.LloydRelaxation);
 
-        /* Assign each site to a biome */
+        /*Iterate over each site and add a biome to it */
         foreach (var site in _voronoiDiagram.SiteCoords())
         {
             bool isOnBorder = false;

@@ -68,11 +68,13 @@ public class MapPreview : MonoBehaviour
                 heightMap = HeightMapManager.SmoothHeightMap(heightMap, BiomeConfiguration.OverallSmoothing);
             }
         }
-        var terrainData = new TerrainData();
-        
-        terrainData.baseMapResolution = BiomeConfiguration.HeightMapResolution;
-        terrainData.heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeConfiguration.HeightMapResolution) + 1;
-        terrainData.alphamapResolution = BiomeConfiguration.HeightMapResolution;
+        var terrainData = new TerrainData
+        {
+            baseMapResolution = BiomeConfiguration.HeightMapResolution,
+            heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeConfiguration.HeightMapResolution) + 1,
+            alphamapResolution = BiomeConfiguration.HeightMapResolution
+        };
+
         terrainData.SetDetailResolution(BiomeConfiguration.HeightMapResolution, 32);
         terrainData.size = new Vector3(BiomeConfiguration.MapSize, BiomeConfiguration.MapHeight, BiomeConfiguration.MapSize);
 
@@ -112,7 +114,7 @@ public class MapPreview : MonoBehaviour
         }
     }
 
-    IEnumerator DestroyInEditor(GameObject obj)
+    private static IEnumerator DestroyInEditor(GameObject obj)
     {
         yield return new WaitForEndOfFrame();
         DestroyImmediate(obj, true);

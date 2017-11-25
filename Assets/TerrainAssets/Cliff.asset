@@ -22,4 +22,5 @@ MonoBehaviour:
     Humidity: 0.5
     Temperature: 0.5
   NotNavigable: 1
+  groundTexture: {fileID: 2800000, guid: 312e6d1b420852a48bc2dd7166b9c8f9, type: 3}
   DontBlendWith: []

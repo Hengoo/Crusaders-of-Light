@@ -1,17 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using csDelaunay;
-using TriangleNet.Smoothing;
 using UnityEngine;
-using UnityEngine.Assertions.Comparers;
 
 public static class HeightMapManager
 {
+    /* Generate a heightmap given terrain structure and biome configuration */
     public static float[,] GenerateHeightMap(TerrainStructure terrainStrucure, BiomeConfiguration biomeConfiguration)
     {
         var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution];
-
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
         var octavesOffset = new Vector2[biomeConfiguration.Octaves];
@@ -48,7 +44,18 @@ public static class HeightMapManager
         return result;
     }
 
+    /* Set heightmap texture based on biome configuration */
+    public static float[,,] TextureHeightMap(TerrainStructure terrainStrucure, BiomeConfiguration biomeConfiguration, float[,] heightMap)
+    {
+        var length = heightMap.GetLength(0);
+        var result = new float[length, length, length];
 
+
+        return result;
+    }
+
+
+    /* Smooth every cell in the heightmap using squareSize neighbors in each direction */
     public static float[,] SmoothHeightMap(float[,] heightMap, int squareSize)
     {
         var result = (float[,])heightMap.Clone();
@@ -78,6 +85,7 @@ public static class HeightMapManager
         return result;
     }
 
+    /* Smooth a heightmap along given lines */
     public static float[,] SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<LineSegment> lines, int lineWidth, int squareSize)
     {
         var result = (float[,])heightMap.Clone();
@@ -122,6 +130,7 @@ public static class HeightMapManager
         return result;
     }
 
+    /* Match a line to cells in a grid */
     private static IEnumerable<Vector2Int> BresenhamLine(int resolution, float cellSize, IEnumerable<LineSegment> lines, int lineWidth)
     {
         var result = new HashSet<Vector2Int>();
