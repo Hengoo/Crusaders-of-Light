@@ -2,9 +2,9 @@
 using csDelaunay;
 using UnityEngine;
 
-public static class HeightMapManager
+public static class TerrainDataGenerator
 {
-    /* Generate a heightmap given terrain structure and biome configuration */
+    // Generate a heightmap given terrain structure and biome configuration
     public static float[,] GenerateHeightMap(TerrainStructure terrainStrucure, BiomeConfiguration biomeConfiguration)
     {
         var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution];
@@ -14,7 +14,7 @@ public static class HeightMapManager
         for (var i = 0; i < octavesOffset.Length; i++)
             octavesOffset[i] = new Vector2(Random.Range(-100000f, 100000f), Random.Range(-100000f, 100000f));
 
-        /* Generate heightmap */
+        // Generate heightmap
         for (var y = 0; y < biomeConfiguration.HeightMapResolution; y++)
         {
             for (var x = 0; x < biomeConfiguration.HeightMapResolution; x++)
@@ -44,18 +44,28 @@ public static class HeightMapManager
         return result;
     }
 
-    /* Set heightmap texture based on biome configuration */
-    public static float[,,] TextureHeightMap(TerrainStructure terrainStrucure, BiomeConfiguration biomeConfiguration, float[,] heightMap)
+    // Set heightmap texture based on biome configuration
+    public static float[,,] GenerateAlphaMap(TerrainStructure terrainStructure, BiomeConfiguration biomeConfiguration)
     {
-        var length = heightMap.GetLength(0);
-        var result = new float[length, length, length];
+        var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution, terrainStructure.TextureCount];
+        var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
-
+        for (int y = 0; y < biomeConfiguration.HeightMapResolution; y++)
+        {
+            for (int x = 0; x < biomeConfiguration.HeightMapResolution; x++)
+            {
+                var samples = terrainStructure.SampleBiomeTexture(new Vector2(x * cellSize, y * cellSize));
+                foreach (var sample in samples)
+                {
+                    result[y, x, sample.Key] = sample.Value;
+                }
+            }
+        }
         return result;
     }
 
 
-    /* Smooth every cell in the heightmap using squareSize neighbors in each direction */
+    // Smooth every cell in the heightmap using squareSize neighbors in each direction
     public static float[,] SmoothHeightMap(float[,] heightMap, int squareSize)
     {
         var result = (float[,])heightMap.Clone();
@@ -85,7 +95,7 @@ public static class HeightMapManager
         return result;
     }
 
-    /* Smooth a heightmap along given lines */
+    // Smooth a heightmap along given lines
     public static float[,] SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<LineSegment> lines, int lineWidth, int squareSize)
     {
         var result = (float[,])heightMap.Clone();
