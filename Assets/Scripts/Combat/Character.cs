@@ -42,7 +42,7 @@ public class Character : MonoBehaviour {
     // Two Handed: Write Both (unequip other weapon!).
 
     public ItemSkill[] ItemSkillSlots = new ItemSkill[4];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
-    public bool[] SkillActivationButtonsPressed = new bool[2];  // Whether the Button is currently pressed down!
+    public bool[] SkillActivationButtonsPressed = new bool[4];  // Whether the Button is currently pressed down!
 
     public int SkillCurrentlyActivating = -1; // Character is currently activating a Skill.
     public float SkillActivationTimer = 0.0f;
@@ -151,8 +151,6 @@ public class Character : MonoBehaviour {
 
     public bool EquipWeapon(Item Weapon, bool IsTwoHanded, int SlotID)
     {
-        ItemSkill[] SkillsToAdd;
-
         if (!IsTwoHanded)               // Single Handed Weapon:
         {
             if (WeaponSlots[SlotID])    // Single Handed Weapon, Already something equipped in Slot:
@@ -165,7 +163,6 @@ public class Character : MonoBehaviour {
             WeaponSlots[SlotID] = Weapon;
 
             EquipSkills(Weapon.GetItemSkills(), SlotID * SkillsPerWeapon, SkillsPerWeapon);
-            
         }
         else                            // Two Handed Weapon:
         {

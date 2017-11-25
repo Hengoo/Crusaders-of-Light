@@ -27,7 +27,7 @@ public class SkillType : ScriptableObject {
         return AllowTargetEnemy;
     }
 
-    public bool StartSkillActivation(ItemSkill SourceWeaponSkill, Character Owner)
+    public bool StartSkillActivation(ItemSkill SourceItemSkill, Character Owner)
     {
         Debug.Log("BREAK 3");
         // Pay Activation Cost:
@@ -43,13 +43,13 @@ public class SkillType : ScriptableObject {
         // Start Cooldown:      (Note: The current Cooldown is saved in the SourceWeapon)
         if (Cooldown > 0)
         {
-            SourceWeaponSkill.SetCurrentCooldown(Cooldown);
+            SourceItemSkill.SetCurrentCooldown(Cooldown);
         }
         Debug.Log("BREAK 5");
         return true;
     }
 
-    public virtual void UpdateSkillActivation(ItemSkill SourceWeaponSkill, float CurrentActivationTime, bool StillActivating)
+    public virtual void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating)
     {
 
     }

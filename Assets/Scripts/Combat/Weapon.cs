@@ -11,6 +11,7 @@ public class Weapon : Item {
     public Character TESTCharacterToEquipTo;
     public int TESTSlotToEquipIn = 0;
 
+
     private void Start()
     {
         EquipItem(TESTCharacterToEquipTo, TESTSlotToEquipIn);
@@ -39,5 +40,4 @@ public class Weapon : Item {
     {
         return TwoHanded;
     }
-
 }

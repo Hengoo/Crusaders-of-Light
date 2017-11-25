@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ItemSkill : MonoBehaviour {
 
+    public Item ParentItem;
+
     public SkillType SkillObject;
 
     public float CurrentCooldown;
@@ -11,6 +13,8 @@ public class ItemSkill : MonoBehaviour {
     public int Level;
 
     public Character CurrentOwner;
+
+    public List<Character> AlreadyHitCharacters = new List<Character>();
 
     public bool StartSkillActivation()
     {
@@ -32,6 +36,26 @@ public class ItemSkill : MonoBehaviour {
     public void FinishedSkillActivation()
     {
         CurrentOwner.FinishedCurrentSkillActivation();
+    }
+
+    public bool CheckIfSkillIsUsingHitBox(ItemSkill SkillToCheck)
+    {
+        return ParentItem.CheckIfSkillIsUsingHitBox(SkillToCheck);
+    }
+
+    public List<Character> GetAllCurrentlyCollidingCharacters()
+    {
+        return ParentItem.GetAllCurrentlyCollidingCharacters();
+    }
+
+    public void StartSkillCurrentlyUsingItemHitBox(bool HitEachCharacterOnce)
+    {
+        ParentItem.StartSkillCurrentlyUsingItemHitBox(this, SkillObject, HitEachCharacterOnce);
+    }
+
+    public void EndSkillCurrentlyUsingItemHitBox()
+    {
+        ParentItem.EndSkillCurrentlyUsingItemHitBox();
     }
 
     public Character GetCurrentOwner()
