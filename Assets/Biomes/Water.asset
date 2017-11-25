@@ -22,6 +22,12 @@ MonoBehaviour:
     Humidity: 0.5
     Temperature: 0.5
   NotNavigable: 1
-  GroundTexture: {fileID: 2800000, guid: c5519c3cdcf2eca41a24f1e2430c4cee, type: 3}
+  Splat:
+    texture: {fileID: 2800000, guid: c5519c3cdcf2eca41a24f1e2430c4cee, type: 3}
+    normalMap: {fileID: 0}
+    metallic: 0
+    smoothness: 0
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 10, y: 10}
   DontBlendWith:
   - {fileID: 11400000, guid: 0b96cb55724ac1f46bdaf4207bd32742, type: 2}

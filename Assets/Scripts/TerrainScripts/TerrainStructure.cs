@@ -17,9 +17,9 @@ public class TerrainStructure
     private KeyValuePair<Vector2f, int> _startBiome;
 
     private readonly Dictionary<Vector2f, int> _siteBiomeMap = new Dictionary<Vector2f, int>(); //Mapping of Voronoi library sites and graph IDs
-    private readonly Dictionary<Texture, int> _textureIDMap= new Dictionary<Texture, int>(); //Mapping of biome textures and terrain texture IDs
+    private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap= new Dictionary<SplatPrototypeSerializable, int>(); //Mapping of biome SplatPrototypes and terrain texture IDs
 
-    public int TextureCount { get { return _textureIDMap.Count; } }
+    public int TextureCount { get { return _splatIDMap.Count; } }
 
     public TerrainStructure(List<BiomeSettings> availableBiomes, BiomeConfiguration biomeConfiguration)
     {
@@ -27,19 +27,21 @@ public class TerrainStructure
         var count = 0;
         foreach (var biome in availableBiomes)
         {
-            if (_textureIDMap.ContainsKey(biome.GroundTexture))
+            if (_splatIDMap.ContainsKey(biome.Splat))
                 continue;
 
-            _textureIDMap.Add(biome.GroundTexture, count);
+            _splatIDMap.Add(biome.Splat, count);
             count++;
         }
+        //Add border biome to the SplatPrototypes map
+        if (!_splatIDMap.ContainsKey(_biomeConfiguration.BorderBiome.Splat)) 
+            _splatIDMap.Add(_biomeConfiguration.BorderBiome.Splat, count); 
 
-        if (!_textureIDMap.ContainsKey(biomeConfiguration.BorderBiome.GroundTexture)) //Add border biome to the textureIDs map
-            _textureIDMap.Add(biomeConfiguration.BorderBiome.GroundTexture, count); 
 
         var navigableBiomeIDs = new HashSet<int>();
         var centers = new List<Vector2f>();
 
+        // Create random point distribution and apply lloyd relaxation
         for (int i = 0; i < biomeConfiguration.BiomeSamples; i++)
         {
             var x = Random.Range(0f, biomeConfiguration.MapSize);
@@ -50,7 +52,7 @@ public class TerrainStructure
             new Rectf(0, 0, biomeConfiguration.MapSize, biomeConfiguration.MapSize));
         _voronoiDiagram.LloydRelaxation(biomeConfiguration.LloydRelaxation);
 
-        /*Iterate over each site and add a biome to it */
+        //Iterate over each site and add a biome to it
         foreach (var site in _voronoiDiagram.SiteCoords())
         {
             bool isOnBorder = false;
@@ -107,32 +109,39 @@ public class TerrainStructure
     }
 
 
-    /* Returns a sorted list of the textures */
+    // Returns a sorted list of the textures
     public IEnumerable<Texture> GetTerrainTextures()
     {
         var result = new SortedList<int, Texture>();
 
-        foreach (var textureID in _textureIDMap)
+        foreach (var splatID in _splatIDMap)
         {
-            result.Add(textureID.Value, textureID.Key);
+            result.Add(splatID.Value, splatID.Key.texture);
         }
 
         return result.Values;
     }
 
+    // Returns a sorted list of the splats
     public SplatPrototype[] GetSplatPrototypes()
     {
-        var result = new List<SplatPrototype>();
+        var result = new SortedList<int, SplatPrototype>();
 
-        foreach (var tex in GetTerrainTextures())
+        foreach (var splatID in _splatIDMap)
         {
-            var splatPrototype = new SplatPrototype();
-            splatPrototype.texture = (Texture2D)tex;
-            splatPrototype.tileSize = new Vector2(20, 20); //TODO: add scale option to biome settings 
-            result.Add(splatPrototype);
+            var splatPrototype = new SplatPrototype()
+            {
+                texture = splatID.Key.texture,
+                normalMap = splatID.Key.normalMap,
+                smoothness =  splatID.Key.smoothness,
+                metallic = splatID.Key.metallic,
+                tileSize = splatID.Key.tileSize,
+                tileOffset = splatID.Key.tileOffset
+            };
+            result.Add(splatID.Value, splatPrototype);
         }
 
-        return result.ToArray();
+        return result.Values.ToArray();
     }
 
     public IEnumerable<LineSegment> GetBiomeSmoothBorders()
@@ -202,7 +211,7 @@ public class TerrainStructure
         var closestBiome = GetClosestBiome(pos);
         var result = new List<KeyValuePair<int, float>>
         {
-            new KeyValuePair<int, float>(_textureIDMap[closestBiome.BiomeSettings.GroundTexture], 1)
+            new KeyValuePair<int, float>(_splatIDMap[closestBiome.BiomeSettings.Splat], 1)
         };
 
         return result;
