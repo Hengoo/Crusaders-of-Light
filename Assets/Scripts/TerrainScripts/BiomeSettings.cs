@@ -9,8 +9,8 @@ public class BiomeSettings : ScriptableObject
     public BiomeHeight BiomeHeight;
     public BiomeConditions BiomeConditions;
     public bool NotNavigable = false;
+    public SplatPrototypeSerializable Splat;
     public List<BiomeSettings> DontBlendWith = new List<BiomeSettings>();
-
     public BiomeSettings(BiomeConditions biomeConditions, BiomeHeight biomeHeight, bool notNavigable)
     {
         BiomeConditions = biomeConditions;
