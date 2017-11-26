@@ -11,7 +11,9 @@ public class ConsTargetDistance : Consideration {
 
     public override float CalculateScore(Context SkillContext)
     {
-        float InputValue = Vector3.Distance(SkillContext.user.transform.position, SkillContext.target.transform.position);
+        float InputValue = Vector3.Distance(SkillContext.User.transform.position, SkillContext.Target.transform.position);
+
+        Debug.Log("Distance: " + InputValue);
 
         InputValue = ClampInputValue(InputValue, MinDistance, MaxDistance);
 
@@ -22,7 +24,7 @@ public class ConsTargetDistance : Consideration {
 
     private float CalcInputValue(Context SkillContext)
     {
-        float Distance = Vector3.Distance(SkillContext.user.transform.position, SkillContext.target.transform.position);
+        float Distance = Vector3.Distance(SkillContext.User.transform.position, SkillContext.Target.transform.position);
 
         return Distance;
     }

@@ -4,19 +4,34 @@ using UnityEngine;
 
 public class CharacterPlayer : Character {
 
+    [Header("Character Player:")]
+    public bool[] SkillActivationButtonsPressed = new bool[4];  // Whether the Button is currently pressed down!
+
     [Header("Team Alignment:")]
     public TeamAlignment Alignment = TeamAlignment.PLAYERS;
 
     void Update()
     {
         PlayerInput();
-        UpdateCurrentSkillActivation();
     }
 
     public override TeamAlignment GetAlignment()
     {
         return Alignment;
     }
+
+    // =================================== SKILL ACTIVATION ====================================
+
+    protected override void UpdateCurrentSkillActivation()
+    {
+        if (SkillCurrentlyActivating < 0) { return; }
+
+        SkillActivationTimer += Time.deltaTime;
+
+        ItemSkillSlots[SkillCurrentlyActivating].UpdateSkillActivation(SkillActivationTimer, SkillActivationButtonsPressed[SkillCurrentlyActivating]);
+    }
+
+    // =================================== /SKILL ACTIVATION ====================================
 
     // ========================================= INPUT =========================================
 

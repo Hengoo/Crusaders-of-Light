@@ -42,7 +42,7 @@ public class Character : MonoBehaviour {
     // Two Handed: Write Both (unequip other weapon!).
 
     public ItemSkill[] ItemSkillSlots = new ItemSkill[4];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
-    public bool[] SkillActivationButtonsPressed = new bool[4];  // Whether the Button is currently pressed down!
+    
 
     public int SkillCurrentlyActivating = -1; // Character is currently activating a Skill.
     public float SkillActivationTimer = 0.0f;
@@ -53,6 +53,7 @@ public class Character : MonoBehaviour {
     protected virtual void Update()
     {
         UpdateAllConditions();
+        UpdateCurrentSkillActivation();
     }
 
     // ====================================== ATTRIBUTES ======================================
@@ -241,9 +242,8 @@ public class Character : MonoBehaviour {
 
     // =================================== SKILL ACTIVATION ====================================
 
-    protected void StartSkillActivation(int WeaponSkillSlotID)
+    protected virtual void StartSkillActivation(int WeaponSkillSlotID)
     {
-
         if (!ItemSkillSlots[WeaponSkillSlotID]) { return; }
 
         if (!ItemSkillSlots[WeaponSkillSlotID].StartSkillActivation()) { return; }
@@ -252,14 +252,7 @@ public class Character : MonoBehaviour {
         SkillActivationTimer = 0.0f;
     }
 
-    protected void UpdateCurrentSkillActivation()
-    {
-        if (SkillCurrentlyActivating < 0) { return; }
-
-        SkillActivationTimer += Time.deltaTime;
-
-        ItemSkillSlots[SkillCurrentlyActivating].UpdateSkillActivation(SkillActivationTimer, SkillActivationButtonsPressed[SkillCurrentlyActivating]);
-    }
+    protected virtual void UpdateCurrentSkillActivation() { }
 
     public void StopCurrentSkillActivation() // Unused!
     {
@@ -270,13 +263,14 @@ public class Character : MonoBehaviour {
         }
     }
 
-    public void FinishedCurrentSkillActivation()
+    public virtual void FinishedCurrentSkillActivation()
     {
-        if (SkillCurrentlyActivating >= 0)
+        if (SkillCurrentlyActivating < 0)
         {
-            SkillCurrentlyActivating = -1;
-            SkillActivationTimer = 0.0f;
+            return;
         }
+        SkillCurrentlyActivating = -1;
+        SkillActivationTimer = 0.0f;
     }
 
 

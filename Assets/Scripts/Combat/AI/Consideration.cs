@@ -14,9 +14,9 @@ public class Consideration : ScriptableObject {
 
     public struct Context
     {
-        public Character target;
-        public Character user;
-        public ItemSkill skill;
+        public Character Target;
+        public Character User;
+        public ItemSkill Skill;
     }
 
     [Header("Consideration: ")]

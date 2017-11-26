@@ -28,6 +28,15 @@ public class ItemSkill : MonoBehaviour {
         CurrentCooldown = NewCooldown;
     }
 
+    public bool IsCurrentlyOnCooldown()
+    {
+        if (CurrentCooldown > 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public void UpdateSkillActivation(float ActivationTimer, bool StillActivating)
     {
         SkillObject.UpdateSkillActivation(this, ActivationTimer, StillActivating);
@@ -67,5 +76,10 @@ public class ItemSkill : MonoBehaviour {
     public int GetSkillLevel()
     {
         return Level;
+    }
+
+    public DecisionMaker.SkillApplication AICalculateSkillScoreAndApplication()
+    {
+        return SkillObject.AICalculateSkillScoreAndApplication(this, CurrentOwner);
     }
 }

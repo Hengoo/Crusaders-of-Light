@@ -18,6 +18,7 @@ MonoBehaviour:
   AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: 11c6dc15d0707954bb2ae3e72272d459, type: 2}
+  AIDecisionMaker: {fileID: 11400000, guid: a4846ea1f54d7e949a5bffa40d217409, type: 2}
   HitTimeStart: 0.1
   HitTimeStop: 1
   HitEachCharacterOnlyOnce: 1

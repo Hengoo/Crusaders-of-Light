@@ -16,6 +16,9 @@ public class SkillType : ScriptableObject {
     [Header("Skill Effects:")]
     public SkillEffect[] Effects;
 
+    [Header("Skill Enemy AI Decision Maker:")]
+    public DecisionMaker AIDecisionMaker;
+
 
     public bool GetAllowTargetFriendly()
     {
@@ -30,22 +33,41 @@ public class SkillType : ScriptableObject {
     public bool StartSkillActivation(ItemSkill SourceItemSkill, Character Owner)
     {
         Debug.Log("BREAK 3");
-        // Pay Activation Cost:
-        if (Owner.GetEnergyCurrent() < Cost)
-        {
-            Debug.Log(Owner + " can not activate Skill " + this + "! Reason: Not enough Energy!");
-            return false;
-        }
-        Owner.ChangeEnergyCurrent(-1 * Cost);
+
+        CheckIfSkillCouldBeActivated(SourceItemSkill, Owner);
+        
         Debug.Log("BREAK 4");
         // Skill succesfully activated if this point is reached:
+
+        // Pay Activation Cost:
+        Owner.ChangeEnergyCurrent(-1 * Cost);
 
         // Start Cooldown:      (Note: The current Cooldown is saved in the SourceWeapon)
         if (Cooldown > 0)
         {
             SourceItemSkill.SetCurrentCooldown(Cooldown);
         }
+
         Debug.Log("BREAK 5");
+        return true;
+    }
+
+    private bool CheckIfSkillCouldBeActivated(ItemSkill SourceItemSkill, Character Owner)
+    {
+        // Can Activation Cost be paid?
+        if (Owner.GetEnergyCurrent() < Cost)
+        {
+            Debug.Log(Owner + " can not activate Skill " + this + "! Reason: Not enough Energy!");
+            return false;
+        }
+
+        if (SourceItemSkill.IsCurrentlyOnCooldown())
+        {
+            Debug.Log(Owner + " can not activate Skill " + this + "! Reason: Skill is on Cooldown!");
+            return false;
+        }
+
+
         return true;
     }
 
@@ -60,5 +82,24 @@ public class SkillType : ScriptableObject {
         {
             Effects[i].ApplyEffect(Owner, SourceItemSkill, Target);
         }
+    }
+
+    public DecisionMaker.SkillApplication AICalculateSkillScoreAndApplication(ItemSkill SourceItemSkill, Character Owner)
+    {
+        DecisionMaker.SkillApplication SkillApp;
+
+        if (!CheckIfSkillCouldBeActivated(SourceItemSkill, Owner))
+        {
+            SkillApp = new DecisionMaker.SkillApplication
+            {
+                Score = -1
+            };
+
+            return SkillApp;
+        }
+
+        SkillApp = AIDecisionMaker.CalculateTotalScore(SourceItemSkill);
+
+        return SkillApp;
     }
 }
