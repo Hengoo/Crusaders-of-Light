@@ -1,10 +1,16 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Scripts/Combat/AI.meta
 guid: 088374867d64aac4ba9cc0e0561fbf77
 folderAsset: yes
 timeCreated: 1511622029
 licenseType: Free
+=======
+guid: e15c29a7abfa52743a8cb7714389c3c7
+folderAsset: yes
+timeCreated: 1466585230
+licenseType: Store
+>>>>>>> origin/feature/physicsController:Assets/PostProcessing/Textures.meta
 DefaultImporter:
-  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 

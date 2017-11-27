@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace csDelaunay {
 
-	public class LineSegment {
+	public class LineSegment : IEquatable<LineSegment>
+    {
 
 		public static List<LineSegment> VisibleLineSegments(List<Edge> edges) {
 			List<LineSegment> segments = new List<LineSegment>();
@@ -35,12 +37,42 @@ namespace csDelaunay {
 			return - CompareLengths_MAX(edge0, edge1);
 		}
 
-		public Vector2f p0;
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as LineSegment);
+        }
+
+        public bool Equals(LineSegment other)
+        {
+            return other != null &&
+                   EqualityComparer<Vector2f>.Default.Equals(p0, other.p0) &&
+                   EqualityComparer<Vector2f>.Default.Equals(p1, other.p1);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1057177201;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2f>.Default.GetHashCode(p0);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2f>.Default.GetHashCode(p1);
+            return hashCode;
+        }
+
+        public Vector2f p0;
 		public Vector2f p1;
 
 		public LineSegment (Vector2f p0, Vector2f p1) {
 			this.p0 = p0;
 			this.p1 = p1;
 		}
-	}
+
+        public static bool operator ==(LineSegment segment1, LineSegment segment2)
+        {
+            return EqualityComparer<LineSegment>.Default.Equals(segment1, segment2);
+        }
+
+        public static bool operator !=(LineSegment segment1, LineSegment segment2)
+        {
+            return !(segment1 == segment2);
+        }
+    }
 }
