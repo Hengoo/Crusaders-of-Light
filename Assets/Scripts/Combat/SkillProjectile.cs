@@ -73,7 +73,6 @@ public class SkillProjectile : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("COLLIDED WITH : " + other.gameObject);
         // TODO : PIERCE TARGETS / CRASH INTO OBSTACLES!
         if (other.gameObject.tag == "Character")
         {

@@ -50,6 +50,14 @@ public class Character : MonoBehaviour {
     [Header("Active Conditions:")]
     public List<ActiveCondition> ActiveConditions = new List<ActiveCondition>();
 
+    [Header("Physics Controller:")]
+    protected PhysicsController PhysCont;
+
+    private void Start()
+    {
+        PhysCont = new PhysicsController(gameObject);
+    }
+
     protected virtual void Update()
     {
         UpdateAllConditions();
@@ -426,4 +434,11 @@ public class Character : MonoBehaviour {
     }
 
     // =================================== /ACTIVE CONDITIONS ===================================
+
+    // ======================================== MOVEMENT ========================================
+
+    
+
+
+    // ======================================== /MOVEMENT =======================================
 }

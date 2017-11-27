@@ -5,8 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "move_pattern_idle", menuName = "Combat/AI/MovPatIdle", order = 2)]
 public class MovPatIdle : MovePattern {
 
-    public override void UpdateMovePattern(Character Self, Character Target)
+    public override void UpdateMovePattern(PhysicsController PhysCont, Character Self, Character TargetCharacter)
     {
-        Debug.Log("Move Pattern: " + Self + " : IDLE");
+        
     }
+
 }

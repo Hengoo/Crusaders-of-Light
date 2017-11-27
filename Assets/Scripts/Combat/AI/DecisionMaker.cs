@@ -88,6 +88,8 @@ public class DecisionMaker : ScriptableObject {
 
         Decision.Score *= Weight;
 
+        Debug.Log("TOTAL SCORE: " + Decision.Score);
+
         return Decision;
     }
 }

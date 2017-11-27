@@ -32,11 +32,9 @@ public class SkillType : ScriptableObject {
 
     public bool StartSkillActivation(ItemSkill SourceItemSkill, Character Owner)
     {
-        Debug.Log("BREAK 3");
 
         CheckIfSkillCouldBeActivated(SourceItemSkill, Owner);
         
-        Debug.Log("BREAK 4");
         // Skill succesfully activated if this point is reached:
 
         // Pay Activation Cost:
@@ -48,7 +46,6 @@ public class SkillType : ScriptableObject {
             SourceItemSkill.SetCurrentCooldown(Cooldown);
         }
 
-        Debug.Log("BREAK 5");
         return true;
     }
 

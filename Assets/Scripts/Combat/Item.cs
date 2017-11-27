@@ -96,7 +96,6 @@ public class Item : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(this + " COLLIDED WITH : " + other.gameObject);
         if (other.gameObject.tag == "Character")
         {
             Character OtherCharacter = other.gameObject.GetComponent<Character>();
@@ -148,7 +147,6 @@ public class Item : MonoBehaviour {
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log(this + " COLLIDES NO LONGER WITH : " + other.gameObject);
         if (other.gameObject.tag == "Character")
         {
             Character OtherCharacter = other.gameObject.GetComponent<Character>();

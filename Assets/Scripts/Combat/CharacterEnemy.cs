@@ -7,19 +7,6 @@ public class CharacterEnemy : Character {
     [Header("Team Alignment:")]
     public TeamAlignment Alignment = TeamAlignment.ENEMIES;
 
-    protected override void Update()
-    {
-        base.Update();
-        DecideSkillUse();
-        UpdateMovePattern();
-    }
-
-    public override TeamAlignment GetAlignment()
-    {
-        return Alignment;
-    }
-
-
     [Header("Enemy AI:")]
     public List<Character> PlayersInAttentionRange = new List<Character>();
     public float IdleSkillScore = 0.2f;
@@ -36,6 +23,23 @@ public class CharacterEnemy : Character {
     public float IdleMoveScore = 0.2f;
     public float IdleMoveDuration = 0.2f;
     private float IdleMoveTimer = 0.0f;
+
+    protected override void Update()
+    {
+        base.Update();
+        DecideSkillUse();
+        UpdateMovePattern();
+    }
+
+    private void FixedUpdate()
+    {
+        ActiveMovePattern.UpdateMovePattern(PhysCont, this, TargetCharacter);
+    }
+
+    public override TeamAlignment GetAlignment()
+    {
+        return Alignment;
+    }
 
     // ========================================= AI =========================================
 
@@ -72,7 +76,6 @@ public class CharacterEnemy : Character {
             return;
         }
 
-        Debug.Log("DECIDING SKILL USE!");
         DecisionMaker.AIDecision BestSkillDecision = new DecisionMaker.AIDecision
         {
             Score = IdleSkillScore
@@ -87,8 +90,6 @@ public class CharacterEnemy : Character {
             if (ItemSkillSlots[sk])
             {
                 TempSkillDecision = ItemSkillSlots[sk].AICalculateSkillScoreAndApplication();
-
-                Debug.Log(ItemSkillSlots[sk].SkillObject + " GOT SCORE: " + TempSkillDecision.Score);
 
                 if (TempSkillDecision.Score > BestSkillDecision.Score)
                 {
@@ -136,8 +137,6 @@ public class CharacterEnemy : Character {
             return;
         }*/
 
-        Debug.Log("DECIDING MOVEMENT PATTERN!");
-
         DecisionMaker.AIDecision BestMovePatternDecision = new DecisionMaker.AIDecision
         {
             Score = IdleSkillScore
@@ -148,8 +147,6 @@ public class CharacterEnemy : Character {
         for (int mp = 0; mp < MovePatterns.Length; mp++)
         {
             TempMovePatternDecision = MovePatterns[mp].AICalculateMovePatternScore(this);
-
-            Debug.Log(MovePatterns[mp] + " GOT SCORE: " + TempMovePatternDecision.Score);
 
             if (TempMovePatternDecision.Score > BestMovePatternDecision.Score)
             {
@@ -162,24 +159,15 @@ public class CharacterEnemy : Character {
 
     private void UpdateMovePattern()
     {
-        if (!ActiveMovePattern)
-        {
-            DecideMovePattern();
-            return;
-        }
-
         if (MovePatternEvaluationCycleTimer <= 0)
         {
             DecideMovePattern();
             MovePatternEvaluationCycleTimer = MovePatternEvaluationCycle;
-            return;
         }
         else
         {
             MovePatternEvaluationCycleTimer -= Time.deltaTime;
         }
-
-        ActiveMovePattern.UpdateMovePattern(this, TargetCharacter);
     }
 
 

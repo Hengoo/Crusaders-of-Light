@@ -13,8 +13,6 @@ public class ConsTargetDistance : Consideration {
     {
         float InputValue = Vector3.Distance(SkillContext.User.transform.position, SkillContext.Target.transform.position);
 
-        Debug.Log("Distance: " + InputValue);
-
         InputValue = ClampInputValue(InputValue, MinDistance, MaxDistance);
 
         float score = CalculateConsideration(TypeOfCurve, InputValue, Steepness, yShift, xShift);

@@ -10,9 +10,22 @@ public class CharacterPlayer : Character {
     [Header("Team Alignment:")]
     public TeamAlignment Alignment = TeamAlignment.PLAYERS;
 
-    void Update()
+    protected override void Update()
     {
         PlayerInput();
+        base.Update();
+    }
+
+    private void FixedUpdate()
+    {
+        float speedfaktor = 10;
+        //left stick
+        Vector3 targetVel = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")) * speedfaktor;
+
+        //right stick
+        Vector3 targetDir = new Vector3(Input.GetAxisRaw("Horizontal2"), 0, -Input.GetAxisRaw("Vertical2"));
+
+        PhysCont.SetVelRot(targetVel, targetDir);
     }
 
     public override TeamAlignment GetAlignment()
@@ -38,38 +51,38 @@ public class CharacterPlayer : Character {
     public void PlayerInput()
     {
         // TODO : Match the SkillActivationButtonsPressed[] to Controller Shoulder Buttons depending on Player Count/ID.
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             SkillActivationButtonsPressed[0] = true;
         }
-        else if (Input.GetKeyUp(KeyCode.Q))
+        else if (Input.GetKeyUp(KeyCode.T))
         {
             SkillActivationButtonsPressed[0] = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             SkillActivationButtonsPressed[1] = true;
         }
-        else if (Input.GetKeyUp(KeyCode.W))
+        else if (Input.GetKeyUp(KeyCode.Z))
         {
             SkillActivationButtonsPressed[1] = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.U))
         {
             SkillActivationButtonsPressed[2] = true;
         }
-        else if (Input.GetKeyUp(KeyCode.E))
+        else if (Input.GetKeyUp(KeyCode.U))
         {
             SkillActivationButtonsPressed[2] = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.I))
         {
             SkillActivationButtonsPressed[3] = true;
         }
-        else if (Input.GetKeyUp(KeyCode.R))
+        else if (Input.GetKeyUp(KeyCode.I))
         {
             SkillActivationButtonsPressed[3] = false;
         }
@@ -77,12 +90,6 @@ public class CharacterPlayer : Character {
         if (SkillCurrentlyActivating < 0)
         {
             PlayerInputStartSkillActivation();
-        }
-
-        // Only for quick testing, remove later:
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            this.gameObject.transform.Translate(Vector3.forward);
         }
     }
 
