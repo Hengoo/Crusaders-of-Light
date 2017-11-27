@@ -17,6 +17,7 @@ public class Consideration : ScriptableObject {
         public Character Target;
         public Character User;
         public ItemSkill Skill;
+        public MovePattern MovePat;
     }
 
     [Header("Consideration: ")]

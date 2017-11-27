@@ -5,31 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "decision_maker", menuName = "Combat/AI/DecisionMaker", order = 0)]
 public class DecisionMaker : ScriptableObject {
 
-    // Go through all Skills:
-
-    // Go through all Considerations per Skill:
-
-    // This can have two results:
-    // Some Considerations are mostly deciding wether the Skill is used or not at all.
-    // Some others, need to be checked for different targets (for example distance).
-    // This way, sometimes a Skill is (not) used because no one is in range for example...
-
-    // For this: Keep List of all Players that are in general legit targets:
-    // 1: Within a certain Range (This represents the distance an enemy could "see")
-    // 2: Line of Sight (So that enemies can't notice the player if there is a large obstacle in the way)
-    // (3): If there is no Line of Sight, but there is Line of Sight to another Enemy that does have Line of Sight to a Player. (Could be nice, implement later maybe)
-
-    // Then, check all Considerations against all Targets:
-
-    // Calculate total Skill from those Considerations for that Skill:
-
-    // Choose Skill with best Score:
-
-    // Start Skill Activation:
-
-    public struct SkillApplication
+    public struct AIDecision
     {
-        public ItemSkill ISkill;
         public Character TargetCharacter;
         public float Score;
         public int ConsiderationsCounter;
@@ -40,13 +17,16 @@ public class DecisionMaker : ScriptableObject {
     public Consideration[] ConsiderationsTargeted = new Consideration[0];
     public Consideration[] ConsiderationsSelf = new Consideration[0];
 
-    
-    public SkillApplication CalculateTotalScore(ItemSkill SkillToScore)
+    public AIDecision CalculateTotalScore(Character Self)
+    {
+        return CalculateTotalScore(Self, null);
+    }
+
+    public AIDecision CalculateTotalScore(Character Self, ItemSkill SkillToScore)   // Note : The Skill Part of Context is optional. Beware, that Considerations that use the Skill cannot be used for Move Pattern Scoring!
     {
         // Base Score:
-        SkillApplication SkillApp = new SkillApplication
+        AIDecision Decision = new AIDecision
         {
-            ISkill = SkillToScore,
             TargetCharacter = null,
             Score = 1,
             ConsiderationsCounter = 0
@@ -55,21 +35,21 @@ public class DecisionMaker : ScriptableObject {
         // Score of Self Targeted Considerations:
         Consideration.Context TempContext = new Consideration.Context
         {
-            Skill = SkillApp.ISkill,
-            User = SkillApp.ISkill.GetCurrentOwner(),
-            Target = SkillApp.ISkill.GetCurrentOwner()
+            Skill = SkillToScore,
+            User = Self,
+            Target = Self
         };
 
         for (int i = 0; i < ConsiderationsSelf.Length; i++)
         {
-            SkillApp.Score = SkillApp.Score * ConsiderationsSelf[i].CalculateScore(TempContext);
+            Decision.Score = Decision.Score * ConsiderationsSelf[i].CalculateScore(TempContext);
         }
 
-        SkillApp.ConsiderationsCounter += ConsiderationsSelf.Length;
+        Decision.ConsiderationsCounter += ConsiderationsSelf.Length;
 
         // Score of Targeted Considerations:
 
-        CharacterEnemy User = (CharacterEnemy)(SkillApp.ISkill.GetCurrentOwner());
+        CharacterEnemy User = (CharacterEnemy)(Self);
 
         List<Character> PlayersInAttentionRange = User.GetPlayersInAttentionRange();
 
@@ -90,24 +70,24 @@ public class DecisionMaker : ScriptableObject {
             if (TempScore > TempBestScore)
             {
                 TempBestScore = TempScore;
-                SkillApp.TargetCharacter = TempContext.Target;
+                Decision.TargetCharacter = TempContext.Target;
             }
         }
 
-        SkillApp.Score *= TempBestScore;
-        SkillApp.ConsiderationsCounter += ConsiderationsTargeted.Length;
+        Decision.Score *= TempBestScore;
+        Decision.ConsiderationsCounter += ConsiderationsTargeted.Length;
 
         // Compensation based on number of multiplications:
 
-        if (SkillApp.ConsiderationsCounter > 0)
+        if (Decision.ConsiderationsCounter > 0)
         {
-            float ModFactor = 1 - (1 / (float)(SkillApp.ConsiderationsCounter));
-            float CompensationValue = (1 - SkillApp.Score) * ModFactor;
-            SkillApp.Score += CompensationValue * SkillApp.Score;
+            float ModFactor = 1 - (1 / (float)(Decision.ConsiderationsCounter));
+            float CompensationValue = (1 - Decision.Score) * ModFactor;
+            Decision.Score += CompensationValue * Decision.Score;
         }
 
-        SkillApp.Score *= Weight;
+        Decision.Score *= Weight;
 
-        return SkillApp;
+        return Decision;
     }
 }

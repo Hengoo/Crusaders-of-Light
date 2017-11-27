@@ -11,6 +11,7 @@ public class CharacterEnemy : Character {
     {
         base.Update();
         DecideSkillUse();
+        UpdateMovePattern();
     }
 
     public override TeamAlignment GetAlignment()
@@ -24,6 +25,17 @@ public class CharacterEnemy : Character {
     public float IdleSkillScore = 0.2f;
     public float IdleDuration = 0.2f;
     private float IdleTimer = 0.0f;
+
+    public MovePattern ActiveMovePattern;
+    private Character TargetCharacter;
+    public MovePattern[] MovePatterns = new MovePattern[0];
+
+    public float MovePatternEvaluationCycle = 0.5f;
+    public float MovePatternEvaluationCycleTimer = 0.0f;
+
+    public float IdleMoveScore = 0.2f;
+    public float IdleMoveDuration = 0.2f;
+    private float IdleMoveTimer = 0.0f;
 
     // ========================================= AI =========================================
 
@@ -61,12 +73,12 @@ public class CharacterEnemy : Character {
         }
 
         Debug.Log("DECIDING SKILL USE!");
-        DecisionMaker.SkillApplication BestSkillApplication = new DecisionMaker.SkillApplication
+        DecisionMaker.AIDecision BestSkillDecision = new DecisionMaker.AIDecision
         {
             Score = IdleSkillScore
         };
 
-        DecisionMaker.SkillApplication TempSkillApplication = new DecisionMaker.SkillApplication();
+        DecisionMaker.AIDecision TempSkillDecision = new DecisionMaker.AIDecision();
 
         int BestSkillID = -1;
 
@@ -74,13 +86,13 @@ public class CharacterEnemy : Character {
         {
             if (ItemSkillSlots[sk])
             {
-                TempSkillApplication = ItemSkillSlots[sk].AICalculateSkillScoreAndApplication();
+                TempSkillDecision = ItemSkillSlots[sk].AICalculateSkillScoreAndApplication();
 
-                Debug.Log(TempSkillApplication.ISkill.SkillObject + " GOT SCORE: " + TempSkillApplication.Score);
+                Debug.Log(ItemSkillSlots[sk].SkillObject + " GOT SCORE: " + TempSkillDecision.Score);
 
-                if (TempSkillApplication.Score > BestSkillApplication.Score)
+                if (TempSkillDecision.Score > BestSkillDecision.Score)
                 {
-                    BestSkillApplication = TempSkillApplication;
+                    BestSkillDecision = TempSkillDecision;
                     BestSkillID = sk;
                 }
             }
@@ -109,6 +121,67 @@ public class CharacterEnemy : Character {
 
 
         }*/
+
+    public void DecideMovePattern()
+    {
+        if (MovePatternEvaluationCycleTimer > 0)
+        {
+            MovePatternEvaluationCycleTimer -= Time.deltaTime;
+            return;
+        }
+/*
+        if (IdleMoveTimer > 0)
+        {
+            IdleMoveTimer -= Time.deltaTime;
+            return;
+        }*/
+
+        Debug.Log("DECIDING MOVEMENT PATTERN!");
+
+        DecisionMaker.AIDecision BestMovePatternDecision = new DecisionMaker.AIDecision
+        {
+            Score = IdleSkillScore
+        };
+
+        DecisionMaker.AIDecision TempMovePatternDecision = new DecisionMaker.AIDecision();
+
+        for (int mp = 0; mp < MovePatterns.Length; mp++)
+        {
+            TempMovePatternDecision = MovePatterns[mp].AICalculateMovePatternScore(this);
+
+            Debug.Log(MovePatterns[mp] + " GOT SCORE: " + TempMovePatternDecision.Score);
+
+            if (TempMovePatternDecision.Score > BestMovePatternDecision.Score)
+            {
+                BestMovePatternDecision = TempMovePatternDecision;
+                ActiveMovePattern = MovePatterns[mp];
+                TargetCharacter = BestMovePatternDecision.TargetCharacter;
+            }
+        }
+    }
+
+    private void UpdateMovePattern()
+    {
+        if (!ActiveMovePattern)
+        {
+            DecideMovePattern();
+            return;
+        }
+
+        if (MovePatternEvaluationCycleTimer <= 0)
+        {
+            DecideMovePattern();
+            MovePatternEvaluationCycleTimer = MovePatternEvaluationCycle;
+            return;
+        }
+        else
+        {
+            MovePatternEvaluationCycleTimer -= Time.deltaTime;
+        }
+
+        ActiveMovePattern.UpdateMovePattern(this, TargetCharacter);
+    }
+
 
     // ======================================== /AI =========================================
 

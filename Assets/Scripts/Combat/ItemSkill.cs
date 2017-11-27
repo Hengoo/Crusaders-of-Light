@@ -78,7 +78,7 @@ public class ItemSkill : MonoBehaviour {
         return Level;
     }
 
-    public DecisionMaker.SkillApplication AICalculateSkillScoreAndApplication()
+    public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()
     {
         return SkillObject.AICalculateSkillScoreAndApplication(this, CurrentOwner);
     }

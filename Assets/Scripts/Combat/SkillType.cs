@@ -84,13 +84,13 @@ public class SkillType : ScriptableObject {
         }
     }
 
-    public DecisionMaker.SkillApplication AICalculateSkillScoreAndApplication(ItemSkill SourceItemSkill, Character Owner)
+    public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication(ItemSkill SourceItemSkill, Character Owner)
     {
-        DecisionMaker.SkillApplication SkillApp;
+        DecisionMaker.AIDecision SkillApp;
 
         if (!CheckIfSkillCouldBeActivated(SourceItemSkill, Owner))
         {
-            SkillApp = new DecisionMaker.SkillApplication
+            SkillApp = new DecisionMaker.AIDecision
             {
                 Score = -1
             };
@@ -98,7 +98,7 @@ public class SkillType : ScriptableObject {
             return SkillApp;
         }
 
-        SkillApp = AIDecisionMaker.CalculateTotalScore(SourceItemSkill);
+        SkillApp = AIDecisionMaker.CalculateTotalScore(Owner, SourceItemSkill);
 
         return SkillApp;
     }

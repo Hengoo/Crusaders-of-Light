@@ -779,6 +779,13 @@ MonoBehaviour:
   - {fileID: 633140999}
   IdleSkillScore: 0.2
   IdleDuration: 0.2
+  ActiveMovePattern: {fileID: 0}
+  MovePatterns:
+  - {fileID: 11400000, guid: 8eb82e7c60a4d4545951dfbac7aa855d, type: 2}
+  - {fileID: 11400000, guid: a0c33eda06e599d459340fd28767d359, type: 2}
+  MovePatternEvaluationCycle: 0.5
+  IdleMoveScore: 0.2
+  IdleMoveDuration: 0.2
 --- !u!23 &1755393817
 MeshRenderer:
   m_ObjectHideFlags: 0
