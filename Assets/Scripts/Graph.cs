@@ -8,16 +8,21 @@ public class Graph<T> where T : class
     private readonly Dictionary<Pair, Edge> _edges = new Dictionary<Pair, Edge>();
     private int _nodeIDCount;
 
+    public Graph() { }
+    public Graph(Graph<T> original) {
+        _nodes = (from x in original._nodes select x).ToDictionary(x=>x.Key, x => x.Value);
+        _edges = (from x in original._edges select x).ToDictionary(x => x.Key, x => x.Value); ;
+    }
+
     public int AddNode(T data)
     {
         Node node = new Node(_nodeIDCount, data);
         _nodes.Add(node.NodeID, node);
         _nodeIDCount++;
-
         return node.NodeID;
 
     }
-
+    
 
     public bool RemoveNode(int nodeID)
     {
@@ -142,6 +147,7 @@ public class Graph<T> where T : class
         Debug.Log("Edge not found in graph");
         return false;
     }
+    
 
     private class Edge
     {
@@ -214,5 +220,6 @@ public class Graph<T> where T : class
         {
             return A + " " + B;
         }
+        
     }
 }

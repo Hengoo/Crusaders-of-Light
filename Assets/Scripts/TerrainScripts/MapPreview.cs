@@ -19,12 +19,12 @@ public class MapPreview : MonoBehaviour
     public BiomeConfiguration BiomeConfiguration;
     public List<BiomeSettings> AvailableBiomes;
     public int Seed = 0;
-    public int MaxBiomesPerArea = 3;
+    public int NumberOfAreas = 3;
     
 
     /* Debug variables */
     private TerrainStructure _terrainStructure;
-    private LogicStructureGraph _AreaStructure;
+    private WorldStructureGraph _AreaStructure;
 
     void Start()
     {
@@ -40,7 +40,7 @@ public class MapPreview : MonoBehaviour
         ClearDisplay();
         Random.InitState(Seed);
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeConfiguration);
-        _AreaStructure = new LogicStructureGraph();
+        _AreaStructure = new WorldStructureGraph();
         switch (DrawMode)
         {
             case DrawModeEnum.BiomeGraph:
@@ -50,7 +50,7 @@ public class MapPreview : MonoBehaviour
                 DrawMesh();
                 break;
             case DrawModeEnum.AreaGraph:
-                _AreaStructure.GenerateAreaGraph(_terrainStructure.GetBiomeGraph(),MaxBiomesPerArea);
+                _AreaStructure.GenerateAreaGraph(_terrainStructure.GetBiomeGraph(), NumberOfAreas);
                 DrawAreaGraph();
                 break;
             default:
@@ -105,7 +105,7 @@ public class MapPreview : MonoBehaviour
     }
 
     void DrawAreaGraph() {
-        var newAreaGraphInstance = _AreaStructure.DrawAreaGraph(BiomeConfiguration.HeightMapResolution / 500f);
+        var newAreaGraphInstance = _AreaStructure.DrawAreaGraph(_terrainStructure.GetVoronoiDiagram(), _terrainStructure.GetBiomeGraph(), BiomeConfiguration.HeightMapResolution / 500f);
         newAreaGraphInstance.name = "Area Graph";
         newAreaGraphInstance.transform.parent = transform;
     }

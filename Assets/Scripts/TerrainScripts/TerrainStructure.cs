@@ -201,6 +201,11 @@ public class TerrainStructure
         return _biomeGraph;
     }
 
+    public Voronoi GetVoronoiDiagram()
+    {
+        return _voronoiDiagram;
+    }
+
     private void DrawLineSegments(IEnumerable<LineSegment> lines, float scale, Transform parent)
     {
         foreach (var line in lines)
