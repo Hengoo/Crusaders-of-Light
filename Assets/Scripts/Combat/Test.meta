@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Scripts/Combat/Test.meta
+guid: 1ece5faee071bfd41995f15edb9acd87
+folderAsset: yes
+timeCreated: 1508771794
+licenseType: Free
+=======
+guid: 499867e2df2e54e4aad0b9333221f875
+folderAsset: yes
+timeCreated: 1473255405
+licenseType: Store
+>>>>>>> origin/feature/physicsController:Assets/PostProcessing/Textures/LUTs.meta
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
