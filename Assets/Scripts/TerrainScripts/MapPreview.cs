@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -52,29 +51,32 @@ public class MapPreview : MonoBehaviour
 
     void DrawMesh()
     {
-        var heightMap = HeightMapManager.GenerateHeightMap(_terrainStructure, BiomeConfiguration);
+        var heightMap = TerrainDataGenerator.GenerateHeightMap(_terrainStructure, BiomeConfiguration);
         if (BiomeConfiguration.SmoothEdges)
         {
             //Smooth biome borders
-            heightMap = HeightMapManager.SmoothHeightMapWithLines(heightMap, BiomeConfiguration.MapSize / BiomeConfiguration.HeightMapResolution, _terrainStructure.GetBiomeSmoothBorders(), BiomeConfiguration.EdgeWidth, BiomeConfiguration.SquareSize);
+            heightMap = TerrainDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeConfiguration.MapSize / BiomeConfiguration.HeightMapResolution, _terrainStructure.GetBiomeSmoothBorders(), BiomeConfiguration.EdgeWidth, BiomeConfiguration.SquareSize);
 
             //Rough biome borders
-            //heightMap = HeightMapManager.SmoothHeightMapWithLines(heightMap, BiomeConfiguration.MapSize / BiomeConfiguration.HeightMapResolution, _terrainStructure.GetBiomeBorders(), 3, 2);
+            //heightMap = TerrainDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeConfiguration.MapSize / BiomeConfiguration.HeightMapResolution, _terrainStructure.GetBiomeBorders(), 3, 2);
 
             //Overall smoothing
             if (BiomeConfiguration.OverallSmoothing > 0)
             {
-                heightMap = HeightMapManager.SmoothHeightMap(heightMap, BiomeConfiguration.OverallSmoothing);
-                heightMap = HeightMapManager.SmoothHeightMap(heightMap, BiomeConfiguration.OverallSmoothing);
+                heightMap = TerrainDataGenerator.SmoothHeightMap(heightMap, BiomeConfiguration.OverallSmoothing);
+                heightMap = TerrainDataGenerator.SmoothHeightMap(heightMap, BiomeConfiguration.OverallSmoothing);
             }
         }
-        var terrainData = new TerrainData();
-        
-        terrainData.baseMapResolution = BiomeConfiguration.HeightMapResolution;
-        terrainData.heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeConfiguration.HeightMapResolution) + 1;
-        terrainData.alphamapResolution = BiomeConfiguration.HeightMapResolution;
+        var terrainData = new TerrainData
+        {
+            baseMapResolution = BiomeConfiguration.HeightMapResolution,
+            heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeConfiguration.HeightMapResolution) + 1,
+            alphamapResolution = BiomeConfiguration.HeightMapResolution,
+            splatPrototypes = _terrainStructure.GetSplatPrototypes()
+        };
         terrainData.SetDetailResolution(BiomeConfiguration.HeightMapResolution, 32);
         terrainData.size = new Vector3(BiomeConfiguration.MapSize, BiomeConfiguration.MapHeight, BiomeConfiguration.MapSize);
+        terrainData.SetAlphamaps(0, 0, TerrainDataGenerator.GenerateAlphaMap(_terrainStructure, BiomeConfiguration));
 
         var terrain = Terrain.CreateTerrainGameObject(terrainData);
         terrain.name = "Terrain";
@@ -112,7 +114,7 @@ public class MapPreview : MonoBehaviour
         }
     }
 
-    IEnumerator DestroyInEditor(GameObject obj)
+    private static IEnumerator DestroyInEditor(GameObject obj)
     {
         yield return new WaitForEndOfFrame();
         DestroyImmediate(obj, true);
