@@ -21,7 +21,7 @@ public class WorldStructureGraph
         List<int> unusableBiomes = new List<int>();
         List<int> usableBiomes = new List<int>();
 
-        for (int i = 0; i < workingGraph.Count(); i++)
+        for (int i = 0; i < workingGraph.NodeCount(); i++)
         {
             if (workingGraph.GetNodeData(i).BiomeSettings.NotNavigable)
             {
@@ -64,7 +64,7 @@ public class WorldStructureGraph
             int index = _biomeAreaMatching.IndexOf(new Vector2Int(areaCenters[i], -1));
             _biomeAreaMatching[index] = new Vector2Int(areaCenters[i], i);
         }
-        int count = workingGraph.Count();
+        int count = workingGraph.NodeCount();
         while (count > 0)
         {
 
@@ -104,7 +104,7 @@ public class WorldStructureGraph
                 
             }
 
-            count = workingGraph.Count();
+            count = workingGraph.NodeCount();
         }
 
         //Add all biomes to their Area
@@ -124,7 +124,7 @@ public class WorldStructureGraph
 
         //Generate Borders
         List<Vector2Int> pointTests = new List<Vector2Int>();
-        for (int i = 0; i < original.Count(); i++)
+        for (int i = 0; i < original.NodeCount(); i++)
         {
             if (original.GetNodeData(i).BiomeSettings.NotNavigable)
             {
@@ -136,7 +136,7 @@ public class WorldStructureGraph
             pointTests.Add(_biomeAreaMatching[j]);
         }
 
-        for(int i = 0; i < _AreaGraph.Count(); i++)
+        for(int i = 0; i < _AreaGraph.NodeCount(); i++)
         {
             _borders.Add(i, new List<LineSegment>());
         }
@@ -179,7 +179,7 @@ public class WorldStructureGraph
         var borders = new GameObject("Borders");
         borders.transform.parent = result.transform;
 
-        for (int i = 0; i < _AreaGraph.Count(); i++)
+        for (int i = 0; i < _AreaGraph.NodeCount(); i++)
         {
             var pos = _AreaGraph.GetNodeData(i).GetCenter();
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);

@@ -9,9 +9,11 @@ public class Graph<T> where T : class
     private int _nodeIDCount;
 
     public Graph() { }
-    public Graph(Graph<T> original) {
-        _nodes = (from x in original._nodes select x).ToDictionary(x=>x.Key, x => x.Value);
-        _edges = (from x in original._edges select x).ToDictionary(x => x.Key, x => x.Value); ;
+    public Graph(Graph<T> original)
+    {
+        _nodes = (from x in original._nodes select x).ToDictionary(x => x.Key, x => x.Value);
+        _edges = (from x in original._edges select x).ToDictionary(x => x.Key, x => x.Value);
+        _nodeIDCount = original._nodeIDCount;
     }
 
     public int AddNode(T data)
@@ -20,16 +22,15 @@ public class Graph<T> where T : class
         _nodes.Add(node.NodeID, node);
         _nodeIDCount++;
         return node.NodeID;
-
     }
-    
+
 
     public bool RemoveNode(int nodeID)
     {
         if (_nodes.ContainsKey(nodeID))
         {
             Node node = _nodes[nodeID];
-            
+
             foreach (Node neighbor in _nodes.Where(a => a.Value.Neighbors.Contains(node)).Select(a => a.Value))
             {
                 neighbor.Neighbors.Remove(node);
@@ -40,7 +41,7 @@ public class Graph<T> where T : class
             {
                 edgesToRemove.Add(edge.Nodes);
             }
-            foreach(Pair p in edgesToRemove)
+            foreach (Pair p in edgesToRemove)
             {
                 _edges.Remove(p);
             }
@@ -69,7 +70,7 @@ public class Graph<T> where T : class
     }
 
     public Vector2Int[] GetAllEdges()
-    { 
+    {
         var result = new Vector2Int[_edges.Count];
         var edgeArray = _edges.Values.ToArray();
         for (int i = 0; i < _edges.Count; i++)
@@ -79,8 +80,14 @@ public class Graph<T> where T : class
         return result;
     }
 
-    public int Count() {
+    public int NodeCount()
+    {
         return _nodes.Count();
+    }
+
+    public int EdgeCount()
+    {
+        return _edges.Count;
     }
 
     public T GetNodeData(int nodeID)
@@ -106,7 +113,7 @@ public class Graph<T> where T : class
             return true;
         }
 
-        if(!nodeExist)
+        if (!nodeExist)
             Debug.Log("One or both of nodes not found in graph");
 
         return false;
@@ -147,7 +154,7 @@ public class Graph<T> where T : class
         Debug.Log("Edge not found in graph");
         return false;
     }
-    
+
 
     private class Edge
     {
@@ -204,7 +211,7 @@ public class Graph<T> where T : class
             if (obj == null || GetType() != obj.GetType())
                 return false;
 
-            var other = (Pair) obj;
+            var other = (Pair)obj;
             return other.A == A && other.B == B;
         }
 
@@ -220,6 +227,6 @@ public class Graph<T> where T : class
         {
             return A + " " + B;
         }
-        
+
     }
 }

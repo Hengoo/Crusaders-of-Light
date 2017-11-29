@@ -50,7 +50,7 @@ public class CharacterPlayer : Character {
 
     public void PlayerInput()
     {
-        // TODO : Match the SkillActivationButtonsPressed[] to Controller Shoulder Buttons depending on Player Count/ID.
+        // TODO : Match the SkillActivationButtonsPressed[] to Controller Shoulder Buttons depending on Player NodeCount/ID.
         if (Input.GetKeyDown(KeyCode.T))
         {
             SkillActivationButtonsPressed[0] = true;

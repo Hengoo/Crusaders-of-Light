@@ -49,7 +49,7 @@ public class MapPreview : MonoBehaviour
                 DrawMesh();
                 break;
             case DrawModeEnum.AreaGraph:
-                _AreaStructure.GenerateAreaGraph(_terrainStructure.GetBiomeGraph(), _terrainStructure.GetVoronoiDiagram(), NumberOfAreas);
+                _AreaStructure.GenerateAreaGraph(_terrainStructure.BiomeGraph, _terrainStructure.VoronoiDiagram, NumberOfAreas);
                 DrawAreaGraph();
                 break;
             default:

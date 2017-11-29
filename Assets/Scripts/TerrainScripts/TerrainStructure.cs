@@ -11,8 +11,9 @@ using Random = UnityEngine.Random;
 public class TerrainStructure
 {
 
-    private readonly Voronoi _voronoiDiagram;
-    private readonly Graph<Biome> _biomeGraph = new Graph<Biome>();
+    public Voronoi VoronoiDiagram { get; private set; }
+    public Graph<Biome> BiomeGraph { get; private set; }
+    public Graph<Biome> MinimumSpanningTree { get; private set; }
     private readonly BiomeConfiguration _biomeConfiguration;
     private KeyValuePair<Vector2f, int> _startBiome;
 
@@ -23,6 +24,8 @@ public class TerrainStructure
 
     public TerrainStructure(List<BiomeSettings> availableBiomes, BiomeConfiguration biomeConfiguration)
     {
+        BiomeGraph = new Graph<Biome>();
+
         _biomeConfiguration = biomeConfiguration;
         var count = 0;
         foreach (var biome in availableBiomes)
@@ -48,24 +51,24 @@ public class TerrainStructure
             var y = Random.Range(0f, biomeConfiguration.MapSize);
             centers.Add(new Vector2f(x, y));
         }
-        _voronoiDiagram = new Voronoi(centers,
+        VoronoiDiagram = new Voronoi(centers,
             new Rectf(0, 0, biomeConfiguration.MapSize, biomeConfiguration.MapSize));
-        _voronoiDiagram.LloydRelaxation(biomeConfiguration.LloydRelaxation);
+        VoronoiDiagram.LloydRelaxation(biomeConfiguration.LloydRelaxation);
 
         //Iterate over each site and add a biome to it
-        foreach (var site in _voronoiDiagram.SiteCoords())
+        foreach (var site in VoronoiDiagram.SiteCoords())
         {
             bool isOnBorder = false;
             var center = new Vector2(site.x, site.y);
-            var segments = _voronoiDiagram.VoronoiBoundarayForSite(site);
+            var segments = VoronoiDiagram.VoronoiBoundarayForSite(site);
 
             foreach (var segment in segments)
             {
-                if (segment.p0.x <= _voronoiDiagram.PlotBounds.left || segment.p0.x >= _voronoiDiagram.PlotBounds.right
-                    || segment.p0.y <= _voronoiDiagram.PlotBounds.top || segment.p0.y >= _voronoiDiagram.PlotBounds.bottom
-                    || segment.p1.x <= _voronoiDiagram.PlotBounds.left || segment.p1.x >= _voronoiDiagram.PlotBounds.right
-                    || segment.p1.y <= _voronoiDiagram.PlotBounds.top ||
-                    segment.p1.y >= _voronoiDiagram.PlotBounds.bottom)
+                if (segment.p0.x <= VoronoiDiagram.PlotBounds.left || segment.p0.x >= VoronoiDiagram.PlotBounds.right
+                    || segment.p0.y <= VoronoiDiagram.PlotBounds.top || segment.p0.y >= VoronoiDiagram.PlotBounds.bottom
+                    || segment.p1.x <= VoronoiDiagram.PlotBounds.left || segment.p1.x >= VoronoiDiagram.PlotBounds.right
+                    || segment.p1.y <= VoronoiDiagram.PlotBounds.top ||
+                    segment.p1.y >= VoronoiDiagram.PlotBounds.bottom)
                 {
                     isOnBorder = true;
                     break;
@@ -77,32 +80,31 @@ public class TerrainStructure
                 ? new Biome(center, _biomeConfiguration.BorderBiome)
                 : new Biome(center, availableBiomes[Random.Range(0, availableBiomes.Count)]);
 
-            var biomeID = _biomeGraph.AddNode(biome);
+            var biomeID = BiomeGraph.AddNode(biome);
             _siteBiomeMap.Add(site, biomeID);
             if (!biome.BiomeSettings.NotNavigable)
                 navigableBiomeIDs.Add(biomeID);
         }
 
         /* MSP */
+        MinimumSpanningTree = new Graph<Biome>(BiomeGraph);
         foreach (var edge in GeneratePaths())
         {
-            _biomeGraph.AddEdge(edge.Value, edge.Key, 1);
+            MinimumSpanningTree.AddEdge(edge.Value, edge.Key, 1);
         }
-
-        return;
 
         /* Create navigation graph - for each biome, add reachable neighbors */
         foreach (var id in _siteBiomeMap)
         {
-            var biome = _biomeGraph.GetNodeData(id.Value);
+            var biome = BiomeGraph.GetNodeData(id.Value);
             if (biome.BiomeSettings.NotNavigable) continue;
 
-            foreach (var neighbor in _voronoiDiagram.NeighborSitesForSite(new Vector2f(biome.Center.x, biome.Center.y)))
+            foreach (var neighbor in VoronoiDiagram.NeighborSitesForSite(new Vector2f(biome.Center.x, biome.Center.y)))
             {
-                var neighborBiome = _biomeGraph.GetNodeData(_siteBiomeMap[neighbor]);
+                var neighborBiome = BiomeGraph.GetNodeData(_siteBiomeMap[neighbor]);
                 if (!neighborBiome.BiomeSettings.NotNavigable)
                 {
-                    _biomeGraph.AddEdge(_siteBiomeMap[neighbor], id.Value, 1);
+                    BiomeGraph.AddEdge(_siteBiomeMap[neighbor], id.Value, 1);
                 }
             }
         }
@@ -148,13 +150,13 @@ public class TerrainStructure
     {
         var result = new List<LineSegment>();
 
-        foreach (var edge in _voronoiDiagram.Edges)
+        foreach (var edge in VoronoiDiagram.Edges)
         {
             if (!edge.Visible())
                 continue;
 
-            var leftBiome = _biomeGraph.GetNodeData(_siteBiomeMap[edge.LeftSite.Coord]);
-            var rightBiome = _biomeGraph.GetNodeData(_siteBiomeMap[edge.RightSite.Coord]);
+            var leftBiome = BiomeGraph.GetNodeData(_siteBiomeMap[edge.LeftSite.Coord]);
+            var rightBiome = BiomeGraph.GetNodeData(_siteBiomeMap[edge.RightSite.Coord]);
             if (leftBiome.BiomeSettings.UniqueName == rightBiome.BiomeSettings.UniqueName
                 || leftBiome.BiomeSettings.DontBlendWith.Contains(rightBiome.BiomeSettings)
                 || rightBiome.BiomeSettings.DontBlendWith.Contains(leftBiome.BiomeSettings))
@@ -175,13 +177,13 @@ public class TerrainStructure
     {
         var result = new List<LineSegment>();
 
-        foreach (var edge in _voronoiDiagram.Edges)
+        foreach (var edge in VoronoiDiagram.Edges)
         {
             if (!edge.Visible())
                 continue;
 
-            var leftBiome = _biomeGraph.GetNodeData(_siteBiomeMap[edge.LeftSite.Coord]);
-            var rightBiome = _biomeGraph.GetNodeData(_siteBiomeMap[edge.RightSite.Coord]);
+            var leftBiome = BiomeGraph.GetNodeData(_siteBiomeMap[edge.LeftSite.Coord]);
+            var rightBiome = BiomeGraph.GetNodeData(_siteBiomeMap[edge.RightSite.Coord]);
             if (leftBiome.BiomeSettings.UniqueName == rightBiome.BiomeSettings.UniqueName)
                 continue;
 
@@ -223,12 +225,12 @@ public class TerrainStructure
         var closestSqrDistance = float.MaxValue;
         foreach (var biome in _siteBiomeMap)
         {
-            var currentBiome = _biomeGraph.GetNodeData(biome.Value);
+            var currentBiome = BiomeGraph.GetNodeData(biome.Value);
             var center = new Vector2f(currentBiome.Center.x, currentBiome.Center.y);
             var sqrDistance = center.DistanceSquare(position);
             if (sqrDistance < closestSqrDistance)
             {
-                result = _biomeGraph.GetNodeData(biome.Value);
+                result = BiomeGraph.GetNodeData(biome.Value);
                 closestSqrDistance = sqrDistance;
             }
         }
@@ -264,12 +266,12 @@ public class TerrainStructure
             }
         }
 
-        DrawLineSegments(_voronoiDiagram.VoronoiDiagram(), scale, voronoi.transform);
+        DrawLineSegments(VoronoiDiagram.VoronoiDiagram(), scale, voronoi.transform);
 
-        foreach (var edge in _biomeGraph.GetAllEdges())
+        foreach (var edge in BiomeGraph.GetAllEdges())
         {
-            var biome1 = _biomeGraph.GetNodeData(edge.x);
-            var biome2 = _biomeGraph.GetNodeData(edge.y);
+            var biome1 = BiomeGraph.GetNodeData(edge.x);
+            var biome2 = BiomeGraph.GetNodeData(edge.y);
 
             var start = new Vector3(biome1.Center.x, 0, biome1.Center.y);
             var end = new Vector3(biome2.Center.x, 0, biome2.Center.y);
@@ -317,7 +319,7 @@ public class TerrainStructure
         var randomBiomeList = new List<KeyValuePair<Vector2f, int>>();
         foreach (var pair in _siteBiomeMap)
         {
-            if (!_biomeGraph.GetNodeData(pair.Value).BiomeSettings.NotNavigable)
+            if (!BiomeGraph.GetNodeData(pair.Value).BiomeSettings.NotNavigable)
             {
                 navigableBiomes.Add(pair.Key, pair.Value);
                 randomBiomeList.Add(pair);
