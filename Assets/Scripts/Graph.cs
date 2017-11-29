@@ -8,31 +8,43 @@ public class Graph<T> where T : class
     private readonly Dictionary<Pair, Edge> _edges = new Dictionary<Pair, Edge>();
     private int _nodeIDCount;
 
+    public Graph() { }
+    public Graph(Graph<T> original) {
+        _nodes = (from x in original._nodes select x).ToDictionary(x=>x.Key, x => x.Value);
+        _edges = (from x in original._edges select x).ToDictionary(x => x.Key, x => x.Value); ;
+    }
+
     public int AddNode(T data)
     {
         Node node = new Node(_nodeIDCount, data);
         _nodes.Add(node.NodeID, node);
         _nodeIDCount++;
-
         return node.NodeID;
+
     }
+    
 
     public bool RemoveNode(int nodeID)
     {
         if (_nodes.ContainsKey(nodeID))
         {
             Node node = _nodes[nodeID];
-            _nodes.Remove(nodeID);
-
+            
             foreach (Node neighbor in _nodes.Where(a => a.Value.Neighbors.Contains(node)).Select(a => a.Value))
             {
                 neighbor.Neighbors.Remove(node);
             }
 
+            List<Pair> edgesToRemove = new List<Pair>();
             foreach (Edge edge in _edges.Where(a => a.Value.Nodes.A == nodeID || a.Value.Nodes.B == nodeID).Select(a => a.Value))
             {
-                _edges.Remove(edge.Nodes);
+                edgesToRemove.Add(edge.Nodes);
             }
+            foreach(Pair p in edgesToRemove)
+            {
+                _edges.Remove(p);
+            }
+            _nodes.Remove(nodeID);
 
             return true;
         }
@@ -65,6 +77,10 @@ public class Graph<T> where T : class
             result[i] = new Vector2Int(edgeArray[i].Nodes.A, edgeArray[i].Nodes.B);
         }
         return result;
+    }
+
+    public int Count() {
+        return _nodes.Count();
     }
 
     public T GetNodeData(int nodeID)
@@ -131,6 +147,7 @@ public class Graph<T> where T : class
         Debug.Log("Edge not found in graph");
         return false;
     }
+    
 
     private class Edge
     {
@@ -203,5 +220,6 @@ public class Graph<T> where T : class
         {
             return A + " " + B;
         }
+        
     }
 }
