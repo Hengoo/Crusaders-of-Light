@@ -9,8 +9,11 @@ public class WorldStructureGraph
 {
 
     Graph<WorldArea> _AreaGraph = new Graph<WorldArea>();
+    List<Vector2Int> _biomeAreaMatching = new List<Vector2Int>();
+    Dictionary<int, List<LineSegment>> _borders = new Dictionary<int, List<LineSegment>>();
 
-    public void GenerateAreaGraph(Graph<Biome> original, int numAreas)
+
+    public void GenerateAreaGraph(Graph<Biome> original, Voronoi voronoiDiagram, int numAreas)
     {
         var workingGraph = new Graph<Biome>(original);
 
@@ -34,6 +37,8 @@ public class WorldStructureGraph
             workingGraph.RemoveNode(i);
         }
 
+        var reducedGraph = new Graph<Biome>(workingGraph);
+
         List<int> areaCenters = new List<int>();
         for (int i = 0; i < numAreas; i++)
         {
@@ -48,17 +53,16 @@ public class WorldStructureGraph
         {
             usableBiomes.Add(areaCenters[i]);
         }
-
-        List<Vector2Int> biomeAreaMatching = new List<Vector2Int>();
+        
         Dictionary<int,Biome> biomes = new Dictionary<int, Biome>();
         foreach (int i in usableBiomes)
         {
-            biomeAreaMatching.Add(new Vector2Int(i, -1));
+            _biomeAreaMatching.Add(new Vector2Int(i, -1));
         }
         for (int i = 0; i < areaCenters.Count; i++)
         {
-            int index = biomeAreaMatching.IndexOf(new Vector2Int(areaCenters[i], -1));
-            biomeAreaMatching[index] = new Vector2Int(areaCenters[i], i);
+            int index = _biomeAreaMatching.IndexOf(new Vector2Int(areaCenters[i], -1));
+            _biomeAreaMatching[index] = new Vector2Int(areaCenters[i], i);
         }
         int count = workingGraph.Count();
         while (count > 0)
@@ -67,21 +71,21 @@ public class WorldStructureGraph
             for (int i = 0; i < areaCenters.Count; i++)
             {
 
-                foreach (Vector2Int biome in biomeAreaMatching)
+                foreach (Vector2Int biome in _biomeAreaMatching)
                 {
                     if (biome.y == -1)
                     {
                         foreach (int neighbor in workingGraph.GetNeighbours(biome.x))
                         {
-                            if (biomeAreaMatching.Find(x => x.x == neighbor).y == i)
+                            if (_biomeAreaMatching.Find(x => x.x == neighbor).y == i)
                             {
-                                biomeAreaMatching[biomeAreaMatching.IndexOf(biome)] = new Vector2Int(biome.x, -2);
+                                _biomeAreaMatching[_biomeAreaMatching.IndexOf(biome)] = new Vector2Int(biome.x, -2);
                                 break;
                             }
                         }
                     }
                 }
-                foreach(Vector2Int biome in biomeAreaMatching)
+                foreach(Vector2Int biome in _biomeAreaMatching)
                 {
                     Biome help;
                     if (biome.y == i && !biomes.TryGetValue(biome.x, out help)) {
@@ -90,11 +94,11 @@ public class WorldStructureGraph
 
                     }
                 }
-                foreach (Vector2Int biome in biomeAreaMatching)
+                foreach (Vector2Int biome in _biomeAreaMatching)
                 {
                     if (biome.y == -2)
                     {
-                        biomeAreaMatching[biomeAreaMatching.IndexOf(biome)] = new Vector2Int(biome.x, i);
+                        _biomeAreaMatching[_biomeAreaMatching.IndexOf(biome)] = new Vector2Int(biome.x, i);
                     }
                 }
                 
@@ -103,14 +107,64 @@ public class WorldStructureGraph
             count = workingGraph.Count();
         }
 
-        foreach (Vector2Int biomeToAdd in biomeAreaMatching) {
+        //Add all biomes to their Area
+        foreach (Vector2Int biomeToAdd in _biomeAreaMatching) {
             _AreaGraph.GetNodeData(biomeToAdd.y).addContainedBiome(biomes[biomeToAdd.x], biomeToAdd.x);
         }
-      
+
+
+        //Generate Edges between Areas
+        foreach (Vector2Int i in _biomeAreaMatching)
+        {
+            foreach(int j in reducedGraph.GetNeighbours(i.x))
+            {
+                _AreaGraph.AddEdge(i.y,_biomeAreaMatching.Find(x => x.x == j).y,0);
+            }
+        }
+
+        //Generate Borders
+        List<Vector2Int> pointTests = new List<Vector2Int>();
+        for (int i = 0; i < original.Count(); i++)
+        {
+            if (original.GetNodeData(i).BiomeSettings.NotNavigable)
+            {
+                pointTests.Add(new Vector2Int(i, -1));
+            }
+        }
+        for (int j = 0; j < _biomeAreaMatching.Count(); j++)
+        {
+            pointTests.Add(_biomeAreaMatching[j]);
+        }
+
+        for(int i = 0; i < _AreaGraph.Count(); i++)
+        {
+            _borders.Add(i, new List<LineSegment>());
+        }
+
+        foreach(var line in voronoiDiagram.VoronoiDiagram())
+        {
+
+            var pointS = new Vector2(line.p0.x, line.p0.y);
+            var pointT = new Vector2(line.p1.x, line.p1.y);
+            var vec = pointS - pointT;
+
+            foreach(var pointA in pointTests)
+            {
+                foreach(var pointB in original.GetNeighbours(pointA.x))
+                {
+                    var norm = original.GetNodeData(pointA.x).Center - original.GetNodeData(pointB).Center;
+                    if(pointA.y != pointTests.Find(x=>x.x==pointB).y && Mathf.Abs((vec.x * norm.x) + (vec.y * norm.y)) <= 0.001f)
+                    {
+                        _borders[pointA.y].Add(line);
+                        _borders[pointTests.Find(x => x.x == pointB).y].Add(line);
+                    }
+                }
+            }
+        }
 
     }
 
-    public GameObject DrawAreaGraph(Voronoi voronoiDiagram, Graph<Biome> biomeGraph, float scale)
+    public GameObject DrawAreaGraph(float scale)
     {
 
         var result = new GameObject();
@@ -161,42 +215,33 @@ public class WorldStructureGraph
                 lr.SetPosition(1, end);
             }
         }
-
-        List<Vector3> pointTests = new List<Vector3>();
-        for (int i = 0; i < biomeGraph.Count(); i++)
+        foreach(Vector2Int edge in _AreaGraph.GetAllEdges())
         {
-            if (biomeGraph.GetNodeData(i).BiomeSettings.NotNavigable)
-            {
-                pointTests.Add(new Vector3(biomeGraph.GetNodeData(i).Center.x, biomeGraph.GetNodeData(i).Center.y, -1));
-            }
+            var start = new Vector3(_AreaGraph.GetNodeData(edge.x).GetCenter().x, 0, _AreaGraph.GetNodeData(edge.x).GetCenter().y);
+            var end = new Vector3(_AreaGraph.GetNodeData(edge.y).GetCenter().x, 0, _AreaGraph.GetNodeData(edge.y).GetCenter().y);
+            GameObject myLine = new GameObject("Line");
+            myLine.transform.position = start;
+            myLine.transform.parent = areas.transform;
+            LineRenderer lr = myLine.AddComponent<LineRenderer>();
+            lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
+            lr.startColor = Color.white;
+            lr.endColor = Color.white;
+            lr.startWidth = 2 * scale;
+            lr.endWidth = 2 * scale;
+            lr.SetPosition(0, start);
+            lr.SetPosition(1, end);
         }
-        for (int j = 0; j < _AreaGraph.Count(); j++)
+
+        
+        
+        foreach (var area in _borders)
+
         {
-            foreach (Biome b in _AreaGraph.GetNodeData(j).ContainedBiomes)
+            foreach (var line in area.Value)
             {
-                pointTests.Add(new Vector3(b.Center.x, b.Center.y, j));
-            }
-        }
+                var start = new Vector3(line.p0.x, 0, line.p0.y);
+                var end = new Vector3(line.p1.x, 0, line.p1.y);
 
-        foreach (var line in voronoiDiagram.VoronoiDiagram())
-        {
-            var start = new Vector3(line.p0.x, 0, line.p0.y);
-            var end = new Vector3(line.p1.x, 0, line.p1.y);
-
-            var middle = (start + end) / 2;
-            var border = new Vector2f(start.x, start.z) - new Vector2f(end.x, end.z);
-
-            var middlePoint = new Vector2f(middle.x, middle.z);
-            
-            var pointsA = pointTests.OrderBy(x => Mathf.Abs((new Vector2f(x.x, x.y) - middlePoint).x*border.x+(new Vector2f(x.x, x.y) - middlePoint).y*border.y)).Aggregate((agg,next)=> ((new Vector2f(agg.x,agg.y)-middlePoint).magnitude >= (new Vector2f(next.x, next.y) - middlePoint).magnitude ? next : agg));
-            pointTests.Remove(pointsA);
-            var pointsB = pointTests.OrderBy(x => Mathf.Abs((new Vector2f(x.x, x.y) - middlePoint).x * border.x + (new Vector2f(x.x, x.y) - middlePoint).y * border.y)).Aggregate((agg, next) => ((new Vector2f(agg.x, agg.y) - middlePoint).magnitude >= (new Vector2f(next.x, next.y) - middlePoint).magnitude ? next : agg));
-            pointTests.Add(pointsA);
-
-
-            var borderNormal = pointsA - pointsB;
-
-            if (!((int)pointsA.z == (int)pointsB.z)) {
                 GameObject myLine = new GameObject("Line");
                 myLine.transform.position = start;
                 myLine.transform.parent = borders.transform;
@@ -210,6 +255,7 @@ public class WorldStructureGraph
                 lr.SetPosition(1, end);
             }
         }
+        
 
         return result;
 

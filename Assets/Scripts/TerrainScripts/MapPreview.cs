@@ -50,7 +50,7 @@ public class MapPreview : MonoBehaviour
                 DrawMesh();
                 break;
             case DrawModeEnum.AreaGraph:
-                _AreaStructure.GenerateAreaGraph(_terrainStructure.GetBiomeGraph(), NumberOfAreas);
+                _AreaStructure.GenerateAreaGraph(_terrainStructure.GetBiomeGraph(), _terrainStructure.GetVoronoiDiagram(), NumberOfAreas);
                 DrawAreaGraph();
                 break;
             default:
@@ -105,7 +105,7 @@ public class MapPreview : MonoBehaviour
     }
 
     void DrawAreaGraph() {
-        var newAreaGraphInstance = _AreaStructure.DrawAreaGraph(_terrainStructure.GetVoronoiDiagram(), _terrainStructure.GetBiomeGraph(), BiomeConfiguration.HeightMapResolution / 500f);
+        var newAreaGraphInstance = _AreaStructure.DrawAreaGraph(BiomeConfiguration.HeightMapResolution / 500f);
         newAreaGraphInstance.name = "Area Graph";
         newAreaGraphInstance.transform.parent = transform;
     }
