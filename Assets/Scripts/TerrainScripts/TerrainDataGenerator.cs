@@ -44,7 +44,7 @@ public static class TerrainDataGenerator
         return result;
     }
 
-    // Set heightmap texture based on biome configuration
+    // Set alphamap texture based on biome configuration
     public static float[,,] GenerateAlphaMap(TerrainStructure terrainStructure, BiomeConfiguration biomeConfiguration)
     {
         var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution, terrainStructure.TextureCount];

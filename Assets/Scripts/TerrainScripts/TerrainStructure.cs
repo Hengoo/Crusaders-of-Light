@@ -17,13 +17,21 @@ public class TerrainStructure
     private KeyValuePair<Vector2f, int> _startBiome;
 
     private readonly Dictionary<Vector2f, int> _siteBiomeMap = new Dictionary<Vector2f, int>(); //Mapping of Voronoi library sites and graph IDs
-    private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap= new Dictionary<SplatPrototypeSerializable, int>(); //Mapping of biome SplatPrototypes and terrain texture IDs
+    private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap = new Dictionary<SplatPrototypeSerializable, int>(); //Mapping of biome SplatPrototypes and terrain texture IDs
 
     public int TextureCount { get { return _splatIDMap.Count; } }
 
+    private Texture2D _blankSpec;
+    private Texture2D _blankBump;
+
     public TerrainStructure(List<BiomeSettings> availableBiomes, BiomeConfiguration biomeConfiguration)
     {
+
         _biomeConfiguration = biomeConfiguration;
+
+        //Add Splat textures to global shader variables
+        _blankBump = generateBlankNormal();
+        _blankSpec = generateBlankSpec();
         var count = 0;
         foreach (var biome in availableBiomes)
         {
@@ -31,11 +39,21 @@ public class TerrainStructure
                 continue;
 
             _splatIDMap.Add(biome.Splat, count);
+
+            Shader.SetGlobalTexture("_BumpMap" + count, biome.Splat.normalMap ? biome.Splat.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1/biome.Splat.tileSize.x);
             count++;
         }
+
         //Add border biome to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(_biomeConfiguration.BorderBiome.Splat)) 
-            _splatIDMap.Add(_biomeConfiguration.BorderBiome.Splat, count); 
+        if (!_splatIDMap.ContainsKey(_biomeConfiguration.BorderBiome.Splat))
+        {
+            _splatIDMap.Add(_biomeConfiguration.BorderBiome.Splat, count);
+            Shader.SetGlobalTexture("_BumpMap" + count, _biomeConfiguration.BorderBiome.Splat.normalMap ? _biomeConfiguration.BorderBiome.Splat.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1/_biomeConfiguration.BorderBiome.Splat.tileSize.x);
+        }
 
 
         var navigableBiomeIDs = new HashSet<int>();
@@ -133,7 +151,7 @@ public class TerrainStructure
             {
                 texture = splatID.Key.texture,
                 normalMap = splatID.Key.normalMap,
-                smoothness =  splatID.Key.smoothness,
+                smoothness = splatID.Key.smoothness,
                 metallic = splatID.Key.metallic,
                 tileSize = splatID.Key.tileSize,
                 tileOffset = splatID.Key.tileOffset
@@ -259,7 +277,7 @@ public class TerrainStructure
             if (biome.Value == _startBiome.Value)
             {
                 var renderer = go.GetComponent<Renderer>();
-                var tempMaterial = new Material(renderer.sharedMaterial) {color = Color.red};
+                var tempMaterial = new Material(renderer.sharedMaterial) { color = Color.red };
                 renderer.sharedMaterial = tempMaterial;
             }
         }
@@ -370,4 +388,37 @@ public class TerrainStructure
 
         return result;
     }
+
+    private Texture2D generateBlankNormal()
+    {
+        var texture = new Texture2D(16, 16, TextureFormat.ARGB32, false);
+        var cols = texture.GetPixels32(0);
+        var colsLength = cols.Length;
+        for (var i = 0; i < colsLength; i++)
+        {
+            cols[i] = new Color(.5f, .5f, 1, 1);
+        }
+        texture.SetPixels32(cols, 0);
+        texture.Apply(false);
+        texture.Compress(false);
+        return texture;
+    }
+
+    private Texture2D generateBlankSpec()
+    {
+        var texture = new Texture2D(16, 16, TextureFormat.RGB24, false);
+        var cols = texture.GetPixels(0);
+        var colsLength = cols.Length;
+        for (var i = 0; i < colsLength; i++)
+        {
+            cols[i] = new Color(0.1f, 0.1f, 0, 0);
+        }
+        texture.SetPixels(cols, 0);
+        texture.Apply(false);
+        texture.Compress(false);
+        return texture;
+    }
 }
+
+
+
