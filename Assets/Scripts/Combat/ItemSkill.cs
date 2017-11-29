@@ -37,6 +37,15 @@ public class ItemSkill : MonoBehaviour {
         return false;
     }
 
+    public void UpdateCooldown(float PassedTime)
+    {
+        if (!IsCurrentlyOnCooldown())
+        {
+            return;
+        }
+        CurrentCooldown = Mathf.Max(CurrentCooldown - PassedTime, 0);
+    }
+
     public void UpdateSkillActivation(float ActivationTimer, bool StillActivating)
     {
         SkillObject.UpdateSkillActivation(this, ActivationTimer, StillActivating);
