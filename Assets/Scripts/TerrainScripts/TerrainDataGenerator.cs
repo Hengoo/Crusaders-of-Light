@@ -44,7 +44,7 @@ public static class TerrainDataGenerator
         return result;
     }
 
-    // Set heightmap texture based on biome configuration
+    // Set alphamap texture based on biome configuration
     public static float[,,] GenerateAlphaMap(TerrainStructure terrainStructure, BiomeConfiguration biomeConfiguration)
     {
         var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution, terrainStructure.TextureCount];
@@ -61,6 +61,39 @@ public static class TerrainDataGenerator
                 }
             }
         }
+        return result;
+    }
+
+    // Smooth every cell in the alphamap using squareSize neighbors in each direction
+    public static float[,,] SmoothAlphaMap(float[,,] alphamap, int squareSize)
+    {
+        var result = (float[,,])alphamap.Clone();
+        var length = alphamap.GetLength(0);
+
+        for (var y = 0; y < length; y++)
+        {
+            for (var x = 0; x < length; x++)
+            {
+                for (var i = 0; i < alphamap.GetLength(2); i++)
+                {
+                    var count = 0;
+                    var sum = 0.0f;
+                    for (var yN = y - squareSize; yN < y + squareSize; yN++)
+                    {
+                        for (var xN = x - squareSize; xN <= x + squareSize; xN++)
+                        {
+                            if (xN < 0 || xN >= length || yN < 0 || yN >= length)
+                                continue;
+
+                            sum += alphamap[xN, yN, i];
+                            count++;
+                        }
+                    }
+                    result[x, y, i] = sum / count;
+                }
+            }
+        }
+
         return result;
     }
 

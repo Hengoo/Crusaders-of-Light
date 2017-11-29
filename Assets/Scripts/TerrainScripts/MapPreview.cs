@@ -84,13 +84,20 @@ public class MapPreview : MonoBehaviour
         };
         terrainData.SetDetailResolution(BiomeConfiguration.HeightMapResolution, 32);
         terrainData.size = new Vector3(BiomeConfiguration.MapSize, BiomeConfiguration.MapHeight, BiomeConfiguration.MapSize);
-        terrainData.SetAlphamaps(0, 0, TerrainDataGenerator.GenerateAlphaMap(_terrainStructure, BiomeConfiguration));
+
+        var alphamap = TerrainDataGenerator.GenerateAlphaMap(_terrainStructure, BiomeConfiguration);
+        alphamap = TerrainDataGenerator.SmoothAlphaMap(alphamap, 1);
+        terrainData.SetAlphamaps(0, 0, alphamap);
 
         var terrain = Terrain.CreateTerrainGameObject(terrainData);
         terrain.name = "Terrain";
         terrain.transform.parent = transform;
         terrain.transform.position = Vector3.zero;
         terrain.GetComponent<Terrain>().terrainData.SetHeights(0,0,heightMap);
+        terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
+        terrain.GetComponent<Terrain>().materialTemplate = BiomeConfiguration.TerrainMaterial;
+
+
 
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
         water.GetComponent<Renderer>().material = BiomeConfiguration.WaterMaterial;
