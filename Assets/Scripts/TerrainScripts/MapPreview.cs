@@ -76,7 +76,10 @@ public class MapPreview : MonoBehaviour
         };
         terrainData.SetDetailResolution(BiomeConfiguration.HeightMapResolution, 32);
         terrainData.size = new Vector3(BiomeConfiguration.MapSize, BiomeConfiguration.MapHeight, BiomeConfiguration.MapSize);
-        terrainData.SetAlphamaps(0, 0, TerrainDataGenerator.GenerateAlphaMap(_terrainStructure, BiomeConfiguration));
+
+        var alphamap = TerrainDataGenerator.GenerateAlphaMap(_terrainStructure, BiomeConfiguration);
+        alphamap = TerrainDataGenerator.SmoothAlphaMap(alphamap, 1);
+        terrainData.SetAlphamaps(0, 0, alphamap);
 
         var terrain = Terrain.CreateTerrainGameObject(terrainData);
         terrain.name = "Terrain";

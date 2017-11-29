@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using csDelaunay;
-using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
@@ -30,8 +27,8 @@ public class TerrainStructure
         _biomeConfiguration = biomeConfiguration;
 
         //Add Splat textures to global shader variables
-        _blankBump = generateBlankNormal();
-        _blankSpec = generateBlankSpec();
+        _blankBump = GenerateBlankNormal();
+        _blankSpec = GenerateBlankSpec();
         var count = 0;
         foreach (var biome in availableBiomes)
         {
@@ -224,8 +221,8 @@ public class TerrainStructure
 
     public IEnumerable<KeyValuePair<int, float>> SampleBiomeTexture(Vector2 position)
     {
-        var pos = new Vector2f(position.x + Random.Range(-_biomeConfiguration.BorderNoise, _biomeConfiguration.BorderNoise),
-            position.y + Random.Range(-_biomeConfiguration.BorderNoise, _biomeConfiguration.BorderNoise));
+        var pos = new Vector2f(position.x + Random.Range(-_biomeConfiguration.BorderNoise, _biomeConfiguration.BorderNoise) * 1.2f,
+            position.y + Random.Range(-_biomeConfiguration.BorderNoise, _biomeConfiguration.BorderNoise) * 1.2f);
         var closestBiome = GetClosestBiome(pos);
         var result = new List<KeyValuePair<int, float>>
         {
@@ -389,7 +386,7 @@ public class TerrainStructure
         return result;
     }
 
-    private Texture2D generateBlankNormal()
+    private Texture2D GenerateBlankNormal()
     {
         var texture = new Texture2D(16, 16, TextureFormat.ARGB32, false);
         var cols = texture.GetPixels32(0);
@@ -404,7 +401,7 @@ public class TerrainStructure
         return texture;
     }
 
-    private Texture2D generateBlankSpec()
+    private Texture2D GenerateBlankSpec()
     {
         var texture = new Texture2D(16, 16, TextureFormat.RGB24, false);
         var cols = texture.GetPixels(0);
