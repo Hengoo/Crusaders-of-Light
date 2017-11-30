@@ -23,7 +23,7 @@ MonoBehaviour:
     Temperature: 0.5
   NotNavigable: 1
   Splat:
-    texture: {fileID: 0}
+    texture: {fileID: 2800000, guid: 312e6d1b420852a48bc2dd7166b9c8f9, type: 3}
     normalMap: {fileID: 0}
     metallic: 0
     smoothness: 0

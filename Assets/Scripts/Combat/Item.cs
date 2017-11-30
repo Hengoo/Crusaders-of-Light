@@ -9,6 +9,7 @@ public class Item : MonoBehaviour {
 
     [Header("Item Skills:")]
     public ItemSkill[] ItemSkills = new ItemSkill[1];
+    private List<ItemSkill> ItemSkillsOnCooldown = new List<ItemSkill>();
 
     [Header("Item Hit Box:")]
     public bool IgnoreCurrentOwnerForCollisionChecks = true;
@@ -28,6 +29,15 @@ public class Item : MonoBehaviour {
     public virtual void UnEquipItem()
     {
 
+    }
+
+    // Currently Unused, but might be useful later.
+    public void UpdateCooldowns()
+    {
+        for (int i = 0; i < ItemSkills.Length; i++)
+        {
+            ItemSkills[i].UpdateCooldown(Time.deltaTime);
+        }
     }
 
     public ItemSkill[] GetItemSkills()
@@ -154,62 +164,4 @@ public class Item : MonoBehaviour {
             CurrentlyCollidingCharacters.Remove(OtherCharacter);
         }
     }
-
-
-    /*   private void OnTriggerEnter(Collider other)
-       {
-           Debug.Log(this + " COLLIDED WITH : " + other.gameObject);
-           if (other.gameObject.tag == "Character")
-           {
-               Character OtherCharacter = other.gameObject.GetComponent<Character>();
-
-               if (!CheckIfEnterCharacterLegit(OtherCharacter))
-               {
-                   return;
-               }
-
-               CurrentlyCollidingCharacters.Add(OtherCharacter);
-
-               if (SkillCurrentlyUsingItemHitBox)
-               {
-
-               }
-           }
-       }
-
-       private bool CheckIfEnterCharacterLegit(Character CharacterToCheck)
-       {
-           if (IgnoreCurrentOwnerForCollisionChecks && CharacterToCheck == CurrentOwner)
-           {
-               return false;
-           }
-
-           return true;
-       }
-
-       private void OnTriggerExit(Collider other)
-       {
-           Debug.Log(this + " COLLIDES NO LONGER WITH : " + other.gameObject);
-           if (other.gameObject.tag == "Character")
-           {
-               Character OtherCharacter = other.gameObject.GetComponent<Character>();
-
-               if (!CheckIfExitCharacterLegit(OtherCharacter))
-               {
-                   return;
-               }
-
-               CurrentlyCollidingCharacters.Remove(OtherCharacter);
-           }
-       }
-
-       private bool CheckIfExitCharacterLegit(Character CharacterToCheck)
-       {
-           if (IgnoreCurrentOwnerForCollisionChecks && CharacterToCheck == CurrentOwner)
-           {
-               return false;
-           }
-
-           return true;
-       }*/
 }

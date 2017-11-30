@@ -62,6 +62,7 @@ public class Character : MonoBehaviour {
     {
         UpdateAllConditions();
         UpdateCurrentSkillActivation();
+        UpdateAllCooldowns();
     }
 
     // ====================================== ATTRIBUTES ======================================
@@ -196,6 +197,7 @@ public class Character : MonoBehaviour {
         for (int i = 0; i < Mathf.Min(SkillsToEquip.Length, MaxNumberOfSkills); i++)
         {
             ItemSkillSlots[i + StartingSkillSlotID] = SkillsToEquip[i];
+            ItemSkillSlots[i + StartingSkillSlotID].UpdateCooldown(-1000);
         }
     }
 
@@ -279,6 +281,17 @@ public class Character : MonoBehaviour {
         }
         SkillCurrentlyActivating = -1;
         SkillActivationTimer = 0.0f;
+    }
+
+    private void UpdateAllCooldowns()
+    {
+        for (int i = 0; i < ItemSkillSlots.Length; i++)
+        {
+            if (ItemSkillSlots[i])
+            {
+                ItemSkillSlots[i].UpdateCooldown(Time.deltaTime);
+            }
+        }
     }
 
 

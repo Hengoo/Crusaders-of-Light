@@ -10,17 +10,20 @@ public class MapPreview : MonoBehaviour
     public enum DrawModeEnum
     {
         BiomeGraph,
-        Terrain
+        Terrain,
+        AreaGraph
     }
 
     public DrawModeEnum DrawMode = DrawModeEnum.BiomeGraph;
     public BiomeConfiguration BiomeConfiguration;
     public List<BiomeSettings> AvailableBiomes;
     public int Seed = 0;
+    public int NumberOfAreas = 3;
     
 
     /* Debug variables */
     private TerrainStructure _terrainStructure;
+    private WorldStructureGraph _AreaStructure;
 
     void Start()
     {
@@ -36,6 +39,7 @@ public class MapPreview : MonoBehaviour
         ClearDisplay();
         Random.InitState(Seed);
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeConfiguration);
+        _AreaStructure = new WorldStructureGraph();
         switch (DrawMode)
         {
             case DrawModeEnum.BiomeGraph:
@@ -43,6 +47,10 @@ public class MapPreview : MonoBehaviour
                 break;
             case DrawModeEnum.Terrain:
                 DrawMesh();
+                break;
+            case DrawModeEnum.AreaGraph:
+                _AreaStructure.GenerateAreaGraph(_terrainStructure.BiomeGraph, _terrainStructure.VoronoiDiagram, NumberOfAreas);
+                DrawAreaGraph();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -76,13 +84,20 @@ public class MapPreview : MonoBehaviour
         };
         terrainData.SetDetailResolution(BiomeConfiguration.HeightMapResolution, 32);
         terrainData.size = new Vector3(BiomeConfiguration.MapSize, BiomeConfiguration.MapHeight, BiomeConfiguration.MapSize);
-        terrainData.SetAlphamaps(0, 0, TerrainDataGenerator.GenerateAlphaMap(_terrainStructure, BiomeConfiguration));
+
+        var alphamap = TerrainDataGenerator.GenerateAlphaMap(_terrainStructure, BiomeConfiguration);
+        alphamap = TerrainDataGenerator.SmoothAlphaMap(alphamap, 1);
+        terrainData.SetAlphamaps(0, 0, alphamap);
 
         var terrain = Terrain.CreateTerrainGameObject(terrainData);
         terrain.name = "Terrain";
         terrain.transform.parent = transform;
         terrain.transform.position = Vector3.zero;
         terrain.GetComponent<Terrain>().terrainData.SetHeights(0,0,heightMap);
+        terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
+        terrain.GetComponent<Terrain>().materialTemplate = BiomeConfiguration.TerrainMaterial;
+
+
 
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
         water.GetComponent<Renderer>().material = BiomeConfiguration.WaterMaterial;
@@ -98,13 +113,19 @@ public class MapPreview : MonoBehaviour
         newGraphInstance.transform.parent = transform;
     }
 
+    void DrawAreaGraph() {
+        var newAreaGraphInstance = _AreaStructure.DrawAreaGraph(BiomeConfiguration.HeightMapResolution / 500f);
+        newAreaGraphInstance.name = "Area Graph";
+        newAreaGraphInstance.transform.parent = transform;
+    }
+
     void ClearDisplay()
     {
         var toDelete = new List<GameObject>();
         foreach (var o in FindObjectsOfType(typeof(GameObject)))
         {
             var go = (GameObject) o;
-            if (go.name == "Graph" || go.name == "Terrain")
+            if (go.name == "Graph" || go.name == "Terrain" || go.name == "Area Graph")
                 toDelete.Add(go);
         }
 

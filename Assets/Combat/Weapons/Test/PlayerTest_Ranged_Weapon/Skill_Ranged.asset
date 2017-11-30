@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cost: 0
   ActivationTime: 0.5
-  Cooldown: 0
+  Cooldown: 1
   AllowTargetFriendly: 0
   AllowTargetEnemy: 1
   Effects:

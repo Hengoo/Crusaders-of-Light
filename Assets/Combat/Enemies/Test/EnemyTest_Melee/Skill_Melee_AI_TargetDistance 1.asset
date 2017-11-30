@@ -8,9 +8,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8774f1508d320c047b3312b83836d0fb, type: 3}
-  m_Name: MovPat_TowardsPlayer
+  m_Script: {fileID: 11500000, guid: 59d79877a8124d044a0f750df1b14d1c, type: 3}
+  m_Name: Skill_Melee_AI_TargetDistance 1
   m_EditorClassIdentifier: 
-  AIDecisionMaker: {fileID: 11400000, guid: 2f3cc4f9f2a786247a1a49836da82b97, type: 2}
-  ViewDirection: 1
-  MovementSpeedFactor: 7
+  TypeOfCurve: 1
+  Steepness: 1
+  yShift: 0
+  xShift: 0
+  MinDistance: 0
+  MaxDistance: 2.5

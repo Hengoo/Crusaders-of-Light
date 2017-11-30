@@ -66,6 +66,7 @@ public class BiomeConfiguration
     public BiomeSettings BorderBiome;
     public BiomeSettings CliffBiome;
     public Material WaterMaterial;
+    public Material TerrainMaterial;
     [Range(0, 5)] public int OverallSmoothing = 2;
     public bool SmoothEdges = false;
     [Range(0, 20)] public int EdgeWidth = 6;
