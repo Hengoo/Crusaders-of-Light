@@ -30,7 +30,7 @@ public class PhysicsController
 	/// </summary>
 	private void inizializeRigidbody()
 	{
-		rbody.centerOfMass = Vector3.zero;
+		//rbody.centerOfMass = Vector3.zero;
 		rbody.inertiaTensor = Vector3.one * rbody.mass;
 		rbody.maxAngularVelocity = 25;
 

@@ -38,7 +38,7 @@ public class LightFlicker : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		startPosition = transform.position;
+		startPosition = transform.localPosition;
 		lightSource = GetComponent<Light>();
 		lastIntent = lightSource.intensity;
 		targetIntent = Random.Range(minInten, maxInten);
@@ -69,7 +69,7 @@ public class LightFlicker : MonoBehaviour
 		//lightSource.intensity = Mathf.Lerp(lightSource.intensity, targetIntent, rate / Time.fixedDeltaTime);
 		lightSource.intensity = Mathf.Lerp(lastIntent, targetIntent, (Time.time - lastFlicker) / realRate);
 		lightSource.color = Color.Lerp(color1, color2, (lightSource.intensity - minInten) / (maxInten - minInten));
-		transform.position = Vector3.Lerp(lastPos , targetPos , (Time.time - lastFlicker) / realRate);
+		transform.localPosition = Vector3.Lerp(lastPos , targetPos , (Time.time - lastFlicker) / realRate);
 
 		print((lightSource.intensity - minInten) / (maxInten - minInten));
 
