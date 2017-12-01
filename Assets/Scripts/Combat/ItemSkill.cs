@@ -12,15 +12,13 @@ public class ItemSkill : MonoBehaviour {
 
     public int Level;
 
-    public Character CurrentOwner;
-
     public List<Character> AlreadyHitCharacters = new List<Character>();
 
     public bool StartSkillActivation()
     {
         if (CurrentCooldown > 0.0f) { return false; }
 
-        return SkillObject.StartSkillActivation(this, CurrentOwner);
+        return SkillObject.StartSkillActivation(this, GetCurrentOwner());
     }
 
     public void SetCurrentCooldown(float NewCooldown)
@@ -53,7 +51,7 @@ public class ItemSkill : MonoBehaviour {
 
     public void FinishedSkillActivation()
     {
-        CurrentOwner.FinishedCurrentSkillActivation();
+        GetCurrentOwner().FinishedCurrentSkillActivation();
     }
 
     public bool CheckIfSkillIsUsingHitBox(ItemSkill SkillToCheck)
@@ -78,7 +76,7 @@ public class ItemSkill : MonoBehaviour {
 
     public Character GetCurrentOwner()
     {
-        return CurrentOwner;
+        return ParentItem.GetOwner();
     }
 
     // Note: If a Character can have buffs/changes to Skill Levels, then this function has to include those changes.
@@ -89,6 +87,6 @@ public class ItemSkill : MonoBehaviour {
 
     public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()
     {
-        return SkillObject.AICalculateSkillScoreAndApplication(this, CurrentOwner);
+        return SkillObject.AICalculateSkillScoreAndApplication(this, GetCurrentOwner());
     }
 }

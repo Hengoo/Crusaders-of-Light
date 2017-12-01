@@ -13,6 +13,8 @@ public class Item : MonoBehaviour {
 
     [Header("Item Hit Box:")]
     public bool IgnoreCurrentOwnerForCollisionChecks = true;
+
+    [Header("Item Hit Box (Do not set - for Testing only):")]
     public List<Character> CurrentlyCollidingCharacters = new List<Character>();
 
     public bool CanHitCharactersOnlyOnce = false;
@@ -43,6 +45,11 @@ public class Item : MonoBehaviour {
     public ItemSkill[] GetItemSkills()
     {
         return ItemSkills;
+    }
+
+    public Character GetOwner()
+    {
+        return CurrentOwner;
     }
 
     public List<Character> GetAllCurrentlyCollidingCharacters()
