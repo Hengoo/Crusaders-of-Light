@@ -1,22 +1,17 @@
 fileFormatVersion: 2
-guid: d0ef16c1e3fd752479d386fef3983546
-timeCreated: 1511691872
+guid: 10176693cb29ea840a42500ec88dcf63
+timeCreated: 1512131037
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: HandL
-    100002: HandR
-    100004: //RootNode
-    400000: HandL
-    400002: HandR
-    400004: //RootNode
-    2300000: HandL
-    2300002: HandR
-    3300000: HandL
-    3300002: HandR
+    100000: HandR
+    100002: //RootNode
+    400000: HandR
+    400002: //RootNode
+    2300000: HandR
+    3300000: HandR
     4300000: HandR
-    4300002: HandL
     7400000: Default Take
     9500000: //RootNode
   externalObjects:

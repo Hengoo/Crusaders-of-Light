@@ -1,0 +1,13 @@
+Structure:
+0-5 always idle
+5-65 forward
+65 - 95
+ back to origin
+----> we can (and have to) controll the different animation speeds for the attack within the script
+
+1. empty hand
+2. Sword
+3. Staff
+
+
+
