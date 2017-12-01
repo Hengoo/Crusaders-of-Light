@@ -53,9 +53,13 @@ public class Character : MonoBehaviour {
     [Header("Physics Controller:")]
     protected PhysicsController PhysCont;
 
+    [Header("GUI (for Testing Purposes):")]
+    public GUICharacterFollow GUIChar;
+
     private void Start()
     {
         PhysCont = new PhysicsController(gameObject);
+        CreateCharacterFollowGUI();     // Could be changed to when entering camera view or close to players, etc... as optimization.
     }
 
     protected virtual void Update()
@@ -63,6 +67,7 @@ public class Character : MonoBehaviour {
         UpdateAllConditions();
         UpdateCurrentSkillActivation();
         UpdateAllCooldowns();
+        UpdateCharacterFollowGUI();
     }
 
     // ====================================== ATTRIBUTES ======================================
@@ -72,12 +77,14 @@ public class Character : MonoBehaviour {
     public void SetHealthCurrent(int NewValue)
     {
         HealthCurrent = Mathf.Clamp(NewValue, 0, HealthMax);
+        GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
         CheckIfCharacterDied(); 
     }
 
     public void ChangeHealthCurrent(int Value)
     {
         HealthCurrent = Mathf.Clamp(HealthCurrent + Value, 0, HealthMax);
+        GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
         CheckIfCharacterDied();
     }
 
@@ -448,10 +455,22 @@ public class Character : MonoBehaviour {
 
     // =================================== /ACTIVE CONDITIONS ===================================
 
-    // ======================================== MOVEMENT ========================================
+    // =========================================== GUI ==========================================
 
-    
+    private void CreateCharacterFollowGUI()
+    {
+        if (!GUIChar)
+        {
+            GUIChar = GUIController.Instance.GenerateGUICharacterFollow();
+            GUIChar.Initialize(this);
+        }
+    }
+
+    private void UpdateCharacterFollowGUI()
+    {
+        GUIChar.UpdateGUIPosition();
+    }
 
 
-    // ======================================== /MOVEMENT =======================================
+    // ========================================== /GUI ==========================================
 }
