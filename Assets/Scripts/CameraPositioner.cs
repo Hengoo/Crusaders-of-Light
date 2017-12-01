@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class CameraPositioner: MonoBehaviour
 {
 	public GameObject[] cameraTargets;
 	public float distanceMin;
