@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b4bbe9bd59db014bbec37a7db033325, type: 3}
+  m_Name: Skill_FireStaff_FireBall
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 1
+  Cooldown: -1
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: 9ee20f1d23c44c848a6997547ce32eca, type: 2}
+  AIDecisionMaker: {fileID: 11400000, guid: a9a8469646e0f2643a6253b9513dd571, type: 2}
+  ProjectilePrefab: {fileID: 114435675793627354, guid: 57e72f3911d306a49b2bfa5c7ef8857d,
+    type: 2}

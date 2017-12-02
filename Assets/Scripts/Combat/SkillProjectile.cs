@@ -5,7 +5,7 @@ using UnityEngine;
 public class SkillProjectile : MonoBehaviour
 {
     [Header("Projectile Attributes:")]
-    public bool PierceTargets = false;
+   // public bool PierceTargets = false;    Not implemented yet.
     public float Speed = 0;
     public float MaxTimeAlive = 0;
     private float TimeAliveCounter = 0;
@@ -67,6 +67,7 @@ public class SkillProjectile : MonoBehaviour
             || ProjectileAlignment == TargetCharacter.GetAlignment())
         {
             SourceSkill.ApplyEffects(Owner, SourceItemSkill, TargetCharacter);
+            Destroy(this.gameObject);
             // TODO : PIERCE TARGETS : SAVE ALL HIT CHARACTERS SO THEY CAN NOT BE HIT AGAIN!
         }
     }
@@ -77,6 +78,7 @@ public class SkillProjectile : MonoBehaviour
         if (other.gameObject.tag == "Character")
         {
             CheckIfTargetLegit(other.gameObject.GetComponent<Character>());
+            //Destroy(this.gameObject);
         }
     }
 }

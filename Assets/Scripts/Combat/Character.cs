@@ -67,6 +67,11 @@ public class Character : MonoBehaviour {
         UpdateAllConditions();
         UpdateCurrentSkillActivation();
         UpdateAllCooldowns();
+        
+    }
+
+    private void LateUpdate()
+    {
         UpdateCharacterFollowGUI();
     }
 
@@ -180,6 +185,7 @@ public class Character : MonoBehaviour {
             WeaponSlots[SlotID] = Weapon;
 
             EquipSkills(Weapon.GetItemSkills(), SlotID * SkillsPerWeapon, SkillsPerWeapon);
+            return true;
         }
         else                            // Two Handed Weapon:
         {
@@ -195,8 +201,9 @@ public class Character : MonoBehaviour {
             // Equip Two Handed Weapon:
             WeaponSlots[0] = WeaponSlots[1] = Weapon;
             EquipSkills(Weapon.GetItemSkills(), 0, SkillsPerWeapon * 2);
+            return true;
         }
-        return false;
+        //return false;
     }
 
     private void EquipSkills(ItemSkill[] SkillsToEquip, int StartingSkillSlotID, int MaxNumberOfSkills)
