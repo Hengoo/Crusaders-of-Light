@@ -9533,6 +9533,11 @@ Transform:
   m_PrefabParentObject: {fileID: 4496125764793624, guid: 0e26e0caf0a4a0d429f63595f1a991d0,
     type: 2}
   m_PrefabInternal: {fileID: 254007407}
+--- !u!1 &1333904690 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1537505053968188, guid: 2df0e023662fb1c4ab6f75d500062139,
+    type: 2}
+  m_PrefabInternal: {fileID: 977880582}
 --- !u!4 &1333950322 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4828767840825004, guid: ef8e1dd1fb94c1846bf535540330bc6d,
@@ -9971,13 +9976,22 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1373241568}
+<<<<<<< HEAD:Assets/Scenes/HandMadeMapChanged.unity
   m_LocalRotation: {x: 0.3535534, y: 0.61237246, z: -0.3535534, w: 0.61237246}
   m_LocalPosition: {x: 37.5, y: 27, z: 135.9}
+=======
+  m_LocalRotation: {x: 0.5, y: 0.5, z: -0.5, w: 0.5}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
+>>>>>>> develop:Assets/Scenes/HandMadeMap.unity
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+<<<<<<< HEAD:Assets/Scenes/HandMadeMapChanged.unity
   m_LocalEulerAnglesHint: {x: 60, y: 90, z: 0}
+=======
+  m_LocalEulerAnglesHint: {x: 90, y: 90, z: 0}
+>>>>>>> develop:Assets/Scenes/HandMadeMap.unity
 --- !u!114 &1373241573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9998,10 +10012,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 1373241568}
   m_Enabled: 1
   m_EditorHideFlags: 0
+<<<<<<< HEAD:Assets/Scenes/HandMadeMapChanged.unity
   m_Script: {fileID: 11500000, guid: b866c904f8e41054f8f91434259ca369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 1373241571}
+=======
+  m_Script: {fileID: 11500000, guid: 59d7a01c4853c794f943b1c267bcc6c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTargets:
+  - {fileID: 2126336934}
+  - {fileID: 1333904690}
+  - {fileID: 1669695197}
+  - {fileID: 1650850370}
+  distanceMin: 5
+  distanceMultiplier: 1
+  distanceMax: 20
+>>>>>>> develop:Assets/Scenes/HandMadeMap.unity
 --- !u!4 &1374181396 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4543342140032782, guid: 61c5572780389b448854ec10b9a60678,
@@ -13566,6 +13594,11 @@ Transform:
   m_PrefabParentObject: {fileID: 4543342140032782, guid: 61c5572780389b448854ec10b9a60678,
     type: 2}
   m_PrefabInternal: {fileID: 1005260184}
+--- !u!1 &1650850370 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1845419952499116, guid: bad02440b00181e45a7c925dfa8c329d,
+    type: 2}
+  m_PrefabInternal: {fileID: 1440628312}
 --- !u!4 &1661067764 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4104062699304126, guid: 4e6fb53c8e211e64cb3463879de2b1c6,
@@ -13576,6 +13609,11 @@ Transform:
   m_PrefabParentObject: {fileID: 4178859541365720, guid: 2808b16ebff0774489868eeb866254b2,
     type: 2}
   m_PrefabInternal: {fileID: 1918186868}
+--- !u!1 &1669695197 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1834654050566576, guid: 4841f50115661104fba3ee490d32dec6,
+    type: 2}
+  m_PrefabInternal: {fileID: 1224994272}
 --- !u!1001 &1673669282
 Prefab:
   m_ObjectHideFlags: 0
@@ -16565,6 +16603,11 @@ Transform:
   m_PrefabParentObject: {fileID: 4828767840825004, guid: ef8e1dd1fb94c1846bf535540330bc6d,
     type: 2}
   m_PrefabInternal: {fileID: 1839500331}
+--- !u!1 &2126336934 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1845419952499116, guid: bad02440b00181e45a7c925dfa8c329d,
+    type: 2}
+  m_PrefabInternal: {fileID: 544709783}
 --- !u!4 &2129217572 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4543342140032782, guid: 61c5572780389b448854ec10b9a60678,
