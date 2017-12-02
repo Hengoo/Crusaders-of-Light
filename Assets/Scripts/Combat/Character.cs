@@ -67,6 +67,11 @@ public class Character : MonoBehaviour {
         UpdateAllConditions();
         UpdateCurrentSkillActivation();
         UpdateAllCooldowns();
+        
+    }
+
+    private void LateUpdate()
+    {
         UpdateCharacterFollowGUI();
     }
 

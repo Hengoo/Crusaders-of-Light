@@ -9,9 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b984467bd2a6944382038762a5729e9, type: 3}
-  m_Name: Com_MovPat_BackwardsFromPlayer_DecisionMaker
+  m_Name: Com_MovPat_LookAtPlayer_DecisionMaker
   m_EditorClassIdentifier: 
-  Weight: 1.5
+  Weight: 0.75
   ConsiderationsTargeted:
-  - {fileID: 11400000, guid: f7b9ccb80bc14bc4c84451f97191f6ca, type: 2}
+  - {fileID: 11400000, guid: e95b90fdbe5546c47b9f3392beb120a9, type: 2}
   ConsiderationsSelf: []

@@ -67,6 +67,7 @@ public class SkillProjectile : MonoBehaviour
             || ProjectileAlignment == TargetCharacter.GetAlignment())
         {
             SourceSkill.ApplyEffects(Owner, SourceItemSkill, TargetCharacter);
+            Destroy(this.gameObject);
             // TODO : PIERCE TARGETS : SAVE ALL HIT CHARACTERS SO THEY CAN NOT BE HIT AGAIN!
         }
     }
@@ -77,7 +78,7 @@ public class SkillProjectile : MonoBehaviour
         if (other.gameObject.tag == "Character")
         {
             CheckIfTargetLegit(other.gameObject.GetComponent<Character>());
-            Destroy(this.gameObject);
+            //Destroy(this.gameObject);
         }
     }
 }

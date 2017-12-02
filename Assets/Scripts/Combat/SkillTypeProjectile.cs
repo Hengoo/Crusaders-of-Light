@@ -17,7 +17,7 @@ public class SkillTypeProjectile : SkillType
         }
 
         // Spawn and Initialize Projectile:
-        SkillProjectile SpawnedProjectile = Instantiate(ProjectilePrefab, SourceItemSkill.GetCurrentOwner().transform.position, SourceItemSkill.GetCurrentOwner().transform.rotation);
+        SkillProjectile SpawnedProjectile = Instantiate(ProjectilePrefab, SourceItemSkill.transform.position, SourceItemSkill.GetCurrentOwner().transform.rotation);
         SpawnedProjectile.InitializeProjectile(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, this);
 
         // Stop Skill Activation:
