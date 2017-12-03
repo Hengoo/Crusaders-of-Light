@@ -50,39 +50,41 @@ public class CharacterPlayer : Character {
 
     public void PlayerInput()
     {
+        Debug.Log("Input 1: " + Input.GetAxis("W1Skill2"));
+        Debug.Log("Input 2: " + Input.GetAxis("W2Skill1"));
         // TODO : Match the SkillActivationButtonsPressed[] to Controller Shoulder Buttons depending on Player NodeCount/ID.
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetButtonDown("W1Skill1"))
         {
             SkillActivationButtonsPressed[0] = true;
         }
-        else if (Input.GetKeyUp(KeyCode.T))
+        else if (Input.GetButtonUp("W1Skill1"))
         {
             SkillActivationButtonsPressed[0] = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetAxis("W1Skill2") >= 0.3f)
         {
             SkillActivationButtonsPressed[1] = true;
         }
-        else if (Input.GetKeyUp(KeyCode.Z))
+        else if (Input.GetAxis("W1Skill2") < 0.3f)
         {
             SkillActivationButtonsPressed[1] = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.U))
+        if (Input.GetButtonDown("W2Skill1"))
         {
             SkillActivationButtonsPressed[2] = true;
         }
-        else if (Input.GetKeyUp(KeyCode.U))
+        else if (Input.GetButtonUp("W2Skill1"))
         {
             SkillActivationButtonsPressed[2] = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetAxis("W2Skill2") >= 0.3f)
         {
             SkillActivationButtonsPressed[3] = true;
         }
-        else if (Input.GetKeyUp(KeyCode.I))
+        else if (Input.GetAxis("W2Skill2") < 0.3f)
         {
             SkillActivationButtonsPressed[3] = false;
         }
