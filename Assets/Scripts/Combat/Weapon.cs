@@ -9,8 +9,6 @@ public class Weapon : Item {
 
     public override void EquipItem(Character CharacterToEquipTo, int SlotID)
     {
-        // TODO : Graphical Atachment!
-
         bool SuccesfullyEquipped = CharacterToEquipTo.EquipWeapon(this, TwoHanded, SlotID);
 
         if (SuccesfullyEquipped)
@@ -22,8 +20,6 @@ public class Weapon : Item {
     public override void UnEquipItem()
     {
         CurrentOwner = null;
-
-        // TODO : Graphical Detachment!
     }
 
     public bool IsTwoHanded()

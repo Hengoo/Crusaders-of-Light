@@ -40,4 +40,9 @@ public class GUICharacterFollow : MonoBehaviour {
         RectTrans.localPosition = WorldObjectScreenPos;
     }
 
+    // Only Destroys the GUI, Character might still have a reference:
+    public void DestroyGUICharacterFollow()
+    {
+        Destroy(this.gameObject);
+    }
 }

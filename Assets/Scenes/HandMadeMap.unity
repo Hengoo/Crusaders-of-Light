@@ -1421,6 +1421,57 @@ Transform:
   m_PrefabParentObject: {fileID: 4543342140032782, guid: 61c5572780389b448854ec10b9a60678,
     type: 2}
   m_PrefabInternal: {fileID: 1740317571}
+--- !u!1001 &158150947
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4313406986204950, guid: eb4aa05a8a12a9d43bf4cfbd2d5d507e, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 72.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313406986204950, guid: eb4aa05a8a12a9d43bf4cfbd2d5d507e, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 13.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313406986204950, guid: eb4aa05a8a12a9d43bf4cfbd2d5d507e, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 138.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313406986204950, guid: eb4aa05a8a12a9d43bf4cfbd2d5d507e, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313406986204950, guid: eb4aa05a8a12a9d43bf4cfbd2d5d507e, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0.90109134
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313406986204950, guid: eb4aa05a8a12a9d43bf4cfbd2d5d507e, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313406986204950, guid: eb4aa05a8a12a9d43bf4cfbd2d5d507e, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 0.43362936
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313406986204950, guid: eb4aa05a8a12a9d43bf4cfbd2d5d507e, type: 2}
+      propertyPath: m_RootOrder
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 114414585395942256, guid: eb4aa05a8a12a9d43bf4cfbd2d5d507e,
+        type: 2}
+      propertyPath: PlayersInAttentionRange.Array.data[0]
+      value: 
+      objectReference: {fileID: 1789461354}
+    - target: {fileID: 1131851960195032, guid: eb4aa05a8a12a9d43bf4cfbd2d5d507e, type: 2}
+      propertyPath: m_Name
+      value: Enemy_Knight (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: eb4aa05a8a12a9d43bf4cfbd2d5d507e, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &163236134
 Prefab:
   m_ObjectHideFlags: 0
@@ -3477,6 +3528,47 @@ Transform:
   m_PrefabParentObject: {fileID: 4828767840825004, guid: ef8e1dd1fb94c1846bf535540330bc6d,
     type: 2}
   m_PrefabInternal: {fileID: 644648569}
+--- !u!1 &436444480
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 436444481}
+  - component: {fileID: 436444482}
+  m_Layer: 0
+  m_Name: Player_Character_Trigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &436444481
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 436444480}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1789461355}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &436444482
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 436444480}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &437375083
 Prefab:
   m_ObjectHideFlags: 0
@@ -3665,6 +3757,10 @@ Prefab:
     - target: {fileID: 4063514664502110, guid: bad02440b00181e45a7c925dfa8c329d, type: 2}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1845419952499116, guid: bad02440b00181e45a7c925dfa8c329d, type: 2}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 136686192710665086, guid: bad02440b00181e45a7c925dfa8c329d, type: 2}
@@ -14423,6 +14519,7 @@ MonoBehaviour:
   ActiveConditions: []
   SkillActivationButtonsPressed: 00000000
   Alignment: 1
+  ItemsInRange: []
 --- !u!4 &1789461355
 Transform:
   m_ObjectHideFlags: 0
@@ -14434,6 +14531,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 462797225}
+  - {fileID: 436444481}
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
@@ -14527,7 +14625,7 @@ GameObject:
   - component: {fileID: 1808154858}
   m_Layer: 0
   m_Name: Icewall
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14576,7 +14674,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.1, y: 1.1, z: 1.1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!33 &1808154856
 MeshFilter:
@@ -14629,12 +14727,12 @@ MonoBehaviour:
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
+  - 3
+  - 3
   - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
+  - 3
+  - 3
+  - 3
   CharacterHands:
   - {fileID: 0}
   - {fileID: 0}

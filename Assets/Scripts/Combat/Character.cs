@@ -26,6 +26,7 @@ public class Character : MonoBehaviour {
     [Header("Character Attributes:")]
     public int HealthCurrent = 100;
     public int HealthMax = 100;
+    private bool CharacterIsDead = false;     // To Check if the Character already died, but was not removed yet. (Happened with GUI).
 
     public int EnergyCurrent = 100;
     public int EnergyMax = 100;
@@ -60,7 +61,7 @@ public class Character : MonoBehaviour {
     //[Header("GUI (for Testing Purposes):")]
     private GUICharacterFollow GUIChar;
 
-    private void Start()
+    protected void Start()
     {
         PhysCont = new PhysicsController(gameObject);
         CreateCharacterFollowGUI();     // Could be changed to when entering camera view or close to players, etc... as optimization.
@@ -75,7 +76,7 @@ public class Character : MonoBehaviour {
         
     }
 
-    private void LateUpdate()
+    protected void LateUpdate()
     {
         UpdateCharacterFollowGUI();
     }
@@ -87,24 +88,52 @@ public class Character : MonoBehaviour {
     public void SetHealthCurrent(int NewValue)
     {
         HealthCurrent = Mathf.Clamp(NewValue, 0, HealthMax);
-        GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
-        CheckIfCharacterDied(); 
+        if (!CheckIfCharacterDied())
+        {
+            GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
+        }
     }
 
     public void ChangeHealthCurrent(int Value)
     {
         HealthCurrent = Mathf.Clamp(HealthCurrent + Value, 0, HealthMax);
-        GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
-        CheckIfCharacterDied();
+        if (!CheckIfCharacterDied())
+        {
+            GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
+        }         
     }
 
-    private void CheckIfCharacterDied()
+    protected bool CheckIfCharacterDied()
     {
         if (HealthCurrent <= 0)
         {
-            // TODO : Character Died!
-            Debug.Log("TODO: " + this + " died!");
+            if (!CharacterIsDead)
+            {
+                CharacterDied();
+            }
+            return true;
         }
+        return false;
+    }
+
+    protected void CharacterDied()
+    {
+        CharacterIsDead = true; 
+
+        // Unequip Weapons (so they drop on the gound):
+        for (int i = 0; i < WeaponSlots.Length; i++)
+        {
+            if (WeaponSlots[i])
+            {
+                UnEquipWeapon(i);
+            }
+        }
+
+        // Remove GUI:
+        RemoveCharacterFollowGUI();
+
+        // Destroy this Character:
+        Destroy(this.gameObject);
     }
 
     public int GetHealthCurrent()
@@ -188,7 +217,7 @@ public class Character : MonoBehaviour {
                                         // Single Handed Weapon, nothing equipped in Slot (now):
             // Equip New Weapon:
             WeaponSlots[SlotID] = Weapon;
-            EquipWeaponVisually(Weapon.gameObject, SlotID);
+            EquipWeaponVisually(Weapon, SlotID);
 
             EquipSkills(Weapon.GetItemSkills(), SlotID * SkillsPerWeapon, SkillsPerWeapon);
             return true;
@@ -206,14 +235,14 @@ public class Character : MonoBehaviour {
 
             // Equip Two Handed Weapon:
             WeaponSlots[0] = WeaponSlots[1] = Weapon;
-            EquipWeaponVisually(Weapon.gameObject, 0);
+            EquipWeaponVisually(Weapon, 0);
             EquipSkills(Weapon.GetItemSkills(), 0, SkillsPerWeapon * 2);
             return true;
         }
         //return false;
     }
 
-    private void EquipSkills(ItemSkill[] SkillsToEquip, int StartingSkillSlotID, int MaxNumberOfSkills)
+    protected void EquipSkills(ItemSkill[] SkillsToEquip, int StartingSkillSlotID, int MaxNumberOfSkills)
     {
         for (int i = 0; i < Mathf.Min(SkillsToEquip.Length, MaxNumberOfSkills); i++)
         {
@@ -222,7 +251,7 @@ public class Character : MonoBehaviour {
         }
     }
 
-    private void UnEquipSkills(int StartingSkillSlotID, int MaxNumberOfSkills)
+    protected void UnEquipSkills(int StartingSkillSlotID, int MaxNumberOfSkills)
     {
         for (int i = 0; i < MaxNumberOfSkills; i++)
         {
@@ -230,40 +259,45 @@ public class Character : MonoBehaviour {
         }
     }
 
-    private void UnEquipWeapon(int WeaponSlotID)
+    protected void UnEquipWeapon(int WeaponSlotID)
     {
         int MaxNumberOfSkills = SkillsPerWeapon;
         Weapon WeaponToUnequip = (Weapon)WeaponSlots[WeaponSlotID];
 
+        InterruptCurrentSkillActivation();
+
         if (WeaponToUnequip.IsTwoHanded())              // Weapon is Two Handed
         {
+            UnEquipWeaponVisually(0);
             MaxNumberOfSkills *= 2;
             WeaponSlots[0].UnEquipItem();
             WeaponSlots[0] = null;
             WeaponSlots[1] = null;
-            UnEquipWeaponVisually(0);
         }
         else                                            // Weapon is One Handed
         {
+            UnEquipWeaponVisually(WeaponSlotID);
             WeaponSlots[WeaponSlotID].UnEquipItem();
             WeaponSlots[WeaponSlotID] = null;
-            UnEquipWeaponVisually(WeaponSlotID);
         }
 
         UnEquipSkills(WeaponSlotID, MaxNumberOfSkills);
     }
 
 
-    private void EquipWeaponVisually(GameObject Weapon, int HandSlotID)
+    private void EquipWeaponVisually(Item Weapon, int HandSlotID)
     {
-        Weapon.transform.SetParent(CharacterHands[HandSlotID], false);
-        Weapon.transform.localPosition = new Vector3(0, 0, 0);
-        Weapon.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+        Weapon.SwitchItemEquippedState(true);
+        Weapon.transform.position = CharacterHands[HandSlotID].position;
+        Weapon.transform.rotation = CharacterHands[HandSlotID].rotation;
+        Weapon.transform.SetParent(CharacterHands[HandSlotID], true);
     }
 
     private void UnEquipWeaponVisually(int HandSlotID)
     {
-        CharacterHands[HandSlotID].parent = null;
+        //WeaponSlots[HandSlotID].gameObject.transform.SetParent(this.transform.parent);
+        WeaponSlots[HandSlotID].SwitchItemEquippedState(false);
+        WeaponSlots[HandSlotID].gameObject.transform.parent = null;
     }
 
     private void SpawnAndEquipStartingWeapons()
@@ -341,6 +375,19 @@ public class Character : MonoBehaviour {
                 ItemSkillSlots[i].UpdateCooldown(Time.deltaTime);
             }
         }
+    }
+
+    private void InterruptCurrentSkillActivation()
+    {
+        if (SkillCurrentlyActivating < 0)
+        {
+            return;
+        }
+
+        ItemSkillSlots[SkillCurrentlyActivating].InterruptSkill(true);
+
+        SkillCurrentlyActivating = -1;
+        SkillActivationTimer = 0.0f;
     }
 
 
@@ -513,6 +560,11 @@ public class Character : MonoBehaviour {
         GUIChar.UpdateGUIPosition();
     }
 
+    private void RemoveCharacterFollowGUI()
+    {
+        GUIChar.DestroyGUICharacterFollow();
+        GUIChar = null;
+    }
 
     // ========================================== /GUI ==========================================
 }
