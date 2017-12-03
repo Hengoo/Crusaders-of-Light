@@ -124,6 +124,31 @@ public class TerrainStructure
         }
     }
 
+    // Returns polygons representing the sites
+    public List<Vector2[]> GetBiomePolygons()
+    {
+        var result = new List<Vector2[]>();
+        foreach (var siteBiome in _siteBiomeMap)
+        {
+            List<LineSegment> region = VoronoiDiagram.VoronoiBoundarayForSite(siteBiome.Key);
+            if (region.Count <= 0)
+            {
+                Debug.Log("Nothing in " + region);
+                continue;
+            }
+            
+            var polygon = new Vector2[region.Count];
+            for (var i = 0; i < polygon.Length; i++)
+            {
+                polygon[i] = new Vector2(region[i].p0.x, region[i].p0.y);
+            }
+
+            result.Add(polygon);
+        }
+
+        return result;
+    }
+
 
     // Returns a sorted list of the textures
     public IEnumerable<Texture> GetTerrainTextures()

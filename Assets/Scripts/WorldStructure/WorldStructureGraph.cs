@@ -107,7 +107,7 @@ public class WorldStructureGraph
             count = workingGraph.NodeCount();
         }
 
-        //Add all biomes to their Area
+        //Add all biomes to their Polygon
         foreach (Vector2Int biomeToAdd in _biomeAreaMatching) {
             _AreaGraph.GetNodeData(biomeToAdd.y).addContainedBiome(biomes[biomeToAdd.x], biomeToAdd.x);
         }
@@ -183,7 +183,7 @@ public class WorldStructureGraph
         {
             var pos = _AreaGraph.GetNodeData(i).GetCenter();
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            go.name = "Area id: " + i;
+            go.name = "Polygon id: " + i;
             go.GetComponent<Collider>().enabled = false;
             go.transform.parent = areas.transform;
             go.transform.position = new Vector3(pos.x, 0, pos.y);
