@@ -37,6 +37,7 @@ GameObject:
   - component: {fileID: 4480905754205624}
   - component: {fileID: 33927235383434188}
   - component: {fileID: 23359773153335754}
+  - component: {fileID: 64390779695358332}
   m_Layer: 0
   m_Name: Cone_001
   m_TagString: Untagged
@@ -54,6 +55,7 @@ GameObject:
   - component: {fileID: 4659833857919260}
   - component: {fileID: 33083400497199470}
   - component: {fileID: 23850293263562870}
+  - component: {fileID: 64691606447894934}
   m_Layer: 0
   m_Name: Cone_002
   m_TagString: Untagged
@@ -71,6 +73,7 @@ GameObject:
   - component: {fileID: 4215790049897420}
   - component: {fileID: 33041501081837754}
   - component: {fileID: 23410148422932016}
+  - component: {fileID: 64360321126618814}
   m_Layer: 0
   m_Name: Cone
   m_TagString: Untagged
@@ -102,7 +105,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1158360484994764}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 40.679, y: 10.09, z: 128.39}
+  m_LocalPosition: {x: -14.329325, y: -2.0075963e-17, z: 0.904141}
   m_LocalScale: {x: 2.5317373, y: 2.531738, z: 2.531738}
   m_Children:
   - {fileID: 4215790049897420}
@@ -328,6 +331,48 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1550564516591222}
   m_Mesh: {fileID: 4300002, guid: d49364cf7a8208b4fa0d1f590b4bdb20, type: 3}
+--- !u!64 &64360321126618814
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1725091370732164}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 1
+  m_InflateMesh: 0
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300004, guid: d49364cf7a8208b4fa0d1f590b4bdb20, type: 3}
+--- !u!64 &64390779695358332
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1550564516591222}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 1
+  m_InflateMesh: 0
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300002, guid: d49364cf7a8208b4fa0d1f590b4bdb20, type: 3}
+--- !u!64 &64691606447894934
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1668570147930764}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 1
+  m_InflateMesh: 0
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300000, guid: d49364cf7a8208b4fa0d1f590b4bdb20, type: 3}
 --- !u!95 &95746297184732568
 Animator:
   serializedVersion: 3
