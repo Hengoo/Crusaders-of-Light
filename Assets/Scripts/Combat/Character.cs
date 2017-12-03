@@ -33,6 +33,10 @@ public class Character : MonoBehaviour {
     public float[] Resistances = new float[6]; // Resistances[Enum Resistance], Check for Resistance.NONE!
 
     [Header("Equipment:")]
+    public Transform[] CharacterHands = new Transform[2]; // Note: 0 : Left Hand, 1 : Right Hand
+    public Item[] StartingWeapons = new Item[0];    // Note: Slot in Array corresponds to Hand it is holding. Up to 2 Starting Weapons!
+
+    [Header("Equipment (for Testing):")]
     public int SkillsPerWeapon = 2;                 // Note: Number of Skills granted by each equipped weapon. The ItemSkillSlots[] has to take that number into account. Weapons with less Skills are allowed to exist!
     public Item[] WeaponSlots = new Item[2];        // Note: [0]: Left Hand,  [1]: Right Hand
     // public Item[] ItemSlots = new Item[0];       // Note: Currently Unused, define which slot equals which type of item if more item types that are equipable are implemented.
@@ -53,13 +57,14 @@ public class Character : MonoBehaviour {
     [Header("Physics Controller:")]
     protected PhysicsController PhysCont;
 
-    [Header("GUI (for Testing Purposes):")]
-    public GUICharacterFollow GUIChar;
+    //[Header("GUI (for Testing Purposes):")]
+    private GUICharacterFollow GUIChar;
 
     private void Start()
     {
         PhysCont = new PhysicsController(gameObject);
         CreateCharacterFollowGUI();     // Could be changed to when entering camera view or close to players, etc... as optimization.
+        SpawnAndEquipStartingWeapons();
     }
 
     protected virtual void Update()
@@ -183,6 +188,7 @@ public class Character : MonoBehaviour {
                                         // Single Handed Weapon, nothing equipped in Slot (now):
             // Equip New Weapon:
             WeaponSlots[SlotID] = Weapon;
+            EquipWeaponVisually(Weapon.gameObject, SlotID);
 
             EquipSkills(Weapon.GetItemSkills(), SlotID * SkillsPerWeapon, SkillsPerWeapon);
             return true;
@@ -200,6 +206,7 @@ public class Character : MonoBehaviour {
 
             // Equip Two Handed Weapon:
             WeaponSlots[0] = WeaponSlots[1] = Weapon;
+            EquipWeaponVisually(Weapon.gameObject, 0);
             EquipSkills(Weapon.GetItemSkills(), 0, SkillsPerWeapon * 2);
             return true;
         }
@@ -234,14 +241,42 @@ public class Character : MonoBehaviour {
             WeaponSlots[0].UnEquipItem();
             WeaponSlots[0] = null;
             WeaponSlots[1] = null;
+            UnEquipWeaponVisually(0);
         }
         else                                            // Weapon is One Handed
         {
             WeaponSlots[WeaponSlotID].UnEquipItem();
             WeaponSlots[WeaponSlotID] = null;
+            UnEquipWeaponVisually(WeaponSlotID);
         }
 
         UnEquipSkills(WeaponSlotID, MaxNumberOfSkills);
+    }
+
+
+    private void EquipWeaponVisually(GameObject Weapon, int HandSlotID)
+    {
+        Weapon.transform.SetParent(CharacterHands[HandSlotID], false);
+        Weapon.transform.localPosition = new Vector3(0, 0, 0);
+        Weapon.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+    }
+
+    private void UnEquipWeaponVisually(int HandSlotID)
+    {
+        CharacterHands[HandSlotID].parent = null;
+    }
+
+    private void SpawnAndEquipStartingWeapons()
+    {
+        Item CurrentItem = null;
+        for (int i = 0; i < StartingWeapons.Length; i++)
+        {
+            if (StartingWeapons[i])
+            {
+                CurrentItem = Instantiate(StartingWeapons[i]);
+                CurrentItem.EquipItem(this, i);
+            }
+        }
     }
 
     // ===================================  /EQUIPMENT SLOTS ===================================

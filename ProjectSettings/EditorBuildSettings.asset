@@ -6,5 +6,5 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/CombatTestScene.unity
-    guid: b4a3585dca5eeb24bb80be65960257e1
+    path: Assets/Scenes/HandMadeMap.unity
+    guid: 4e5141f5c521d5e439417182c60c0f09
