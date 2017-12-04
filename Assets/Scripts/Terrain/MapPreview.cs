@@ -105,8 +105,8 @@ public class MapPreview : MonoBehaviour
         terrain.GetComponent<Terrain>().materialTemplate = BiomeConfiguration.TerrainMaterial;
 
         /* Fill terrain with scenery */
-        var sceneryStructure = new SceneryStructure(_terrainStructure, Tree);
-        var sceneryObjects = sceneryStructure.GetSceneryObjects(terrain.GetComponent<Terrain>());
+        var sceneryStructure = new SceneryStructure(_terrainStructure);
+        var sceneryObjects = sceneryStructure.FillAllSceneryAreas(terrain.GetComponent<Terrain>());
         var scenery = new GameObject("Scenery");
         scenery.transform.parent = terrain.transform;
         foreach (var obj in sceneryObjects)
@@ -153,7 +153,7 @@ public class MapPreview : MonoBehaviour
 
     private static IEnumerator DestroyInEditor(GameObject obj)
     {
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForSecondsRealtime(1);
         DestroyImmediate(obj, true);
     }
 }

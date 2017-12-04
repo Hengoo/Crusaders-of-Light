@@ -1,6 +1,7 @@
 ﻿using System;
+using UnityEngine;
 
-// Recreation of the UnityEngine.Vector3, so it can be used in other thread
+// Recreation of the UnityEngine.Vector2, so it can be used in other thread
 public struct Vector2f {
 	
 	public float x, y;
@@ -22,6 +23,17 @@ public struct Vector2f {
 		this.x = (float)x;
 		this.y = (float)y;
 	}
+
+    public Vector2f(Vector2 p)
+    {
+        this.x = p.x;
+        this.y = p.y;
+    }
+
+    public Vector2 ToUnityVector2()
+    {
+        return new Vector2(x,y);
+    }
 	
 	public float magnitude {
 		get{

@@ -9,18 +9,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 554611769d52c3f4c856776b08c8bae1, type: 3}
-  m_Name: Plains
+  m_Name: DesertPlains
   m_EditorClassIdentifier: 
   UniqueName: Plains
-  BiomeHeight:
+  Height:
     Persistence: 0
-    LocalMax: 0.35
-    LocalMin: 0.3
+    LocalMax: 0.25
+    LocalMin: 0.2
     Lacunarity: 2
     Scale: 1
-  BiomeConditions:
-    Humidity: 0.5
-    Temperature: 0.5
+  Conditions:
+    Humidity: 0
+    Temperature: 0
+  FillPrefabs:
+  - {fileID: 100000, guid: 6c5f1b297e74cc44c815bf3bd0b029de, type: 3}
+  - {fileID: 100000, guid: 77ccebed3d0a07949919c59f6f0eccd6, type: 3}
+  - {fileID: 100000, guid: 40f0198c2f439244b8ac31dfea722719, type: 3}
+  - {fileID: 100000, guid: 109bc44c557b8c5439b28ab5838248dd, type: 3}
+  - {fileID: 100000, guid: 511905cac2a92dc41a2f361fa8ef0448, type: 3}
   NotNavigable: 0
   Splat:
     texture: {fileID: 2800000, guid: faa0fdfa84d093d4e911b40bba88cbd2, type: 3}

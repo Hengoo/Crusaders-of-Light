@@ -6,15 +6,16 @@ using UnityEngine;
 public class BiomeSettings : ScriptableObject
 {
     public string UniqueName;
-    public BiomeHeight BiomeHeight;
-    public BiomeConditions BiomeConditions;
+    public BiomeHeight Height;
+    public BiomeConditions Conditions;
+    public GameObject[] FillPrefabs;
     public bool NotNavigable = false;
     public SplatPrototypeSerializable Splat;
     public List<BiomeSettings> DontBlendWith = new List<BiomeSettings>();
-    public BiomeSettings(BiomeConditions biomeConditions, BiomeHeight biomeHeight, bool notNavigable)
+    public BiomeSettings(BiomeConditions conditions, BiomeHeight height, bool notNavigable)
     {
-        BiomeConditions = biomeConditions;
-        BiomeHeight = biomeHeight;
+        Conditions = conditions;
+        Height = height;
         NotNavigable = notNavigable;
     }
 }
@@ -77,10 +78,14 @@ public class Biome
 {
     public readonly Vector2 Center;
     public readonly BiomeSettings BiomeSettings;
+    public readonly Vector2[] BiomePolygon;
+    public readonly bool IsBorderBiome;
 
-    public Biome(Vector2 center, BiomeSettings biomeSettings)
+    public Biome(Vector2 center, BiomeSettings biomeSettings, bool isBorderBiome, Vector2[] biomePolygon)
     {
         Center = center;
         BiomeSettings = biomeSettings;
+        IsBorderBiome = isBorderBiome;
+        BiomePolygon = biomePolygon;
     }
 }

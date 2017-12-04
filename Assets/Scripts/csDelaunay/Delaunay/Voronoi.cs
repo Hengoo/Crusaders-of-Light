@@ -102,7 +102,7 @@ namespace csDelaunay {
 			return sites.Circles();
 		}
 
-		public List<LineSegment> VoronoiBoundarayForSite(Vector2f coord) {
+		public List<LineSegment> VoronoiBoundaryForSite(Vector2f coord) {
 			return LineSegment.VisibleLineSegments(Edge.SelectEdgesForSitePoint(coord, edges));
 		}
 		/*
