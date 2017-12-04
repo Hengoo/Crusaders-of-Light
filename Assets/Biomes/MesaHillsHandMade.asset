@@ -12,15 +12,17 @@ MonoBehaviour:
   m_Name: MesaHillsHandMade
   m_EditorClassIdentifier: 
   UniqueName: Mesa
-  BiomeHeight:
-    Persistence: 1
-    LocalMax: 1
-    LocalMin: 0.66
-    Lacunarity: 7.25
-    Scale: 39.2
-  BiomeConditions:
-    Humidity: 0.5
-    Temperature: 0.5
+  Height:
+    Persistence: 0
+    LocalMax: 0
+    LocalMin: 0
+    Lacunarity: 0
+    Scale: 0
+  Conditions:
+    Humidity: 0
+    Temperature: 0
+  FillPrefabs: []
+  PrefabMinDistance: 1
   NotNavigable: 0
   Splat:
     texture: {fileID: 2800000, guid: d1969f23333573b4f9b21a0f1c4c5a38, type: 3}

@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 554611769d52c3f4c856776b08c8bae1, type: 3}
+  m_Name: DesertPlains
+  m_EditorClassIdentifier: 
+  UniqueName: Plains
+  Height:
+    Persistence: 0
+    LocalMax: 0.25
+    LocalMin: 0.2
+    Lacunarity: 2
+    Scale: 1
+  Conditions:
+    Humidity: 0
+    Temperature: 0
+  FillPrefabs:
+  - {fileID: 100000, guid: 6c5f1b297e74cc44c815bf3bd0b029de, type: 3}
+  - {fileID: 100000, guid: 77ccebed3d0a07949919c59f6f0eccd6, type: 3}
+  - {fileID: 100000, guid: 40f0198c2f439244b8ac31dfea722719, type: 3}
+  - {fileID: 100000, guid: 109bc44c557b8c5439b28ab5838248dd, type: 3}
+  - {fileID: 100000, guid: 511905cac2a92dc41a2f361fa8ef0448, type: 3}
+  PrefabMinDistance: 10
+  NotNavigable: 0
+  Splat:
+    texture: {fileID: 2800000, guid: faa0fdfa84d093d4e911b40bba88cbd2, type: 3}
+    normalMap: {fileID: 0}
+    metallic: 0
+    smoothness: 0
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 10, y: 10}
+  DontBlendWith:
+  - {fileID: 11400000, guid: 0b96cb55724ac1f46bdaf4207bd32742, type: 2}

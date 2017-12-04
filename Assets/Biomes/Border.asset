@@ -12,15 +12,17 @@ MonoBehaviour:
   m_Name: Border
   m_EditorClassIdentifier: 
   UniqueName: Coast
-  BiomeHeight:
-    Persistence: 0.5
-    LocalMax: 0.15
+  Height:
+    Persistence: 0.3
+    LocalMax: 0.14
     LocalMin: 0
-    Lacunarity: 0.5
+    Lacunarity: 2
     Scale: 20
-  BiomeConditions:
-    Humidity: 0.5
-    Temperature: 0.5
+  Conditions:
+    Humidity: 0
+    Temperature: 0
+  FillPrefabs: []
+  PrefabMinDistance: 1
   NotNavigable: 1
   Splat:
     texture: {fileID: 2800000, guid: 99ba7739aaaf1314d9a3f324091677d4, type: 3}
