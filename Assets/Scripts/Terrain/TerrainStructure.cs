@@ -125,10 +125,11 @@ public class TerrainStructure
     }
 
     // Returns all biomes' polygons
-    public List<Vector2[]> GetBiomePolygons(out List<GameObject[]> prefabs)
+    public List<Vector2[]> GetBiomePolygons(out List<GameObject[]> prefabs, out List<float> minDistances)
     {
         var result = new List<Vector2[]>();
         prefabs = new List<GameObject[]>();
+        minDistances = new List<float>();
         foreach (var siteBiome in _siteBiomeMap)
         {
             var biome = BiomeGraph.GetNodeData(siteBiome.Value);
@@ -137,6 +138,7 @@ public class TerrainStructure
 
             result.Add(biome.BiomePolygon);
             prefabs.Add(biome.BiomeSettings.FillPrefabs);
+            minDistances.Add(biome.BiomeSettings.PrefabMinDistance);
         }
 
         return result;

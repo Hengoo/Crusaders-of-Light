@@ -22,6 +22,7 @@ MonoBehaviour:
     Humidity: 0
     Temperature: 0
   FillPrefabs: []
+  PrefabMinDistance: 1
   NotNavigable: 1
   Splat:
     texture: {fileID: 2800000, guid: 99ba7739aaaf1314d9a3f324091677d4, type: 3}

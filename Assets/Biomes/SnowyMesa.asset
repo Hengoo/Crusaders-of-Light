@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 554611769d52c3f4c856776b08c8bae1, type: 3}
-  m_Name: Mesa
+  m_Name: SnowyMesa
   m_EditorClassIdentifier: 
   UniqueName: Mesa
   Height:
@@ -21,7 +21,9 @@ MonoBehaviour:
   Conditions:
     Humidity: 0
     Temperature: 0
-  FillPrefabs: []
+  FillPrefabs:
+  - {fileID: 1158360484994764, guid: 3ed64c2e85fe7c343a3218ab0a5e4ccf, type: 2}
+  PrefabMinDistance: 3.5
   NotNavigable: 0
   Splat:
     texture: {fileID: 2800000, guid: d1969f23333573b4f9b21a0f1c4c5a38, type: 3}

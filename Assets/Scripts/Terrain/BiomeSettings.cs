@@ -9,6 +9,7 @@ public class BiomeSettings : ScriptableObject
     public BiomeHeight Height;
     public BiomeConditions Conditions;
     public GameObject[] FillPrefabs;
+    [Range(1f, 20f)] public float PrefabMinDistance = 10f;
     public bool NotNavigable = false;
     public SplatPrototypeSerializable Splat;
     public List<BiomeSettings> DontBlendWith = new List<BiomeSettings>();

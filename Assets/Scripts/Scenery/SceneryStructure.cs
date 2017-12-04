@@ -15,11 +15,12 @@ public class SceneryStructure
         TerrainStructure = terrainStructure;
 
         /* Get the biome edges from the terrain structure and create areas to fill with prefabs */
-        var prefabs = new List<GameObject[]>();
-        var polygons = TerrainStructure.GetBiomePolygons(out prefabs);
+        List<GameObject[]> prefabs;
+        List<float> minDistances;
+        var polygons = TerrainStructure.GetBiomePolygons(out prefabs, out minDistances);
         for (var i = 0; i < polygons.Count; i++)
         {
-            SceneryAreas.Add(new SceneryAreaFill(prefabs[i], polygons[i], 10));
+            SceneryAreas.Add(new SceneryAreaFill(prefabs[i], polygons[i], minDistances[i]));
         }
     }
 
@@ -68,7 +69,7 @@ public class SceneryStructure
         {
             var point = sample + sceneryAreaFill.BoundMin;
             var height = terrain.SampleHeight(new Vector3(point.x, 0, point.y));
-            if (!point.IsInsidePolygon(sceneryAreaFill.Polygon) || height <= TerrainStructure.BiomeConfiguration.SeaHeight + 0.05f)
+            if (!point.IsInsidePolygon(sceneryAreaFill.Polygon) || height <= (TerrainStructure.BiomeConfiguration.SeaHeight + 0.01f) * terrain.terrainData.size.y)
                 continue;
 
             var go = Object.Instantiate(sceneryAreaFill.Prefabs[Random.Range(0, sceneryAreaFill.Prefabs.Length)]);

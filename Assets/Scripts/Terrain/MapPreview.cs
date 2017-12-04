@@ -20,8 +20,8 @@ public class MapPreview : MonoBehaviour
     public List<BiomeSettings> AvailableBiomes;
     public int Seed = 0;
     public int NumberOfAreas = 3;
-    public GameObject Tree;
-    
+    public bool FillTerrain = true;
+
 
     /* Debug variables */
     private TerrainStructure _terrainStructure;
@@ -100,26 +100,29 @@ public class MapPreview : MonoBehaviour
         terrain.name = "Terrain";
         terrain.transform.parent = transform;
         terrain.transform.position = Vector3.zero;
-        terrain.GetComponent<Terrain>().terrainData.SetHeights(0,0,heightMap);
+        terrain.GetComponent<Terrain>().terrainData.SetHeights(0, 0, heightMap);
         terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
         terrain.GetComponent<Terrain>().materialTemplate = BiomeConfiguration.TerrainMaterial;
 
         /* Fill terrain with scenery */
-        var sceneryStructure = new SceneryStructure(_terrainStructure);
-        var sceneryObjects = sceneryStructure.FillAllSceneryAreas(terrain.GetComponent<Terrain>());
-        var scenery = new GameObject("Scenery");
-        scenery.transform.parent = terrain.transform;
-        foreach (var obj in sceneryObjects)
+        if (FillTerrain)
         {
-            obj.transform.parent = scenery.transform;
+            var sceneryStructure = new SceneryStructure(_terrainStructure);
+            var sceneryObjects = sceneryStructure.FillAllSceneryAreas(terrain.GetComponent<Terrain>());
+            var scenery = new GameObject("Scenery");
+            scenery.transform.parent = terrain.transform;
+            foreach (var obj in sceneryObjects)
+            {
+                obj.transform.parent = scenery.transform;
+            }
         }
-        
+
         /* Water Plane Placement */
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
         water.GetComponent<Renderer>().material = BiomeConfiguration.WaterMaterial;
-        water.transform.localScale = new Vector3(terrainData.size.x/10f, 1, terrainData.size.z/10f);
+        water.transform.localScale = new Vector3(terrainData.size.x / 10f, 1, terrainData.size.z / 10f);
         water.transform.parent = terrain.transform;
-        water.transform.localPosition = new Vector3(terrainData.size.x/2, (BiomeConfiguration.SeaHeight + 0.01f )* terrainData.size.y, terrainData.size.z/2);
+        water.transform.localPosition = new Vector3(terrainData.size.x / 2, (BiomeConfiguration.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2);
     }
 
     void DrawGraph()
@@ -129,7 +132,8 @@ public class MapPreview : MonoBehaviour
         newGraphInstance.transform.parent = transform;
     }
 
-    void DrawAreaGraph() {
+    void DrawAreaGraph()
+    {
         var newAreaGraphInstance = _areaStructure.DrawAreaGraph(BiomeConfiguration.HeightMapResolution / 500f);
         newAreaGraphInstance.name = "Polygon Graph";
         newAreaGraphInstance.transform.parent = transform;
@@ -140,7 +144,7 @@ public class MapPreview : MonoBehaviour
         var toDelete = new List<GameObject>();
         foreach (var o in FindObjectsOfType(typeof(GameObject)))
         {
-            var go = (GameObject) o;
+            var go = (GameObject)o;
             if (go.name == "Graph" || go.name == "Terrain" || go.name == "Polygon Graph")
                 toDelete.Add(go);
         }

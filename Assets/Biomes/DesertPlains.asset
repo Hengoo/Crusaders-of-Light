@@ -27,6 +27,7 @@ MonoBehaviour:
   - {fileID: 100000, guid: 40f0198c2f439244b8ac31dfea722719, type: 3}
   - {fileID: 100000, guid: 109bc44c557b8c5439b28ab5838248dd, type: 3}
   - {fileID: 100000, guid: 511905cac2a92dc41a2f361fa8ef0448, type: 3}
+  PrefabMinDistance: 10
   NotNavigable: 0
   Splat:
     texture: {fileID: 2800000, guid: faa0fdfa84d093d4e911b40bba88cbd2, type: 3}
