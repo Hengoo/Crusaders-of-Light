@@ -3,18 +3,24 @@ using UnityEngine;
 
 public class SceneryStructure
 {
-    public List<SceneryArea> SceneryAreas { get; private set; }
+    public List<SceneryAreaFill> SceneryAreas { get; private set; }
     public TerrainStructure TerrainStructure { get; private set; }
 
     public SceneryStructure(TerrainStructure terrainStructure, GameObject tree)
     {
-        SceneryAreas = new List<SceneryArea>();
+        SceneryAreas = new List<SceneryAreaFill>();
 
         TerrainStructure = terrainStructure;
 
+        Vector2[] array = { new Vector2(0, 0), new Vector2(100, 0), new Vector2(100, 100), new Vector2(0, 100) };
+
+        SceneryAreas.Add(new SceneryAreaFill(tree, array));
+
+        return;
+
         foreach (var polygon in TerrainStructure.GetBiomePolygons())
         {
-            SceneryAreas.Add(new SceneryArea(tree, polygon));
+            SceneryAreas.Add(new SceneryAreaFill(tree, polygon));
         }
     }
 
@@ -26,51 +32,49 @@ public class SceneryStructure
             var fill = FillSceneryArea(sceneryArea, terrain);
             result.Add(fill);
 
-
-            var polyGO = new GameObject("Poly");
-            polyGO.transform.parent = fill.transform;
+            var polygon = new GameObject("Poly");
+            polygon.transform.parent = fill.transform;
             int count = 0;
             foreach (var point in sceneryArea.Polygon)
             {
                 var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 sphere.name = count + " ";
                 sphere.GetComponent<Collider>().enabled = false;
-                sphere.transform.parent = polyGO.transform;
+                sphere.transform.parent = polygon.transform;
                 sphere.transform.position = new Vector3(point.x, 0, point.y);
                 sphere.transform.localScale = Vector3.one * 20;
             }
 
         }
-
         return result;
     }
 
-    public GameObject FillSceneryArea(SceneryArea sceneryArea, Terrain terrain)
+    public GameObject FillSceneryArea(SceneryAreaFill sceneryAreaFill, Terrain terrain)
     {
-        var result = new GameObject("SceneryArea");
+        var result = new GameObject("SceneryAreaFill");
         result.transform.position = Vector3.zero;
         result.transform.rotation = Quaternion.identity;
 
-        var size = sceneryArea.Size;
+        var size = sceneryAreaFill.Size;
         PoissonDiskGenerator.minDist = 10;
         PoissonDiskGenerator.sampleRange = size.x > size.y ? size.x : size.y;
         PoissonDiskGenerator.Generate();
         foreach (var sample in PoissonDiskGenerator.ResultSet)
         {
-            if (!sample.IsInsidePolygon(sceneryArea.Polygon))
+            if (!sample.IsInsidePolygon(sceneryAreaFill.Polygon))
                 continue;
 
-            var go = Object.Instantiate(sceneryArea.Prefab);
+            var go = Object.Instantiate(sceneryAreaFill.Prefab);
             var height = terrain.SampleHeight(new Vector3(sample.x, 0, sample.y));
             go.transform.parent = result.transform;
-            go.transform.position = new Vector3(sample.x + sceneryArea.BoundMin.x, height, sample.y + sceneryArea.BoundMin.y);
+            go.transform.position = new Vector3(sample.x + sceneryAreaFill.BoundMin.x, height, sample.y + sceneryAreaFill.BoundMin.y);
         }
 
         return result;
     }
 }
 
-public class SceneryArea
+public class SceneryAreaFill
 {
     public readonly Vector2[] Polygon;
     public readonly GameObject Prefab;
@@ -78,7 +82,7 @@ public class SceneryArea
     public readonly Vector2 BoundMin;
     public readonly Vector2 BoundMax;
 
-    public SceneryArea(GameObject prefab, Vector2[] polygon)
+    public SceneryAreaFill(GameObject prefab, Vector2[] polygon)
     {
         Prefab = prefab;
         Polygon = polygon;
