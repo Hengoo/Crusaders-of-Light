@@ -12,7 +12,7 @@ public class ItemSkill : MonoBehaviour {
 
     public int Level;
 
-    public List<Character> AlreadyHitCharacters = new List<Character>();
+    //public List<Character> AlreadyHitCharacters = new List<Character>();
 
     public bool StartSkillActivation()
     {
@@ -57,6 +57,16 @@ public class ItemSkill : MonoBehaviour {
     public bool CheckIfSkillIsUsingHitBox(ItemSkill SkillToCheck)
     {
         return ParentItem.CheckIfSkillIsUsingHitBox(SkillToCheck);
+    }
+
+    public void InterruptSkill(bool ResetCooldown)
+    {
+        if (ResetCooldown)
+        {
+            CurrentCooldown = 0;
+        }
+
+        ParentItem.EndSkillCurrentlyUsingItemHitBox();
     }
 
     public List<Character> GetAllCurrentlyCollidingCharacters()

@@ -10,6 +10,9 @@ public class CharacterPlayer : Character {
     [Header("Team Alignment:")]
     public TeamAlignment Alignment = TeamAlignment.PLAYERS;
 
+    [Header("Close Items List:")]
+    public List<Item> ItemsInRange = new List<Item>();
+
     protected override void Update()
     {
         PlayerInput();
@@ -46,13 +49,75 @@ public class CharacterPlayer : Character {
 
     // =================================== /SKILL ACTIVATION ====================================
 
+    // =================================== ITEM PICKUP ====================================
+
+    private bool PickUpClosestItem()
+    {
+        if (ItemsInRange.Count == 0)
+        {
+            return false;
+        }
+
+        int EquipSlotID = -1;
+
+        if (SkillActivationButtonsPressed[0] || SkillActivationButtonsPressed[1])
+        {
+            EquipSlotID = 0;
+        }
+        else if (SkillActivationButtonsPressed[2] || SkillActivationButtonsPressed[3])
+        {
+            EquipSlotID = 1;
+        }
+        else
+        {
+            return false;
+        }
+
+        Item ClosestItem = ItemsInRange[0];
+        float ClosestDistance = Vector3.Distance(this.transform.position, ClosestItem.transform.position);
+        float CurrentDistance = ClosestDistance;
+
+        for (int i = 1; i < ItemsInRange.Count; i++)
+        {
+            CurrentDistance = Vector3.Distance(this.transform.position, ItemsInRange[i].transform.position);
+            if (CurrentDistance < ClosestDistance)
+            {
+                ClosestDistance = CurrentDistance;
+                ClosestItem = ItemsInRange[i];
+            }
+        }
+
+        ClosestItem.EquipItem(this, EquipSlotID);
+        ItemsInRange.Remove(ClosestItem);
+
+        return true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Weapon"
+            && other.gameObject.GetComponent<Item>().GetOwner() == null)
+        {
+            ItemsInRange.Add(other.gameObject.GetComponent<Item>());
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Weapon"
+            && other.gameObject.GetComponent<Item>().GetOwner() == null)
+        {
+            ItemsInRange.Remove(other.gameObject.GetComponent<Item>());
+        }
+    }
+
+    // =================================== /ITEM PICKUP ====================================
+
     // ========================================= INPUT =========================================
 
     public void PlayerInput()
     {
-        Debug.Log("Input 1: " + Input.GetAxis("W1Skill2"));
-        Debug.Log("Input 2: " + Input.GetAxis("W2Skill1"));
-        // TODO : Match the SkillActivationButtonsPressed[] to Controller Shoulder Buttons depending on Player NodeCount/ID.
+        // Skill Activation Buttons:
         if (Input.GetButtonDown("W1Skill1"))
         {
             SkillActivationButtonsPressed[0] = true;
@@ -89,6 +154,16 @@ public class CharacterPlayer : Character {
             SkillActivationButtonsPressed[3] = false;
         }
 
+        // Weapon PickUp:
+        if (Input.GetButtonDown("IPickUp"))
+        {
+            if (PickUpClosestItem())
+            {
+                return;
+            }
+        }
+
+        // Skill Activation:
         if (SkillCurrentlyActivating < 0)
         {
             PlayerInputStartSkillActivation();

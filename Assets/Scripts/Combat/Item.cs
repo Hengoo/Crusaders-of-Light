@@ -12,6 +12,8 @@ public class Item : MonoBehaviour {
     private List<ItemSkill> ItemSkillsOnCooldown = new List<ItemSkill>();
 
     [Header("Item Hit Box:")]
+    public Rigidbody ItemRidgidBody;
+    public Collider ItemCollider;
     public bool IgnoreCurrentOwnerForCollisionChecks = true;
 
     [Header("Item Hit Box (Do not set - for Testing only):")]
@@ -55,6 +57,20 @@ public class Item : MonoBehaviour {
     public List<Character> GetAllCurrentlyCollidingCharacters()
     {
         return CurrentlyCollidingCharacters;
+    }
+
+    public void SwitchItemEquippedState(bool IsEquipped)
+    {
+        if (IsEquipped)
+        {
+            ItemRidgidBody.isKinematic = true;
+            ItemCollider.isTrigger = true;
+        }
+        else
+        {
+            ItemRidgidBody.isKinematic = false;
+            ItemCollider.isTrigger = false;
+        }
     }
 
     public void StartSkillCurrentlyUsingItemHitBox(ItemSkill SourceItemSkill, SkillType SourceSkill, bool HitEachCharacterOnce)
@@ -171,4 +187,6 @@ public class Item : MonoBehaviour {
             CurrentlyCollidingCharacters.Remove(OtherCharacter);
         }
     }
+
+
 }
