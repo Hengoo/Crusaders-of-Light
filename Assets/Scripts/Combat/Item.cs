@@ -16,6 +16,10 @@ public class Item : MonoBehaviour {
     public Collider ItemCollider;
     public bool IgnoreCurrentOwnerForCollisionChecks = true;
 
+    [Header("Item Equipped Position and Rotation:")]
+    public Vector3 EquippedPosition = new Vector3(0, 0, 0);
+    public Vector3 EquippedRotation = new Vector3(0, 0, 0);
+
     [Header("Item Hit Box (Do not set - for Testing only):")]
     public List<Character> CurrentlyCollidingCharacters = new List<Character>();
 
@@ -24,6 +28,8 @@ public class Item : MonoBehaviour {
     public ItemSkill ItemSkillCurrentlyUsingItemHitBox;
     public List<Character> AlreadyHitCharacters = new List<Character>();
     public Character.TeamAlignment CurrentItemHitBoxAlignment = Character.TeamAlignment.NONE;
+
+    public int EquippedSlotID = -1;
 
     public virtual void EquipItem(Character CharacterToEquipTo, int SlotID)
     {
@@ -57,6 +63,21 @@ public class Item : MonoBehaviour {
     public List<Character> GetAllCurrentlyCollidingCharacters()
     {
         return CurrentlyCollidingCharacters;
+    }
+
+    public int GetEquippedSlotID()
+    {
+        return EquippedSlotID;
+    }
+
+    public Vector3 GetEquippedPosition()
+    {
+        return EquippedPosition;
+    }
+
+    public Vector3 GetEquippedRotation()
+    {
+        return EquippedRotation;
     }
 
     public void SwitchItemEquippedState(bool IsEquipped)

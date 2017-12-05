@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ItemSkill : MonoBehaviour {
 
+    [Header("Item Skill:")]
     public Item ParentItem;
 
     public SkillType SkillObject;
@@ -12,11 +13,16 @@ public class ItemSkill : MonoBehaviour {
 
     public int Level;
 
+    [Header("Animation:")]
+    public string AnimationName = "no_animation";
+
     //public List<Character> AlreadyHitCharacters = new List<Character>();
 
     public bool StartSkillActivation()
     {
         if (CurrentCooldown > 0.0f) { return false; }
+        
+        ParentItem.GetOwner().StartAnimation(AnimationName, SkillObject.GetTotalActivationTime(), ParentItem.GetEquippedSlotID());
 
         return SkillObject.StartSkillActivation(this, GetCurrentOwner());
     }

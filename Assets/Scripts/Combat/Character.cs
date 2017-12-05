@@ -58,6 +58,9 @@ public class Character : MonoBehaviour {
     [Header("Physics Controller:")]
     protected PhysicsController PhysCont;
 
+    [Header("Animation:")]
+    public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand
+
     //[Header("GUI (for Testing Purposes):")]
     private GUICharacterFollow GUIChar;
 
@@ -288,9 +291,9 @@ public class Character : MonoBehaviour {
     private void EquipWeaponVisually(Item Weapon, int HandSlotID)
     {
         Weapon.SwitchItemEquippedState(true);
-        Weapon.transform.position = CharacterHands[HandSlotID].position;
-        Weapon.transform.rotation = CharacterHands[HandSlotID].rotation;
-        Weapon.transform.SetParent(CharacterHands[HandSlotID], true);
+        Weapon.transform.position = Weapon.GetEquippedPosition();
+        Weapon.transform.localRotation = Quaternion.Euler(Weapon.GetEquippedRotation());
+        Weapon.transform.SetParent(CharacterHands[HandSlotID], false);
     }
 
     private void UnEquipWeaponVisually(int HandSlotID)
@@ -543,6 +546,16 @@ public class Character : MonoBehaviour {
     }
 
     // =================================== /ACTIVE CONDITIONS ===================================
+
+    // =========================================== ANIMATION ==========================================
+
+    public void StartAnimation(string AnimationName, float AnimationSpeed, int HandID)
+    {
+        HandAnimators[HandID].SetTrigger("Trigger_" + AnimationName);
+        HandAnimators[HandID].speed = 1 / AnimationSpeed;
+    }
+
+    // ========================================== /ANIMATION ==========================================
 
     // =========================================== GUI ==========================================
 

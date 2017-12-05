@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 65758955448626372}
   - component: {fileID: 54592245177299682}
   m_Layer: 0
-  m_Name: Weapon_FireStaff
+  m_Name: Weapon_FireStaff_Strong
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -273,5 +273,5 @@ MonoBehaviour:
   ParentItem: {fileID: 114138546521913964}
   SkillObject: {fileID: 11400000, guid: 1e2fe83b838ecf3489d2d84c3830e32a, type: 2}
   CurrentCooldown: 0
-  Level: 3
+  Level: 6
   AnimationName: Magic_Staff_Cast

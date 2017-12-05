@@ -14,12 +14,14 @@ public class Weapon : Item {
         if (SuccesfullyEquipped)
         {
             CurrentOwner = CharacterToEquipTo;
+            EquippedSlotID = SlotID;
         }
     }
 
     public override void UnEquipItem()
     {
         CurrentOwner = null;
+        EquippedSlotID = -1;
     }
 
     public bool IsTwoHanded()
