@@ -293,6 +293,20 @@ public class Character : MonoBehaviour {
         Weapon.SwitchItemEquippedState(true);
         Weapon.transform.position = Weapon.GetEquippedPosition();
         Weapon.transform.localRotation = Quaternion.Euler(Weapon.GetEquippedRotation());
+
+     //   int ScaleFlipMod = 1;
+      //          if (HandSlotID == 1)
+       //         {
+       //             ScaleFlipMod = -1;
+       //         }
+
+               // Weapon.transform.localScale = new Vector3(Weapon.transform.localScale.x, Mathf.Abs(Weapon.transform.localScale.y) * ScaleFlipMod, Weapon.transform.localScale.z);
+                
+     //   BoxCollider test = Weapon.GetComponent<BoxCollider>();
+
+        //test.size = new Vector3(test.size.x, Mathf.Abs(test.size.y) * ScaleFlipMod, test.size.z);
+
+
         Weapon.transform.SetParent(CharacterHands[HandSlotID], false);
     }
 

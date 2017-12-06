@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b984467bd2a6944382038762a5729e9, type: 3}
   m_Name: Skill_Sword_Strike_DecisionMaker
   m_EditorClassIdentifier: 
-  Weight: 1
+  Weight: 1.2
   ConsiderationsTargeted:
   - {fileID: 11400000, guid: 82418297c9f153c47af79a3ba55a7dc2, type: 2}
   ConsiderationsSelf: []

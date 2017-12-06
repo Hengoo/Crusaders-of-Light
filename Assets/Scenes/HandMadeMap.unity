@@ -5451,6 +5451,12 @@ Prefab:
       propertyPath: PlayersInAttentionRange.Array.data[0]
       value: 
       objectReference: {fileID: 1789461354}
+    - target: {fileID: 114301975722172286, guid: a2f50ba4b979fa54a82d6fd7e3902bd2,
+        type: 2}
+      propertyPath: StartingWeapons.Array.data[0]
+      value: 
+      objectReference: {fileID: 114085459239855412, guid: 3b9c0f07dd055d84b9e71a376376711c,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a2f50ba4b979fa54a82d6fd7e3902bd2, type: 2}
   m_IsPrefabParent: 0
@@ -14872,12 +14878,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab6778a9b3b095f4a9e6bf28617057e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 100
-  HealthMax: 100
+  HealthCurrent: 300
+  HealthMax: 300
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
-  - 0.7
+  - 0.6
   - 0.7
   - 0.7
   - 0.7
@@ -16427,6 +16433,10 @@ Prefab:
       propertyPath: PlayersInAttentionRange.Array.data[0]
       value: 
       objectReference: {fileID: 1789461354}
+    - target: {fileID: 1190281747256084, guid: 6c5655d12222f234ba763facca60192b, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6c5655d12222f234ba763facca60192b, type: 2}
   m_IsPrefabParent: 0
