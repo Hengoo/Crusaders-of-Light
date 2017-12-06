@@ -71,7 +71,7 @@ public class LightFlicker : MonoBehaviour
 		lightSource.color = Color.Lerp(color1, color2, (lightSource.intensity - minInten) / (maxInten - minInten));
 		transform.localPosition = Vector3.Lerp(lastPos , targetPos , (Time.time - lastFlicker) / realRate);
 
-		print((lightSource.intensity - minInten) / (maxInten - minInten));
+		//print((lightSource.intensity - minInten) / (maxInten - minInten));
 
 	}
 }
