@@ -25,7 +25,6 @@ public class TerrainStructure
     public TerrainStructure(List<BiomeSettings> availableBiomes, BiomeConfiguration biomeConfiguration)
     {
         BiomeGraph = new Graph<Biome>();
-
         BiomeConfiguration = biomeConfiguration;
 
         //Add Splat textures to global shader variables
@@ -58,7 +57,7 @@ public class TerrainStructure
         var navigableBiomeIDs = new HashSet<int>();
         var centers = new List<Vector2f>();
 
-        // Create random point distribution and apply lloyd relaxation
+        // Create uniform random point distribution and apply lloyd relaxation
         for (int i = 0; i < biomeConfiguration.BiomeSamples; i++)
         {
             var x = Random.Range(0f, biomeConfiguration.MapSize);
@@ -70,7 +69,7 @@ public class TerrainStructure
         VoronoiDiagram.LloydRelaxation(biomeConfiguration.LloydRelaxation);
         
 
-        //Iterate over each site and add a biome to it
+        //Iterate over each site and add a random biome to it
         foreach (var site in VoronoiDiagram.SiteCoords())
         {
             bool isOnBorder = false;
@@ -429,6 +428,11 @@ public class TerrainStructure
         }
 
         return result;
+    }
+
+    public int GetNodeIDFromSite(Vector2f coord)
+    {
+        return _siteBiomeMap[coord];
     }
 
     private Texture2D GenerateBlankNormal()
