@@ -118,9 +118,9 @@ public class MapPreview : MonoBehaviour
         /* Water Plane Placement */
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
         water.GetComponent<Renderer>().material = BiomeConfiguration.WaterMaterial;
-        water.transform.localScale = new Vector3(terrainData.size.x / 10f, 1, terrainData.size.z / 10f);
+        water.transform.localScale = new Vector3(terrainData.size.x / 5f, 1, terrainData.size.z / 5f);
         water.transform.parent = terrain.transform;
-        water.transform.localPosition = new Vector3(terrainData.size.x / 2, (BiomeConfiguration.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2);
+        water.transform.localPosition = new Vector3(terrainData.size.x / 2f, (BiomeConfiguration.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2f);
     }
 
     void DrawGraph()
