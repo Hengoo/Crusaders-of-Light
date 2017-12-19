@@ -326,10 +326,10 @@ public class TerrainStructure
 
         DrawLineSegments(VoronoiDiagram.VoronoiDiagram(), scale, voronoi.transform);
 
-        foreach (var edge in BiomeGraph.GetAllEdges())
+        foreach (var edge in MinimumSpanningTree.GetAllEdges())
         {
-            var biome1 = BiomeGraph.GetNodeData(edge.x);
-            var biome2 = BiomeGraph.GetNodeData(edge.y);
+            var biome1 = MinimumSpanningTree.GetNodeData(edge.x);
+            var biome2 = MinimumSpanningTree.GetNodeData(edge.y);
 
             var start = new Vector3(biome1.Center.x, 0, biome1.Center.y);
             var end = new Vector3(biome2.Center.x, 0, biome2.Center.y);

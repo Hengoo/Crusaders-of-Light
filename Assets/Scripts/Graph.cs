@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public class Graph<T> where T : class
     public Graph() { }
     public Graph(Graph<T> original)
     {
-        _nodes = (from x in original._nodes select x).ToDictionary(x => x.Key, x => x.Value);
+        _nodes = (from x in original._nodes select x).ToDictionary(x => x.Key, x => x.Value.Clone());
         _edges = (from x in original._edges select x).ToDictionary(x => x.Key, x => x.Value);
         _nodeIDCount = original._nodeIDCount;
     }
@@ -103,19 +104,20 @@ public class Graph<T> where T : class
 
     public bool AddEdge(int node1, int node2, float weight)
     {
-        bool nodeExist = _nodes.ContainsKey(node1) && _nodes.ContainsKey(node2);
-        if (nodeExist && !_edges.ContainsKey(new Pair(node1, node2)))
+        bool nodesExist = _nodes.ContainsKey(node1) && _nodes.ContainsKey(node2);
+        if (nodesExist && !_edges.ContainsKey(new Pair(node1, node2)) && node1 != node2)
         {
             Edge edge = new Edge(node1, node2, weight);
-            _nodes[node1].Neighbors.Add(_nodes[node2]);
-            _nodes[node2].Neighbors.Add(_nodes[node1]);
+            _nodes[node1].AddNeighbor(_nodes[node2]);
+            _nodes[node2].AddNeighbor(_nodes[node1]);
             _edges.Add(edge.Nodes, edge);
             return true;
         }
 
-        if (!nodeExist)
+        if (!nodesExist)
             Debug.Log("One or both of nodes not found in graph");
 
+        Debug.Log("Node1 equals to node2 or edge already exists");
         return false;
     }
 
@@ -158,6 +160,7 @@ public class Graph<T> where T : class
 
     private class Edge
     {
+
         public readonly Pair Nodes;
         public float Weight; // always normalized
 
@@ -167,9 +170,33 @@ public class Graph<T> where T : class
             Weight = Mathf.Clamp01(weight);
         }
 
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals(Nodes, ((Edge)obj).Nodes);
+        }
+
         public override string ToString()
         {
             return Nodes.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1475187997;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Pair>.Default.GetHashCode(Nodes);
+            return hashCode;
+        }
+
+        public static bool operator ==(Edge edge1, Edge edge2)
+        {
+            return EqualityComparer<Edge>.Default.Equals(edge1, edge2);
+        }
+
+        public static bool operator !=(Edge edge1, Edge edge2)
+        {
+            return !(edge1 == edge2);
         }
     }
 
@@ -193,6 +220,18 @@ public class Graph<T> where T : class
         public int GetHashCode(Node obj)
         {
             return NodeID.GetHashCode();
+        }
+
+        public bool AddNeighbor(Node node)
+        {
+            return node != this && Neighbors.Add(node);
+        }
+
+        public Node Clone()
+        {
+            var result = new Node(NodeID, Data);
+            result.Neighbors.UnionWith(Neighbors);
+            return result;
         }
     }
 
