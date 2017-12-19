@@ -116,8 +116,7 @@ public class Graph<T> where T : class
 
         if (!nodesExist)
             Debug.Log("One or both of nodes not found in graph");
-
-        Debug.Log("Node1 equals to node2 or edge already exists");
+        
         return false;
     }
 

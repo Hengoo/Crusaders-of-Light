@@ -9,12 +9,15 @@ using Random = UnityEngine.Random;
 public class WorldStructure
 {
     public Graph<Biome> NavigationGraph { get; private set; }
+    public List<Vector2Int> AreaCrossingEdges { get; private set; }
     private readonly TerrainStructure _terrainStructure;
+
 
     public WorldStructure(TerrainStructure terrainStructure, int numAreas, WorldGenerationMethod method)
     {
         _terrainStructure = terrainStructure;
         NavigationGraph = new Graph<Biome>(_terrainStructure.MinimumSpanningTree);
+        AreaCrossingEdges = new List<Vector2Int>(numAreas - 1);
         switch (method)
         {
             case WorldGenerationMethod.MinimumSpanningTree:
@@ -35,14 +38,13 @@ public class WorldStructure
 
         //Divide path in numAreas Areas
         var areaStartingNodes = new List<int>();
-        var crossingEdges = new List<Vector2Int>(numAreas - 1);
         for (var i = 0; i < numAreas - 1; i++)
         {
-            crossingEdges.Add(new Vector2Int(greatestPath[greatestPath.Count / numAreas * (i + 1)], greatestPath[greatestPath.Count / numAreas * (i + 1) + 1]));
-            NavigationGraph.RemoveEdge(crossingEdges[i].x, crossingEdges[i].y);
-            areaStartingNodes.Add(crossingEdges[i].x);
+            AreaCrossingEdges.Add(new Vector2Int(greatestPath[greatestPath.Count / numAreas * (i + 1)], greatestPath[greatestPath.Count / numAreas * (i + 1) + 1]));
+            NavigationGraph.RemoveEdge(AreaCrossingEdges[i].x, AreaCrossingEdges[i].y);
+            areaStartingNodes.Add(AreaCrossingEdges[i].x);
         }
-        areaStartingNodes.Add(crossingEdges.Last().y);
+        areaStartingNodes.Add(AreaCrossingEdges.Last().y);
 
         //Group nodes in each area
         var areaNodes = new HashSet<int>[numAreas];
@@ -56,16 +58,20 @@ public class WorldStructure
         foreach (var edge in NavigationGraph.GetAllEdges())
             tempGraph.RemoveEdge(edge.x, edge.y);
 
-        var tries = extraEdges * 2;
+        var tries = extraEdges * 10;
         while (extraEdges > 0 && tries > 0)
         {
             var success = false;
+            if (tempGraph.GetAllEdges().Length <= 0)
+                break;
             var edge = tempGraph.GetAllEdges()[Random.Range(0, tempGraph.GetAllEdges().Length)];
+            tempGraph.RemoveEdge(edge.x, edge.y);
             foreach (HashSet<int> set in areaNodes)
             {
-                if (set.Contains(edge.x) && set.Contains(edge.y))
+                var xNeighbors = NavigationGraph.GetNeighbours(edge.x);
+                var yNeighbors = NavigationGraph.GetNeighbours(edge.y);
+                if (set.Contains(edge.x) && set.Contains(edge.y) && !(xNeighbors.Intersect(yNeighbors).Any()))
                 {
-                    tempGraph.RemoveEdge(edge.x, edge.y);
                     NavigationGraph.AddEdge(edge.x, edge.y, 1);
                     success = true;
                 }
@@ -77,7 +83,7 @@ public class WorldStructure
                 tries--;
         }
         if (tries <= 0)
-            Debug.LogWarning("Failed to add all extra edges");
+            Debug.LogWarning("Failed to add all extra edges. Remaining: " + extraEdges);
 
     }
 
@@ -133,15 +139,57 @@ public class WorldStructure
 
         var result = new GameObject();
 
+        var minimumSpanningTree = new GameObject("Minimum Spanning Tree");
+        minimumSpanningTree.transform.parent = result.transform;
 
-        var areas = new GameObject("Areas");
-        areas.transform.parent = result.transform;
+        var navigationEdges = new GameObject("Navigation Edges");
+        navigationEdges.transform.parent = result.transform;
 
-        var edgesIn = new GameObject("Inner Edges");
-        edgesIn.transform.parent = result.transform;
-
-        var borders = new GameObject("Borders");
+        var borders = new GameObject("Area Borders");
         borders.transform.parent = result.transform;
+
+        //Draw navigation edges
+        foreach (var edge in NavigationGraph.GetAllEdges())
+        {
+            var biome1 = NavigationGraph.GetNodeData(edge.x);
+            var biome2 = NavigationGraph.GetNodeData(edge.y);
+
+            var start = new Vector3(biome1.Center.x, 0, biome1.Center.y);
+            var end = new Vector3(biome2.Center.x, 0, biome2.Center.y);
+            GameObject myLine = new GameObject("Line");
+            myLine.transform.position = start;
+            myLine.transform.parent = navigationEdges.transform;
+            LineRenderer lr = myLine.AddComponent<LineRenderer>();
+            lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
+            lr.startColor = Color.white;
+            lr.endColor = Color.white;
+            lr.startWidth = 2 * scale;
+            lr.endWidth = 2 * scale;
+            lr.SetPosition(0, start);
+            lr.SetPosition(1, end);
+        }
+
+        //Draw minimum spanning tree
+        foreach (var edge in _terrainStructure.MinimumSpanningTree.GetAllEdges())
+        {
+            var biome1 = _terrainStructure.MinimumSpanningTree.GetNodeData(edge.x);
+            var biome2 = _terrainStructure.MinimumSpanningTree.GetNodeData(edge.y);
+
+            var start = new Vector3(biome1.Center.x, 0, biome1.Center.y);
+            var end = new Vector3(biome2.Center.x, 0, biome2.Center.y);
+            GameObject myLine = new GameObject("Line");
+            myLine.transform.position = start;
+            myLine.transform.parent = minimumSpanningTree.transform;
+            LineRenderer lr = myLine.AddComponent<LineRenderer>();
+            lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
+            lr.startColor = Color.white;
+            lr.endColor = Color.white;
+            lr.startWidth = 2 * scale;
+            lr.endWidth = 2 * scale;
+            lr.SetPosition(0, start);
+            lr.SetPosition(1, end);
+
+        }
 
         return result;
     }
