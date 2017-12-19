@@ -23,12 +23,12 @@ public class WorldStructure
         AreaCrossingEdges = new List<Vector2Int>(numAreas - 1);
         AreaPolygon = new List<Vector2[]>(numAreas);
         BorderLineSegments = new List<LineSegment>();
-
         NumberOfAreas = numAreas;
-        GenerateMSP(extraEdges);
+
+        GenerateAreas(extraEdges);
     }
 
-    private void GenerateMSP(int extraEdges)
+    private void GenerateAreas(int extraEdges)
     {
         //Find largest path
         var greatestPath = GetLargestPathInMST(new Graph<Biome>(_terrainStructure.MinimumSpanningTree));
@@ -137,18 +137,11 @@ public class WorldStructure
             if (areaLeft != -1 && areaRight != -1 && areaLeft != areaRight)
                 borderEdges.Add(edge);
         }
-
         foreach (var edge in borderEdges)
         {
             if (!edge.Visible()) continue;
             BorderLineSegments.Add(new LineSegment(edge.ClippedEnds[LR.LEFT], edge.ClippedEnds[LR.RIGHT]));
         }
-    }
-
-    private Vector2[] GenerateAreaPolygon(int area, List<Edge> edges)
-    {
-        //TODO implement
-        return null;
     }
 
     private List<int> GetLargestPathInMST(Graph<Biome> mst)

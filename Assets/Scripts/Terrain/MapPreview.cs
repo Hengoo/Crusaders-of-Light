@@ -41,8 +41,11 @@ public class MapPreview : MonoBehaviour
 
         ClearDisplay();
         Random.InitState(Seed);
+
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeConfiguration);
         _worldStructure = new WorldStructure(_terrainStructure, NumberOfAreas, ExtraEdges);
+        _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure);
+
         switch (DrawMode)
         {
             case DrawModeEnum.BiomeGraph:
@@ -106,8 +109,7 @@ public class MapPreview : MonoBehaviour
         /* Fill terrain with scenery */
         if (FillTerrain)
         {
-            var sceneryStructure = new SceneryStructure(_terrainStructure);
-            var sceneryObjects = sceneryStructure.FillAllSceneryAreas(terrain.GetComponent<Terrain>());
+            var sceneryObjects = _sceneryStructure.FillAllSceneryAreas(terrain.GetComponent<Terrain>());
             var scenery = new GameObject("Scenery");
             scenery.transform.parent = terrain.transform;
             foreach (var obj in sceneryObjects)

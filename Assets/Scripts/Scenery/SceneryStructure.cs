@@ -6,15 +6,21 @@ public class SceneryStructure
 {
     public List<SceneryAreaFill> SceneryAreas { get; private set; }
     public TerrainStructure TerrainStructure { get; private set; }
-    
+    public WorldStructure WorldStructure { get; private set; }
 
-    public SceneryStructure(TerrainStructure terrainStructure)
+    public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure)
     {
         SceneryAreas = new List<SceneryAreaFill>();
 
         TerrainStructure = terrainStructure;
+        WorldStructure = worldStructure;
 
-        /* Get the biome edges from the terrain structure and create areas to fill with prefabs */
+        CreateFill();
+    }
+
+    private void CreateFill()
+    {
+        //Get the biome edges from the terrain structure and create areas to fill with prefabs
         List<GameObject[]> prefabs;
         List<float> minDistances;
         var polygons = TerrainStructure.GetBiomePolygons(out prefabs, out minDistances);
@@ -22,6 +28,8 @@ public class SceneryStructure
         {
             SceneryAreas.Add(new SceneryAreaFill(prefabs[i], polygons[i], minDistances[i]));
         }
+
+        //
     }
 
     /* Fill all areas with prefabs */
