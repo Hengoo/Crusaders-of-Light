@@ -4,19 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using csDelaunay;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class WorldStructure
 {
+    public Graph<Biome> NavigationGraph { get; private set; }
     private readonly TerrainStructure _terrainStructure;
-    public Graph<Biome> NavigationGraph;
 
     public WorldStructure(TerrainStructure terrainStructure, int numAreas, WorldGenerationMethod method)
     {
         _terrainStructure = terrainStructure;
+        NavigationGraph = new Graph<Biome>(_terrainStructure.MinimumSpanningTree);
         switch (method)
         {
             case WorldGenerationMethod.MinimumSpanningTree:
-                GenerateMSP(numAreas, terrainStructure.BiomeGraph.EdgeCount() / 2);
+                GenerateMSP(numAreas, terrainStructure.MinimumSpanningTree.EdgeCount() / 3);
                 break;
             case WorldGenerationMethod.FullyConnectedGraph:
                 GenerateFCG();
@@ -31,39 +33,52 @@ public class WorldStructure
         //Find largest path
         var greatestPath = GetLargestPathInMST(new Graph<Biome>(_terrainStructure.MinimumSpanningTree));
 
-        return;
-
-        foreach (var VARIABLE in greatestPath)
-        {
-            Debug.Log(VARIABLE);
-        }
-
         //Divide path in numAreas Areas
         var areaStartingNodes = new List<int>();
         var crossingEdges = new List<Vector2Int>(numAreas - 1);
-        var separatedAreas = new Graph<Biome>(_terrainStructure.MinimumSpanningTree);
         for (var i = 0; i < numAreas - 1; i++)
         {
             crossingEdges.Add(new Vector2Int(greatestPath[greatestPath.Count / numAreas * (i + 1)], greatestPath[greatestPath.Count / numAreas * (i + 1) + 1]));
-            separatedAreas.RemoveEdge(crossingEdges[i].x, crossingEdges[i].y);
-            _terrainStructure.MinimumSpanningTree.RemoveEdge(crossingEdges[i].x, crossingEdges[i].y);
+            NavigationGraph.RemoveEdge(crossingEdges[i].x, crossingEdges[i].y);
             areaStartingNodes.Add(crossingEdges[i].x);
-            Debug.Log("GP: " + greatestPath.Count + ", AREA: " + crossingEdges[i].x);
         }
         areaStartingNodes.Add(crossingEdges.Last().y);
-        Debug.Log("GP: " + greatestPath.Count + ", AREA: " + crossingEdges.Last().y);
 
-
-
-        ////Group nodes in each area
-        //var areaNodes = new HashSet<int>[numAreas];
-        //for (var i = 0; i < areaNodes.Length; i++)
-        //{
-        //    areaNodes[i] = GetConnectedNodes(areaStartingNodes[i], separatedAreas, new HashSet<int>());
-        //}
+        //Group nodes in each area
+        var areaNodes = new HashSet<int>[numAreas];
+        for (var i = 0; i < areaNodes.Length; i++)
+        {
+            areaNodes[i] = GetConnectedNodes(areaStartingNodes[i], NavigationGraph, new HashSet<int>());
+        }
 
         //Create area graphs
-        //TODO: implement
+        var tempGraph = new Graph<Biome>(_terrainStructure.BiomeGraph);
+        foreach (var edge in NavigationGraph.GetAllEdges())
+            tempGraph.RemoveEdge(edge.x, edge.y);
+
+        var tries = extraEdges * 2;
+        while (extraEdges > 0 && tries > 0)
+        {
+            var success = false;
+            var edge = tempGraph.GetAllEdges()[Random.Range(0, tempGraph.GetAllEdges().Length)];
+            foreach (HashSet<int> set in areaNodes)
+            {
+                if (set.Contains(edge.x) && set.Contains(edge.y))
+                {
+                    tempGraph.RemoveEdge(edge.x, edge.y);
+                    NavigationGraph.AddEdge(edge.x, edge.y, 1);
+                    success = true;
+                }
+            }
+
+            if (success)
+                extraEdges--;
+            else
+                tries--;
+        }
+        if (tries <= 0)
+            Debug.LogWarning("Failed to add all extra edges");
+
     }
 
     private void GenerateFCG()
@@ -106,7 +121,6 @@ public class WorldStructure
         foreach (var neighbor in biomeGraph.GetNeighbours(currentNode))
         {
             if (set.Contains(neighbor)) continue;
-
             set.UnionWith(GetConnectedNodes(neighbor, biomeGraph, set));
         }
 
