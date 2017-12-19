@@ -246,7 +246,7 @@ public class WorldStructure
             {
                 var start = new Vector3(polygon[i].x, 0, polygon[i].y);
                 var end = new Vector3(polygon[(i + 1) % polygon.Length].x, 0, polygon[(i + 1) % polygon.Length].y);
-                GameObject myLine = new GameObject("Area");
+                GameObject myLine = new GameObject("Area Line");
                 myLine.transform.position = start;
                 myLine.transform.parent = polygons.transform;
                 LineRenderer lr = myLine.AddComponent<LineRenderer>();
@@ -265,7 +265,7 @@ public class WorldStructure
         {
             var start = new Vector3(line.p0.x, 0, line.p0.y);
             var end = new Vector3(line.p1.x, 0, line.p1.y);
-            GameObject myLine = new GameObject("Border");
+            GameObject myLine = new GameObject("Border Line");
             myLine.transform.position = start;
             myLine.transform.parent = borders.transform;
             LineRenderer lr = myLine.AddComponent<LineRenderer>();
