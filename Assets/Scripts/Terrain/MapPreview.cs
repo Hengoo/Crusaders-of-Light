@@ -19,6 +19,7 @@ public class MapPreview : MonoBehaviour
     public List<BiomeSettings> AvailableBiomes;
     public int Seed = 0;
     public int NumberOfAreas = 3;
+    public int ExtraEdges = 20;
     public bool FillTerrain = true;
 
 
@@ -41,7 +42,7 @@ public class MapPreview : MonoBehaviour
         ClearDisplay();
         Random.InitState(Seed);
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeConfiguration);
-        _worldStructure = new WorldStructure(_terrainStructure, NumberOfAreas, WorldGenerationMethod.MinimumSpanningTree);
+        _worldStructure = new WorldStructure(_terrainStructure, NumberOfAreas, ExtraEdges);
         switch (DrawMode)
         {
             case DrawModeEnum.BiomeGraph:
