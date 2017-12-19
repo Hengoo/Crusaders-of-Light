@@ -24,7 +24,7 @@ public class MapPreview : MonoBehaviour
 
     /* Debug variables */
     private TerrainStructure _terrainStructure;
-    private WorldStructureGraph _areaStructure;
+    private WorldStructure _worldStructure;
     private SceneryStructure _sceneryStructure;
 
     void Start()
@@ -41,7 +41,7 @@ public class MapPreview : MonoBehaviour
         ClearDisplay();
         Random.InitState(Seed);
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeConfiguration);
-        _areaStructure = new WorldStructureGraph();
+        _worldStructure = new WorldStructure(_terrainStructure, NumberOfAreas, WorldGenerationMethod.MinimumSpanningTree);
         switch (DrawMode)
         {
             case DrawModeEnum.BiomeGraph:
@@ -51,7 +51,6 @@ public class MapPreview : MonoBehaviour
                 DrawTerrain();
                 break;
             case DrawModeEnum.AreaGraph:
-                _areaStructure.GenerateAreaGraph(_terrainStructure.BiomeGraph, _terrainStructure.VoronoiDiagram, NumberOfAreas);
                 DrawAreaGraph();
                 break;
             default:
@@ -127,14 +126,14 @@ public class MapPreview : MonoBehaviour
     void DrawGraph()
     {
         var newGraphInstance = _terrainStructure.DrawBiomeGraph(BiomeConfiguration.HeightMapResolution / 500f);
-        newGraphInstance.name = "Graph";
+        newGraphInstance.name = "BiomeGraph";
         newGraphInstance.transform.parent = transform;
     }
 
     void DrawAreaGraph()
     {
-        var newAreaGraphInstance = _areaStructure.DrawAreaGraph(BiomeConfiguration.HeightMapResolution / 500f);
-        newAreaGraphInstance.name = "Polygon Graph";
+        var newAreaGraphInstance = _worldStructure.DrawAreaGraph(BiomeConfiguration.HeightMapResolution / 500f);
+        newAreaGraphInstance.name = "AreaGraph";
         newAreaGraphInstance.transform.parent = transform;
     }
 
@@ -144,7 +143,7 @@ public class MapPreview : MonoBehaviour
         foreach (var o in FindObjectsOfType(typeof(GameObject)))
         {
             var go = (GameObject)o;
-            if (go.name == "Graph" || go.name == "Terrain" || go.name == "Polygon Graph")
+            if (go.name == "BiomeGraph" || go.name == "Terrain" || go.name == "AreaGraph")
                 toDelete.Add(go);
         }
 

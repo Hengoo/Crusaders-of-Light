@@ -12,7 +12,7 @@ public class TerrainStructure
     public Graph<Biome> BiomeGraph { get; private set; }
     public Graph<Biome> MinimumSpanningTree { get; private set; }
     public readonly BiomeConfiguration BiomeConfiguration;
-    private KeyValuePair<Vector2f, int> _startBiome;
+    public KeyValuePair<Vector2f, int> StartBiomeNode;
 
     private readonly Dictionary<Vector2f, int> _siteBiomeMap = new Dictionary<Vector2f, int>(); //Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap = new Dictionary<SplatPrototypeSerializable, int>(); //Mapping of biome SplatPrototypes and terrain texture IDs
@@ -316,7 +316,7 @@ public class TerrainStructure
             go.transform.parent = biomes.transform;
             go.transform.position = new Vector3(pos.x, 0, pos.y);
             go.transform.localScale = Vector3.one * 20 * scale;
-            if (biome.Value == _startBiome.Value)
+            if (biome.Value == StartBiomeNode.Value)
             {
                 var renderer = go.GetComponent<Renderer>();
                 var tempMaterial = new Material(renderer.sharedMaterial) { color = Color.red };
@@ -386,9 +386,9 @@ public class TerrainStructure
 
         //Less biased towards outer biomes than using unity's random function
         randomBiomeList.Shuffle();
-        _startBiome = randomBiomeList.First();
+        StartBiomeNode = randomBiomeList.First();
 
-        result = PrimMSP(_startBiome, navigableBiomes);
+        result = PrimMSP(StartBiomeNode, navigableBiomes);
 
         return result;
     }
