@@ -37,13 +37,13 @@ public class SceneryStructure
             var start = TerrainStructure.BiomeGraph.GetNodeData(edge.x).Center;
             var end = TerrainStructure.BiomeGraph.GetNodeData(edge.y).Center;
 
-            var line = end - start;
+            var line = (end - start).normalized;
             var normal = (Vector2)Vector3.Cross(line, Vector3.forward).normalized;
 
-            var p0 = start + normal * roadWidth;
-            var p1 = start - normal * roadWidth;
-            var p2 = end + normal * roadWidth;
-            var p3 = end - normal * roadWidth;
+            var p0 = start - line * roadWidth + normal * roadWidth;
+            var p1 = start - line * roadWidth - normal * roadWidth;
+            var p2 = end + line * roadWidth + normal * roadWidth;
+            var p3 = end + line * roadWidth - normal * roadWidth;
             var origin = (p0 + p1 + p2 + p3) / 4;
 
             var poly = new List<Vector2>{p0, p1, p2, p3};
@@ -52,7 +52,19 @@ public class SceneryStructure
         }
 
         //Add removal polygon to affected area fill
-        //TODO: implement
+        foreach (var polygon in roadPolygons)
+        {
+            foreach (var vertex in polygon)
+            {
+                foreach (var area in SceneryAreas)
+                {
+                    if(vertex.IsInsidePolygon(area.Polygon))
+                        area.AddClearPolygon(polygon);
+                }
+            }
+        }
+
+
     }
 
     /* Fill all areas with prefabs */
