@@ -17,10 +17,13 @@ public class MapPreview : MonoBehaviour
     public DrawModeEnum DrawMode = DrawModeEnum.BiomeGraph;
     public BiomeConfiguration BiomeConfiguration;
     public List<BiomeSettings> AvailableBiomes;
-    public int Seed = 0;
+    
     public int NumberOfAreas = 3;
     public int ExtraEdges = 20;
     public bool FillTerrain = true;
+    public float RoadHalfWidth = 10;
+
+    public int Seed = 0;
 
 
     /* Debug variables */
@@ -44,7 +47,7 @@ public class MapPreview : MonoBehaviour
 
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeConfiguration);
         _worldStructure = new WorldStructure(_terrainStructure, NumberOfAreas, ExtraEdges);
-        _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure);
+        _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, RoadHalfWidth);
 
         switch (DrawMode)
         {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using csDelaunay;
 using TriangleNet.Voronoi;
 using UnityEngine;
 
@@ -8,17 +9,17 @@ public class SceneryStructure
     public TerrainStructure TerrainStructure { get; private set; }
     public WorldStructure WorldStructure { get; private set; }
 
-    public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure)
+    public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, float roadWidth)
     {
         SceneryAreas = new List<SceneryAreaFill>();
 
         TerrainStructure = terrainStructure;
         WorldStructure = worldStructure;
 
-        CreateFill();
+        CreateFill(roadWidth);
     }
 
-    private void CreateFill()
+    private void CreateFill(float roadWidth)
     {
         //Get the biome edges from the terrain structure and create areas to fill with prefabs
         List<GameObject[]> prefabs;
@@ -29,7 +30,41 @@ public class SceneryStructure
             SceneryAreas.Add(new SceneryAreaFill(prefabs[i], polygons[i], minDistances[i]));
         }
 
-        //
+        //Create road polygons
+        var roadPolygons = new List<Vector2[]>();
+        foreach (var edge in WorldStructure.NavigationGraph.GetAllEdges())
+        {
+            var start = TerrainStructure.BiomeGraph.GetNodeData(edge.x).Center;
+            var end = TerrainStructure.BiomeGraph.GetNodeData(edge.y).Center;
+
+            var line = (end - start).normalized;
+            var normal = (Vector2)Vector3.Cross(line, Vector3.forward).normalized;
+
+            var p0 = start - line * roadWidth + normal * roadWidth;
+            var p1 = start - line * roadWidth - normal * roadWidth;
+            var p2 = end + line * roadWidth + normal * roadWidth;
+            var p3 = end + line * roadWidth - normal * roadWidth;
+            var origin = (p0 + p1 + p2 + p3) / 4;
+
+            var poly = new List<Vector2>{p0, p1, p2, p3};
+            poly.SortVertices(origin);
+            roadPolygons.Add(poly.ToArray());
+        }
+
+        //Add removal polygon to affected area fill
+        foreach (var polygon in roadPolygons)
+        {
+            foreach (var vertex in polygon)
+            {
+                foreach (var area in SceneryAreas)
+                {
+                    if(vertex.IsInsidePolygon(area.Polygon))
+                        area.AddClearPolygon(polygon);
+                }
+            }
+        }
+
+
     }
 
     /* Fill all areas with prefabs */
@@ -77,7 +112,9 @@ public class SceneryStructure
         {
             var point = sample + sceneryAreaFill.BoundMin;
             var height = terrain.SampleHeight(new Vector3(point.x, 0, point.y));
-            if (!point.IsInsidePolygon(sceneryAreaFill.Polygon) || height <= (TerrainStructure.BiomeConfiguration.SeaHeight + 0.01f) * terrain.terrainData.size.y)
+            if (height <= (TerrainStructure.BiomeConfiguration.SeaHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
+                !point.IsInsidePolygon(sceneryAreaFill.Polygon) || //not outside of the area
+                !sceneryAreaFill.ClearPolygons.TrueForAll(a => !point.IsInsidePolygon(a))) //not inside of any clear polygon
                 continue;
 
             var go = Object.Instantiate(sceneryAreaFill.Prefabs[Random.Range(0, sceneryAreaFill.Prefabs.Length)]);
@@ -92,6 +129,7 @@ public class SceneryStructure
 public class SceneryAreaFill
 {
     public readonly Vector2[] Polygon;
+    public readonly List<Vector2[]> ClearPolygons;
     public readonly GameObject[] Prefabs;
     public readonly Vector2 Size;
     public readonly Vector2 BoundMin;
@@ -100,6 +138,8 @@ public class SceneryAreaFill
 
     public SceneryAreaFill(GameObject[] prefabs, Vector2[] polygon, float minDist)
     {
+        ClearPolygons = new List<Vector2[]>();
+
         Prefabs = prefabs;
         Polygon = polygon;
         MinDist = minDist;
@@ -120,6 +160,11 @@ public class SceneryAreaFill
         BoundMin = new Vector2(minX, minY);
         BoundMax = new Vector2(maxX, maxY);
         Size = new Vector2(maxX - minX, maxY - minY);
+    }
+
+    public void AddClearPolygon(Vector2[] polygon)
+    {
+        ClearPolygons.Add(polygon);
     }
 }
 
