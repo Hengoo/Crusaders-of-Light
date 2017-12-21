@@ -19,6 +19,6 @@ MonoBehaviour:
   Effects:
   - {fileID: 11400000, guid: d14c4a5e4a527bf4b867385a747c0e06, type: 2}
   AIDecisionMaker: {fileID: 11400000, guid: 99c52f6d08b6a2e42a4567df6e955976, type: 2}
-  HitTimeStart: 0.2
-  HitTimeStop: 1
+  HitTimeStart: 0.5
+  HitTimeStop: 0.87
   HitEachCharacterOnlyOnce: 1

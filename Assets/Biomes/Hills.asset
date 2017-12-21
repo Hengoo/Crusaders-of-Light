@@ -12,15 +12,20 @@ MonoBehaviour:
   m_Name: Hills
   m_EditorClassIdentifier: 
   UniqueName: Hills
-  BiomeHeight:
+  Height:
     Persistence: 0.3
-    LocalMax: 0.5
+    LocalMax: 0.35
     LocalMin: 0.2
     Lacunarity: 2
-    Scale: 28.7
-  BiomeConditions:
-    Humidity: 0.5
-    Temperature: 0.5
+    Scale: 20
+  Conditions:
+    Humidity: 0
+    Temperature: 0
+  FillPrefabs:
+  - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
+  - {fileID: 1205751616031920, guid: 413a08ac9b145c24d8620387c4e54d0f, type: 2}
+  - {fileID: 1487468296650340, guid: 4e6fb53c8e211e64cb3463879de2b1c6, type: 2}
+  PrefabMinDistance: 10
   NotNavigable: 0
   Splat:
     texture: {fileID: 2800000, guid: 08c49110461eae3449d04007741a66f4, type: 3}

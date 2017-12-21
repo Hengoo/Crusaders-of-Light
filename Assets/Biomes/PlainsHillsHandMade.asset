@@ -12,15 +12,17 @@ MonoBehaviour:
   m_Name: PlainsHillsHandMade
   m_EditorClassIdentifier: 
   UniqueName: Plains
-  BiomeHeight:
-    Persistence: 0.386
-    LocalMax: 0.446
-    LocalMin: 0.287
-    Lacunarity: 6.98
-    Scale: 3.3
-  BiomeConditions:
-    Humidity: 0.5
-    Temperature: 0.5
+  Height:
+    Persistence: 0
+    LocalMax: 0
+    LocalMin: 0
+    Lacunarity: 0
+    Scale: 0
+  Conditions:
+    Humidity: 0
+    Temperature: 0
+  FillPrefabs: []
+  PrefabMinDistance: 1
   NotNavigable: 0
   Splat:
     texture: {fileID: 2800000, guid: 08c49110461eae3449d04007741a66f4, type: 3}

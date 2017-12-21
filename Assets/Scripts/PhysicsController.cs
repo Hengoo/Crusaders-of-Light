@@ -21,6 +21,7 @@ public class PhysicsController
 		velPID = new PID.PIDControllerVel(gObject, 10, 0, 0.5f, new Vector3(1, 0, 1), 50f);
 		//rotPID = new PIDControllerRot(this.gameObject, 100, 20 , 33);
 		rotPID = new PID.PIDControllerRot(gObject, 38, 1, 14);
+		oldRot = Quaternion.LookRotation(Vector3.right, Vector3.up);
 
 		inizializeRigidbody();
 	}
@@ -46,17 +47,25 @@ public class PhysicsController
 		//velocity
 		velPID.UpdateTarget(targetVel, 1);
 
-		//rotation
-		Quaternion targetRot = Quaternion.LookRotation(forwardDirection, Vector3.up);
-		if (forwardDirection.magnitude > 0.2f)
+		Quaternion targetRot;
+		if (forwardDirection == Vector3.zero)
 		{
-			targetRot = Quaternion.LookRotation(forwardDirection, Vector3.up);
-			targetRot = Quaternion.Slerp(targetRot, oldRot, 0.9f);
-			oldRot = targetRot;
+			targetRot = oldRot;
 		}
 		else
 		{
-			targetRot = oldRot;
+			//rotation
+			targetRot = Quaternion.LookRotation(forwardDirection, Vector3.up);
+			if (forwardDirection.magnitude > 0.2f)
+			{
+				targetRot = Quaternion.LookRotation(forwardDirection, Vector3.up);
+				targetRot = Quaternion.Slerp(targetRot, oldRot, 0.9f);
+				oldRot = targetRot;
+			}
+			else
+			{
+				targetRot = oldRot;
+			}
 		}
 		rotPID.UpdateTarget(targetRot);
 	}

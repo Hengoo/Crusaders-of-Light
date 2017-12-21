@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class ExtensionMethods
@@ -29,6 +30,94 @@ public static class ExtensionMethods
             T value = list[k];
             list[k] = list[n];
             list[n] = value;
+        }
+    }
+
+    public static bool IsInsidePolygon(this Vector2 p, Vector2[] polyPoints)
+    {
+        var j = polyPoints.Length - 1;
+        var inside = false; 
+        for (var i = 0; i < polyPoints.Length; j = i++) { 
+            if (((polyPoints[i].y <= p.y && p.y<polyPoints[j].y) || (polyPoints[j].y <= p.y && p.y<polyPoints[i].y)) && 
+                (p.x<(polyPoints[j].x - polyPoints[i].x) * (p.y - polyPoints[i].y) / (polyPoints[j].y - polyPoints[i].y) + polyPoints[i].x)) 
+                inside = !inside; 
+        } 
+        return inside; 
+    }
+
+    public static void SortVertices(this List<Vector2> polygon, Vector2 origin)
+    {
+        polygon.Sort(new ClockwiseComparer(origin));
+    }
+
+    /// <summary>
+    ///     ClockwiseComparer provides functionality for sorting a collection of Vector2s such
+    ///     that they are ordered clockwise about a given origin.
+    /// </summary>
+    private class ClockwiseComparer : IComparer<Vector2>
+    {
+        private Vector2 m_Origin;
+
+        #region Properties
+
+        /// <summary>
+        ///     Gets or sets the origin.
+        /// </summary>
+        /// <value>The origin.</value>
+        public Vector2 origin { get { return m_Origin; } set { m_Origin = value; } }
+
+        #endregion
+
+        /// <summary>
+        ///     Initializes a new instance of the ClockwiseComparer class.
+        /// </summary>
+        /// <param name="origin">Origin.</param>
+        public ClockwiseComparer(Vector2 origin)
+        {
+            m_Origin = origin;
+        }
+
+        #region IComparer Methods
+
+        /// <summary>
+        ///     Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
+        /// </summary>
+        /// <param name="first">First.</param>
+        /// <param name="second">Second.</param>
+        public int Compare(Vector2 first, Vector2 second)
+        {
+            return IsClockwise(first, second, m_Origin);
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Returns 1 if first comes before second in clockwise order.
+        ///     Returns -1 if second comes before first.
+        ///     Returns 0 if the points are identical.
+        /// </summary>
+        /// <param name="first">First.</param>
+        /// <param name="second">Second.</param>
+        /// <param name="origin">Origin.</param>
+        public static int IsClockwise(Vector2 first, Vector2 second, Vector2 origin)
+        {
+            if (first == second)
+                return 0;
+
+            Vector2 firstOffset = first - origin;
+            Vector2 secondOffset = second - origin;
+
+            float angle1 = Mathf.Atan2(firstOffset.x, firstOffset.y);
+            float angle2 = Mathf.Atan2(secondOffset.x, secondOffset.y);
+
+            if (angle1 < angle2)
+                return -1;
+
+            if (angle1 > angle2)
+                return 1;
+
+            // Check to see which point is closest
+            return (firstOffset.sqrMagnitude < secondOffset.sqrMagnitude) ? -1 : 1;
         }
     }
 }

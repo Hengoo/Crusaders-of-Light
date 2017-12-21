@@ -250,13 +250,14 @@ MonoBehaviour:
   ItemCollider: {fileID: 65758955448626372}
   IgnoreCurrentOwnerForCollisionChecks: 1
   EquippedPosition: {x: 0, y: 0, z: 0}
-  EquippedRotation: {x: 40, y: 0, z: 0}
+  EquippedRotation: {x: 90, y: 0, z: -30}
   CurrentlyCollidingCharacters: []
   CanHitCharactersOnlyOnce: 0
   SkillCurrentlyUsingItemHitBox: {fileID: 0}
   ItemSkillCurrentlyUsingItemHitBox: {fileID: 0}
   AlreadyHitCharacters: []
   CurrentItemHitBoxAlignment: 0
+  EquippedSlotID: -1
   TwoHanded: 0
 --- !u!114 &114320944115719290
 MonoBehaviour:
@@ -273,3 +274,4 @@ MonoBehaviour:
   SkillObject: {fileID: 11400000, guid: 1e2fe83b838ecf3489d2d84c3830e32a, type: 2}
   CurrentCooldown: 0
   Level: 3
+  AnimationName: Magic_Staff_Cast

@@ -99,4 +99,9 @@ public class SkillType : ScriptableObject {
 
         return SkillApp;
     }
+
+    public float GetTotalActivationTime()
+    {
+        return ActivationTime;
+    }
 }
