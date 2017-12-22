@@ -11,7 +11,7 @@ public class SkillTypeMelee : SkillType {
 
     public bool HitEachCharacterOnlyOnce = true;
 
-    public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating)
+    public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime >= HitTimeStart && CurrentActivationTime <= HitTimeStop)
         {

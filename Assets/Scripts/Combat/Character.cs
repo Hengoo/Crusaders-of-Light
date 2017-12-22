@@ -23,6 +23,14 @@ public class Character : MonoBehaviour {
         POISON = 5
     }
 
+    public enum Defense
+    {
+        NONE = -1,          // When used as Damage Type: Damage Value is unaffected by any Defense!
+        MELEE = 0,
+        RANGED = 1,
+        MAGIC = 2
+    }
+
     [Header("Character Attributes:")]
     public int HealthCurrent = 100;
     public int HealthMax = 100;
@@ -32,6 +40,7 @@ public class Character : MonoBehaviour {
     public int EnergyMax = 100;
 
     public float[] Resistances = new float[6]; // Resistances[Enum Resistance], Check for Resistance.NONE!
+    public float[] Defenses = new float[3];     // Defenses[Enum Defense], Check for Defense.NONE!
 
     [Header("Equipment:")]
     public Transform[] CharacterHands = new Transform[2]; // Note: 0 : Left Hand, 1 : Right Hand
@@ -413,9 +422,12 @@ public class Character : MonoBehaviour {
     // =================================== EFFECT INTERACTION ===================================
 
     // Note: DamageAmount is assumed to be positive!
-    public int InflictDamage(Resistance DamageType, int Amount)
+    public int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount)
     {
-        int FinalAmount = DamageCalculationResistance(DamageType, Amount);
+        int FinalAmount = DamageCalculationDefense(DefenseType, Amount);
+
+        FinalAmount = DamageCalculationResistance(DamageType, FinalAmount);
+
 
         ChangeHealthCurrent(-1 * FinalAmount);
 
@@ -432,6 +444,18 @@ public class Character : MonoBehaviour {
         }
 
         return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Resistances[DamageTypeID]));
+    }
+
+    private int DamageCalculationDefense(Defense DefenseType, int Amount)
+    {
+        int DamageTypeID = (int)(DefenseType);
+
+        if (DamageTypeID < 0 || DamageTypeID >= Defenses.Length)
+        {
+            return Amount;
+        }
+
+        return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Defenses[DamageTypeID]));
     }
 
     public void ChangeResistance(Resistance ResistanceType, float Amount)

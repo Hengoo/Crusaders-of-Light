@@ -8887,6 +8887,48 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3ed64c2e85fe7c343a3218ab0a5e4ccf, type: 2}
   m_IsPrefabParent: 0
+--- !u!1001 &1185197436
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_RootOrder
+      value: 25
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &1189332372
 Prefab:
   m_ObjectHideFlags: 0
@@ -14889,6 +14931,10 @@ MonoBehaviour:
   - 0.7
   - 0.7
   - 0.7
+  Defenses:
+  - 0
+  - 0
+  - 0
   CharacterHands:
   - {fileID: 462797219}
   - {fileID: 668570203}
@@ -15126,6 +15172,10 @@ MonoBehaviour:
   - 3
   - 3
   - 3
+  Defenses:
+  - 0
+  - 0
+  - 0
   CharacterHands:
   - {fileID: 0}
   - {fileID: 0}

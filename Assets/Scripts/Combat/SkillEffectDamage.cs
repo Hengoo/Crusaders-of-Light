@@ -8,7 +8,9 @@ public class SkillEffectDamage : SkillEffect
     [Header("Skill Effect Damage:")]
     public int DamageValueBase = 0;
     public int DamageValuePerLevel = 0;
+    public Character.Defense DefenseType = Character.Defense.NONE;
     public Character.Resistance DamageType = Character.Resistance.NONE;
+
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
@@ -16,7 +18,7 @@ public class SkillEffectDamage : SkillEffect
 
         FinalDamageValue += DamageValuePerLevel * SourceItemSkill.GetSkillLevel();
 
-        Target.InflictDamage(DamageType, FinalDamageValue);
+        Target.InflictDamage(DefenseType, DamageType, FinalDamageValue);
     }
 
 }

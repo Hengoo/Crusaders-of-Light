@@ -7,6 +7,7 @@ public class SkillType : ScriptableObject {
     [Header("Skill Base:")]
     public int Cost;
     public float ActivationTime;
+    public float ActivationIntervall = -1; // Negative: No Intervall Action
     public float Cooldown = -1; // Negative: No Cooldown
 
     [Header("Skill Targeting:")]
@@ -28,6 +29,11 @@ public class SkillType : ScriptableObject {
     public bool GetAllowTargetEnemy()
     {
         return AllowTargetEnemy;
+    }
+
+    public float GetActivationIntervall()
+    {
+        return ActivationIntervall;
     }
 
     public bool StartSkillActivation(ItemSkill SourceItemSkill, Character Owner)
@@ -68,7 +74,7 @@ public class SkillType : ScriptableObject {
         return true;
     }
 
-    public virtual void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating)
+    public virtual void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
 
     }

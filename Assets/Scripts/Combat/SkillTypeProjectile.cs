@@ -9,7 +9,7 @@ public class SkillTypeProjectile : SkillType
     [Header("Skill Projectile:")]
     public SkillProjectile ProjectilePrefab;
 
-    public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating)
+    public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime < ActivationTime)
         {

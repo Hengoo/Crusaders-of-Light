@@ -13,6 +13,10 @@ public class ItemSkill : MonoBehaviour {
 
     public int Level;
 
+    private float ActivationIntervallTimer = 0.0f;
+
+    private bool EffectOnlyOnceBool = false;
+
     [Header("Animation:")]
     public string AnimationName = "no_animation";
 
@@ -23,6 +27,9 @@ public class ItemSkill : MonoBehaviour {
         if (CurrentCooldown > 0.0f) { return false; }
         
         ParentItem.GetOwner().StartAnimation(AnimationName, SkillObject.GetTotalActivationTime(), ParentItem.GetEquippedSlotID());
+
+        ActivationIntervallTimer = 0.0f;
+        EffectOnlyOnceBool = false;
 
         return SkillObject.StartSkillActivation(this, GetCurrentOwner());
     }
@@ -52,7 +59,19 @@ public class ItemSkill : MonoBehaviour {
 
     public void UpdateSkillActivation(float ActivationTimer, bool StillActivating)
     {
-        SkillObject.UpdateSkillActivation(this, ActivationTimer, StillActivating);
+        if (SkillObject.GetActivationIntervall() >= 0)
+        {
+            ActivationIntervallTimer += Time.deltaTime;
+
+            if (ActivationIntervallTimer >= SkillObject.GetActivationIntervall())
+            {
+                ActivationIntervallTimer -= SkillObject.GetActivationIntervall();
+                SkillObject.UpdateSkillActivation(this, ActivationTimer, StillActivating, true);
+                return;
+            }
+        }
+
+        SkillObject.UpdateSkillActivation(this, ActivationTimer, StillActivating, false);
     }
 
     public void FinishedSkillActivation()
@@ -99,6 +118,16 @@ public class ItemSkill : MonoBehaviour {
     public int GetSkillLevel()
     {
         return Level;
+    }
+
+    public bool GetEffectOnlyOnceBool()
+    {
+        return EffectOnlyOnceBool;
+    }
+
+    public void SetEffectOnlyOnceBool(bool state)
+    {
+        EffectOnlyOnceBool = state;
     }
 
     public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()
