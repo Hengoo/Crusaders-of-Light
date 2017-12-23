@@ -17,9 +17,13 @@ public class MapPreview : MonoBehaviour
     public DrawModeEnum DrawMode = DrawModeEnum.BiomeGraph;
     public BiomeConfiguration BiomeConfiguration;
     public List<BiomeSettings> AvailableBiomes;
-    public int Seed = 0;
+    
     public int NumberOfAreas = 3;
+    public int ExtraEdges = 20;
     public bool FillTerrain = true;
+    public float RoadHalfWidth = 10;
+
+    public int Seed = 0;
 
 
     /* Debug variables */
@@ -40,8 +44,11 @@ public class MapPreview : MonoBehaviour
 
         ClearDisplay();
         Random.InitState(Seed);
+
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeConfiguration);
-        _worldStructure = new WorldStructure(_terrainStructure, NumberOfAreas, WorldGenerationMethod.MinimumSpanningTree);
+        _worldStructure = new WorldStructure(_terrainStructure, NumberOfAreas, ExtraEdges);
+        _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, RoadHalfWidth);
+
         switch (DrawMode)
         {
             case DrawModeEnum.BiomeGraph:
@@ -105,8 +112,7 @@ public class MapPreview : MonoBehaviour
         /* Fill terrain with scenery */
         if (FillTerrain)
         {
-            var sceneryStructure = new SceneryStructure(_terrainStructure);
-            var sceneryObjects = sceneryStructure.FillAllSceneryAreas(terrain.GetComponent<Terrain>());
+            var sceneryObjects = _sceneryStructure.FillAllSceneryAreas(terrain.GetComponent<Terrain>());
             var scenery = new GameObject("Scenery");
             scenery.transform.parent = terrain.transform;
             foreach (var obj in sceneryObjects)
@@ -118,9 +124,9 @@ public class MapPreview : MonoBehaviour
         /* Water Plane Placement */
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
         water.GetComponent<Renderer>().material = BiomeConfiguration.WaterMaterial;
-        water.transform.localScale = new Vector3(terrainData.size.x / 10f, 1, terrainData.size.z / 10f);
+        water.transform.localScale = new Vector3(terrainData.size.x / 5f, 1, terrainData.size.z / 5f);
         water.transform.parent = terrain.transform;
-        water.transform.localPosition = new Vector3(terrainData.size.x / 2, (BiomeConfiguration.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2);
+        water.transform.localPosition = new Vector3(terrainData.size.x / 2f, (BiomeConfiguration.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2f);
     }
 
     void DrawGraph()
