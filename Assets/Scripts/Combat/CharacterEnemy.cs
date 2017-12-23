@@ -11,7 +11,7 @@ public class CharacterEnemy : Character {
     public List<Character> PlayersInAttentionRange = new List<Character>();
     public float IdleSkillScore = 0.2f;
     public float IdleDuration = 0.2f;
-    private float IdleTimer = 0.0f;
+    private float[] IdleTimer = { 0.0f, 0.0f };
 
     public MovePattern ActiveMovePattern;
     private Character TargetCharacter;
@@ -27,7 +27,11 @@ public class CharacterEnemy : Character {
     protected override void Update()
     {
         base.Update();
-        DecideSkillUse();
+        DecideSkillUse(0);
+        if (!TwoHandedWeaponEquipped)
+        {
+            DecideSkillUse(1);
+        }
         UpdateMovePattern();
     }
 
@@ -63,16 +67,16 @@ public class CharacterEnemy : Character {
         return PlayersInAttentionRange;
     }
 
-    public void DecideSkillUse()
+    public void DecideSkillUse(int WeaponSlotID)
     {
-        if (SkillCurrentlyActivating >= 0)
+        if (SkillCurrentlyActivating[WeaponSlotID] >= 0)
         {
             return;
         }
 
-        if (IdleTimer > 0)
+        if (IdleTimer[WeaponSlotID] > 0)
         {
-            IdleTimer -= Time.deltaTime;
+            IdleTimer[WeaponSlotID] -= Time.deltaTime;
             return;
         }
 
@@ -85,7 +89,14 @@ public class CharacterEnemy : Character {
 
         int BestSkillID = -1;
 
-        for (int sk = 0; sk < ItemSkillSlots.Length; sk++)
+        int TwoHandedModifier = 0;
+
+        if (TwoHandedWeaponEquipped)
+        {
+            TwoHandedModifier = 1;
+        }
+
+        for (int sk = WeaponSlotID * SkillsPerWeapon; sk < (WeaponSlotID + 1 + TwoHandedModifier) * SkillsPerWeapon; sk++)
         {
             if (ItemSkillSlots[sk])
             {
@@ -105,7 +116,7 @@ public class CharacterEnemy : Character {
         }
         else
         {
-            IdleTimer = IdleDuration;
+            IdleTimer[WeaponSlotID] = IdleDuration;
         }
     }
     /*
@@ -177,11 +188,13 @@ public class CharacterEnemy : Character {
 
     protected override void UpdateCurrentSkillActivation()
     {
-        if (SkillCurrentlyActivating < 0) { return; }
-
-        SkillActivationTimer += Time.deltaTime;
-
-        ItemSkillSlots[SkillCurrentlyActivating].UpdateSkillActivation(SkillActivationTimer, true);
+        for (int i = 0; i < SkillCurrentlyActivating.Length; i++)
+        {
+            if (SkillCurrentlyActivating[i] >= 0)
+            {
+                ItemSkillSlots[SkillCurrentlyActivating[i]].UpdateSkillActivation(true);
+            }
+        }
     }
 
     // =================================== /SKILL ACTIVATION ====================================

@@ -652,6 +652,14 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  Defenses:
+  - 0
+  - 0
+  - 0
+  CharacterHands:
+  - {fileID: 0}
+  - {fileID: 0}
+  StartingWeapons: []
   SkillsPerWeapon: 2
   WeaponSlots:
   - {fileID: 0}
@@ -661,10 +669,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  SkillCurrentlyActivating: -1
-  SkillActivationTimer: 0
+  SkillCurrentlyActivating: ffffffffffffffff
   ActiveConditions: []
-  GUIChar: {fileID: 0}
+  HandAnimators:
+  - {fileID: 0}
+  - {fileID: 0}
   Alignment: 2
   PlayersInAttentionRange: []
   IdleSkillScore: 0.2

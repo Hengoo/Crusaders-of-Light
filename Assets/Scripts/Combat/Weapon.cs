@@ -13,6 +13,7 @@ public class Weapon : Item {
 
         if (SuccesfullyEquipped)
         {
+            SetCurrentEquipSlot(SlotID);
             CurrentOwner = CharacterToEquipTo;
             EquippedSlotID = SlotID;
         }
@@ -20,6 +21,7 @@ public class Weapon : Item {
 
     public override void UnEquipItem()
     {
+        CurrentEquipSlot = -1;
         CurrentOwner = null;
         EquippedSlotID = -1;
     }

@@ -653,6 +653,10 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  Defenses:
+  - 0
+  - 0
+  - 0
   CharacterHands:
   - {fileID: 4243677252135906}
   - {fileID: 4037673985899044}
@@ -668,8 +672,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  SkillCurrentlyActivating: -1
-  SkillActivationTimer: 0
+  SkillCurrentlyActivating: ffffffffffffffff
   ActiveConditions: []
   HandAnimators:
   - {fileID: 95819371227743974}

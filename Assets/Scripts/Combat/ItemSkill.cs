@@ -57,8 +57,10 @@ public class ItemSkill : MonoBehaviour {
         CurrentCooldown = Mathf.Max(CurrentCooldown - PassedTime, 0);
     }
 
-    public void UpdateSkillActivation(float ActivationTimer, bool StillActivating)
+    public void UpdateSkillActivation(bool StillActivating)
     {
+        ParentItem.UpdateSkillActivationTimer();
+
         if (SkillObject.GetActivationIntervall() >= 0)
         {
             ActivationIntervallTimer += Time.deltaTime;
@@ -66,17 +68,18 @@ public class ItemSkill : MonoBehaviour {
             if (ActivationIntervallTimer >= SkillObject.GetActivationIntervall())
             {
                 ActivationIntervallTimer -= SkillObject.GetActivationIntervall();
-                SkillObject.UpdateSkillActivation(this, ActivationTimer, StillActivating, true);
+                SkillObject.UpdateSkillActivation(this, ParentItem.GetSkillActivationTimer(), StillActivating, true);
                 return;
             }
         }
 
-        SkillObject.UpdateSkillActivation(this, ActivationTimer, StillActivating, false);
+        SkillObject.UpdateSkillActivation(this, ParentItem.GetSkillActivationTimer(), StillActivating, false);
     }
 
     public void FinishedSkillActivation()
     {
-        GetCurrentOwner().FinishedCurrentSkillActivation();
+        ParentItem.SetSkillActivationTimer(0.0f);
+        GetCurrentOwner().FinishedCurrentSkillActivation(ParentItem.GetCurrentEquipSlot());
     }
 
     public bool CheckIfSkillIsUsingHitBox(ItemSkill SkillToCheck)

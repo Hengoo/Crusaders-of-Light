@@ -49,6 +49,7 @@ public class Character : MonoBehaviour {
     [Header("Equipment (for Testing):")]
     public int SkillsPerWeapon = 2;                 // Note: Number of Skills granted by each equipped weapon. The ItemSkillSlots[] has to take that number into account. Weapons with less Skills are allowed to exist!
     public Item[] WeaponSlots = new Item[2];        // Note: [0]: Left Hand,  [1]: Right Hand
+    protected bool TwoHandedWeaponEquipped = false;
     // public Item[] ItemSlots = new Item[0];       // Note: Currently Unused, define which slot equals which type of item if more item types that are equipable are implemented.
 
     // NOTE : When Equipping Weapons, Left Hand Writes Skills from Left, Right Hand from Right. 
@@ -58,8 +59,8 @@ public class Character : MonoBehaviour {
     public ItemSkill[] ItemSkillSlots = new ItemSkill[4];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
     
 
-    public int SkillCurrentlyActivating = -1; // Character is currently activating a Skill.
-    public float SkillActivationTimer = 0.0f;
+    public int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
+    //public float SkillActivationTimer = 0.0f;
 
     [Header("Active Conditions:")]
     public List<ActiveCondition> ActiveConditions = new List<ActiveCondition>();
@@ -230,7 +231,6 @@ public class Character : MonoBehaviour {
             // Equip New Weapon:
             WeaponSlots[SlotID] = Weapon;
             EquipWeaponVisually(Weapon, SlotID);
-
             EquipSkills(Weapon.GetItemSkills(), SlotID * SkillsPerWeapon, SkillsPerWeapon);
             return true;
         }
@@ -249,6 +249,7 @@ public class Character : MonoBehaviour {
             WeaponSlots[0] = WeaponSlots[1] = Weapon;
             EquipWeaponVisually(Weapon, 0);
             EquipSkills(Weapon.GetItemSkills(), 0, SkillsPerWeapon * 2);
+            TwoHandedWeaponEquipped = true;
             return true;
         }
         //return false;
@@ -276,7 +277,7 @@ public class Character : MonoBehaviour {
         int MaxNumberOfSkills = SkillsPerWeapon;
         Weapon WeaponToUnequip = (Weapon)WeaponSlots[WeaponSlotID];
 
-        InterruptCurrentSkillActivation();
+        InterruptCurrentSkillActivation(WeaponSlotID);
 
         if (WeaponToUnequip.IsTwoHanded())              // Weapon is Two Handed
         {
@@ -285,6 +286,7 @@ public class Character : MonoBehaviour {
             WeaponSlots[0].UnEquipItem();
             WeaponSlots[0] = null;
             WeaponSlots[1] = null;
+            TwoHandedWeaponEquipped = false;
         }
         else                                            // Weapon is One Handed
         {
@@ -366,14 +368,22 @@ public class Character : MonoBehaviour {
         if (!ItemSkillSlots[WeaponSkillSlotID]) { return; }
 
         if (!ItemSkillSlots[WeaponSkillSlotID].StartSkillActivation()) { return; }
-
-        SkillCurrentlyActivating = WeaponSkillSlotID;
-        SkillActivationTimer = 0.0f;
+        
+        if (WeaponSkillSlotID < SkillsPerWeapon || TwoHandedWeaponEquipped)
+        {
+            SkillCurrentlyActivating[0] = WeaponSkillSlotID;
+            WeaponSlots[0].SetSkillActivationTimer(0.0f);
+        }
+        else
+        {
+            SkillCurrentlyActivating[1] = WeaponSkillSlotID;
+            WeaponSlots[1].SetSkillActivationTimer(0.0f);
+        }
     }
 
     protected virtual void UpdateCurrentSkillActivation() { }
 
-    public void StopCurrentSkillActivation() // Unused!
+ /*   public void StopCurrentSkillActivation() // Unused!
     {
         if (SkillCurrentlyActivating >= 0)
         {
@@ -381,15 +391,16 @@ public class Character : MonoBehaviour {
             SkillActivationTimer = 0.0f;
         }
     }
+*/
 
-    public virtual void FinishedCurrentSkillActivation()
+    public virtual void FinishedCurrentSkillActivation(int WeaponSlotID)
     {
-        if (SkillCurrentlyActivating < 0)
+        /*if (SkillCurrentlyActivating < 0) // Shouldn't be needed?
         {
             return;
-        }
-        SkillCurrentlyActivating = -1;
-        SkillActivationTimer = 0.0f;
+        }*/
+        SkillCurrentlyActivating[WeaponSlotID] = -1;
+       // SkillActivationTimer = 0.0f; // Now handled in ItemSkill/Item
     }
 
     private void UpdateAllCooldowns()
@@ -403,17 +414,17 @@ public class Character : MonoBehaviour {
         }
     }
 
-    private void InterruptCurrentSkillActivation()
+    private void InterruptCurrentSkillActivation(int WeaponSlotID)
     {
-        if (SkillCurrentlyActivating < 0)
+        if (SkillCurrentlyActivating[WeaponSlotID] < 0)
         {
             return;
         }
 
-        ItemSkillSlots[SkillCurrentlyActivating].InterruptSkill(true);
+        ItemSkillSlots[SkillCurrentlyActivating[WeaponSlotID]].InterruptSkill(true);
 
-        SkillCurrentlyActivating = -1;
-        SkillActivationTimer = 0.0f;
+        SkillCurrentlyActivating[WeaponSlotID] = -1;
+        WeaponSlots[WeaponSlotID].SetSkillActivationTimer(0.0f);
     }
 
 
