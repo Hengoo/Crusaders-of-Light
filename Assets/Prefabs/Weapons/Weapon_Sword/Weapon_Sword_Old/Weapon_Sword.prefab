@@ -41,7 +41,7 @@ Transform:
   m_GameObject: {fileID: 1085498014544412}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -86,7 +86,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1085498014544412}
-  m_Mesh: {fileID: 4300000, guid: ac7708e7c258d3d4cbe15fe52db5adfc, type: 3}
+  m_Mesh: {fileID: 4300000, guid: a1713b5de5b462a498cac84ef4330bac, type: 3}
 --- !u!54 &54160645753429738
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -115,7 +115,7 @@ MeshCollider:
   m_Convex: 1
   m_InflateMesh: 1
   m_SkinWidth: 0.02
-  m_Mesh: {fileID: 4300000, guid: ac7708e7c258d3d4cbe15fe52db5adfc, type: 3}
+  m_Mesh: {fileID: 4300000, guid: a1713b5de5b462a498cac84ef4330bac, type: 3}
 --- !u!95 &95146654063426410
 Animator:
   serializedVersion: 3
@@ -145,12 +145,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentOwner: {fileID: 0}
+  CurrentEquipSlot: -1
   ItemSkills:
   - {fileID: 114893412725718792}
+  SkillActivationTimer: 0
   ItemRidgidBody: {fileID: 54160645753429738}
   ItemCollider: {fileID: 64707004584335446}
   IgnoreCurrentOwnerForCollisionChecks: 1
-  EquippedPosition: {x: 0, y: 0, z: 0}
+  EquippedPosition: {x: 0, y: 0, z: 0.7}
   EquippedRotation: {x: 0, y: 0, z: 90}
   CurrentlyCollidingCharacters: []
   CanHitCharactersOnlyOnce: 0

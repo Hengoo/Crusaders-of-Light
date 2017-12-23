@@ -7802,9 +7802,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 64bd5e1550fae0e4bb489993e444dfb6, type: 2}
   - {fileID: 11400000, guid: e28e387901d9da14a9ac2f8b99962a89, type: 2}
   - {fileID: 11400000, guid: 9969761718aeeda4a8f650890f9e7581, type: 2}
-  Seed: 0
   NumberOfAreas: 0
+  ExtraEdges: 20
   FillTerrain: 1
+  RoadHalfWidth: 10
+  Seed: 0
 --- !u!1001 &1016523568
 Prefab:
   m_ObjectHideFlags: 0
@@ -8930,6 +8932,16 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 33148329686296256, guid: aa94daf626a371f4ea7bcb6b4e1637cb,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: aed9609b8c013e54da8988d9632d744f, type: 3}
+    - target: {fileID: 64617178213800634, guid: aa94daf626a371f4ea7bcb6b4e1637cb,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: aed9609b8c013e54da8988d9632d744f, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
   m_IsPrefabParent: 0
