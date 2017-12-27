@@ -23,6 +23,14 @@ public class Character : MonoBehaviour {
         POISON = 5
     }
 
+    public enum Defense
+    {
+        NONE = -1,          // When used as Damage Type: Damage Value is unaffected by any Defense!
+        MELEE = 0,
+        RANGED = 1,
+        MAGIC = 2
+    }
+
     [Header("Character Attributes:")]
     public int HealthCurrent = 100;
     public int HealthMax = 100;
@@ -32,6 +40,7 @@ public class Character : MonoBehaviour {
     public int EnergyMax = 100;
 
     public float[] Resistances = new float[6]; // Resistances[Enum Resistance], Check for Resistance.NONE!
+    public float[] Defenses = new float[3];     // Defenses[Enum Defense], Check for Defense.NONE!
 
     [Header("Equipment:")]
     public Transform[] CharacterHands = new Transform[2]; // Note: 0 : Left Hand, 1 : Right Hand
@@ -40,6 +49,7 @@ public class Character : MonoBehaviour {
     [Header("Equipment (for Testing):")]
     public int SkillsPerWeapon = 2;                 // Note: Number of Skills granted by each equipped weapon. The ItemSkillSlots[] has to take that number into account. Weapons with less Skills are allowed to exist!
     public Item[] WeaponSlots = new Item[2];        // Note: [0]: Left Hand,  [1]: Right Hand
+    protected bool TwoHandedWeaponEquipped = false;
     // public Item[] ItemSlots = new Item[0];       // Note: Currently Unused, define which slot equals which type of item if more item types that are equipable are implemented.
 
     // NOTE : When Equipping Weapons, Left Hand Writes Skills from Left, Right Hand from Right. 
@@ -49,8 +59,8 @@ public class Character : MonoBehaviour {
     public ItemSkill[] ItemSkillSlots = new ItemSkill[4];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
     
 
-    public int SkillCurrentlyActivating = -1; // Character is currently activating a Skill.
-    public float SkillActivationTimer = 0.0f;
+    public int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
+    //public float SkillActivationTimer = 0.0f;
 
     [Header("Active Conditions:")]
     public List<ActiveCondition> ActiveConditions = new List<ActiveCondition>();
@@ -221,7 +231,6 @@ public class Character : MonoBehaviour {
             // Equip New Weapon:
             WeaponSlots[SlotID] = Weapon;
             EquipWeaponVisually(Weapon, SlotID);
-
             EquipSkills(Weapon.GetItemSkills(), SlotID * SkillsPerWeapon, SkillsPerWeapon);
             return true;
         }
@@ -240,6 +249,7 @@ public class Character : MonoBehaviour {
             WeaponSlots[0] = WeaponSlots[1] = Weapon;
             EquipWeaponVisually(Weapon, 0);
             EquipSkills(Weapon.GetItemSkills(), 0, SkillsPerWeapon * 2);
+            TwoHandedWeaponEquipped = true;
             return true;
         }
         //return false;
@@ -267,7 +277,7 @@ public class Character : MonoBehaviour {
         int MaxNumberOfSkills = SkillsPerWeapon;
         Weapon WeaponToUnequip = (Weapon)WeaponSlots[WeaponSlotID];
 
-        InterruptCurrentSkillActivation();
+        InterruptCurrentSkillActivation(WeaponSlotID);
 
         if (WeaponToUnequip.IsTwoHanded())              // Weapon is Two Handed
         {
@@ -276,6 +286,7 @@ public class Character : MonoBehaviour {
             WeaponSlots[0].UnEquipItem();
             WeaponSlots[0] = null;
             WeaponSlots[1] = null;
+            TwoHandedWeaponEquipped = false;
         }
         else                                            // Weapon is One Handed
         {
@@ -293,6 +304,20 @@ public class Character : MonoBehaviour {
         Weapon.SwitchItemEquippedState(true);
         Weapon.transform.position = Weapon.GetEquippedPosition();
         Weapon.transform.localRotation = Quaternion.Euler(Weapon.GetEquippedRotation());
+
+     //   int ScaleFlipMod = 1;
+      //          if (HandSlotID == 1)
+       //         {
+       //             ScaleFlipMod = -1;
+       //         }
+
+               // Weapon.transform.localScale = new Vector3(Weapon.transform.localScale.x, Mathf.Abs(Weapon.transform.localScale.y) * ScaleFlipMod, Weapon.transform.localScale.z);
+                
+     //   BoxCollider test = Weapon.GetComponent<BoxCollider>();
+
+        //test.size = new Vector3(test.size.x, Mathf.Abs(test.size.y) * ScaleFlipMod, test.size.z);
+
+
         Weapon.transform.SetParent(CharacterHands[HandSlotID], false);
     }
 
@@ -343,14 +368,22 @@ public class Character : MonoBehaviour {
         if (!ItemSkillSlots[WeaponSkillSlotID]) { return; }
 
         if (!ItemSkillSlots[WeaponSkillSlotID].StartSkillActivation()) { return; }
-
-        SkillCurrentlyActivating = WeaponSkillSlotID;
-        SkillActivationTimer = 0.0f;
+        
+        if (WeaponSkillSlotID < SkillsPerWeapon || TwoHandedWeaponEquipped)
+        {
+            SkillCurrentlyActivating[0] = WeaponSkillSlotID;
+            WeaponSlots[0].SetSkillActivationTimer(0.0f);
+        }
+        else
+        {
+            SkillCurrentlyActivating[1] = WeaponSkillSlotID;
+            WeaponSlots[1].SetSkillActivationTimer(0.0f);
+        }
     }
 
     protected virtual void UpdateCurrentSkillActivation() { }
 
-    public void StopCurrentSkillActivation() // Unused!
+ /*   public void StopCurrentSkillActivation() // Unused!
     {
         if (SkillCurrentlyActivating >= 0)
         {
@@ -358,15 +391,16 @@ public class Character : MonoBehaviour {
             SkillActivationTimer = 0.0f;
         }
     }
+*/
 
-    public virtual void FinishedCurrentSkillActivation()
+    public virtual void FinishedCurrentSkillActivation(int WeaponSlotID)
     {
-        if (SkillCurrentlyActivating < 0)
+        /*if (SkillCurrentlyActivating < 0) // Shouldn't be needed?
         {
             return;
-        }
-        SkillCurrentlyActivating = -1;
-        SkillActivationTimer = 0.0f;
+        }*/
+        SkillCurrentlyActivating[WeaponSlotID] = -1;
+       // SkillActivationTimer = 0.0f; // Now handled in ItemSkill/Item
     }
 
     private void UpdateAllCooldowns()
@@ -380,17 +414,17 @@ public class Character : MonoBehaviour {
         }
     }
 
-    private void InterruptCurrentSkillActivation()
+    private void InterruptCurrentSkillActivation(int WeaponSlotID)
     {
-        if (SkillCurrentlyActivating < 0)
+        if (SkillCurrentlyActivating[WeaponSlotID] < 0)
         {
             return;
         }
 
-        ItemSkillSlots[SkillCurrentlyActivating].InterruptSkill(true);
+        ItemSkillSlots[SkillCurrentlyActivating[WeaponSlotID]].InterruptSkill(true);
 
-        SkillCurrentlyActivating = -1;
-        SkillActivationTimer = 0.0f;
+        SkillCurrentlyActivating[WeaponSlotID] = -1;
+        WeaponSlots[WeaponSlotID].SetSkillActivationTimer(0.0f);
     }
 
 
@@ -399,9 +433,12 @@ public class Character : MonoBehaviour {
     // =================================== EFFECT INTERACTION ===================================
 
     // Note: DamageAmount is assumed to be positive!
-    public int InflictDamage(Resistance DamageType, int Amount)
+    public int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount)
     {
-        int FinalAmount = DamageCalculationResistance(DamageType, Amount);
+        int FinalAmount = DamageCalculationDefense(DefenseType, Amount);
+
+        FinalAmount = DamageCalculationResistance(DamageType, FinalAmount);
+
 
         ChangeHealthCurrent(-1 * FinalAmount);
 
@@ -418,6 +455,18 @@ public class Character : MonoBehaviour {
         }
 
         return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Resistances[DamageTypeID]));
+    }
+
+    private int DamageCalculationDefense(Defense DefenseType, int Amount)
+    {
+        int DamageTypeID = (int)(DefenseType);
+
+        if (DamageTypeID < 0 || DamageTypeID >= Defenses.Length)
+        {
+            return Amount;
+        }
+
+        return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Defenses[DamageTypeID]));
     }
 
     public void ChangeResistance(Resistance ResistanceType, float Amount)

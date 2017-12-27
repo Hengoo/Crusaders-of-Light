@@ -5451,6 +5451,12 @@ Prefab:
       propertyPath: PlayersInAttentionRange.Array.data[0]
       value: 
       objectReference: {fileID: 1789461354}
+    - target: {fileID: 114301975722172286, guid: a2f50ba4b979fa54a82d6fd7e3902bd2,
+        type: 2}
+      propertyPath: StartingWeapons.Array.data[0]
+      value: 
+      objectReference: {fileID: 114085459239855412, guid: 3b9c0f07dd055d84b9e71a376376711c,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a2f50ba4b979fa54a82d6fd7e3902bd2, type: 2}
   m_IsPrefabParent: 0
@@ -7796,9 +7802,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 64bd5e1550fae0e4bb489993e444dfb6, type: 2}
   - {fileID: 11400000, guid: e28e387901d9da14a9ac2f8b99962a89, type: 2}
   - {fileID: 11400000, guid: 9969761718aeeda4a8f650890f9e7581, type: 2}
-  Seed: 0
   NumberOfAreas: 0
+  ExtraEdges: 20
   FillTerrain: 1
+  RoadHalfWidth: 10
+  Seed: 0
 --- !u!1001 &1016523568
 Prefab:
   m_ObjectHideFlags: 0
@@ -8880,6 +8888,62 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3ed64c2e85fe7c343a3218ab0a5e4ccf, type: 2}
+  m_IsPrefabParent: 0
+--- !u!1001 &1185197436
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692185588636048, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_RootOrder
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1538777499171326, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 33148329686296256, guid: aa94daf626a371f4ea7bcb6b4e1637cb,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: aed9609b8c013e54da8988d9632d744f, type: 3}
+    - target: {fileID: 64617178213800634, guid: aa94daf626a371f4ea7bcb6b4e1637cb,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: aed9609b8c013e54da8988d9632d744f, type: 3}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &1189332372
 Prefab:
@@ -14872,17 +14936,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab6778a9b3b095f4a9e6bf28617057e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 100
-  HealthMax: 100
+  HealthCurrent: 300
+  HealthMax: 300
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
+  - 0.6
   - 0.7
   - 0.7
   - 0.7
   - 0.7
   - 0.7
-  - 0.7
+  Defenses:
+  - 0
+  - 0
+  - 0
   CharacterHands:
   - {fileID: 462797219}
   - {fileID: 668570203}
@@ -14898,8 +14966,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  SkillCurrentlyActivating: -1
-  SkillActivationTimer: 0
+  SkillCurrentlyActivating: ffffffffffffffff
   ActiveConditions: []
   HandAnimators:
   - {fileID: 2133022849}
@@ -15120,6 +15187,10 @@ MonoBehaviour:
   - 3
   - 3
   - 3
+  Defenses:
+  - 0
+  - 0
+  - 0
   CharacterHands:
   - {fileID: 0}
   - {fileID: 0}
@@ -15133,8 +15204,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  SkillCurrentlyActivating: -1
-  SkillActivationTimer: 0
+  SkillCurrentlyActivating: ffffffffffffffff
   ActiveConditions: []
   HandAnimators:
   - {fileID: 0}
@@ -16427,6 +16497,10 @@ Prefab:
       propertyPath: PlayersInAttentionRange.Array.data[0]
       value: 
       objectReference: {fileID: 1789461354}
+    - target: {fileID: 1190281747256084, guid: 6c5655d12222f234ba763facca60192b, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6c5655d12222f234ba763facca60192b, type: 2}
   m_IsPrefabParent: 0

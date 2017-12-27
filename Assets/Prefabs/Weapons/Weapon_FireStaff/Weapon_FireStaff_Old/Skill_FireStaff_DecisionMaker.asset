@@ -9,9 +9,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b984467bd2a6944382038762a5729e9, type: 3}
-  m_Name: Skill_Sword_Strike_DecisionMaker
+  m_Name: Skill_FireStaff_DecisionMaker
   m_EditorClassIdentifier: 
   Weight: 1
   ConsiderationsTargeted:
-  - {fileID: 11400000, guid: 82418297c9f153c47af79a3ba55a7dc2, type: 2}
+  - {fileID: 11400000, guid: 282f641a3870727409334562284f004c, type: 2}
+  - {fileID: 11400000, guid: 549508c1144a88340b2dce9e04550896, type: 2}
   ConsiderationsSelf: []

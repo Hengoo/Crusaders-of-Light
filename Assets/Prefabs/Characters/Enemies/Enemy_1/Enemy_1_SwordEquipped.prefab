@@ -757,6 +757,14 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  Defenses:
+  - 0
+  - 0
+  - 0
+  CharacterHands:
+  - {fileID: 0}
+  - {fileID: 0}
+  StartingWeapons: []
   SkillsPerWeapon: 2
   WeaponSlots:
   - {fileID: 0}
@@ -766,10 +774,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  SkillCurrentlyActivating: -1
-  SkillActivationTimer: 0
+  SkillCurrentlyActivating: ffffffffffffffff
   ActiveConditions: []
-  GUIChar: {fileID: 0}
+  HandAnimators:
+  - {fileID: 0}
+  - {fileID: 0}
   Alignment: 2
   PlayersInAttentionRange:
   - {fileID: 0}
@@ -795,18 +804,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentOwner: {fileID: 0}
+  CurrentEquipSlot: -1
   ItemSkills:
   - {fileID: 114760448206594410}
+  SkillActivationTimer: 0
+  ItemRidgidBody: {fileID: 0}
+  ItemCollider: {fileID: 0}
   IgnoreCurrentOwnerForCollisionChecks: 1
+  EquippedPosition: {x: 0, y: 0, z: 0}
+  EquippedRotation: {x: 0, y: 0, z: 0}
   CurrentlyCollidingCharacters: []
   CanHitCharactersOnlyOnce: 0
   SkillCurrentlyUsingItemHitBox: {fileID: 0}
   ItemSkillCurrentlyUsingItemHitBox: {fileID: 0}
   AlreadyHitCharacters: []
   CurrentItemHitBoxAlignment: 0
+  EquippedSlotID: -1
   TwoHanded: 0
-  TESTCharacterToEquipTo: {fileID: 114360040770260600}
-  TESTSlotToEquipIn: 1
 --- !u!114 &114760448206594410
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -822,8 +836,7 @@ MonoBehaviour:
   SkillObject: {fileID: 11400000, guid: 5476fe060aac8594fb25d9b7b15f84fc, type: 2}
   CurrentCooldown: 0
   Level: 3
-  CurrentOwner: {fileID: 0}
-  AlreadyHitCharacters: []
+  AnimationName: no_animation
 --- !u!136 &136439038631849182
 CapsuleCollider:
   m_ObjectHideFlags: 1

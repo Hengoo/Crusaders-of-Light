@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class Item : MonoBehaviour {
 
-    [Header("Item:")]
+    [Header("Item (Do not set - for Testing only):")]
     public Character CurrentOwner;
+    public int CurrentEquipSlot = -1;
 
     [Header("Item Skills:")]
     public ItemSkill[] ItemSkills = new ItemSkill[1];
     private List<ItemSkill> ItemSkillsOnCooldown = new List<ItemSkill>();
+
+    [Header("Item Skill Activation (Do not set - for Testing only):")]
+    public float SkillActivationTimer;
 
     [Header("Item Hit Box:")]
     public Rigidbody ItemRidgidBody;
@@ -92,6 +96,31 @@ public class Item : MonoBehaviour {
             ItemRidgidBody.isKinematic = false;
             ItemCollider.isTrigger = false;
         }
+    }
+
+    public void SetCurrentEquipSlot(int SlotID)
+    {
+        CurrentEquipSlot = SlotID;
+    }
+
+    public int GetCurrentEquipSlot()
+    {
+        return CurrentEquipSlot;
+    }
+
+    public void SetSkillActivationTimer(float value)
+    {
+        SkillActivationTimer = value;
+    }
+
+    public float GetSkillActivationTimer()
+    {
+        return SkillActivationTimer;
+    }
+
+    public void UpdateSkillActivationTimer()
+    {
+        SkillActivationTimer += Time.deltaTime;
     }
 
     public void StartSkillCurrentlyUsingItemHitBox(ItemSkill SourceItemSkill, SkillType SourceSkill, bool HitEachCharacterOnce)

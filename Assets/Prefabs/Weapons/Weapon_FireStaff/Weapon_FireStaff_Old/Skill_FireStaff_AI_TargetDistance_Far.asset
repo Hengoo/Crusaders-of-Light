@@ -9,11 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59d79877a8124d044a0f750df1b14d1c, type: 3}
-  m_Name: Skill_Sword_Strike_AI_TargetDistance
+  m_Name: Skill_FireStaff_AI_TargetDistance_Far
   m_EditorClassIdentifier: 
   TypeOfCurve: 3
-  Steepness: 2
+  Steepness: 6
   yShift: -1
   xShift: 0
-  MinDistance: 0
-  MaxDistance: 2.5
+  MinDistance: 6
+  MaxDistance: 14

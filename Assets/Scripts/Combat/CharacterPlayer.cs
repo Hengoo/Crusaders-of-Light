@@ -40,11 +40,13 @@ public class CharacterPlayer : Character {
 
     protected override void UpdateCurrentSkillActivation()
     {
-        if (SkillCurrentlyActivating < 0) { return; }
-
-        SkillActivationTimer += Time.deltaTime;
-
-        ItemSkillSlots[SkillCurrentlyActivating].UpdateSkillActivation(SkillActivationTimer, SkillActivationButtonsPressed[SkillCurrentlyActivating]);
+        for (int i = 0; i < SkillCurrentlyActivating.Length; i++)
+        {
+            if (SkillCurrentlyActivating[i] >= 0)
+            {
+                ItemSkillSlots[SkillCurrentlyActivating[i]].UpdateSkillActivation(SkillActivationButtonsPressed[SkillCurrentlyActivating[i]]);
+            }
+        }
     }
 
     // =================================== /SKILL ACTIVATION ====================================
@@ -164,34 +166,38 @@ public class CharacterPlayer : Character {
         }
 
         // Skill Activation:
-        if (SkillCurrentlyActivating < 0)
-        {
-            PlayerInputStartSkillActivation();
-        }
+        PlayerInputStartSkillActivation();
     }
 
     private void PlayerInputStartSkillActivation()
     {
-        if (SkillActivationButtonsPressed[0])
+        if (SkillCurrentlyActivating[0] < 0)
         {
-            // Try starting Activation of Skill 1 from Weapon 1
-            StartSkillActivation(0);
+            if (SkillActivationButtonsPressed[0])
+            {
+                // Try starting Activation of Skill 1 from Weapon 1
+                StartSkillActivation(0);
+            }
+            else if (SkillActivationButtonsPressed[1])
+            {
+                // Try starting Activation of Skill 2 from Weapon 1
+                StartSkillActivation(1);
+            }
         }
-        else if (SkillActivationButtonsPressed[1])
+
+        if (SkillCurrentlyActivating[1] < 0)
         {
-            // Try starting Activation of Skill 2 from Weapon 1
-            StartSkillActivation(1);
-        }
-        else if (SkillActivationButtonsPressed[2])
-        {
-            // Try starting Activation of Skill 1 from Weapon 2
-            StartSkillActivation(2);
-        }
-        else if (SkillActivationButtonsPressed[3])
-        {
-            // Try starting Activation of Skill 2 from Weapon 2
-            StartSkillActivation(3);
-        }
+            if (SkillActivationButtonsPressed[2])
+            {
+                // Try starting Activation of Skill 1 from Weapon 2
+                StartSkillActivation(2);
+            }
+            else if (SkillActivationButtonsPressed[3])
+            {
+                // Try starting Activation of Skill 2 from Weapon 2
+                StartSkillActivation(3);
+            }
+        }   
     }
 
     // ======================================== /INPUT =========================================

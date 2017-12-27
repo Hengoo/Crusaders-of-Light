@@ -13,6 +13,10 @@ public class ItemSkill : MonoBehaviour {
 
     public int Level;
 
+    private float ActivationIntervallTimer = 0.0f;
+
+    private bool EffectOnlyOnceBool = false;
+
     [Header("Animation:")]
     public string AnimationName = "no_animation";
 
@@ -23,6 +27,9 @@ public class ItemSkill : MonoBehaviour {
         if (CurrentCooldown > 0.0f) { return false; }
         
         ParentItem.GetOwner().StartAnimation(AnimationName, SkillObject.GetTotalActivationTime(), ParentItem.GetEquippedSlotID());
+
+        ActivationIntervallTimer = 0.0f;
+        EffectOnlyOnceBool = false;
 
         return SkillObject.StartSkillActivation(this, GetCurrentOwner());
     }
@@ -50,14 +57,29 @@ public class ItemSkill : MonoBehaviour {
         CurrentCooldown = Mathf.Max(CurrentCooldown - PassedTime, 0);
     }
 
-    public void UpdateSkillActivation(float ActivationTimer, bool StillActivating)
+    public void UpdateSkillActivation(bool StillActivating)
     {
-        SkillObject.UpdateSkillActivation(this, ActivationTimer, StillActivating);
+        ParentItem.UpdateSkillActivationTimer();
+
+        if (SkillObject.GetActivationIntervall() >= 0)
+        {
+            ActivationIntervallTimer += Time.deltaTime;
+
+            if (ActivationIntervallTimer >= SkillObject.GetActivationIntervall())
+            {
+                ActivationIntervallTimer -= SkillObject.GetActivationIntervall();
+                SkillObject.UpdateSkillActivation(this, ParentItem.GetSkillActivationTimer(), StillActivating, true);
+                return;
+            }
+        }
+
+        SkillObject.UpdateSkillActivation(this, ParentItem.GetSkillActivationTimer(), StillActivating, false);
     }
 
     public void FinishedSkillActivation()
     {
-        GetCurrentOwner().FinishedCurrentSkillActivation();
+        ParentItem.SetSkillActivationTimer(0.0f);
+        GetCurrentOwner().FinishedCurrentSkillActivation(ParentItem.GetCurrentEquipSlot());
     }
 
     public bool CheckIfSkillIsUsingHitBox(ItemSkill SkillToCheck)
@@ -99,6 +121,16 @@ public class ItemSkill : MonoBehaviour {
     public int GetSkillLevel()
     {
         return Level;
+    }
+
+    public bool GetEffectOnlyOnceBool()
+    {
+        return EffectOnlyOnceBool;
+    }
+
+    public void SetEffectOnlyOnceBool(bool state)
+    {
+        EffectOnlyOnceBool = state;
     }
 
     public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()

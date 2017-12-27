@@ -581,12 +581,16 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  Defenses:
+  - 0
+  - 0
+  - 0
   CharacterHands:
   - {fileID: 4910428075266160}
   - {fileID: 4554526276688996}
   StartingWeapons:
   - {fileID: 0}
-  - {fileID: 114138546521913964, guid: 3150fd57347ee5f488a27884513d66df, type: 2}
+  - {fileID: 114262640344697314, guid: 3150fd57347ee5f488a27884513d66df, type: 2}
   SkillsPerWeapon: 2
   WeaponSlots:
   - {fileID: 0}
@@ -596,8 +600,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  SkillCurrentlyActivating: -1
-  SkillActivationTimer: 0
+  SkillCurrentlyActivating: ffffffffffffffff
   ActiveConditions: []
   HandAnimators:
   - {fileID: 95021089899738254}

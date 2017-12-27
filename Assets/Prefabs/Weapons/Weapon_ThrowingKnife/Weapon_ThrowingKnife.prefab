@@ -24,8 +24,8 @@ GameObject:
   - component: {fileID: 95288903843282086}
   - component: {fileID: 114272828251335038}
   - component: {fileID: 114150160281233958}
-  - component: {fileID: 65925652029455480}
   - component: {fileID: 54225277741950348}
+  - component: {fileID: 64305631457386998}
   m_Layer: 0
   m_Name: Weapon_ThrowingKnife
   m_TagString: Weapon
@@ -41,7 +41,7 @@ Transform:
   m_GameObject: {fileID: 1250523081887030}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -86,7 +86,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1250523081887030}
-  m_Mesh: {fileID: 4300000, guid: ac7708e7c258d3d4cbe15fe52db5adfc, type: 3}
+  m_Mesh: {fileID: 4300000, guid: aed9609b8c013e54da8988d9632d744f, type: 3}
 --- !u!54 &54225277741950348
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -102,18 +102,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &65925652029455480
-BoxCollider:
+--- !u!64 &64305631457386998
+MeshCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1250523081887030}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.6, y: 3.345606, z: 11.09882}
-  m_Center: {x: 0, y: 0, z: 4.580101}
+  m_Convex: 1
+  m_InflateMesh: 1
+  m_SkinWidth: 0.02
+  m_Mesh: {fileID: 4300000, guid: aed9609b8c013e54da8988d9632d744f, type: 3}
 --- !u!95 &95288903843282086
 Animator:
   serializedVersion: 3
@@ -159,10 +161,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentOwner: {fileID: 0}
+  CurrentEquipSlot: -1
   ItemSkills:
   - {fileID: 114150160281233958}
+  SkillActivationTimer: 0
   ItemRidgidBody: {fileID: 54225277741950348}
-  ItemCollider: {fileID: 65925652029455480}
+  ItemCollider: {fileID: 64305631457386998}
   IgnoreCurrentOwnerForCollisionChecks: 1
   EquippedPosition: {x: 0, y: 0, z: 0}
   EquippedRotation: {x: 160, y: -18, z: 42}
