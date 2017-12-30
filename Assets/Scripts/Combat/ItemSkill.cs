@@ -13,9 +13,10 @@ public class ItemSkill : MonoBehaviour {
 
     public int Level;
 
-    private float ActivationIntervallTimer = 0.0f;
+    public float ActivationIntervallTimer = 0.0f;
 
-    private bool EffectOnlyOnceBool = false;
+    public bool EffectOnlyOnceBool = false;
+    public float EffectFloat = 0.0f;
 
     [Header("Animation:")]
     public string AnimationName = "no_animation";
@@ -26,10 +27,19 @@ public class ItemSkill : MonoBehaviour {
     {
         if (CurrentCooldown > 0.0f) { return false; }
         
-        ParentItem.GetOwner().StartAnimation(AnimationName, SkillObject.GetTotalActivationTime(), ParentItem.GetEquippedSlotID());
+        if (SkillObject.GetOverwriteAnimationSpeedScaling() > 0)
+        {
+            ParentItem.GetOwner().StartAnimation(AnimationName, SkillObject.GetOverwriteAnimationSpeedScaling(), ParentItem.GetEquippedSlotID());
+        }
+        else
+        {
+            ParentItem.GetOwner().StartAnimation(AnimationName, SkillObject.GetTotalActivationTime(), ParentItem.GetEquippedSlotID());
+        }
+        
 
         ActivationIntervallTimer = 0.0f;
         EffectOnlyOnceBool = false;
+        EffectFloat = 0.0f;
 
         return SkillObject.StartSkillActivation(this, GetCurrentOwner());
     }
@@ -123,6 +133,11 @@ public class ItemSkill : MonoBehaviour {
         return Level;
     }
 
+    public int GetParentItemEquipmentSlot()
+    {
+        return ParentItem.GetCurrentEquipSlot();
+    }
+
     public bool GetEffectOnlyOnceBool()
     {
         return EffectOnlyOnceBool;
@@ -132,6 +147,22 @@ public class ItemSkill : MonoBehaviour {
     {
         EffectOnlyOnceBool = state;
     }
+
+    public float GetEffectFloat()
+    {
+        return EffectFloat;
+    }
+
+    public void SetEffectFloat(float value)
+    {
+        EffectFloat = value;
+    }
+
+    public void ChangeEffectFloat(float change)
+    {
+        EffectFloat += change;
+    }
+       
 
     public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()
     {

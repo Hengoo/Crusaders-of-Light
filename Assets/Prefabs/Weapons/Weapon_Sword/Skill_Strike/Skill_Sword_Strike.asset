@@ -8,17 +8,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14b646cdd733c544ea65c7ce4a2ec9a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 459ba0e85ac88e64381693d37b49b7ee, type: 3}
   m_Name: Skill_Sword_Strike
   m_EditorClassIdentifier: 
   Cost: 0
-  ActivationTime: 0.8
+  ActivationTime: 0.2
+  ActivationIntervall: -1
   Cooldown: -1
   AllowTargetFriendly: 0
   AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: 19c3ba0107273c24faeda4f506e8b5b9, type: 2}
+  OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 30a2b3678f3910a4f9bbae1d0f6f23bd, type: 2}
-  HitTimeStart: 0.4
-  HitTimeStop: 0.7
+  ChargeUpTimeMax: -1
+  EffectiveChargeUpTimeMax: 1
+  AfterReleaseActivationTime: 0.25
   HitEachCharacterOnlyOnce: 1
+  ReleaseAnimation: Charge_Released
