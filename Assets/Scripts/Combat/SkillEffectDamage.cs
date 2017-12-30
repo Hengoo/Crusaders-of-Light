@@ -11,12 +11,20 @@ public class SkillEffectDamage : SkillEffect
     public Character.Defense DefenseType = Character.Defense.NONE;
     public Character.Resistance DamageType = Character.Resistance.NONE;
 
+    [Header("Skill Effect Damage Value Modifier:")]
+    public SkillEffectValueModifier[] DamageValueModifiers = new SkillEffectValueModifier[0];
+
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
         int FinalDamageValue = DamageValueBase;
 
         FinalDamageValue += DamageValuePerLevel * SourceItemSkill.GetSkillLevel();
+
+        for (int i = 0; i < DamageValueModifiers.Length; i++)
+        {
+            FinalDamageValue = Mathf.RoundToInt(DamageValueModifiers[i].ModifyValue(FinalDamageValue, Owner, SourceItemSkill, Target));
+        }
 
         Target.InflictDamage(DefenseType, DamageType, FinalDamageValue);
     }

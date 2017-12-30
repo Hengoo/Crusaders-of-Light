@@ -138,6 +138,11 @@ public class ItemSkill : MonoBehaviour {
         return ParentItem.GetCurrentEquipSlot();
     }
 
+    public float GetCurrentSkillActivationTime()
+    {
+        return ParentItem.GetSkillActivationTimer();
+    }
+
     public bool GetEffectOnlyOnceBool()
     {
         return EffectOnlyOnceBool;
