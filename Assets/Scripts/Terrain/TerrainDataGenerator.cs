@@ -100,12 +100,35 @@ public static class TerrainDataGenerator
     }
 
     // Draw roads onto the alpha and height maps
-    public static void DrawRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, List<Vector2[]> roads)
+    public static void DrawLineRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, List<Vector2[]> roads, int squareSize)
     {
         var biomeConfiguration = terrainStructure.BiomeConfiguration;
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
-        
-        //
+
+        // Find cells covered by the road polygon
+        var indexes = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, roads, squareSize);
+
+        // Set alphamap values to only road draw
+        foreach (var index in indexes)
+        {
+            // Other textures to 0
+            for (var i = 0; i < terrainStructure.TextureCount; i++)
+            {
+                alphamap[index.x, index.y, i] = 0;
+            }
+
+            // Road texture to 1
+            alphamap[index.x, index.y, terrainStructure.RoadSplatIndex] = 1;
+        }
+    }
+
+
+    // Draw roads onto the alpha and height maps - TODO: future work
+    public static void DrawPolygonalRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, List<Vector2[]> roads)
+    {
+        var biomeConfiguration = terrainStructure.BiomeConfiguration;
+        var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
+
         foreach (var road in roads)
         {
             // Find cells covered by the road polygon
@@ -208,9 +231,9 @@ public static class TerrainDataGenerator
         var lines = new List<Vector2[]>();
         for (var i = 0; i < vertices.Count - 1; i++)
         {
-            lines.Add(new []{vertices[i], vertices[i+1]});
+            lines.Add(new[] { vertices[i], vertices[i + 1] });
         }
-        lines.Add(new[] { vertices[vertices.Count - 1], vertices[0]});
+        lines.Add(new[] { vertices[vertices.Count - 1], vertices[0] });
 
         var result = new HashSet<Vector2Int>();
         var discretizedBorders = new HashSet<Vector2Int>[lines.Count];
@@ -233,24 +256,23 @@ public static class TerrainDataGenerator
         startingPoint /= count;
 
         // Flood the inside part of the polygon
-        var floodQueue = new Queue<Vector2Int>();
-        floodQueue.Enqueue(new Vector2Int(Mathf.FloorToInt(startingPoint.x / cellSize), Mathf.FloorToInt(startingPoint.y / cellSize)));
-        return result;
-        while (floodQueue.Count > 0)
-        {
-            var currentCell = floodQueue.Dequeue();
-            result.Add(currentCell);
+        //var floodQueue = new Queue<Vector2Int>(1024);
+        //floodQueue.Enqueue(new Vector2Int(Mathf.FloorToInt(startingPoint.x / cellSize), Mathf.FloorToInt(startingPoint.y / cellSize)));
+        //while (floodQueue.Count > 0)
+        //{
+        //    var currentCell = floodQueue.Dequeue();
+        //    result.Add(currentCell);
 
-            var right = currentCell + new Vector2Int(1, 0);
-            var left = currentCell + new Vector2Int(-1, 0);
-            var top = currentCell + new Vector2Int(0, 1);
-            var bottom = currentCell + new Vector2Int(0, -1);
+        //    var right = currentCell + new Vector2Int(1, 0);
+        //    var left = currentCell + new Vector2Int(-1, 0);
+        //    var top = currentCell + new Vector2Int(0, 1);
+        //    var bottom = currentCell + new Vector2Int(0, -1);
 
-            if (!result.Contains(right) && !floodQueue.Contains(right)) floodQueue.Enqueue(right);
-            if (!result.Contains(left) && !floodQueue.Contains(left)) floodQueue.Enqueue(left);
-            if (!result.Contains(top) && !floodQueue.Contains(top)) floodQueue.Enqueue(top);
-            if (!result.Contains(bottom) && !floodQueue.Contains(bottom)) floodQueue.Enqueue(bottom);
-        }
+        //    if (!result.Contains(right) && !floodQueue.Contains(right) && right.x >= 0 && right.x < resolution) floodQueue.Enqueue(right);
+        //    if (!result.Contains(left) && !floodQueue.Contains(left) && left.x >= 0 && left.x < resolution) floodQueue.Enqueue(left);
+        //    if (!result.Contains(top) && !floodQueue.Contains(top) && top.y >= 0 && top.y < resolution) floodQueue.Enqueue(top);
+        //    if (!result.Contains(bottom) && !floodQueue.Contains(bottom) && bottom.y >= 0 && bottom.y < resolution) floodQueue.Enqueue(bottom);
+        //}
 
         return result;
     }
@@ -313,6 +335,22 @@ public static class TerrainDataGenerator
             else
             {
                 current += new Vector2Int(dx2, dy2);
+            }
+        }
+
+        var temp = new HashSet<Vector2Int>(result);
+        foreach (var cell in temp)
+        {
+            for (int y = -lineWidth; y < lineWidth; y++)
+            {
+                for (int x = -lineWidth; x < lineWidth; x++)
+                {
+                    var neighbor = cell + new Vector2Int(x, y);
+                    if (neighbor.x < 0 || neighbor.x >= resolution || neighbor.y < 0 ||
+                        neighbor.x >= resolution) continue;
+
+                    result.Add(neighbor);
+                }
             }
         }
 

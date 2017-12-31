@@ -67,10 +67,10 @@ public class MapGenerator : MonoBehaviour
         var alphamap = TerrainDataGenerator.GenerateAlphaMap(_terrainStructure);
 
         /* Draw roads onto alphamap */
-        TerrainDataGenerator.DrawRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadPolygons);
+        TerrainDataGenerator.DrawLineRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadLines, 3);
 
         /* Smoothing passes */
-        //alphamap = TerrainDataGenerator.SmoothAlphaMap(alphamap, 1);
+        alphamap = TerrainDataGenerator.SmoothAlphaMap(alphamap, 1);
         if (BiomeConfiguration.SmoothEdges)
         {
             //Smooth only navigable biome borders
@@ -105,8 +105,8 @@ public class MapGenerator : MonoBehaviour
         terrain.transform.parent = transform;
         terrain.transform.position = Vector3.zero;
         terrain.GetComponent<Terrain>().terrainData.SetHeights(0, 0, heightMap);
-        terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
-        terrain.GetComponent<Terrain>().materialTemplate = BiomeConfiguration.TerrainMaterial;
+        //terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
+        //terrain.GetComponent<Terrain>().materialTemplate = BiomeConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
 
         /* Fill terrain with scenery */
         if (FillTerrain)

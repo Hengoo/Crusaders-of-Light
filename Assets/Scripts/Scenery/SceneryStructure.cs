@@ -9,11 +9,13 @@ public class SceneryStructure
     public TerrainStructure TerrainStructure { get; private set; }
     public WorldStructure WorldStructure { get; private set; }
     public List<Vector2[]> RoadPolygons { get; private set; }
+    public List<Vector2[]> RoadLines { get; private set; }
 
     public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, float roadWidth)
     {
         SceneryAreas = new List<SceneryAreaFill>();
         RoadPolygons = new List<Vector2[]>();
+        RoadLines = new List<Vector2[]>();
 
         TerrainStructure = terrainStructure;
         WorldStructure = worldStructure;
@@ -32,12 +34,13 @@ public class SceneryStructure
             SceneryAreas.Add(new SceneryAreaFill(prefabs[i], polygons[i], minDistances[i]));
         }
 
-        //Create road polygons
-        
+        //Create road polygons and road lines
         foreach (var edge in WorldStructure.NavigationGraph.GetAllEdges())
         {
             var start = TerrainStructure.BiomeGraph.GetNodeData(edge.x).Center;
             var end = TerrainStructure.BiomeGraph.GetNodeData(edge.y).Center;
+
+            RoadLines.Add(new []{start, end});
 
             var line = (end - start).normalized;
             var normal = (Vector2)Vector3.Cross(line, Vector3.forward).normalized;
