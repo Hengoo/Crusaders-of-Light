@@ -1,16 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
-public class MenuController : MonoBehaviour {
+public class MenuController : MonoBehaviour
+{
+    //Menus
+    public Canvas MainMenu;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public InputField Seed;
+    public Slider Brightness;
+
+    public void OnStartButton()
+    {
+        if (Seed.textComponent.text.Length > 0)
+            GameController.Instance.SetSeed(int.Parse(Seed.textComponent.text));
+        else
+        {
+            Random.InitState(System.DateTime.Now.GetHashCode());
+            GameController.Instance.SetSeed(Random.Range(0, int.MaxValue));
+        }
+
+        GameController.Instance.SetBrightness(Brightness.normalizedValue);
+        GameController.Instance.InitializeGameSession();
+    }
+
+    public void OnExitButton()
+    {
+        Application.Quit();
+    }
 }
