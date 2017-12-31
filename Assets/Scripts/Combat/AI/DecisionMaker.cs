@@ -12,10 +12,14 @@ public class DecisionMaker : ScriptableObject {
         public int ConsiderationsCounter;
     }
 
+    [Header("Decision Maker Considerations:")]
     public float Weight = 1.0f;
 
     public Consideration[] ConsiderationsTargeted = new Consideration[0];
     public Consideration[] ConsiderationsSelf = new Consideration[0];
+
+    [Header("Decision Maker Other:")]
+    public float SensibleActivationTime = 1.0f; // After this amount of time the AI stops "pressing the button". Skills with fixed Activation Times are not interrupted, Charge up skills are released.
 
     public AIDecision CalculateTotalScore(Character Self)
     {
@@ -91,5 +95,10 @@ public class DecisionMaker : ScriptableObject {
         //Debug.Log("TOTAL SCORE: " + Decision.Score);
 
         return Decision;
+    }
+
+    public float AIGetSensibleActivationTime()
+    {
+        return SensibleActivationTime;
     }
 }

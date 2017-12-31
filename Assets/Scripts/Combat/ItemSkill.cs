@@ -86,6 +86,18 @@ public class ItemSkill : MonoBehaviour {
         SkillObject.UpdateSkillActivation(this, ParentItem.GetSkillActivationTimer(), StillActivating, false);
     }
 
+    public void UpdateSkillActivation(float MaxActivationTime)
+    {
+        if (MaxActivationTime >= 0 && ParentItem.GetSkillActivationTimer() + Time.deltaTime >= MaxActivationTime)
+        {
+            UpdateSkillActivation(false);
+        }
+        else
+        {
+            UpdateSkillActivation(true);
+        }
+    }
+
     public void FinishedSkillActivation()
     {
         ParentItem.SetSkillActivationTimer(0.0f);
@@ -172,5 +184,10 @@ public class ItemSkill : MonoBehaviour {
     public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()
     {
         return SkillObject.AICalculateSkillScoreAndApplication(this, GetCurrentOwner());
+    }
+
+    public float AIGetSensibleActivationTime()
+    {
+        return SkillObject.GetDecisionMaker().AIGetSensibleActivationTime();
     }
 }

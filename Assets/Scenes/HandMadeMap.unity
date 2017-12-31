@@ -3279,8 +3279,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 404881676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 960, y: 540, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 486.5, y: 242, z: 0}
+  m_LocalScale: {x: 0.50677085, y: 0.50677085, z: 0.50677085}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -16595,6 +16595,12 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114587697657262122, guid: 6c5655d12222f234ba763facca60192b,
+        type: 2}
+      propertyPath: StartingWeapons.Array.data[1]
+      value: 
+      objectReference: {fileID: 114085459239855412, guid: 3b9c0f07dd055d84b9e71a376376711c,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6c5655d12222f234ba763facca60192b, type: 2}
   m_IsPrefabParent: 0

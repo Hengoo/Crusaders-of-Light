@@ -24,6 +24,8 @@ public class CharacterEnemy : Character {
     public float IdleMoveDuration = 0.2f;
     private float IdleMoveTimer = 0.0f;
 
+    private float[] SensibleSkillActivationTimes = new float[2];
+
     protected override void Update()
     {
         base.Update();
@@ -112,6 +114,7 @@ public class CharacterEnemy : Character {
 
         if (BestSkillID >= 0)
         {
+            SensibleSkillActivationTimes[WeaponSlotID] = ItemSkillSlots[BestSkillID].AIGetSensibleActivationTime();
             StartSkillActivation(BestSkillID);
         }
         else
@@ -192,7 +195,7 @@ public class CharacterEnemy : Character {
         {
             if (SkillCurrentlyActivating[i] >= 0)
             {
-                ItemSkillSlots[SkillCurrentlyActivating[i]].UpdateSkillActivation(true);
+                ItemSkillSlots[SkillCurrentlyActivating[i]].UpdateSkillActivation(SensibleSkillActivationTimes[i]);
             }
         }
     }

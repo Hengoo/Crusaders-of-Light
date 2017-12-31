@@ -39,6 +39,11 @@ public class SkillType : ScriptableObject {
         return ActivationIntervall;
     }
 
+    public DecisionMaker GetDecisionMaker()
+    {
+        return AIDecisionMaker;
+    }
+
     public virtual float GetOverwriteAnimationSpeedScaling()
     {
         return OverwriteAnimationSpeedScaling;

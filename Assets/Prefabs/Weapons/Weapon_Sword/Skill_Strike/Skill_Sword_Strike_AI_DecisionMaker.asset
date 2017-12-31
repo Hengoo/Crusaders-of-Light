@@ -15,3 +15,4 @@ MonoBehaviour:
   ConsiderationsTargeted:
   - {fileID: 11400000, guid: 5280457a0f7aa7c4ea7022bbe4ec6af1, type: 2}
   ConsiderationsSelf: []
+  SensibleActivationTime: 1.3
