@@ -69,6 +69,7 @@ public class BiomeConfiguration
     public BiomeSettings CliffBiome;
     public Material WaterMaterial;
     public Material TerrainMaterial;
+    public SplatPrototypeSerializable RoadSplatPrototype;
     [Range(0, 5)] public int OverallSmoothing = 2;
     public bool SmoothEdges = false;
     [Range(0, 20)] public int EdgeWidth = 6;

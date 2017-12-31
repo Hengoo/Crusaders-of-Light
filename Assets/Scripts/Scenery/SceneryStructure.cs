@@ -8,10 +8,12 @@ public class SceneryStructure
     public List<SceneryAreaFill> SceneryAreas { get; private set; }
     public TerrainStructure TerrainStructure { get; private set; }
     public WorldStructure WorldStructure { get; private set; }
+    public List<Vector2[]> RoadPolygons { get; private set; }
 
     public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, float roadWidth)
     {
         SceneryAreas = new List<SceneryAreaFill>();
+        RoadPolygons = new List<Vector2[]>();
 
         TerrainStructure = terrainStructure;
         WorldStructure = worldStructure;
@@ -31,7 +33,7 @@ public class SceneryStructure
         }
 
         //Create road polygons
-        var roadPolygons = new List<Vector2[]>();
+        
         foreach (var edge in WorldStructure.NavigationGraph.GetAllEdges())
         {
             var start = TerrainStructure.BiomeGraph.GetNodeData(edge.x).Center;
@@ -48,11 +50,11 @@ public class SceneryStructure
 
             var poly = new List<Vector2>{p0, p1, p2, p3};
             poly.SortVertices(origin);
-            roadPolygons.Add(poly.ToArray());
+            RoadPolygons.Add(poly.ToArray());
         }
 
         //Add removal polygon to affected area fill
-        foreach (var polygon in roadPolygons)
+        foreach (var polygon in RoadPolygons)
         {
             foreach (var vertex in polygon)
             {
@@ -63,8 +65,6 @@ public class SceneryStructure
                 }
             }
         }
-
-
     }
 
     /* Fill all areas with prefabs */
@@ -75,20 +75,6 @@ public class SceneryStructure
         {
             var fill = FillSceneryArea(sceneryArea, terrain);
             result.Add(fill);
-
-            //Debugging
-            //var polygon = new GameObject("Poly");
-            //polygon.transform.parent = fill.transform;
-            //int count = 0;
-            //foreach (var point in sceneryArea.Polygon)
-            //{
-            //    var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            //    sphere.name = count + " ";
-            //    sphere.GetComponent<Collider>().enabled = false;
-            //    sphere.transform.parent = polygon.transform;
-            //    sphere.transform.position = new Vector3(point.x, 0, point.y);
-            //    sphere.transform.localScale = Vector3.one * 20;
-            //}
 
         }
         return result;
