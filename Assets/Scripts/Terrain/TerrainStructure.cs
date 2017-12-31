@@ -46,7 +46,7 @@ public class TerrainStructure
         }
 
         //Add border biome to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(BiomeConfiguration.BorderBiome.Splat))
+        if (!_splatIDMap.ContainsKey(biomeConfiguration.BorderBiome.Splat))
         {
             _splatIDMap.Add(BiomeConfiguration.BorderBiome.Splat, count);
             Shader.SetGlobalTexture("_BumpMap" + count, BiomeConfiguration.BorderBiome.Splat.normalMap ? BiomeConfiguration.BorderBiome.Splat.normalMap : _blankBump);
@@ -56,12 +56,12 @@ public class TerrainStructure
         }
 
         //Add road to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(BiomeConfiguration.RoadSplatPrototype))
+        if (!_splatIDMap.ContainsKey(biomeConfiguration.RoadSplatPrototype))
         {
-            _splatIDMap.Add(BiomeConfiguration.RoadSplatPrototype, count);
-            Shader.SetGlobalTexture("_BumpMap" + count, BiomeConfiguration.RoadSplatPrototype.normalMap ? BiomeConfiguration.RoadSplatPrototype.normalMap : _blankBump);
+            _splatIDMap.Add(biomeConfiguration.RoadSplatPrototype, count);
+            Shader.SetGlobalTexture("_BumpMap" + count, biomeConfiguration.RoadSplatPrototype.normalMap ? biomeConfiguration.RoadSplatPrototype.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / BiomeConfiguration.BorderBiome.Splat.tileSize.x);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / biomeConfiguration.RoadSplatPrototype.tileSize.x);
             RoadSplatIndex = count;
         }
 

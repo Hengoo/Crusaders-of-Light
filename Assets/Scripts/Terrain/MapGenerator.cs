@@ -70,7 +70,7 @@ public class MapGenerator : MonoBehaviour
         TerrainDataGenerator.DrawRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadPolygons);
 
         /* Smoothing passes */
-        alphamap = TerrainDataGenerator.SmoothAlphaMap(alphamap, 1);
+        //alphamap = TerrainDataGenerator.SmoothAlphaMap(alphamap, 1);
         if (BiomeConfiguration.SmoothEdges)
         {
             //Smooth only navigable biome borders

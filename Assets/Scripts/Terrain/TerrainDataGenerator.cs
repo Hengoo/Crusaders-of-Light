@@ -105,6 +105,7 @@ public static class TerrainDataGenerator
         var biomeConfiguration = terrainStructure.BiomeConfiguration;
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
         
+        //
         foreach (var road in roads)
         {
             // Find cells covered by the road polygon
@@ -116,7 +117,7 @@ public static class TerrainDataGenerator
                 // Other textures to 0
                 for (var i = 0; i < terrainStructure.TextureCount; i++)
                 {
-                    alphamap[index.x, index.y, i] = 0;
+                    alphamap[index.x, index.y, i] = 0.00001f;
                 }
 
                 // Road texture to 1
@@ -234,6 +235,7 @@ public static class TerrainDataGenerator
         // Flood the inside part of the polygon
         var floodQueue = new Queue<Vector2Int>();
         floodQueue.Enqueue(new Vector2Int(Mathf.FloorToInt(startingPoint.x / cellSize), Mathf.FloorToInt(startingPoint.y / cellSize)));
+        return result;
         while (floodQueue.Count > 0)
         {
             var currentCell = floodQueue.Dequeue();
@@ -244,10 +246,10 @@ public static class TerrainDataGenerator
             var top = currentCell + new Vector2Int(0, 1);
             var bottom = currentCell + new Vector2Int(0, -1);
 
-            if (!result.Contains(right)) floodQueue.Enqueue(right);
-            if (!result.Contains(left)) floodQueue.Enqueue(left);
-            if (!result.Contains(top)) floodQueue.Enqueue(top);
-            if (!result.Contains(bottom)) floodQueue.Enqueue(bottom);
+            if (!result.Contains(right) && !floodQueue.Contains(right)) floodQueue.Enqueue(right);
+            if (!result.Contains(left) && !floodQueue.Contains(left)) floodQueue.Enqueue(left);
+            if (!result.Contains(top) && !floodQueue.Contains(top)) floodQueue.Enqueue(top);
+            if (!result.Contains(bottom) && !floodQueue.Contains(bottom)) floodQueue.Enqueue(bottom);
         }
 
         return result;
