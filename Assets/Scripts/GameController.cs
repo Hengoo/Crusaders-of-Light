@@ -34,6 +34,12 @@ public class GameController : Singleton<GameController>
     {
         //TODO: create real game map
         SceneManager.LoadScene("HandMadeMap");
+        GameState = GameStateEnum.Play;
+    }
+
+    public void FinalizeGameSession()
+    {
+        GameState = GameStateEnum.Menu;
     }
 }
 
