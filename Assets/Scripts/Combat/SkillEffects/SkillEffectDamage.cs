@@ -29,4 +29,18 @@ public class SkillEffectDamage : SkillEffect
         Target.InflictDamage(DefenseType, DamageType, FinalDamageValue);
     }
 
+    public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
+    {
+        int FinalDamageValue = DamageValueBase;
+
+        FinalDamageValue += DamageValuePerLevel * FixedLevel;
+
+        for (int i = 0; i < DamageValueModifiers.Length; i++)
+        {
+            FinalDamageValue = Mathf.RoundToInt(DamageValueModifiers[i].ModifyValue(FinalDamageValue, Owner, SourceItemSkill, Target));
+        }
+
+        Target.InflictDamage(DefenseType, DamageType, FinalDamageValue);
+    }
+
 }

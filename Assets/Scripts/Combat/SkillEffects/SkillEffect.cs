@@ -8,4 +8,9 @@ public class SkillEffect : ScriptableObject {
     {
 
     }
+
+    public virtual void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
+    {
+        ApplyEffect(Owner, SourceItemSkill, Target);
+    }
 }

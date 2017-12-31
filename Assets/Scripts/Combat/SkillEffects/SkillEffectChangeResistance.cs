@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "skill_effect_change_resistance", menuName = "Combat/SkillEffects/ChangeResistance", order = 4)]
+[CreateAssetMenu(fileName = "skill_effect_change_resistance", menuName = "Combat/SkillEffects/ChangeResistance", order = 5)]
 public class SkillEffectChangeResistance : SkillEffect {
     [Header("Skill Effect Change Resistance:")]
     public float ResistanceValueBase = 0;
@@ -18,5 +18,12 @@ public class SkillEffectChangeResistance : SkillEffect {
         Target.ChangeResistance(ResistanceType, FinalResistanceValue);
     }
 
+    public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
+    {
+        float FinalResistanceValue = ResistanceValueBase;
 
+        FinalResistanceValue += ResistanceValuePerLevel * FixedLevel;
+
+        Target.ChangeResistance(ResistanceType, FinalResistanceValue);
+    }
 }

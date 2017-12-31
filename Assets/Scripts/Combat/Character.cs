@@ -474,6 +474,11 @@ public class Character : MonoBehaviour {
         Resistances[(int)ResistanceType] += Amount;
     }
 
+    public void ChangeDefense(Defense DefenseType, float Amount)
+    {
+        Defenses[(int)DefenseType] += Amount;
+    }
+
     // =================================== /EFFECT INTERACTION ===================================
 
     // =================================== ACTIVE CONDITIONS ===================================
@@ -494,6 +499,8 @@ public class Character : MonoBehaviour {
         float TimeCounter;
         [SerializeField]
         float TickCounter;
+        [SerializeField]
+        int FixedLevel;
 
         public ActiveCondition(Character _TargetCharacter, Character _SourceCharacter, ItemSkill _SourceItemSkill, Condition _Condition)
         {
@@ -503,31 +510,36 @@ public class Character : MonoBehaviour {
             Cond = _Condition;
             TimeCounter = 0f;
             TickCounter = 0f;
+            FixedLevel = SourceItemSkill.GetSkillLevel();
 
             ApplyCondition();
         }
 
         void ApplyCondition()
         {
-            Cond.ApplyCondition(SourceCharacter, SourceItemSkill, TargetCharacter);
+            Cond.ApplyCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
         }
 
         // Return : True: Condition Ended, False: Condition did not end.
         public bool UpdateCondition()
         {
             float UpdateTime = Time.deltaTime;
-            TimeCounter += UpdateTime;
-            TickCounter += UpdateTime;
-            
-            if (Cond.ReachedTick(TickCounter))
+                       
+            if (Cond.HasTicks())
             {
-                TickCounter -= Cond.GetTickTime();
-                Cond.ApplyEffectsOnTick(SourceCharacter, SourceItemSkill, TargetCharacter);
+                TickCounter += UpdateTime;
+
+                if (Cond.ReachedTick(TickCounter))
+                {
+                    TickCounter -= Cond.GetTickTime();
+                    Cond.ApplyEffectsOnTick(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
+                }
             }
 
+            TimeCounter += UpdateTime;
             if (Cond.ReachedEnd(TimeCounter))
             {
-                Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter);
+                Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
                 return true;
             }
             return false;
@@ -540,6 +552,11 @@ public class Character : MonoBehaviour {
                 return true;
             }
             return false;
+        }
+
+        public void RemoveThisCondition()
+        {
+            Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
         }
     }
 
@@ -592,6 +609,25 @@ public class Character : MonoBehaviour {
             }
         }
         return false;
+    }
+
+    public void RemoveCondition(Condition ConditionToRemove)
+    {
+        ActiveCondition ActCondToRemove = null;
+
+        for (int i = 0; i < ActiveConditions.Count; i++)
+        {
+            if (ActiveConditions[i].RepresentsThisCondition(ConditionToRemove))
+            {
+                ActCondToRemove = ActiveConditions[i];
+            }
+        }
+
+        if (ActCondToRemove != null)
+        {
+            ActCondToRemove.RemoveThisCondition();
+            ActiveConditions.Remove(ActCondToRemove);
+        }
     }
 
     // =================================== /ACTIVE CONDITIONS ===================================

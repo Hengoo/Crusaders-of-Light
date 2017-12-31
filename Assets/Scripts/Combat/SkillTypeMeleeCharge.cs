@@ -12,6 +12,9 @@ public class SkillTypeMeleeCharge : SkillType {
 
     public bool HitEachCharacterOnlyOnce = true;
 
+    [Header("Skill Charge Up Melee Additional Effects:")]
+    public SkillEffect[] EffectsSelfOnRelease = new SkillEffect[0];
+
     [Header("Skill Charge Up Melee Animation: (Only set to something else if fully intended)")]
     public string ReleaseAnimation = "Charge_Released";
  
@@ -29,6 +32,11 @@ public class SkillTypeMeleeCharge : SkillType {
                 SourceItemSkill.SetEffectFloat(CurrentActivationTime + AfterReleaseActivationTime);
                 SourceItemSkill.GetCurrentOwner().StartAnimation(ReleaseAnimation, AfterReleaseActivationTime, SourceItemSkill.GetParentItemEquipmentSlot());
                 SourceItemSkill.StartSkillCurrentlyUsingItemHitBox(HitEachCharacterOnlyOnce);
+
+                for (int i = 0; i < EffectsSelfOnRelease.Length; i++)
+                {
+                    EffectsSelfOnRelease[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+                }
             }
 
             SourceItemSkill.SetEffectOnlyOnceBool(true);

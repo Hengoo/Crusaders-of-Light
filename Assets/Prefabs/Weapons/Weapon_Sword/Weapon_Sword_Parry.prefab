@@ -9,50 +9,50 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1538777499171326}
+  m_RootGameObject: {fileID: 1462748279215140}
   m_IsPrefabParent: 1
---- !u!1 &1538777499171326
+--- !u!1 &1462748279215140
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4692185588636048}
-  - component: {fileID: 33148329686296256}
-  - component: {fileID: 23270460487621334}
-  - component: {fileID: 95934389291529798}
-  - component: {fileID: 114268925710736316}
-  - component: {fileID: 114696092182185232}
-  - component: {fileID: 114007913422108320}
-  - component: {fileID: 54401641641900856}
-  - component: {fileID: 64617178213800634}
+  - component: {fileID: 4636001943027706}
+  - component: {fileID: 33159689095561920}
+  - component: {fileID: 23225933039044388}
+  - component: {fileID: 95521272276214504}
+  - component: {fileID: 114066496244682900}
+  - component: {fileID: 114636584848807780}
+  - component: {fileID: 114007886139477950}
+  - component: {fileID: 54605769073419004}
+  - component: {fileID: 64088764270323392}
   m_Layer: 0
-  m_Name: Weapon_Sword
+  m_Name: Weapon_Sword_Parry
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4692185588636048
+--- !u!4 &4636001943027706
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1538777499171326}
+  m_GameObject: {fileID: 1462748279215140}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23270460487621334
+--- !u!23 &23225933039044388
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1538777499171326}
+  m_GameObject: {fileID: 1462748279215140}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -81,19 +81,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33148329686296256
+--- !u!33 &33159689095561920
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1538777499171326}
-  m_Mesh: {fileID: 4300000, guid: ac7708e7c258d3d4cbe15fe52db5adfc, type: 3}
---- !u!54 &54401641641900856
+  m_GameObject: {fileID: 1462748279215140}
+  m_Mesh: {fileID: 4300000, guid: a1713b5de5b462a498cac84ef4330bac, type: 3}
+--- !u!54 &54605769073419004
 Rigidbody:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1538777499171326}
+  m_GameObject: {fileID: 1462748279215140}
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
@@ -103,12 +103,12 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!64 &64617178213800634
+--- !u!64 &64088764270323392
 MeshCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1538777499171326}
+  m_GameObject: {fileID: 1462748279215140}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
@@ -116,14 +116,14 @@ MeshCollider:
   m_Convex: 1
   m_InflateMesh: 1
   m_SkinWidth: 0.02
-  m_Mesh: {fileID: 4300000, guid: ac7708e7c258d3d4cbe15fe52db5adfc, type: 3}
---- !u!95 &95934389291529798
+  m_Mesh: {fileID: 4300000, guid: a1713b5de5b462a498cac84ef4330bac, type: 3}
+--- !u!95 &95521272276214504
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1538777499171326}
+  m_GameObject: {fileID: 1462748279215140}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: ac7708e7c258d3d4cbe15fe52db5adfc, type: 3}
   m_Controller: {fileID: 0}
@@ -134,41 +134,46 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114007913422108320
+--- !u!114 &114007886139477950
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1538777499171326}
+  m_GameObject: {fileID: 1462748279215140}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ParentItem: {fileID: 114268925710736316}
-  SkillObject: {fileID: 11400000, guid: 5476fe060aac8594fb25d9b7b15f84fc, type: 2}
+  ParentItem: {fileID: 114066496244682900}
+  SkillObject: {fileID: 11400000, guid: 6f09c83e92e58f74185a518b6a40a4b5, type: 2}
   CurrentCooldown: 0
-  Level: 1
-  AnimationName: Melee_Swing
---- !u!114 &114268925710736316
+  Level: 5
+  ActivationIntervallTimer: 0
+  EffectOnlyOnceBool: 0
+  EffectFloat: 0
+  AnimationName: Melee_Block
+--- !u!114 &114066496244682900
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1538777499171326}
+  m_GameObject: {fileID: 1462748279215140}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed1481445385c1e40ae6bc42ca32a7d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentOwner: {fileID: 0}
+  CurrentEquipSlot: -1
   ItemSkills:
-  - {fileID: 114696092182185232}
-  - {fileID: 114007913422108320}
-  ItemRidgidBody: {fileID: 54401641641900856}
-  ItemCollider: {fileID: 64617178213800634}
+  - {fileID: 114636584848807780}
+  - {fileID: 114007886139477950}
+  SkillActivationTimer: 0
+  ItemRidgidBody: {fileID: 54605769073419004}
+  ItemCollider: {fileID: 64088764270323392}
   IgnoreCurrentOwnerForCollisionChecks: 1
-  EquippedPosition: {x: 0, y: 0, z: 0}
+  EquippedPosition: {x: 0, y: 0, z: 0.7}
   EquippedRotation: {x: 0, y: 0, z: 90}
   CurrentlyCollidingCharacters: []
   CanHitCharactersOnlyOnce: 0
@@ -178,19 +183,22 @@ MonoBehaviour:
   CurrentItemHitBoxAlignment: 0
   EquippedSlotID: -1
   TwoHanded: 0
---- !u!114 &114696092182185232
+--- !u!114 &114636584848807780
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1538777499171326}
+  m_GameObject: {fileID: 1462748279215140}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ParentItem: {fileID: 114268925710736316}
-  SkillObject: {fileID: 11400000, guid: 91a82b0a5d34cfc4f8bd368363bc959e, type: 2}
+  ParentItem: {fileID: 114066496244682900}
+  SkillObject: {fileID: 11400000, guid: 3a6b9bca2200f0b4c9d211f88057c55f, type: 2}
   CurrentCooldown: 0
-  Level: 1
-  AnimationName: Melee_Swing
+  Level: 5
+  ActivationIntervallTimer: 0
+  EffectOnlyOnceBool: 0
+  EffectFloat: 0
+  AnimationName: Melee_ChargeUp_Swing
