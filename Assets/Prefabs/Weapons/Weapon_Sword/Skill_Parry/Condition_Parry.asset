@@ -17,7 +17,6 @@ MonoBehaviour:
   OnTick: []
   OnEnd:
   - {fileID: 11400000, guid: f00f221e974101442962ed02b10cbbd8, type: 2}
-  - {fileID: 11400000, guid: 81b24f330881cde41a15cc18abae972d, type: 2}
   Duration: -1
   TickTime: -1
   StackMaximum: 1
