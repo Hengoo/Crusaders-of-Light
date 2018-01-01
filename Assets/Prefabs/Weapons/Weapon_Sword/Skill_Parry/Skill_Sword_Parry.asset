@@ -18,6 +18,7 @@ MonoBehaviour:
   AllowTargetFriendly: 0
   AllowTargetEnemy: 0
   Effects: []
+  AnimationName: Melee_Block
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 59113e1f2b785d94dbd0b8cabf30b2a3, type: 2}
   ActivationTimeMax: -1

@@ -18,6 +18,7 @@ public class SkillType : ScriptableObject {
     public SkillEffect[] Effects;
 
     [Header("Skill Animation:")]
+    public string AnimationName = "no_animation";
     public float OverwriteAnimationSpeedScaling = -1; // If > 0 : Use other Speed scaling. Which one, depends on the exact Skill Type! Base: This Value.
 
     [Header("Skill Enemy AI Decision Maker:")]
@@ -42,6 +43,11 @@ public class SkillType : ScriptableObject {
     public DecisionMaker GetDecisionMaker()
     {
         return AIDecisionMaker;
+    }
+
+    public string GetAnimationName()
+    {
+        return AnimationName;
     }
 
     public virtual float GetOverwriteAnimationSpeedScaling()
@@ -97,6 +103,14 @@ public class SkillType : ScriptableObject {
         for (int i = 0; i < Effects.Length; i++)
         {
             Effects[i].ApplyEffect(Owner, SourceItemSkill, Target);
+        }
+    }
+
+    public virtual void ApplyEffects(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
+    {
+        for (int i = 0; i < Effects.Length; i++)
+        {
+            Effects[i].ApplyEffect(Owner, SourceItemSkill, Target, FixedLevel);
         }
     }
 

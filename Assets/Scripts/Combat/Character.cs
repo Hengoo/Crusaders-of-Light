@@ -42,6 +42,8 @@ public class Character : MonoBehaviour {
     public float[] Resistances = new float[6]; // Resistances[Enum Resistance], Check for Resistance.NONE!
     public float[] Defenses = new float[3];     // Defenses[Enum Defense], Check for Defense.NONE!
 
+    public int SkillLevelModifier = 0;
+
     [Header("Equipment:")]
     public Transform[] CharacterHands = new Transform[2]; // Note: 0 : Left Hand, 1 : Right Hand
     public Item[] StartingWeapons = new Item[0];    // Note: Slot in Array corresponds to Hand it is holding. Up to 2 Starting Weapons!
@@ -212,6 +214,16 @@ public class Character : MonoBehaviour {
     public int GetEnergyMax()
     {
         return EnergyMax;
+    }
+
+    public int GetSkillLevelModifier()
+    {
+        return SkillLevelModifier;
+    }
+
+    public void ChangeSkillLevelModifier(int change)
+    {
+        SkillLevelModifier += change;
     }
     // ===================================== /ATTRIBUTES ======================================
 

@@ -18,8 +18,8 @@ public class ItemSkill : MonoBehaviour {
     public bool EffectOnlyOnceBool = false;
     public float EffectFloat = 0.0f;
 
-    [Header("Animation:")]
-    public string AnimationName = "no_animation";
+    //[Header("Animation:")]
+    //public string AnimationName = "no_animation";
 
     //public List<Character> AlreadyHitCharacters = new List<Character>();
 
@@ -29,11 +29,11 @@ public class ItemSkill : MonoBehaviour {
         
         if (SkillObject.GetOverwriteAnimationSpeedScaling() > 0)
         {
-            ParentItem.GetOwner().StartAnimation(AnimationName, SkillObject.GetOverwriteAnimationSpeedScaling(), ParentItem.GetEquippedSlotID());
+            ParentItem.GetOwner().StartAnimation(SkillObject.GetAnimationName(), SkillObject.GetOverwriteAnimationSpeedScaling(), ParentItem.GetEquippedSlotID());
         }
         else
         {
-            ParentItem.GetOwner().StartAnimation(AnimationName, SkillObject.GetTotalActivationTime(), ParentItem.GetEquippedSlotID());
+            ParentItem.GetOwner().StartAnimation(SkillObject.GetAnimationName(), SkillObject.GetTotalActivationTime(), ParentItem.GetEquippedSlotID());
         }
         
 
@@ -142,7 +142,7 @@ public class ItemSkill : MonoBehaviour {
     // Note: If a Character can have buffs/changes to Skill Levels, then this function has to include those changes.
     public int GetSkillLevel()
     {
-        return Level;
+        return Level + GetCurrentOwner().GetSkillLevelModifier();
     }
 
     public int GetParentItemEquipmentSlot()

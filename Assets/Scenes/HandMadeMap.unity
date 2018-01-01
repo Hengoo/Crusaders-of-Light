@@ -4148,7 +4148,6 @@ MonoBehaviour:
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0
   EffectFloat: 0
-  AnimationName: Melee_Swing
 --- !u!114 &496379257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4168,7 +4167,6 @@ MonoBehaviour:
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0
   EffectFloat: 0
-  AnimationName: Melee_Swing
 --- !u!114 &496379258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7047,7 +7045,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1692724207775024, guid: 3b9c0f07dd055d84b9e71a376376711c, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3b9c0f07dd055d84b9e71a376376711c, type: 2}
@@ -15292,11 +15290,12 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  SkillLevelModifier: 0
   CharacterHands:
   - {fileID: 462797219}
   - {fileID: 668570203}
   StartingWeapons:
-  - {fileID: 114066496244682900, guid: 952b46205acefd34b8895b11db3a6556, type: 2}
+  - {fileID: 114066496244682900, guid: 65f91d096e61fc3408c246068afda0c1, type: 2}
   - {fileID: 114066496244682900, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
   SkillsPerWeapon: 2
   WeaponSlots:
@@ -15532,6 +15531,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  SkillLevelModifier: 0
   CharacterHands:
   - {fileID: 0}
   - {fileID: 0}

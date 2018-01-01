@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a452ff160399d84db0b84b75fe9deb9, type: 3}
+  m_Name: Skill_Sword_Inspire
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.8
+  ActivationIntervall: -1
+  Cooldown: 8
+  AllowTargetFriendly: 1
+  AllowTargetEnemy: 0
+  Effects:
+  - {fileID: 11400000, guid: 45f63a45da5484f4382886bf5c7ea7ba, type: 2}
+  AnimationName: Weapon_Upwards
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: 6c7e6179a42d94949801ee758f23ee17, type: 2}
+  HitObjectPrefab: {fileID: 114498326846323124, guid: 02539586c454fae43805884ae043f854,
+    type: 2}
+  UseSkillLevelAtActivationMoment: 1
