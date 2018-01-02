@@ -49,6 +49,7 @@ public class SkillTypeChannelSelf : SkillType
             SourceItemSkill.GetCurrentOwner().StartAnimation(ReleaseAnimation, 1, SourceItemSkill.GetParentItemEquipmentSlot());
 
             // Stop Skill Activation:
+            RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
             SourceItemSkill.FinishedSkillActivation();
         }
     }

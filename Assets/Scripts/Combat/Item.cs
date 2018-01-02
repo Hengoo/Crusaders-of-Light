@@ -152,12 +152,23 @@ public class Item : MonoBehaviour {
 
         // Try to hit all Characters already in the hit box:
 
+        List<Character> CleanUpMissingCharacters = new List<Character>();
+
         for (int i = 0; i < CurrentlyCollidingCharacters.Count; i++)
         {
-            if (CheckIfEnterCharacterLegit(CurrentlyCollidingCharacters[i]))
+            if (CurrentlyCollidingCharacters[i] == null)
+            {
+                CleanUpMissingCharacters.Add(CurrentlyCollidingCharacters[i]);
+            }
+            else if (CheckIfEnterCharacterLegit(CurrentlyCollidingCharacters[i]))
             {
                 ApplyCurrentSkillEffectsToCharacter(CurrentlyCollidingCharacters[i]);
             }
+        }
+
+        for (int i = 0; i < CleanUpMissingCharacters.Count; i++)
+        {
+            CurrentlyCollidingCharacters.Remove(CleanUpMissingCharacters[i]);
         }
     }
 
@@ -165,7 +176,7 @@ public class Item : MonoBehaviour {
     {
         SkillCurrentlyUsingItemHitBox = null;
         ItemSkillCurrentlyUsingItemHitBox = null;
-        AlreadyHitCharacters.Clear();
+        AlreadyHitCharacters = new List<Character>();
     }
 
     public bool CheckIfSkillIsUsingHitBox(ItemSkill SkillToCheck)

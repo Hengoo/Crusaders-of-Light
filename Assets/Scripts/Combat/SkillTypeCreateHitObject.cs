@@ -21,6 +21,7 @@ public class SkillTypeCreateHitObject : SkillType {
         SpawnedHitObject.InitializeHitObject(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, this, UseSkillLevelAtActivationMoment);
 
         // Stop Skill Activation:
+        RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
         SourceItemSkill.FinishedSkillActivation();
     }
 }

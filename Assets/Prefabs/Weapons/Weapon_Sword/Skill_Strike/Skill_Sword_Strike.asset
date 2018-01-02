@@ -15,6 +15,7 @@ MonoBehaviour:
   ActivationTime: 0.2
   ActivationIntervall: -1
   Cooldown: -1
+  ActivationMovementModifier: -0.4
   AllowTargetFriendly: 0
   AllowTargetEnemy: 1
   Effects:
@@ -25,7 +26,13 @@ MonoBehaviour:
   AIDecisionMaker: {fileID: 11400000, guid: 30a2b3678f3910a4f9bbae1d0f6f23bd, type: 2}
   ChargeUpTimeMax: -1
   EffectiveChargeUpTimeMax: 1
-  AfterReleaseActivationTime: 0.25
   HitEachCharacterOnlyOnce: 1
+  AfterReleaseActivationTime: 0.25
+  ScaleAfterReleaseTimeWithChannelTime: 0
+  MinTime: 0
+  MaxTime: 1
+  MinModifier: 1
+  MaxModifier: 1
   EffectsSelfOnRelease: []
+  EffectsSelfOnEnd: []
   ReleaseAnimation: Charge_Released

@@ -21,7 +21,7 @@ public class CharacterPlayer : Character {
 
     private void FixedUpdate()
     {
-        float speedfaktor = 10;
+        float speedfaktor = 10 * GetMovementRateModifier();
         //left stick
         Vector3 targetVel = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")) * speedfaktor;
 

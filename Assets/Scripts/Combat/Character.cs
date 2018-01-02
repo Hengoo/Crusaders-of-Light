@@ -71,6 +71,7 @@ public class Character : MonoBehaviour {
 
     [Header("Physics Controller:")]
     protected PhysicsController PhysCont;
+    protected float MovementRateModfier = 1.0f;
 
     [Header("Animation:")]
     public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand
@@ -226,6 +227,16 @@ public class Character : MonoBehaviour {
     public void ChangeSkillLevelModifier(int change)
     {
         SkillLevelModifier += change;
+    }
+
+    public float GetMovementRateModifier()
+    {
+        return Mathf.Max(0, MovementRateModfier);
+    }
+
+    public void ChangeMovementRateModifier(float Change)
+    {
+        MovementRateModfier += Change;
     }
     // ===================================== /ATTRIBUTES ======================================
 
@@ -422,7 +433,7 @@ public class Character : MonoBehaviour {
     {
         for (int i = 0; i < ItemSkillSlots.Length; i++)
         {
-            if (ItemSkillSlots[i])
+            if (ItemSkillSlots[i] && SkillCurrentlyActivating[0] != i && SkillCurrentlyActivating[1] != i)
             {
                 ItemSkillSlots[i].UpdateCooldown(Time.deltaTime);
             }

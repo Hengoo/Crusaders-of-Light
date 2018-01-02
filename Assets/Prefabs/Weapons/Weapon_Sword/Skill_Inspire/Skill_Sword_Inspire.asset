@@ -15,6 +15,7 @@ MonoBehaviour:
   ActivationTime: 0.8
   ActivationIntervall: -1
   Cooldown: 8
+  ActivationMovementModifier: -1
   AllowTargetFriendly: 1
   AllowTargetEnemy: 0
   Effects:

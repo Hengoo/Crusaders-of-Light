@@ -18,6 +18,7 @@ public class SkillType : ScriptableObject {
     public float ActivationTime;
     public float ActivationIntervall = -1; // Negative: No Intervall Action
     public float Cooldown = -1; // Negative: No Cooldown
+    public float ActivationMovementModifier = 0.0f;
 
     [Header("Skill Targeting:")]
     public bool AllowTargetFriendly;
@@ -92,6 +93,9 @@ public class SkillType : ScriptableObject {
         // Add Hindrance Level:
         Owner.ChangeHindranceLevel(HindranceLevel);
 
+        // Add Movement Modifier:
+        Owner.ChangeMovementRateModifier(ActivationMovementModifier);
+
         // Start Cooldown:      (Note: The current Cooldown is saved in the SourceWeapon)
         if (Cooldown > 0)
         {
@@ -100,6 +104,12 @@ public class SkillType : ScriptableObject {
 
         return true;
     }
+
+    protected void RemoveActivationMovementRateModifier(ItemSkill SourceItemSkill, Character Owner)
+    {
+        Owner.ChangeMovementRateModifier(-1 * ActivationMovementModifier);
+    }
+
 
     private bool CheckIfSkillCouldBeActivated(ItemSkill SourceItemSkill, Character Owner)
     {
