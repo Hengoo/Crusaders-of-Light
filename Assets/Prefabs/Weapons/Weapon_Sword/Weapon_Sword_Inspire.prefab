@@ -61,7 +61,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 98e4ea273c44a804da96fa7e8041c4fc, type: 2}
+  - {fileID: 2100000, guid: 91afd9b96d111284bbcd8d170d961341, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -147,12 +147,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114066496244682900}
   SkillObject: {fileID: 11400000, guid: a1c61d035891a7f4082522964c417905, type: 2}
+  Level: 1
   CurrentCooldown: 0
-  Level: 5
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0
   EffectFloat: 0
-  AnimationName: Melee_Swing
 --- !u!114 &114066496244682900
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -196,9 +195,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114066496244682900}
   SkillObject: {fileID: 11400000, guid: 3a6b9bca2200f0b4c9d211f88057c55f, type: 2}
+  Level: 1
   CurrentCooldown: 0
-  Level: 5
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0
   EffectFloat: 0
-  AnimationName: Melee_ChargeUp_Swing

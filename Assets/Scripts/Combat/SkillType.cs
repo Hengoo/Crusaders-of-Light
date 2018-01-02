@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class SkillType : ScriptableObject {
 
+    public enum Hindrance
+    {
+        NONE = 0,
+        OWN_SIDE = 1,
+        MIDDLE_SIDE = 2,
+        OTHER_SIDE = 3,
+        NO_OTHER_SKILLS = 4
+    }
+
     [Header("Skill Base:")]
     public int Cost;
     public float ActivationTime;
@@ -17,12 +26,17 @@ public class SkillType : ScriptableObject {
     [Header("Skill Effects:")]
     public SkillEffect[] Effects;
 
+    [Header("Skill Interaction With Other Skills:")]
+    public Hindrance HindranceLevel = Hindrance.NONE;   // Hindrance is added while using this skill.
+
     [Header("Skill Animation:")]
     public string AnimationName = "no_animation";
     public float OverwriteAnimationSpeedScaling = -1; // If > 0 : Use other Speed scaling. Which one, depends on the exact Skill Type! Base: This Value.
 
     [Header("Skill Enemy AI Decision Maker:")]
     public DecisionMaker AIDecisionMaker;
+
+
 
 
     public bool GetAllowTargetFriendly()
@@ -55,15 +69,28 @@ public class SkillType : ScriptableObject {
         return OverwriteAnimationSpeedScaling;
     }
 
+    public int GetHindranceLevel()
+    {
+        return (int)(HindranceLevel);
+    }
+
     public bool StartSkillActivation(ItemSkill SourceItemSkill, Character Owner)
     {
+        if (!Owner.CheckHindrance(HindranceLevel))
+        {
+            return false;
+        }
 
-        CheckIfSkillCouldBeActivated(SourceItemSkill, Owner);
-        
+
+        //CheckIfSkillCouldBeActivated(SourceItemSkill, Owner);
+
         // Skill succesfully activated if this point is reached:
 
         // Pay Activation Cost:
         Owner.ChangeEnergyCurrent(-1 * Cost);
+
+        // Add Hindrance Level:
+        Owner.ChangeHindranceLevel(HindranceLevel);
 
         // Start Cooldown:      (Note: The current Cooldown is saved in the SourceWeapon)
         if (Cooldown > 0)

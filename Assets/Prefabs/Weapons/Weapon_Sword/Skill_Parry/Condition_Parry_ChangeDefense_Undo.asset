@@ -11,6 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7708a1115543d0f439b176f2e6fb6925, type: 3}
   m_Name: Condition_Parry_ChangeDefense_Undo
   m_EditorClassIdentifier: 
-  DefenseValueBase: -0.5
-  DefenseValuePerLevel: -0.05
+  DefenseValueBase: -5
+  DefenseValuePerLevel: -0.25
   DefenseType: 0

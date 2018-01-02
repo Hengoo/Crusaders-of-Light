@@ -9,9 +9,10 @@ public class ItemSkill : MonoBehaviour {
 
     public SkillType SkillObject;
 
-    public float CurrentCooldown;
-
     public int Level;
+
+    [Header("Item Skill (Do not set - Shown for testing only):")]
+    public float CurrentCooldown;
 
     public float ActivationIntervallTimer = 0.0f;
 
@@ -26,7 +27,18 @@ public class ItemSkill : MonoBehaviour {
     public bool StartSkillActivation()
     {
         if (CurrentCooldown > 0.0f) { return false; }
+
+        ActivationIntervallTimer = 0.0f;
+        EffectOnlyOnceBool = false;
+        EffectFloat = 0.0f;
+
+        bool ActivationSuccessful = SkillObject.StartSkillActivation(this, GetCurrentOwner());
         
+        if (!ActivationSuccessful)
+        {
+            return false;
+        }
+
         if (SkillObject.GetOverwriteAnimationSpeedScaling() > 0)
         {
             ParentItem.GetOwner().StartAnimation(SkillObject.GetAnimationName(), SkillObject.GetOverwriteAnimationSpeedScaling(), ParentItem.GetEquippedSlotID());
@@ -36,12 +48,7 @@ public class ItemSkill : MonoBehaviour {
             ParentItem.GetOwner().StartAnimation(SkillObject.GetAnimationName(), SkillObject.GetTotalActivationTime(), ParentItem.GetEquippedSlotID());
         }
         
-
-        ActivationIntervallTimer = 0.0f;
-        EffectOnlyOnceBool = false;
-        EffectFloat = 0.0f;
-
-        return SkillObject.StartSkillActivation(this, GetCurrentOwner());
+        return true;
     }
 
     public void SetCurrentCooldown(float NewCooldown)
@@ -101,7 +108,7 @@ public class ItemSkill : MonoBehaviour {
     public void FinishedSkillActivation()
     {
         ParentItem.SetSkillActivationTimer(0.0f);
-        GetCurrentOwner().FinishedCurrentSkillActivation(ParentItem.GetCurrentEquipSlot());
+        GetCurrentOwner().FinishedCurrentSkillActivation(ParentItem.GetCurrentEquipSlot(), -1 * SkillObject.GetHindranceLevel());
     }
 
     public bool CheckIfSkillIsUsingHitBox(ItemSkill SkillToCheck)

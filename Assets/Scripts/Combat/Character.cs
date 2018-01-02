@@ -64,6 +64,8 @@ public class Character : MonoBehaviour {
     public int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
     //public float SkillActivationTimer = 0.0f;
 
+    public int HindranceLevel = 0;
+
     [Header("Active Conditions:")]
     public List<ActiveCondition> ActiveConditions = new List<ActiveCondition>();
 
@@ -405,12 +407,13 @@ public class Character : MonoBehaviour {
     }
 */
 
-    public virtual void FinishedCurrentSkillActivation(int WeaponSlotID)
+    public virtual void FinishedCurrentSkillActivation(int WeaponSlotID, int Hindrance)
     {
         /*if (SkillCurrentlyActivating < 0) // Shouldn't be needed?
         {
             return;
         }*/
+        ChangeHindranceLevel(Hindrance);
         SkillCurrentlyActivating[WeaponSlotID] = -1;
        // SkillActivationTimer = 0.0f; // Now handled in ItemSkill/Item
     }
@@ -439,6 +442,33 @@ public class Character : MonoBehaviour {
         WeaponSlots[WeaponSlotID].SetSkillActivationTimer(0.0f);
     }
 
+    public void ChangeHindranceLevel(int Change)
+    {
+        HindranceLevel += Change;
+    }
+
+    public void ChangeHindranceLevel(SkillType.Hindrance Change)
+    {
+        HindranceLevel += (int)(Change);
+    }
+
+    public bool CheckHindrance(SkillType.Hindrance Hindrance)
+    {
+        if (Hindrance == SkillType.Hindrance.NO_OTHER_SKILLS)
+        {
+            if (HindranceLevel > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        if ((int)(Hindrance) + HindranceLevel > 3)
+        {
+            return false;
+        }
+        return true;
+    }
 
     // =================================== /SKILL ACTIVATION ====================================
 
@@ -466,7 +496,10 @@ public class Character : MonoBehaviour {
             return Amount;
         }
 
-        return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Resistances[DamageTypeID]));
+        // return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Resistances[DamageTypeID])); // Resistance as Percentage Reduction.
+
+        // Damage: At 0: Damage Value / At 10: 0.5 Value / At 20: 0.25 Value / At 30: 0.125 Value / ... At -10: 2 Value / At -20: 4 Value / ...
+        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Resistances[DamageTypeID]) / 10.0f)));
     }
 
     private int DamageCalculationDefense(Defense DefenseType, int Amount)
@@ -478,7 +511,10 @@ public class Character : MonoBehaviour {
             return Amount;
         }
 
-        return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Defenses[DamageTypeID]));
+        // return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Defenses[DamageTypeID])); // Defense as Percentage Reduction.
+
+        // Damage: At 0: Damage Value / At 10: 0.5 Value / At 20: 0.25 Value / At 30: 0.125 Value / ... At -10: 2 Value / At -20: 4 Value / ...
+        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Defenses[DamageTypeID]) / 10.0f)));
     }
 
     public void ChangeResistance(Resistance ResistanceType, float Amount)

@@ -19,6 +19,7 @@ MonoBehaviour:
   AllowTargetEnemy: 0
   Effects:
   - {fileID: 11400000, guid: 45f63a45da5484f4382886bf5c7ea7ba, type: 2}
+  HindranceLevel: 0
   AnimationName: Weapon_Upwards
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 6c7e6179a42d94949801ee758f23ee17, type: 2}
