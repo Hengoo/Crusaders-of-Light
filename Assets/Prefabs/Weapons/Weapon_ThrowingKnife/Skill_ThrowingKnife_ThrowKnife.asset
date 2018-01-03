@@ -13,11 +13,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cost: 0
   ActivationTime: 1
+  ActivationIntervall: -1
   Cooldown: -1
+  ActivationMovementModifier: 0
   AllowTargetFriendly: 0
   AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: bb5f93d6a5ad01d46a4462f7a0f0e4e1, type: 2}
-  AIDecisionMaker: {fileID: 11400000, guid: ba03b1bd40b84be4a8d9da0b381cec48, type: 2}
+  HindranceLevel: 0
+  AnimationName: no_animation
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: 625d954546192ec4a9176f0a4a43bb43, type: 2}
   ProjectilePrefab: {fileID: 114435675793627354, guid: 14fa1c87f90d81447afa6606560da9fb,
     type: 2}

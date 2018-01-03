@@ -24,7 +24,7 @@ MonoBehaviour:
   HindranceLevel: 4
   AnimationName: Melee_Block
   OverwriteAnimationSpeedScaling: -1
-  AIDecisionMaker: {fileID: 11400000, guid: 7b196358603461d40b6cf6ae34b98c60, type: 2}
+  AIDecisionMaker: {fileID: 11400000, guid: 94b3501167d7c334a9d92121d7404958, type: 2}
   ChargeUpTimeMax: -1
   EffectiveChargeUpTimeMax: 1
   HitEachCharacterOnlyOnce: 1

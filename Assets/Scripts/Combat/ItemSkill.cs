@@ -105,6 +105,22 @@ public class ItemSkill : MonoBehaviour {
         }
     }
 
+    public void UpdateSkillActivation(bool StillActivating, float MaxActivationTime)
+    {
+        if (!StillActivating)
+        {
+            UpdateSkillActivation(false);
+        }
+        else if (MaxActivationTime >= 0)
+        {
+            UpdateSkillActivation(MaxActivationTime);
+        }
+        else
+        {
+            UpdateSkillActivation(true);
+        }
+    }
+
     public void FinishedSkillActivation()
     {
         ParentItem.SetSkillActivationTimer(0.0f);
@@ -196,5 +212,15 @@ public class ItemSkill : MonoBehaviour {
     public float AIGetSensibleActivationTime()
     {
         return SkillObject.GetDecisionMaker().AIGetSensibleActivationTime();
+    }
+
+    public MovePattern[] AIGetSkillMovePatterns()
+    {
+        return SkillObject.GetDecisionMaker().AISkillMovePatterns;
+    }
+
+    public float AIGetSkillEvaluationCycle()
+    {
+        return SkillObject.GetDecisionMaker().SkillEvaluationCycle;
     }
 }

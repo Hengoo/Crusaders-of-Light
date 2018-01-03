@@ -9,10 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a358bdf9369a6de42843121de4896289, type: 3}
-  m_Name: Skill_Medium_Shield_Block_AI_DecisionMaker
+  m_Name: Skill_FireStaff_AI_DecisionMaker
   m_EditorClassIdentifier: 
   Weight: 1
-  ConsiderationsTargeted: []
+  ConsiderationsTargeted:
+  - {fileID: 11400000, guid: 282f641a3870727409334562284f004c, type: 2}
+  - {fileID: 11400000, guid: 549508c1144a88340b2dce9e04550896, type: 2}
   ConsiderationsSelf: []
   SensibleActivationTime: -1
   SkillEvaluationCycle: -1

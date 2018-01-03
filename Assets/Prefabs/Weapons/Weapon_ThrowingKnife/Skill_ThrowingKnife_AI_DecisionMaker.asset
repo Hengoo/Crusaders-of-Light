@@ -8,10 +8,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b984467bd2a6944382038762a5729e9, type: 3}
-  m_Name: Skill_ThrowingKnife_DecisionMaker
+  m_Script: {fileID: 11500000, guid: a358bdf9369a6de42843121de4896289, type: 3}
+  m_Name: Skill_ThrowingKnife_AI_DecisionMaker
   m_EditorClassIdentifier: 
   Weight: 1
   ConsiderationsTargeted:
-  - {fileID: 11400000, guid: 549508c1144a88340b2dce9e04550896, type: 2}
+  - {fileID: 11400000, guid: dee940de25392cb4098f69d4f19754b3, type: 2}
   ConsiderationsSelf: []
+  SensibleActivationTime: -1
+  SkillEvaluationCycle: -1
+  AISkillMovePatterns: []

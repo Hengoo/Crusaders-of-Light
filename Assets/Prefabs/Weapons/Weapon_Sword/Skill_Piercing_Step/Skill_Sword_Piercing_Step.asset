@@ -23,7 +23,7 @@ MonoBehaviour:
   HindranceLevel: 1
   AnimationName: Melee_Stab
   OverwriteAnimationSpeedScaling: -1
-  AIDecisionMaker: {fileID: 11400000, guid: 30a2b3678f3910a4f9bbae1d0f6f23bd, type: 2}
+  AIDecisionMaker: {fileID: 11400000, guid: 205ab0d7253293f4ba05f4b07ee6a7dd, type: 2}
   ChargeUpTimeMax: -1
   EffectiveChargeUpTimeMax: 1
   HitEachCharacterOnlyOnce: 1

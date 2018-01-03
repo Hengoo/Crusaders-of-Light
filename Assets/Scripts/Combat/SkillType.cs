@@ -34,8 +34,9 @@ public class SkillType : ScriptableObject {
     public string AnimationName = "no_animation";
     public float OverwriteAnimationSpeedScaling = -1; // If > 0 : Use other Speed scaling. Which one, depends on the exact Skill Type! Base: This Value.
 
-    [Header("Skill Enemy AI Decision Maker:")]
-    public DecisionMaker AIDecisionMaker;
+    [Header("Skill Enemy AI:")]
+    public DecisionMakerSkills AIDecisionMaker;
+
 
 
 
@@ -55,7 +56,7 @@ public class SkillType : ScriptableObject {
         return ActivationIntervall;
     }
 
-    public DecisionMaker GetDecisionMaker()
+    public DecisionMakerSkills GetDecisionMaker()
     {
         return AIDecisionMaker;
     }

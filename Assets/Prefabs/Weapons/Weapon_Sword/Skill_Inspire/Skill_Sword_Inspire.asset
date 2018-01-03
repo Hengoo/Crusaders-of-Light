@@ -23,7 +23,7 @@ MonoBehaviour:
   HindranceLevel: 0
   AnimationName: Weapon_Upwards
   OverwriteAnimationSpeedScaling: -1
-  AIDecisionMaker: {fileID: 11400000, guid: 6c7e6179a42d94949801ee758f23ee17, type: 2}
+  AIDecisionMaker: {fileID: 11400000, guid: 595510a9a7649e442b79d065f950f541, type: 2}
   HitObjectPrefab: {fileID: 114498326846323124, guid: 02539586c454fae43805884ae043f854,
     type: 2}
   UseSkillLevelAtActivationMoment: 1

@@ -22,7 +22,7 @@ MonoBehaviour:
   HindranceLevel: 2
   AnimationName: Melee_Block
   OverwriteAnimationSpeedScaling: -1
-  AIDecisionMaker: {fileID: 11400000, guid: 2678b3f4686d42148813e5f5afa23f47, type: 2}
+  AIDecisionMaker: {fileID: 11400000, guid: 29e16dbbaf67b7d4e8fb5a8204046508, type: 2}
   ActivationTimeMax: -1
   EffectsStart:
   - {fileID: 11400000, guid: 969f16c0d3379ea4282d7b8230460c04, type: 2}
