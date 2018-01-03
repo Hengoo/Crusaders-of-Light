@@ -36,6 +36,15 @@ public class DecisionMaker : ScriptableObject {
             ConsiderationsCounter = 0
         };
 
+        CharacterEnemy User = (CharacterEnemy)(Self);
+        List<Character> PlayersInAttentionRange = User.GetAttention().GetPlayersInAttentionRange();
+
+        if (PlayersInAttentionRange.Count <= 0)
+        {
+            Decision.Score = 0;
+            return Decision;
+        }
+
         // Score of Self Targeted Considerations:
         Consideration.Context TempContext = new Consideration.Context
         {
@@ -52,10 +61,6 @@ public class DecisionMaker : ScriptableObject {
         Decision.ConsiderationsCounter += ConsiderationsSelf.Length;
 
         // Score of Targeted Considerations:
-
-        CharacterEnemy User = (CharacterEnemy)(Self);
-
-        List<Character> PlayersInAttentionRange = User.GetPlayersInAttentionRange();
 
         float TempScore = 1;
         float TempBestScore = 0;

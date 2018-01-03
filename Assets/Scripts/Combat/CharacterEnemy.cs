@@ -8,7 +8,6 @@ public class CharacterEnemy : Character {
     public TeamAlignment Alignment = TeamAlignment.ENEMIES;
 
     [Header("Enemy AI:")]
-    public List<Character> PlayersInAttentionRange = new List<Character>();
     public float IdleSkillScore = 0.2f;
     public float IdleDuration = 0.2f;
     private float[] IdleTimer = { 0.0f, 0.0f };
@@ -48,26 +47,6 @@ public class CharacterEnemy : Character {
     }
 
     // ========================================= AI =========================================
-
-    public void PlayerEntersAttentionRange(Character PlayerCharacter)
-    {
-        if (PlayersInAttentionRange.Contains(PlayerCharacter))
-        {
-            return;
-        }
-
-        PlayersInAttentionRange.Add(PlayerCharacter);
-    }
-
-    public void PlayerLeavesAttentionRange(Character PlayerCharacter)
-    {
-        PlayersInAttentionRange.Remove(PlayerCharacter);
-    }
-
-    public List<Character> GetPlayersInAttentionRange()
-    {
-        return PlayersInAttentionRange;
-    }
 
     public void DecideSkillUse(int WeaponSlotID)
     {
@@ -173,6 +152,11 @@ public class CharacterEnemy : Character {
 
     private void UpdateMovePattern()
     {
+        if (CharAttention.GetPlayersInAttentionRange().Count <= 0)
+        {
+            return;
+        }
+
         if (MovePatternEvaluationCycleTimer <= 0)
         {
             DecideMovePattern();
