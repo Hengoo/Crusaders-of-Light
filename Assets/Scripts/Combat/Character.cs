@@ -541,9 +541,33 @@ public class Character : MonoBehaviour
         Resistances[(int)ResistanceType] += Amount;
     }
 
+    public float GetResistance(Resistance ResistanceType)
+    {
+        int ResistanceTypeID = (int)(ResistanceType);
+
+        if (ResistanceTypeID < 0)
+        {
+            return 0;
+        }
+
+        return Resistances[ResistanceTypeID];
+    }
+
     public void ChangeDefense(Defense DefenseType, float Amount)
     {
         Defenses[(int)DefenseType] += Amount;
+    }
+
+    public float GetDefense(Defense DefenseType)
+    {
+        int DefenseTypeID = (int)(DefenseType);
+
+        if (DefenseTypeID < 0)
+        {
+            return 0;
+        }
+
+        return Defenses[DefenseTypeID];
     }
 
     // =================================== /EFFECT INTERACTION ===================================
