@@ -9,7 +9,8 @@ using Random = UnityEngine.Random;
 public class WorldStructure
 {
     public Graph<Biome> NavigationGraph { get; private set; }
-    public List<Vector2Int> AreaCrossingEdges { get; private set; }
+    public List<Vector2Int> AreaCrossingNavigationEdges { get; private set; }
+    public List<Vector2[]> AreaCrossingBorders { get; private set; }
     public List<Vector2[]> AreaPolygon { get; private set; }
     public List<Vector2[]> AreaBorders { get; private set; }
     public int NumberOfAreas { get; private set; }
@@ -19,9 +20,10 @@ public class WorldStructure
     {
         _terrainStructure = terrainStructure;
         NavigationGraph = new Graph<Biome>(_terrainStructure.MinimumSpanningTree);
-        AreaCrossingEdges = new List<Vector2Int>(numAreas - 1);
+        AreaCrossingNavigationEdges = new List<Vector2Int>(numAreas - 1);
         AreaPolygon = new List<Vector2[]>(numAreas);
         AreaBorders = new List<Vector2[]>();
+        AreaCrossingBorders = new List<Vector2[]>();
         NumberOfAreas = numAreas;
 
         GenerateAreas(extraEdges);
@@ -39,11 +41,11 @@ public class WorldStructure
         for (var i = 0; i < NumberOfAreas - 1; i++)
         {
             var pos = areaSize * i + areaSize / (NumberOfAreas - 1);
-            AreaCrossingEdges.Add(new Vector2Int(greatestPath[pos], greatestPath[pos + 1]));
-            NavigationGraph.RemoveEdge(AreaCrossingEdges[i].x, AreaCrossingEdges[i].y);
-            areaStartingNodes.Add(AreaCrossingEdges[i].x);
+            AreaCrossingNavigationEdges.Add(new Vector2Int(greatestPath[pos], greatestPath[pos + 1]));
+            NavigationGraph.RemoveEdge(AreaCrossingNavigationEdges[i].x, AreaCrossingNavigationEdges[i].y);
+            areaStartingNodes.Add(AreaCrossingNavigationEdges[i].x);
         }
-        areaStartingNodes.Add(AreaCrossingEdges.Last().y);
+        areaStartingNodes.Add(AreaCrossingNavigationEdges.Last().y);
 
         //Group nodes in each area
         var areaNodes = new HashSet<int>[NumberOfAreas];
@@ -118,6 +120,7 @@ public class WorldStructure
 
         //Create border line segments
         var borderEdges = new List<Edge>(128);
+        var crossableEdges = new List<Edge>(128);
         foreach (var edge in _terrainStructure.VoronoiDiagram.Edges)
         {
             var biomeRight = _terrainStructure.GetNodeIDFromSite(edge.RightSite.Coord);
@@ -134,13 +137,27 @@ public class WorldStructure
                     areaLeft = i;
             }
 
+            //Check if areas differ
             if (areaLeft != -1 && areaRight != -1 && areaLeft != areaRight)
-                borderEdges.Add(edge);
+            {
+                //Check if edge is crossable between areas or not
+                if (AreaCrossingNavigationEdges.Contains(new Vector2Int(biomeLeft, biomeRight))
+                    || AreaCrossingNavigationEdges.Contains(new Vector2Int(biomeRight, biomeLeft)))
+                    crossableEdges.Add(edge);
+                else
+                    borderEdges.Add(edge);
+            }
         }
         foreach (var edge in borderEdges)
         {
             if (!edge.Visible()) continue;
             AreaBorders.Add(new []{edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
+        }
+
+        foreach (var edge in crossableEdges)
+        {
+            if (!edge.Visible()) continue;
+            AreaCrossingBorders.Add(new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
         }
     }
 
@@ -183,6 +200,9 @@ public class WorldStructure
     public GameObject DrawAreaGraph(float scale)
     {
         var result = new GameObject();
+        
+        var borders = new GameObject("Area Borders");
+        borders.transform.parent = result.transform;
 
         var minimumSpanningTree = new GameObject("Minimum Spanning Tree");
         minimumSpanningTree.transform.parent = result.transform;
@@ -192,9 +212,6 @@ public class WorldStructure
 
         var polygons = new GameObject("Area Polygon");
         polygons.transform.parent = result.transform;
-
-        var borders = new GameObject("Area Borders");
-        borders.transform.parent = result.transform;
 
         //Draw navigation edges
         foreach (var edge in NavigationGraph.GetAllEdges())
@@ -240,15 +257,18 @@ public class WorldStructure
         }
 
         //Draw area polygon
+        int count = 0;
         foreach (var polygon in AreaPolygon)
         {
+            var poly = new GameObject("Area" + count);
+            poly.transform.parent = polygons.transform;
             for (int i = 0; i < polygon.Length; i++)
             {
                 var p0 = new Vector3(polygon[i].x, 0, polygon[i].y);
                 var p1 = new Vector3(polygon[(i + 1) % polygon.Length].x, 0, polygon[(i + 1) % polygon.Length].y);
                 GameObject myLine = new GameObject("Area Line");
                 myLine.transform.position = p0;
-                myLine.transform.parent = polygons.transform;
+                myLine.transform.parent = poly.transform;
                 LineRenderer lr = myLine.AddComponent<LineRenderer>();
                 lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
                 lr.startColor = Color.white;
@@ -258,6 +278,8 @@ public class WorldStructure
                 lr.SetPosition(0, p0);
                 lr.SetPosition(1, p1);
             }
+
+            count++;
         }
 
         //Draw area border
@@ -276,6 +298,47 @@ public class WorldStructure
             lr.endWidth = 2 * scale;
             lr.SetPosition(0, p0);
             lr.SetPosition(1, p1);
+        }
+
+        //Draw area crossing edges
+        foreach (var line in AreaCrossingBorders)
+        {
+            var p0 = new Vector3(line[0].x, 0, line[0].y);
+            var p1 = new Vector3(line[1].x, 0, line[1].y);
+            GameObject myLine = new GameObject("Crossable Border Line");
+            myLine.transform.position = p0;
+            myLine.transform.parent = borders.transform;
+            LineRenderer lr = myLine.AddComponent<LineRenderer>();
+            lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
+            lr.startColor = (Color.red + Color.yellow) / 2;
+            lr.endColor = (Color.red + Color.yellow) / 2;
+            lr.startWidth = 2 * scale;
+            lr.endWidth = 2 * scale;
+            lr.SetPosition(0, p0);
+            lr.SetPosition(1, p1);
+            lr.sortingOrder = 1;
+        }
+        
+        //Draw area crossing paths
+        foreach (var pair in AreaCrossingNavigationEdges)
+        {
+            var center1 = _terrainStructure.BiomeGraph.GetNodeData(pair.x).Center;
+            var center2 = _terrainStructure.BiomeGraph.GetNodeData(pair.y).Center;
+
+            var p0 = new Vector3(center1.x, 0, center1.y);
+            var p1 = new Vector3(center2.x, 0, center2.y);
+            GameObject myLine = new GameObject("Crossable Path Line");
+            myLine.transform.position = p0;
+            myLine.transform.parent = navigationEdges.transform;
+            LineRenderer lr = myLine.AddComponent<LineRenderer>();
+            lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
+            lr.startColor = Color.yellow;
+            lr.endColor = Color.yellow;
+            lr.startWidth = 2 * scale;
+            lr.endWidth = 2 * scale;
+            lr.SetPosition(0, p0);
+            lr.SetPosition(1, p1);
+            lr.sortingOrder = 1;
         }
 
         //Draw Start
@@ -301,7 +364,7 @@ public class WorldStructure
         go.transform.position = new Vector3(pos.x, 0, pos.y);
         go.transform.localScale = Vector3.one * 20 * scale;
         var renderer = go.GetComponent<Renderer>();
-        var tempMaterial = new Material(renderer.sharedMaterial) { color = Color.yellow };
+        var tempMaterial = new Material(renderer.sharedMaterial) { color = Color.blue };
         renderer.sharedMaterial = tempMaterial;
 
         return result;

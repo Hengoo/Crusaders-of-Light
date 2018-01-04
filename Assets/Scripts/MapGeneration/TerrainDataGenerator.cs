@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class TerrainDataGenerator
@@ -97,6 +98,7 @@ public static class TerrainDataGenerator
         return result;
     }
 
+    // Generate blocking heightmap elements in the specified area borders
     public static void EncloseAreas(TerrainStructure terrainStructure, float[,] heightmap, List<Vector2[]> areaBorders,
         int squareSize)
     {
@@ -118,10 +120,10 @@ public static class TerrainDataGenerator
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
         // Find cells covered by the road polygon
-        var indexes = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, roads, squareSize);
+        var cellsToSmooth = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, roads, squareSize).ToArray();
 
         // Set alphamap values to only road draw
-        foreach (var index in indexes)
+        foreach (var index in cellsToSmooth)
         {
             // Other textures to 0
             for (var i = 0; i < terrainStructure.TextureCount; i++)
@@ -133,41 +135,40 @@ public static class TerrainDataGenerator
             alphamap[index.x, index.y, terrainStructure.RoadSplatIndex] = 1;
         }
 
-        //TODO: smooth path in heightmap
+        SmoothHeightMapCells(heightmap, cellsToSmooth, squareSize + 2);
     }
 
 
     // Draw roads onto the alpha and height maps - TODO: future work
-    public static void DrawPolygonalRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, List<Vector2[]> roads)
+    public static void DrawPolygonalRoads(TerrainStructure terrainStructure, float[,] heightMap, float[,,] alphamap, List<Vector2[]> roads)
     {
         var biomeConfiguration = terrainStructure.BiomeConfiguration;
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
+        var indexes = new HashSet<Vector2Int>();
 
+        // Find cells covered by the road polygon
         foreach (var road in roads)
+             indexes.UnionWith(DiscretizeConvexPolygon(biomeConfiguration.HeightMapResolution, cellSize, road));
+
+        // Set alphamap values to only road draw
+        foreach (var index in indexes)
         {
-            // Find cells covered by the road polygon
-            var indexes = DiscretizeConvexPolygon(biomeConfiguration.HeightMapResolution, cellSize, road);
-
-            // Set alphamap values to only road draw
-            foreach (var index in indexes)
+            // Other textures to 0
+            for (var i = 0; i < terrainStructure.TextureCount; i++)
             {
-                // Other textures to 0
-                for (var i = 0; i < terrainStructure.TextureCount; i++)
-                {
-                    alphamap[index.x, index.y, i] = 0.00001f;
-                }
-
-                // Road texture to 1
-                alphamap[index.x, index.y, terrainStructure.RoadSplatIndex] = 1;
+                alphamap[index.x, index.y, i] = 0.00001f;
             }
+
+            // Road texture to 1
+            alphamap[index.x, index.y, terrainStructure.RoadSplatIndex] = 1;
         }
     }
 
 
     // Smooth every cell in the heightmap using squareSize neighbors in each direction
-    public static float[,] SmoothHeightMap(float[,] heightMap, int squareSize)
+    public static void SmoothHeightMap(float[,] heightMap, int squareSize)
     {
-        var result = (float[,])heightMap.Clone();
+        var temp = (float[,])heightMap.Clone();
         var length = heightMap.GetLength(0);
 
         for (var y = 0; y < length; y++)
@@ -183,23 +184,19 @@ public static class TerrainDataGenerator
                         if (xN < 0 || xN >= length || yN < 0 || yN >= length)
                             continue;
 
-                        sum += heightMap[xN, yN];
+                        sum += temp[xN, yN];
                         count++;
                     }
                 }
-                result[x, y] = sum / count;
+                heightMap[x, y] = sum / count;
             }
         }
-
-        return result;
     }
 
     // Smooth a heightmap along given lines
-    public static float[,] SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<Vector2[]> lines, int lineWidth, int squareSize)
+    public static void SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<Vector2[]> lines, int lineWidth, int squareSize)
     {
-        var result = (float[,])heightMap.Clone();
-        int length = heightMap.GetLength(0);
-
+        var length = heightMap.GetLength(0);
         var cellsToSmooth = new HashSet<Vector2Int>(DiscretizeLines(heightMap.GetLength(0), cellSize, lines, lineWidth));
 
         // Add extra cells to the line thickness
@@ -217,8 +214,15 @@ public static class TerrainDataGenerator
                 }
             }
         }
+        SmoothHeightMapCells(heightMap, cellsToSmooth, squareSize);
+    }
 
-        // Smooth cells using a 2*neighborcount + 1 square around each cell
+    // Smooth cells using a 2*neighborcount + 1 square around each cell
+    private static void SmoothHeightMapCells(float[,] heightMap, IEnumerable<Vector2Int> cellsToSmooth, int squareSize)
+    {
+        var temp = (float[,])heightMap.Clone();
+        var length = heightMap.GetLength(0);
+
         foreach (var cell in cellsToSmooth)
         {
             var count = 0;
@@ -230,13 +234,12 @@ public static class TerrainDataGenerator
                     if (x < 0 || x >= length || y < 0 || y >= length)
                         continue;
 
-                    sum += heightMap[x, y];
+                    sum += temp[x, y];
                     count++;
                 }
             }
-            result[cell.x, cell.y] = sum / count;
+            heightMap[cell.x, cell.y] = sum / count;
         }
-        return result;
     }
 
     // Discretize a polygon onto a grid - Polygon Flooding

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using csDelaunay;
 using TriangleNet.Voronoi;
 using UnityEngine;
@@ -35,7 +36,7 @@ public class SceneryStructure
         }
 
         //Create road polygons and road lines
-        foreach (var edge in WorldStructure.NavigationGraph.GetAllEdges())
+        foreach (var edge in WorldStructure.NavigationGraph.GetAllEdges().Union(WorldStructure.AreaCrossingNavigationEdges))
         {
             var start = TerrainStructure.BiomeGraph.GetNodeData(edge.x).Center;
             var end = TerrainStructure.BiomeGraph.GetNodeData(edge.y).Center;
