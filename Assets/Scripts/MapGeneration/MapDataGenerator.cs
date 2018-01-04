@@ -230,10 +230,10 @@ public static class MapDataGenerator
             for (var i = 0; i < numberOfBlockers; i++)
             {
                 var position2D = border[0] + direction * blockerLength * i;
-                var position = new Vector3(position2D.x, 0, position2D.y);
+                var position = new Vector3(position2D.x, 0, position2D.y) - terrain.transform.position;
                 var go = Object.Instantiate(blocker);
                 go.transform.parent = result.transform;
-                go.transform.position = new Vector3(position.x, terrain.SampleHeight(position) * terrain.transform.position.y, position.z);
+                go.transform.position = new Vector3(position.x, terrain.SampleHeight(position), position.z) + terrain.transform.position;
                 //TODO: orientation
             }
         }

@@ -101,14 +101,14 @@ public class SceneryStructure
         foreach (var sample in PoissonDiskGenerator.ResultSet)
         {
             var point = sample + sceneryAreaFill.BoundMin;
-            var height = terrain.SampleHeight(new Vector3(point.x, 0, point.y));
+            var height = terrain.SampleHeight(new Vector3(point.x, 0, point.y) - terrain.transform.position);
             if (height <= (TerrainStructure.BiomeGlobalConfiguration.SeaHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
                 !point.IsInsidePolygon(sceneryAreaFill.Polygon) || //not outside of the area
                 !sceneryAreaFill.ClearPolygons.TrueForAll(a => !point.IsInsidePolygon(a))) //not inside of any clear polygon
                 continue;
 
             var go = Object.Instantiate(sceneryAreaFill.Prefabs[Random.Range(0, sceneryAreaFill.Prefabs.Length)]);
-            go.transform.position = new Vector3(point.x, height, point.y);
+            go.transform.position = new Vector3(point.x, height, point.y) + terrain.transform.position;
             go.transform.parent = result.transform;
         }
 
