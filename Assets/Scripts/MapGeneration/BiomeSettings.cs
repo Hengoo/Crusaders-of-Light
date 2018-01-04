@@ -71,7 +71,7 @@ public class BiomeGlobalConfiguration
     public Material TerrainMaterial;
     public GameObject CoastBlocker;
     [Range(0.01f, 20)] public float CoastBlockerLength = 1;
-    [Range(0f, 1f)] public float CoastInlandOffset = 0.1f;
+    [Range(0f, 50f)] public float CoastInlandOffset = 5f;
     public SplatPrototypeSerializable RoadSplatPrototype;
     [Range(0, 5)] public int OverallSmoothing = 2;
     public bool SmoothEdges = true;

@@ -220,19 +220,24 @@ public static class MapDataGenerator
         var result = new GameObject("Coast Blockers");
 
         // Iterate over all coastal borders
-        foreach (var border in worldStructure.CoastBlockerBorders)
+        for (var i = 0; i < worldStructure.CoastBlockerPolygon.Count; i++)
         {
+            var p0 = worldStructure.CoastBlockerPolygon[i];
+            var p1 = i != worldStructure.CoastBlockerPolygon.Count - 1 ? worldStructure.CoastBlockerPolygon[i + 1] : worldStructure.CoastBlockerPolygon[0];
+
             //Discretize line and get direction normalized
-            var direction = (border[1] - border[0]).normalized;
-            var numberOfBlockers = Mathf.CeilToInt((border[1] - border[0]).magnitude / blockerLength);
+            var direction = (p1 - p0).normalized;
+            var numberOfBlockers = Mathf.CeilToInt((p1 - p0).magnitude / blockerLength);
+            var line = new GameObject("Coast Bloacker Line");
+            line.transform.parent = result.transform;
 
             //Instatiate each blocker with correct positions and orientations
-            for (var i = 0; i < numberOfBlockers; i++)
+            for (var j = 0; j < numberOfBlockers; j++)
             {
-                var position2D = border[0] + direction * blockerLength * i;
+                var position2D = p0 + direction * blockerLength * j;
                 var position = new Vector3(position2D.x, 0, position2D.y) - terrain.transform.position;
                 var go = Object.Instantiate(blocker);
-                go.transform.parent = result.transform;
+                go.transform.parent = line.transform;
                 go.transform.position = new Vector3(position.x, terrain.SampleHeight(position), position.z) + terrain.transform.position;
                 //TODO: orientation
             }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using csDelaunay;
 using UnityEngine;
 
 public static class ExtensionMethods
@@ -48,6 +49,38 @@ public static class ExtensionMethods
     public static void SortVertices(this List<Vector2> polygon, Vector2 origin)
     {
         polygon.Sort(new ClockwiseComparer(origin));
+    }
+
+    public static List<Vector2> EdgesToPolygon(this List<Edge> edges)
+    {
+        var result = new List<Vector2>();
+        var edgeReorderer = new EdgeReorderer(edges, typeof(Vertex));
+        for (var j = 0; j < edgeReorderer.Edges.Count; j++)
+        {
+            var edge = edgeReorderer.Edges[j];
+            if (!edge.Visible()) continue;
+
+            result.Add(edge.ClippedEnds[edgeReorderer.EdgeOrientations[j]].ToUnityVector2());
+        }
+
+        return result;
+    }
+
+    public static List<Vector2[]> EdgesToSortedLines(this List<Edge> edges)
+    {
+        var result = new List<Vector2[]>();
+        var edgeReorderer = new EdgeReorderer(edges, typeof(Vertex));
+        for (var j = 0; j < edgeReorderer.Edges.Count; j++)
+        {
+            var edge = edgeReorderer.Edges[j];
+            if (!edge.Visible()) continue;
+
+            var p0 = edge.ClippedEnds[edgeReorderer.EdgeOrientations[j]].ToUnityVector2();
+            var p1 = edge.ClippedEnds[edgeReorderer.EdgeOrientations[j] == LR.LEFT ? LR.RIGHT : LR.LEFT].ToUnityVector2();
+            result.Add(new []{p0, p1});
+        }
+
+        return result;
     }
 
     /// <summary>

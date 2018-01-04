@@ -11,9 +11,9 @@ public class WorldStructure
     public Graph<Biome> NavigationGraph { get; private set; }
     public List<Vector2Int> AreaCrossingNavigationEdges { get; private set; }
     public List<Vector2[]> AreaCrossingBorders { get; private set; }
-    public List<Vector2[]> AreaPolygon { get; private set; }
+    public List<Vector2[]> AreaPolygons { get; private set; }
     public List<Vector2[]> AreaBorders { get; private set; }
-    public List<Vector2[]> CoastBlockerBorders { get; private set; }
+    public List<Vector2> CoastBlockerPolygon { get; private set; }
     public int NumberOfAreas { get; private set; }
     private readonly TerrainStructure _terrainStructure;
 
@@ -22,10 +22,10 @@ public class WorldStructure
         _terrainStructure = terrainStructure;
         NavigationGraph = new Graph<Biome>(_terrainStructure.MinimumSpanningTree);
         AreaCrossingNavigationEdges = new List<Vector2Int>(numAreas - 1);
-        AreaPolygon = new List<Vector2[]>(numAreas);
+        AreaPolygons = new List<Vector2[]>(numAreas);
         AreaBorders = new List<Vector2[]>();
         AreaCrossingBorders = new List<Vector2[]>();
-        CoastBlockerBorders = new List<Vector2[]>();
+        CoastBlockerPolygon = new List<Vector2>();
         NumberOfAreas = numAreas;
 
         GenerateAreas(extraEdges);
@@ -108,22 +108,13 @@ public class WorldStructure
             }
 
             // Area Polygon
-            var polygon = new List<Vector2>();
-            var areaReorderer = new EdgeReorderer(areaEdges, typeof(Vertex));
-            for (var j = 0; j < areaReorderer.Edges.Count; j++)
-            {
-                var edge = areaReorderer.Edges[j];
-                if (!edge.Visible()) continue;
-
-                polygon.Add(edge.ClippedEnds[areaReorderer.EdgeOrientations[j]].ToUnityVector2());
-            }
-            AreaPolygon.Add(polygon.ToArray());
+            AreaPolygons.Add(areaEdges.EdgesToPolygon().ToArray());
         }
 
         //Create border line segments
         var borderEdges = new List<Edge>(128);
         var crossableEdges = new List<Edge>(128);
-        var coastEdges = new List<KeyValuePair<Vector2, Edge>>();
+        var coastEdges = new List<KeyValuePair<Edge, Vector2>>();
         foreach (var edge in _terrainStructure.VoronoiDiagram.Edges)
         {
             var biomeRight = _terrainStructure.GetNodeIDFromSite(edge.RightSite.Coord);
@@ -156,7 +147,7 @@ public class WorldStructure
             else
             {
                 // Add coast edge with the biome center to scale inwards later
-                coastEdges.Add(new KeyValuePair<Vector2, Edge>(areaRight != -1 ? edge.RightSite.Coord.ToUnityVector2() : edge.LeftSite.Coord.ToUnityVector2(), edge));
+                coastEdges.Add(new KeyValuePair<Edge, Vector2>(edge, areaRight != -1 ? edge.RightSite.Coord.ToUnityVector2() : edge.LeftSite.Coord.ToUnityVector2()));
             }
         }
 
@@ -173,18 +164,30 @@ public class WorldStructure
             AreaCrossingBorders.Add(new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
         }
 
-        foreach (var centerEdgePair in coastEdges)
+        var coastLines = coastEdges.Select(pair => pair.Key).ToList().EdgesToSortedLines();
+        foreach (var line in coastLines)
         {
-            if (!centerEdgePair.Value.Visible()) continue;
 
-            //Scale borders towards biome center
-            var left = centerEdgePair.Value.ClippedEnds[LR.LEFT].ToUnityVector2();
-            var right = centerEdgePair.Value.ClippedEnds[LR.RIGHT].ToUnityVector2();
+            //Offset borders towards biome center
+            var left = line[0];
+            var right = line[1];
+            var center = Vector2.zero;
+            coastEdges.ForEach(e =>
+            {
+                var l = e.Key.ClippedEnds[LR.LEFT].ToUnityVector2();
+                var r = e.Key.ClippedEnds[LR.RIGHT].ToUnityVector2();
+                if ((l == left || l == right) && (r == left || r == right))
+                    center = e.Value;
+            });
 
-            left += (centerEdgePair.Key - left) * _terrainStructure.BiomeGlobalConfiguration.CoastInlandOffset;
-            right += (centerEdgePair.Key - right) * _terrainStructure.BiomeGlobalConfiguration.CoastInlandOffset;
+            left += (center - left).normalized * _terrainStructure.BiomeGlobalConfiguration.CoastInlandOffset;
+            right += (center - right).normalized * _terrainStructure.BiomeGlobalConfiguration.CoastInlandOffset;
 
-            CoastBlockerBorders.Add(new[] { left, right });
+            //Offsetting can give duplicated points
+            if (!CoastBlockerPolygon.Contains(left))
+                CoastBlockerPolygon.Add(left);
+            if (!CoastBlockerPolygon.Contains(right))
+                CoastBlockerPolygon.Add(right);
         }
     }
 
@@ -285,7 +288,7 @@ public class WorldStructure
 
         //Draw area polygon
         int count = 0;
-        foreach (var polygon in AreaPolygon)
+        foreach (var polygon in AreaPolygons)
         {
             var poly = new GameObject("Area" + count);
             poly.transform.parent = polygons.transform;
