@@ -13,6 +13,7 @@ public class TerrainStructure
     public Graph<Biome> MinimumSpanningTree { get; private set; }
     public readonly BiomeConfiguration BiomeConfiguration;
     public KeyValuePair<Vector2f, int> StartBiomeNode;
+    public KeyValuePair<Vector2f, int> EndBiomeNode;
 
     private readonly Dictionary<Vector2f, int> _siteBiomeMap = new Dictionary<Vector2f, int>(); //Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap = new Dictionary<SplatPrototypeSerializable, int>(); //Mapping of biome SplatPrototypes and terrain texture IDs
