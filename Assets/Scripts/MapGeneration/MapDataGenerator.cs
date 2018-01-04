@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public static class TerrainDataGenerator
+public static class MapDataGenerator
 {
     // Generate a heightmap given terrain structure and biome configuration
     public static float[,] GenerateHeightMap(TerrainStructure terrainStructure)
@@ -162,7 +162,6 @@ public static class TerrainDataGenerator
         }
     }
 
-
     // Smooth every cell in the heightmap using squareSize neighbors in each direction
     public static void SmoothHeightMap(float[,] heightMap, int squareSize)
     {
@@ -201,9 +200,9 @@ public static class TerrainDataGenerator
         var tempCopy = new HashSet<Vector2Int>(cellsToSmooth);
         foreach (var current in tempCopy)
         {
-            for (int y = current.y - lineWidth; y < current.y + lineWidth; y++)
+            for (var y = current.y - lineWidth; y < current.y + lineWidth; y++)
             {
-                for (int x = current.x - lineWidth; x <= current.x + lineWidth; x++)
+                for (var x = current.x - lineWidth; x <= current.x + lineWidth; x++)
                 {
                     if (x < 0 || x >= length || y < 0 || y >= length)
                         continue;
@@ -214,6 +213,20 @@ public static class TerrainDataGenerator
         }
         SmoothHeightMapCells(heightMap, cellsToSmooth, squareSize);
     }
+
+    public static GameObject GenerateCoastColliders(WorldStructure worldStructure)
+    {
+        var result = new GameObject("Coast Colliders");
+
+        return result;
+    }
+
+
+    /*
+     * 
+     * HELPER PRIVATE FUNCTIONS
+     * 
+     */
 
     // Smooth cells using a 2*neighborcount + 1 square around each cell
     private static void SmoothHeightMapCells(float[,] heightMap, IEnumerable<Vector2Int> cellsToSmooth, int squareSize)
@@ -240,7 +253,7 @@ public static class TerrainDataGenerator
         }
     }
 
-    // Discretize a polygon onto a grid - Polygon Flooding
+    // Discretize a polygon onto a grid - Polygon Flooding - TODO: fix in future work
     private static IEnumerable<Vector2Int> DiscretizeConvexPolygon(int resolution, float cellSize, IList<Vector2> vertices)
     {
         var lines = new List<Vector2[]>();

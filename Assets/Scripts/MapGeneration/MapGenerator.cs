@@ -62,32 +62,32 @@ public class MapGenerator : MonoBehaviour
     void DrawGameMap()
     {
         /* Create heightmap */
-        var heightMap = TerrainDataGenerator.GenerateHeightMap(_terrainStructure);
+        var heightMap = MapDataGenerator.GenerateHeightMap(_terrainStructure);
         
         /* Create splat textures alphamap */
-        var alphamap = TerrainDataGenerator.GenerateAlphaMap(_terrainStructure);
+        var alphamap = MapDataGenerator.GenerateAlphaMap(_terrainStructure);
 
         /* Draw borders */
-        TerrainDataGenerator.EncloseAreas(_terrainStructure,  heightMap, _worldStructure.AreaBorders, 3);
+        MapDataGenerator.EncloseAreas(_terrainStructure,  heightMap, _worldStructure.AreaBorders, 3);
 
         /* Draw roads onto alphamap */
-        TerrainDataGenerator.DrawLineRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadLines, 3);
+        MapDataGenerator.DrawLineRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadLines, 3);
 
         /* Smoothing passes */
-        alphamap = TerrainDataGenerator.SmoothAlphaMap(alphamap, 1);
+        alphamap = MapDataGenerator.SmoothAlphaMap(alphamap, 1);
         if (BiomeConfiguration.SmoothEdges)
         {
             //Smooth only navigable biome borders
-            TerrainDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeConfiguration.MapSize / BiomeConfiguration.HeightMapResolution, _terrainStructure.GetBiomeSmoothBorders(), BiomeConfiguration.EdgeWidth, BiomeConfiguration.SquareSize);
+            MapDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeConfiguration.MapSize / BiomeConfiguration.HeightMapResolution, _terrainStructure.GetBiomeSmoothBorders(), BiomeConfiguration.EdgeWidth, BiomeConfiguration.SquareSize);
 
             //Smooth all biome borders
-            //heightMap = TerrainDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeConfiguration.MapSize / BiomeConfiguration.HeightMapResolution, _terrainStructure.GetBiomeBorders(), 3, 2);
+            //heightMap = MapDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeConfiguration.MapSize / BiomeConfiguration.HeightMapResolution, _terrainStructure.GetBiomeBorders(), 3, 2);
 
             //Overall smoothing
             if (BiomeConfiguration.OverallSmoothing > 0)
             {
-                TerrainDataGenerator.SmoothHeightMap(heightMap, BiomeConfiguration.OverallSmoothing);
-                TerrainDataGenerator.SmoothHeightMap(heightMap, BiomeConfiguration.OverallSmoothing);
+                MapDataGenerator.SmoothHeightMap(heightMap, BiomeConfiguration.OverallSmoothing);
+                MapDataGenerator.SmoothHeightMap(heightMap, BiomeConfiguration.OverallSmoothing);
             }
         }
 
