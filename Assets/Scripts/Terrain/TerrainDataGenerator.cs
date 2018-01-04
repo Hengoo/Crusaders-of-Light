@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using csDelaunay;
 using UnityEngine;
 
 public static class TerrainDataGenerator
 {
     // Generate a heightmap given terrain structure and biome configuration
-    public static float[,] GenerateHeightMap(TerrainStructure terrainStrucure, BiomeConfiguration biomeConfiguration)
+    public static float[,] GenerateHeightMap(TerrainStructure terrainStructure)
     {
+        var biomeConfiguration = terrainStructure.BiomeConfiguration;
         var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution];
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
@@ -19,7 +21,7 @@ public static class TerrainDataGenerator
         {
             for (var x = 0; x < biomeConfiguration.HeightMapResolution; x++)
             {
-                var biomeHeight = terrainStrucure.SampleBiomeHeight(new Vector2(x * cellSize, y * cellSize));
+                var biomeHeight = terrainStructure.SampleBiomeHeight(new Vector2(x * cellSize, y * cellSize));
                 var amplitude = 1f;
                 var frequency = 1f;
                 var noiseHeight = 0f;
@@ -45,8 +47,9 @@ public static class TerrainDataGenerator
     }
 
     // Set alphamap texture based on biome configuration
-    public static float[,,] GenerateAlphaMap(TerrainStructure terrainStructure, BiomeConfiguration biomeConfiguration)
+    public static float[,,] GenerateAlphaMap(TerrainStructure terrainStructure)
     {
+        var biomeConfiguration = terrainStructure.BiomeConfiguration;
         var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution, terrainStructure.TextureCount];
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
@@ -93,8 +96,57 @@ public static class TerrainDataGenerator
                 }
             }
         }
-
         return result;
+    }
+
+    // Draw roads onto the alpha and height maps
+    public static void DrawLineRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, List<Vector2[]> roads, int squareSize)
+    {
+        var biomeConfiguration = terrainStructure.BiomeConfiguration;
+        var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
+
+        // Find cells covered by the road polygon
+        var indexes = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, roads, squareSize);
+
+        // Set alphamap values to only road draw
+        foreach (var index in indexes)
+        {
+            // Other textures to 0
+            for (var i = 0; i < terrainStructure.TextureCount; i++)
+            {
+                alphamap[index.x, index.y, i] = 0;
+            }
+
+            // Road texture to 1
+            alphamap[index.x, index.y, terrainStructure.RoadSplatIndex] = 1;
+        }
+    }
+
+
+    // Draw roads onto the alpha and height maps - TODO: future work
+    public static void DrawPolygonalRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, List<Vector2[]> roads)
+    {
+        var biomeConfiguration = terrainStructure.BiomeConfiguration;
+        var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
+
+        foreach (var road in roads)
+        {
+            // Find cells covered by the road polygon
+            var indexes = DiscretizeConvexPolygon(biomeConfiguration.HeightMapResolution, cellSize, road);
+
+            // Set alphamap values to only road draw
+            foreach (var index in indexes)
+            {
+                // Other textures to 0
+                for (var i = 0; i < terrainStructure.TextureCount; i++)
+                {
+                    alphamap[index.x, index.y, i] = 0.00001f;
+                }
+
+                // Road texture to 1
+                alphamap[index.x, index.y, terrainStructure.RoadSplatIndex] = 1;
+            }
+        }
     }
 
 
@@ -129,12 +181,12 @@ public static class TerrainDataGenerator
     }
 
     // Smooth a heightmap along given lines
-    public static float[,] SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<LineSegment> lines, int lineWidth, int squareSize)
+    public static float[,] SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<Vector2[]> lines, int lineWidth, int squareSize)
     {
         var result = (float[,])heightMap.Clone();
         int length = heightMap.GetLength(0);
 
-        var cellsToSmooth = new HashSet<Vector2Int>(BresenhamLine(heightMap.GetLength(0), cellSize, lines, lineWidth));
+        var cellsToSmooth = new HashSet<Vector2Int>(DiscretizeLines(heightMap.GetLength(0), cellSize, lines, lineWidth));
 
         // Add extra cells to the line thickness
         var tempCopy = new HashSet<Vector2Int>(cellsToSmooth);
@@ -173,55 +225,131 @@ public static class TerrainDataGenerator
         return result;
     }
 
-    /* Match a line to cells in a grid */
-    private static IEnumerable<Vector2Int> BresenhamLine(int resolution, float cellSize, IEnumerable<LineSegment> lines, int lineWidth)
+    // Discretize a polygon onto a grid - Polygon Flooding
+    private static IEnumerable<Vector2Int> DiscretizeConvexPolygon(int resolution, float cellSize, IList<Vector2> vertices)
+    {
+        var lines = new List<Vector2[]>();
+        for (var i = 0; i < vertices.Count - 1; i++)
+        {
+            lines.Add(new[] { vertices[i], vertices[i + 1] });
+        }
+        lines.Add(new[] { vertices[vertices.Count - 1], vertices[0] });
+
+        var result = new HashSet<Vector2Int>();
+        var discretizedBorders = new HashSet<Vector2Int>[lines.Count];
+
+        // Get grid cell borders
+        for (var i = 0; i < lines.Count; i++)
+        {
+            discretizedBorders[i] = BresenhamLine(resolution, cellSize, lines[i], 1);
+            result.UnionWith(discretizedBorders[i]);
+        }
+
+        // Get geometry center as starting point
+        var startingPoint = new Vector2();
+        var count = 0;
+        foreach (var line in lines)
+        {
+            startingPoint += line[0];
+            count++;
+        }
+        startingPoint /= count;
+
+        // Flood the inside part of the polygon
+        //var floodQueue = new Queue<Vector2Int>(1024);
+        //floodQueue.Enqueue(new Vector2Int(Mathf.FloorToInt(startingPoint.x / cellSize), Mathf.FloorToInt(startingPoint.y / cellSize)));
+        //while (floodQueue.Count > 0)
+        //{
+        //    var currentCell = floodQueue.Dequeue();
+        //    result.Add(currentCell);
+
+        //    var right = currentCell + new Vector2Int(1, 0);
+        //    var left = currentCell + new Vector2Int(-1, 0);
+        //    var top = currentCell + new Vector2Int(0, 1);
+        //    var bottom = currentCell + new Vector2Int(0, -1);
+
+        //    if (!result.Contains(right) && !floodQueue.Contains(right) && right.x >= 0 && right.x < resolution) floodQueue.Enqueue(right);
+        //    if (!result.Contains(left) && !floodQueue.Contains(left) && left.x >= 0 && left.x < resolution) floodQueue.Enqueue(left);
+        //    if (!result.Contains(top) && !floodQueue.Contains(top) && top.y >= 0 && top.y < resolution) floodQueue.Enqueue(top);
+        //    if (!result.Contains(bottom) && !floodQueue.Contains(bottom) && bottom.y >= 0 && bottom.y < resolution) floodQueue.Enqueue(bottom);
+        //}
+
+        return result;
+    }
+
+    // Match multiple lines to cells in a grid
+    private static IEnumerable<Vector2Int> DiscretizeLines(int resolution, float cellSize, IEnumerable<Vector2[]> lines, int lineWidth)
+    {
+        var result = new HashSet<Vector2Int>();
+        foreach (var line in lines)
+        {
+            result.UnionWith(BresenhamLine(resolution, cellSize, line, lineWidth));
+        }
+        return result;
+    }
+
+    // Match a line to cells in a grid
+    private static HashSet<Vector2Int> BresenhamLine(int resolution, float cellSize, IList<Vector2> line, int lineWidth)
     {
         var result = new HashSet<Vector2Int>();
 
         // Iterate over the edges using Bresenham's Algorithm
-        foreach (var line in lines)
+        var startY = Mathf.Min(resolution - 1, Mathf.FloorToInt(line[0].x / cellSize));
+        var startX = Mathf.Min(resolution - 1, Mathf.FloorToInt(line[0].y / cellSize));
+        var current = new Vector2Int(startX, startY);
+
+        var endY = Mathf.Min(resolution - 1, Mathf.FloorToInt(line[1].x / cellSize));
+        var endX = Mathf.Min(resolution - 1, Mathf.FloorToInt(line[1].y / cellSize));
+        var end = new Vector2Int(endX, endY);
+
+
+        //https://stackoverflow.com/questions/11678693/all-cases-covered-bresenhams-line-algorithm
+        int w = end.x - current.x;
+        int h = end.y - current.y;
+
+        int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+
+        if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
+        if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
+        if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
+
+        int longest = Mathf.Abs(w);
+        int shortest = Mathf.Abs(h);
+        if (!(longest > shortest))
         {
-            var startY = Mathf.Min(resolution - 1, Mathf.FloorToInt(line.p0.x / cellSize));
-            var startX = Mathf.Min(resolution - 1, Mathf.FloorToInt(line.p0.y / cellSize));
-            var current = new Vector2Int(startX, startY);
-
-            var endY = Mathf.Min(resolution - 1, Mathf.FloorToInt(line.p1.x / cellSize));
-            var endX = Mathf.Min(resolution - 1, Mathf.FloorToInt(line.p1.y / cellSize));
-            var end = new Vector2Int(endX, endY);
-
-
-            //https://stackoverflow.com/questions/11678693/all-cases-covered-bresenhams-line-algorithm
-            int w = end.x - current.x;
-            int h = end.y - current.y;
-
-            int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
-
-            if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
-            if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
-            if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
-
-            int longest = Mathf.Abs(w);
-            int shortest = Mathf.Abs(h);
-            if (!(longest > shortest))
+            longest = Mathf.Abs(h);
+            shortest = Mathf.Abs(w);
+            if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
+            dx2 = 0;
+        }
+        int numerator = longest >> 1;
+        for (int i = 0; i <= longest; i++)
+        {
+            result.Add(current);
+            numerator += shortest;
+            if (!(numerator < longest))
             {
-                longest = Mathf.Abs(h);
-                shortest = Mathf.Abs(w);
-                if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
-                dx2 = 0;
+                numerator -= longest;
+                current += new Vector2Int(dx1, dy1);
             }
-            int numerator = longest >> 1;
-            for (int i = 0; i <= longest; i++)
+            else
             {
-                result.Add(current);
-                numerator += shortest;
-                if (!(numerator < longest))
+                current += new Vector2Int(dx2, dy2);
+            }
+        }
+
+        var temp = new HashSet<Vector2Int>(result);
+        foreach (var cell in temp)
+        {
+            for (int y = -lineWidth; y < lineWidth; y++)
+            {
+                for (int x = -lineWidth; x < lineWidth; x++)
                 {
-                    numerator -= longest;
-                    current += new Vector2Int(dx1, dy1);
-                }
-                else
-                {
-                    current += new Vector2Int(dx2, dy2);
+                    var neighbor = cell + new Vector2Int(x, y);
+                    if (neighbor.x < 0 || neighbor.x >= resolution || neighbor.y < 0 ||
+                        neighbor.x >= resolution) continue;
+
+                    result.Add(neighbor);
                 }
             }
         }

@@ -11,10 +11,12 @@ public class WorldStructure
     public Graph<Biome> NavigationGraph { get; private set; }
     public List<Vector2Int> AreaCrossingEdges { get; private set; }
     public List<Vector2[]> AreaPolygon { get; private set; }
-    public List<LineSegment> BorderLineSegments { get; private set; }
+    public List<Vector2[]> AreaBorders { get; private set; }
     public int NumberOfAreas { get; private set; }
     private readonly TerrainStructure _terrainStructure;
 
+
+    private int _maximumPath = 0;
 
     public WorldStructure(TerrainStructure terrainStructure, int numAreas, int extraEdges)
     {
@@ -22,7 +24,7 @@ public class WorldStructure
         NavigationGraph = new Graph<Biome>(_terrainStructure.MinimumSpanningTree);
         AreaCrossingEdges = new List<Vector2Int>(numAreas - 1);
         AreaPolygon = new List<Vector2[]>(numAreas);
-        BorderLineSegments = new List<LineSegment>();
+        AreaBorders = new List<Vector2[]>();
         NumberOfAreas = numAreas;
 
         GenerateAreas(extraEdges);
@@ -32,6 +34,7 @@ public class WorldStructure
     {
         //Find largest path
         var greatestPath = GetLargestPathInMST(new Graph<Biome>(_terrainStructure.MinimumSpanningTree));
+        _terrainStructure.EndBiomeNode = new KeyValuePair<Vector2f, int>(new Vector2f(_terrainStructure.BiomeGraph.GetNodeData(greatestPath.Last()).Center), greatestPath.Last());
 
         //Divide path in NumberOfAreas Areas
         var areaStartingNodes = new List<int>();
@@ -140,7 +143,7 @@ public class WorldStructure
         foreach (var edge in borderEdges)
         {
             if (!edge.Visible()) continue;
-            BorderLineSegments.Add(new LineSegment(edge.ClippedEnds[LR.LEFT], edge.ClippedEnds[LR.RIGHT]));
+            AreaBorders.Add(new []{edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
         }
     }
 
@@ -161,7 +164,17 @@ public class WorldStructure
 
             var newPath = GetLargestPathRecursion(neighbor, currentNode, graph);
             if (newPath.Count > longest.Count)
+            {
                 longest = newPath;
+
+                // Recursively mark the node furthest away from the starting node
+                //if (longest.Count > _maximumPath)
+                //{
+                //    _maximumPath = longest.Count;
+                //    var site = new Vector2f(_terrainStructure.BiomeGraph.GetNodeData(longest.Last()).Center);
+                //    _terrainStructure.EndBiomeNode = new KeyValuePair<Vector2f, int>(site, longest.Last());
+                //}
+            }
         }
 
         return path.Concat(longest).ToList();
@@ -202,10 +215,10 @@ public class WorldStructure
             var biome1 = NavigationGraph.GetNodeData(edge.x);
             var biome2 = NavigationGraph.GetNodeData(edge.y);
 
-            var start = new Vector3(biome1.Center.x, 0, biome1.Center.y);
-            var end = new Vector3(biome2.Center.x, 0, biome2.Center.y);
+            var p0 = new Vector3(biome1.Center.x, 0, biome1.Center.y);
+            var p1 = new Vector3(biome2.Center.x, 0, biome2.Center.y);
             GameObject myLine = new GameObject("Nav Line");
-            myLine.transform.position = start;
+            myLine.transform.position = p0;
             myLine.transform.parent = navigationEdges.transform;
             LineRenderer lr = myLine.AddComponent<LineRenderer>();
             lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
@@ -213,8 +226,8 @@ public class WorldStructure
             lr.endColor = Color.white;
             lr.startWidth = 2 * scale;
             lr.endWidth = 2 * scale;
-            lr.SetPosition(0, start);
-            lr.SetPosition(1, end);
+            lr.SetPosition(0, p0);
+            lr.SetPosition(1, p1);
         }
 
         //Draw minimum spanning tree
@@ -223,10 +236,10 @@ public class WorldStructure
             var biome1 = _terrainStructure.MinimumSpanningTree.GetNodeData(edge.x);
             var biome2 = _terrainStructure.MinimumSpanningTree.GetNodeData(edge.y);
 
-            var start = new Vector3(biome1.Center.x, 0, biome1.Center.y);
-            var end = new Vector3(biome2.Center.x, 0, biome2.Center.y);
+            var p0 = new Vector3(biome1.Center.x, 0, biome1.Center.y);
+            var p1 = new Vector3(biome2.Center.x, 0, biome2.Center.y);
             GameObject myLine = new GameObject("MST Line");
-            myLine.transform.position = start;
+            myLine.transform.position = p0;
             myLine.transform.parent = minimumSpanningTree.transform;
             LineRenderer lr = myLine.AddComponent<LineRenderer>();
             lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
@@ -234,8 +247,8 @@ public class WorldStructure
             lr.endColor = Color.white;
             lr.startWidth = 2 * scale;
             lr.endWidth = 2 * scale;
-            lr.SetPosition(0, start);
-            lr.SetPosition(1, end);
+            lr.SetPosition(0, p0);
+            lr.SetPosition(1, p1);
 
         }
 
@@ -244,10 +257,10 @@ public class WorldStructure
         {
             for (int i = 0; i < polygon.Length; i++)
             {
-                var start = new Vector3(polygon[i].x, 0, polygon[i].y);
-                var end = new Vector3(polygon[(i + 1) % polygon.Length].x, 0, polygon[(i + 1) % polygon.Length].y);
+                var p0 = new Vector3(polygon[i].x, 0, polygon[i].y);
+                var p1 = new Vector3(polygon[(i + 1) % polygon.Length].x, 0, polygon[(i + 1) % polygon.Length].y);
                 GameObject myLine = new GameObject("Area Line");
-                myLine.transform.position = start;
+                myLine.transform.position = p0;
                 myLine.transform.parent = polygons.transform;
                 LineRenderer lr = myLine.AddComponent<LineRenderer>();
                 lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
@@ -255,18 +268,18 @@ public class WorldStructure
                 lr.endColor = Color.white;
                 lr.startWidth = 2 * scale;
                 lr.endWidth = 2 * scale;
-                lr.SetPosition(0, start);
-                lr.SetPosition(1, end);
+                lr.SetPosition(0, p0);
+                lr.SetPosition(1, p1);
             }
         }
 
         //Draw area border
-        foreach (var line in BorderLineSegments)
+        foreach (var line in AreaBorders)
         {
-            var start = new Vector3(line.p0.x, 0, line.p0.y);
-            var end = new Vector3(line.p1.x, 0, line.p1.y);
+            var p0 = new Vector3(line[0].x, 0, line[0].y);
+            var p1 = new Vector3(line[1].x, 0, line[1].y);
             GameObject myLine = new GameObject("Border Line");
-            myLine.transform.position = start;
+            myLine.transform.position = p0;
             myLine.transform.parent = borders.transform;
             LineRenderer lr = myLine.AddComponent<LineRenderer>();
             lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
@@ -274,21 +287,34 @@ public class WorldStructure
             lr.endColor = Color.white;
             lr.startWidth = 2 * scale;
             lr.endWidth = 2 * scale;
-            lr.SetPosition(0, start);
-            lr.SetPosition(1, end);
+            lr.SetPosition(0, p0);
+            lr.SetPosition(1, p1);
         }
 
         //Draw Start
-        var biome = _terrainStructure.StartBiomeNode;
+        var start = _terrainStructure.StartBiomeNode;
+        var startPos = new Vector2(start.Key.x, start.Key.y);
+        var startGo = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        startGo.name = "Start";
+        startGo.GetComponent<Collider>().enabled = false;
+        startGo.transform.parent = result.transform;
+        startGo.transform.position = new Vector3(startPos.x, 0, startPos.y);
+        startGo.transform.localScale = Vector3.one * 20 * scale;
+        var startRenderer = startGo.GetComponent<Renderer>();
+        var startTempMaterial = new Material(startRenderer.sharedMaterial) { color = Color.red };
+        startRenderer.sharedMaterial = startTempMaterial;
+
+        //Draw End
+        var biome = _terrainStructure.EndBiomeNode;
         var pos = new Vector2(biome.Key.x, biome.Key.y);
         var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        go.name = "Start";
+        go.name = "End";
         go.GetComponent<Collider>().enabled = false;
         go.transform.parent = result.transform;
         go.transform.position = new Vector3(pos.x, 0, pos.y);
         go.transform.localScale = Vector3.one * 20 * scale;
         var renderer = go.GetComponent<Renderer>();
-        var tempMaterial = new Material(renderer.sharedMaterial) { color = Color.red };
+        var tempMaterial = new Material(renderer.sharedMaterial) { color = Color.yellow };
         renderer.sharedMaterial = tempMaterial;
 
         return result;

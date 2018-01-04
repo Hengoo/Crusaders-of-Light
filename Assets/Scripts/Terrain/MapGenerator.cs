@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class MapPreview : MonoBehaviour
+public class MapGenerator : MonoBehaviour
 {
 
     public enum DrawModeEnum
@@ -22,19 +22,12 @@ public class MapPreview : MonoBehaviour
     public int ExtraEdges = 20;
     public bool FillTerrain = true;
     public float RoadHalfWidth = 10;
-
     public int Seed = 0;
-
 
     /* Debug variables */
     private TerrainStructure _terrainStructure;
     private WorldStructure _worldStructure;
     private SceneryStructure _sceneryStructure;
-
-    void Start()
-    {
-        gameObject.SetActive(false);
-    }
 
     /* Redraws preview in the scene editor */
     public void GeneratePreview()
@@ -67,7 +60,17 @@ public class MapPreview : MonoBehaviour
 
     void DrawTerrain()
     {
-        var heightMap = TerrainDataGenerator.GenerateHeightMap(_terrainStructure, BiomeConfiguration);
+        /* Create heightmap */
+        var heightMap = TerrainDataGenerator.GenerateHeightMap(_terrainStructure);
+        
+        /* Create splat textures alphamap */
+        var alphamap = TerrainDataGenerator.GenerateAlphaMap(_terrainStructure);
+
+        /* Draw roads onto alphamap */
+        TerrainDataGenerator.DrawLineRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadLines, 3);
+
+        /* Smoothing passes */
+        alphamap = TerrainDataGenerator.SmoothAlphaMap(alphamap, 1);
         if (BiomeConfiguration.SmoothEdges)
         {
             //Smooth only navigable biome borders
@@ -94,10 +97,6 @@ public class MapPreview : MonoBehaviour
         };
         terrainData.SetDetailResolution(BiomeConfiguration.HeightMapResolution, 32);
         terrainData.size = new Vector3(BiomeConfiguration.MapSize, BiomeConfiguration.MapHeight, BiomeConfiguration.MapSize);
-
-        /* Create splat textures alphamap */
-        var alphamap = TerrainDataGenerator.GenerateAlphaMap(_terrainStructure, BiomeConfiguration);
-        alphamap = TerrainDataGenerator.SmoothAlphaMap(alphamap, 1);
         terrainData.SetAlphamaps(0, 0, alphamap);
 
         /* Create Terrain GameObject */
@@ -106,8 +105,8 @@ public class MapPreview : MonoBehaviour
         terrain.transform.parent = transform;
         terrain.transform.position = Vector3.zero;
         terrain.GetComponent<Terrain>().terrainData.SetHeights(0, 0, heightMap);
-        terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
-        terrain.GetComponent<Terrain>().materialTemplate = BiomeConfiguration.TerrainMaterial;
+        //terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
+        //terrain.GetComponent<Terrain>().materialTemplate = BiomeConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
 
         /* Fill terrain with scenery */
         if (FillTerrain)

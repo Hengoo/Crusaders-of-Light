@@ -13,11 +13,13 @@ public class TerrainStructure
     public Graph<Biome> MinimumSpanningTree { get; private set; }
     public readonly BiomeConfiguration BiomeConfiguration;
     public KeyValuePair<Vector2f, int> StartBiomeNode;
+    public KeyValuePair<Vector2f, int> EndBiomeNode;
 
     private readonly Dictionary<Vector2f, int> _siteBiomeMap = new Dictionary<Vector2f, int>(); //Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap = new Dictionary<SplatPrototypeSerializable, int>(); //Mapping of biome SplatPrototypes and terrain texture IDs
 
     public int TextureCount { get { return _splatIDMap.Count; } }
+    public readonly int RoadSplatIndex;
 
     private Texture2D _blankSpec;
     private Texture2D _blankBump;
@@ -45,14 +47,24 @@ public class TerrainStructure
         }
 
         //Add border biome to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(BiomeConfiguration.BorderBiome.Splat))
+        if (!_splatIDMap.ContainsKey(biomeConfiguration.BorderBiome.Splat))
         {
             _splatIDMap.Add(BiomeConfiguration.BorderBiome.Splat, count);
             Shader.SetGlobalTexture("_BumpMap" + count, BiomeConfiguration.BorderBiome.Splat.normalMap ? BiomeConfiguration.BorderBiome.Splat.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
             Shader.SetGlobalFloat("_TerrainTexScale" + count, 1/BiomeConfiguration.BorderBiome.Splat.tileSize.x);
+            count++;
         }
 
+        //Add road to the SplatPrototypes map
+        if (!_splatIDMap.ContainsKey(biomeConfiguration.RoadSplatPrototype))
+        {
+            _splatIDMap.Add(biomeConfiguration.RoadSplatPrototype, count);
+            Shader.SetGlobalTexture("_BumpMap" + count, biomeConfiguration.RoadSplatPrototype.normalMap ? biomeConfiguration.RoadSplatPrototype.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / biomeConfiguration.RoadSplatPrototype.tileSize.x);
+            RoadSplatIndex = count;
+        }
 
         var navigableBiomeIDs = new HashSet<int>();
         var centers = new List<Vector2f>();
@@ -203,9 +215,9 @@ public class TerrainStructure
         return result.Values.ToArray();
     }
 
-    public IEnumerable<LineSegment> GetBiomeSmoothBorders()
+    public IEnumerable<Vector2[]> GetBiomeSmoothBorders()
     {
-        var result = new List<LineSegment>();
+        var result = new List<Vector2[]>();
 
         foreach (var edge in VoronoiDiagram.Edges)
         {
@@ -220,12 +232,11 @@ public class TerrainStructure
 
                 continue;
 
-            var p0 = edge.ClippedEnds[LR.LEFT];
-            var p1 = edge.ClippedEnds[LR.RIGHT];
-            var segment = new LineSegment(p0, p1);
+            var p0 = edge.ClippedEnds[LR.LEFT].ToUnityVector2();
+            var p1 = edge.ClippedEnds[LR.RIGHT].ToUnityVector2();
+            var segment = new []{p0, p1};
             result.Add(segment);
         }
-        //DrawLineSegments(result, 1, new GameObject("Blended Borders").transform);
 
         return result;
     }
