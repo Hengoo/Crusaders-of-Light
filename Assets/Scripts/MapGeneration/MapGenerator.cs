@@ -112,6 +112,11 @@ public class MapGenerator : MonoBehaviour
         //terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
         //terrain.GetComponent<Terrain>().materialTemplate = BiomeGlobalConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
 
+        /* Add fences to coast */
+        var fences = MapDataGenerator.GenerateCoastBlockers(terrain.GetComponent<Terrain>(), _worldStructure,
+            BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerLength);
+        fences.transform.parent = terrain.transform;
+
         /* Fill terrain with scenery */
         if (FillTerrain)
         {

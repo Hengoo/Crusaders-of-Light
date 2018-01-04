@@ -13,7 +13,7 @@ public class WorldStructure
     public List<Vector2[]> AreaCrossingBorders { get; private set; }
     public List<Vector2[]> AreaPolygon { get; private set; }
     public List<Vector2[]> AreaBorders { get; private set; }
-    public List<Vector2[]> CoastBorders { get; private set; }
+    public List<Vector2[]> CoastBlockerBorders { get; private set; }
     public int NumberOfAreas { get; private set; }
     private readonly TerrainStructure _terrainStructure;
 
@@ -25,7 +25,7 @@ public class WorldStructure
         AreaPolygon = new List<Vector2[]>(numAreas);
         AreaBorders = new List<Vector2[]>();
         AreaCrossingBorders = new List<Vector2[]>();
-        CoastBorders = new List<Vector2[]>();
+        CoastBlockerBorders = new List<Vector2[]>();
         NumberOfAreas = numAreas;
 
         GenerateAreas(extraEdges);
@@ -123,7 +123,7 @@ public class WorldStructure
         //Create border line segments
         var borderEdges = new List<Edge>(128);
         var crossableEdges = new List<Edge>(128);
-        var coastEdges = new List<Edge>(128);
+        var coastEdges = new List<KeyValuePair<Vector2, Edge>>();
         foreach (var edge in _terrainStructure.VoronoiDiagram.Edges)
         {
             var biomeRight = _terrainStructure.GetNodeIDFromSite(edge.RightSite.Coord);
@@ -155,7 +155,8 @@ public class WorldStructure
             }
             else
             {
-                coastEdges.Add(edge);
+                // Add coast edge with the biome center to scale inwards later
+                coastEdges.Add(new KeyValuePair<Vector2, Edge>(areaRight != -1 ? edge.RightSite.Coord.ToUnityVector2() : edge.LeftSite.Coord.ToUnityVector2(), edge));
             }
         }
 
@@ -172,10 +173,18 @@ public class WorldStructure
             AreaCrossingBorders.Add(new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
         }
 
-        foreach (var edge in coastEdges)
+        foreach (var centerEdgePair in coastEdges)
         {
-            if (!edge.Visible()) continue;
-            CoastBorders.Add(new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
+            if (!centerEdgePair.Value.Visible()) continue;
+
+            //Scale borders towards biome center
+            var left = centerEdgePair.Value.ClippedEnds[LR.LEFT].ToUnityVector2();
+            var right = centerEdgePair.Value.ClippedEnds[LR.RIGHT].ToUnityVector2();
+
+            left += (centerEdgePair.Key - left) * _terrainStructure.BiomeGlobalConfiguration.CoastInlandOffset;
+            right += (centerEdgePair.Key - right) * _terrainStructure.BiomeGlobalConfiguration.CoastInlandOffset;
+
+            CoastBlockerBorders.Add(new[] { left, right });
         }
     }
 

@@ -215,9 +215,28 @@ public static class MapDataGenerator
     }
 
     // Generate blocking gameobjects along the coast to prevent players from going into the water
-    public static GameObject GenerateCoastBlockers(WorldStructure worldStructure)
+    public static GameObject GenerateCoastBlockers(Terrain terrain, WorldStructure worldStructure, GameObject blocker, float blockerLength)
     {
         var result = new GameObject("Coast Blockers");
+
+        // Iterate over all coastal borders
+        foreach (var border in worldStructure.CoastBlockerBorders)
+        {
+            //Discretize line and get direction normalized
+            var direction = (border[1] - border[0]).normalized;
+            var numberOfBlockers = Mathf.CeilToInt((border[1] - border[0]).magnitude / blockerLength);
+
+            //Instatiate each blocker with correct positions and orientations
+            for (var i = 0; i < numberOfBlockers; i++)
+            {
+                var position2D = border[0] + direction * blockerLength * i;
+                var position = new Vector3(position2D.x, 0, position2D.y);
+                var go = Object.Instantiate(blocker);
+                go.transform.parent = result.transform;
+                go.transform.position = new Vector3(position.x, terrain.SampleHeight(position) * terrain.transform.position.y, position.z);
+                //TODO: orientation
+            }
+        }
 
         return result;
     }

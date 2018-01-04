@@ -59,7 +59,7 @@ public class BiomeGlobalConfiguration
     [Range(16, 1024)] public int HeightMapResolution = 512;
     [Range(16, 1024)] public float MapSize = 1024;
     [Range(1, 1024)] public float MapHeight = 80;
-    [Range(10, 1000)] public int BiomeSamples = 40;
+    [Range(10, 1000)] public int BiomeSamples = 45;
     [Range(0, 1f)] public float MaxHeight = 1;
     [Range(0, 1f)] public float SeaHeight = 0.15f;
     [Range(0, 50f)] public float BorderNoise = 8f;
@@ -70,6 +70,8 @@ public class BiomeGlobalConfiguration
     public Material WaterMaterial;
     public Material TerrainMaterial;
     public GameObject CoastBlocker;
+    [Range(0.01f, 20)] public float CoastBlockerLength = 1;
+    [Range(0f, 1f)] public float CoastInlandOffset = 0.1f;
     public SplatPrototypeSerializable RoadSplatPrototype;
     [Range(0, 5)] public int OverallSmoothing = 2;
     public bool SmoothEdges = true;
