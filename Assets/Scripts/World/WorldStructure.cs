@@ -15,9 +15,6 @@ public class WorldStructure
     public int NumberOfAreas { get; private set; }
     private readonly TerrainStructure _terrainStructure;
 
-
-    private int _maximumPath = 0;
-
     public WorldStructure(TerrainStructure terrainStructure, int numAreas, int extraEdges)
     {
         _terrainStructure = terrainStructure;
@@ -164,17 +161,7 @@ public class WorldStructure
 
             var newPath = GetLargestPathRecursion(neighbor, currentNode, graph);
             if (newPath.Count > longest.Count)
-            {
                 longest = newPath;
-
-                // Recursively mark the node furthest away from the starting node
-                //if (longest.Count > _maximumPath)
-                //{
-                //    _maximumPath = longest.Count;
-                //    var site = new Vector2f(_terrainStructure.BiomeGraph.GetNodeData(longest.Last()).Center);
-                //    _terrainStructure.EndBiomeNode = new KeyValuePair<Vector2f, int>(site, longest.Last());
-                //}
-            }
         }
 
         return path.Concat(longest).ToList();
