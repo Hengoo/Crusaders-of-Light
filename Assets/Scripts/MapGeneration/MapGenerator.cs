@@ -11,7 +11,7 @@ public class MapGenerator : MonoBehaviour
     public enum DrawModeEnum
     {
         BiomeGraph,
-        Terrain,
+        GameMap,
         AreaGraph
     }
 
@@ -48,8 +48,8 @@ public class MapGenerator : MonoBehaviour
             case DrawModeEnum.BiomeGraph:
                 DrawGraph();
                 break;
-            case DrawModeEnum.Terrain:
-                DrawTerrain();
+            case DrawModeEnum.GameMap:
+                DrawGameMap();
                 break;
             case DrawModeEnum.AreaGraph:
                 DrawAreaGraph();
@@ -59,7 +59,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void DrawTerrain()
+    void DrawGameMap()
     {
         /* Create heightmap */
         var heightMap = TerrainDataGenerator.GenerateHeightMap(_terrainStructure);

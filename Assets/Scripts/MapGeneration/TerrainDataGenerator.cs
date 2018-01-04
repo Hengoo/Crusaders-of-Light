@@ -127,9 +127,7 @@ public static class TerrainDataGenerator
         {
             // Other textures to 0
             for (var i = 0; i < terrainStructure.TextureCount; i++)
-            {
                 alphamap[index.x, index.y, i] = 0;
-            }
 
             // Road texture to 1
             alphamap[index.x, index.y, terrainStructure.RoadSplatIndex] = 1;

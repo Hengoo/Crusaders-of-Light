@@ -13,6 +13,7 @@ public class WorldStructure
     public List<Vector2[]> AreaCrossingBorders { get; private set; }
     public List<Vector2[]> AreaPolygon { get; private set; }
     public List<Vector2[]> AreaBorders { get; private set; }
+    public List<Vector2[]> CoastBorders { get; private set; }
     public int NumberOfAreas { get; private set; }
     private readonly TerrainStructure _terrainStructure;
 
@@ -24,6 +25,7 @@ public class WorldStructure
         AreaPolygon = new List<Vector2[]>(numAreas);
         AreaBorders = new List<Vector2[]>();
         AreaCrossingBorders = new List<Vector2[]>();
+        CoastBorders = new List<Vector2[]>();
         NumberOfAreas = numAreas;
 
         GenerateAreas(extraEdges);
@@ -121,6 +123,7 @@ public class WorldStructure
         //Create border line segments
         var borderEdges = new List<Edge>(128);
         var crossableEdges = new List<Edge>(128);
+        var coastEdges = new List<Edge>(128);
         foreach (var edge in _terrainStructure.VoronoiDiagram.Edges)
         {
             var biomeRight = _terrainStructure.GetNodeIDFromSite(edge.RightSite.Coord);
@@ -138,7 +141,10 @@ public class WorldStructure
             }
 
             //Check if areas differ
-            if (areaLeft != -1 && areaRight != -1 && areaLeft != areaRight)
+            if (areaLeft == areaRight) continue;
+
+            //Check if any areas is a coastal area
+            if (areaLeft != -1 && areaRight != -1)
             {
                 //Check if edge is crossable between areas or not
                 if (AreaCrossingNavigationEdges.Contains(new Vector2Int(biomeLeft, biomeRight))
@@ -147,7 +153,13 @@ public class WorldStructure
                 else
                     borderEdges.Add(edge);
             }
+            else
+            {
+                coastEdges.Add(edge);
+            }
         }
+
+        //Add local variables to global variables
         foreach (var edge in borderEdges)
         {
             if (!edge.Visible()) continue;
@@ -158,6 +170,12 @@ public class WorldStructure
         {
             if (!edge.Visible()) continue;
             AreaCrossingBorders.Add(new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
+        }
+
+        foreach (var edge in coastEdges)
+        {
+            if (!edge.Visible()) continue;
+            CoastBorders.Add(new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
         }
     }
 
