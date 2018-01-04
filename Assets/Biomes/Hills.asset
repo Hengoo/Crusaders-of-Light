@@ -14,10 +14,10 @@ MonoBehaviour:
   UniqueName: Hills
   Height:
     Persistence: 0.3
-    LocalMax: 0.35
+    LocalMax: 0.25
     LocalMin: 0.2
     Lacunarity: 2
-    Scale: 20
+    Scale: 100
   Conditions:
     Humidity: 0
     Temperature: 0

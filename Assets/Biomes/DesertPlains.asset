@@ -24,9 +24,8 @@ MonoBehaviour:
   FillPrefabs:
   - {fileID: 100000, guid: 6c5f1b297e74cc44c815bf3bd0b029de, type: 3}
   - {fileID: 100000, guid: 77ccebed3d0a07949919c59f6f0eccd6, type: 3}
-  - {fileID: 100000, guid: 40f0198c2f439244b8ac31dfea722719, type: 3}
-  - {fileID: 100000, guid: 109bc44c557b8c5439b28ab5838248dd, type: 3}
   - {fileID: 100000, guid: 511905cac2a92dc41a2f361fa8ef0448, type: 3}
+  - {fileID: 100000, guid: 109bc44c557b8c5439b28ab5838248dd, type: 3}
   PrefabMinDistance: 10
   NotNavigable: 0
   Splat:
