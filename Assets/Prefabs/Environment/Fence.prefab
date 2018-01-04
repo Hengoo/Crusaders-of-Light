@@ -21,8 +21,7 @@ GameObject:
   - component: {fileID: 4427373574790018}
   - component: {fileID: 33798449318061002}
   - component: {fileID: 23973305462566558}
-  - component: {fileID: 95883681477811800}
-  - component: {fileID: 65729820419223226}
+  - component: {fileID: 65353499156107074}
   m_Layer: 0
   m_Name: Fence
   m_TagString: Untagged
@@ -36,8 +35,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1174950389497864}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -4.1084757, y: 1.73, z: 20.968842}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 176.64804, y: 18.524988, z: 697.7555}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -84,32 +83,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1174950389497864}
   m_Mesh: {fileID: 4300002, guid: 714d3214beb5949458f243e364fd936c, type: 3}
---- !u!65 &65729820419223226
+--- !u!65 &65353499156107074
 BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1174950389497864}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7cce50619d8397f4286efdf9a6b17a67, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3.792187, y: 0.71624815, z: 20}
-  m_Center: {x: -1.5859486, y: 0, z: -0.37066957}
---- !u!95 &95883681477811800
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1174950389497864}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 714d3214beb5949458f243e364fd936c, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
+  m_Size: {x: 0.716248, y: 20, z: 4}
+  m_Center: {x: 0, y: 1.436037, z: 1.5859486}

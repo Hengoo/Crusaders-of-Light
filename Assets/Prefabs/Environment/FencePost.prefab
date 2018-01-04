@@ -21,9 +21,9 @@ GameObject:
   - component: {fileID: 4851222438308926}
   - component: {fileID: 33151655421672606}
   - component: {fileID: 23467861025338536}
-  - component: {fileID: 95950055219153680}
+  - component: {fileID: 136751415865178252}
   m_Layer: 0
-  m_Name: FancePost
+  m_Name: FencePost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,8 +35,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1624022019104524}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -1.3830069, y: 2.09, z: 21.552015}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 176.45308, y: 18.698793, z: 695.7806}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -83,20 +83,16 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1624022019104524}
   m_Mesh: {fileID: 4300000, guid: cbd4cbf0ded63d64f8612ef1911943c7, type: 3}
---- !u!95 &95950055219153680
-Animator:
-  serializedVersion: 3
+--- !u!136 &136751415865178252
+CapsuleCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1624022019104524}
+  m_Material: {fileID: 13400000, guid: 7cce50619d8397f4286efdf9a6b17a67, type: 2}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: cbd4cbf0ded63d64f8612ef1911943c7, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
+  m_Radius: 0.43
+  m_Height: 20
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.4409945, z: 0}

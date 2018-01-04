@@ -70,6 +70,7 @@ public class BiomeGlobalConfiguration
     public Material WaterMaterial;
     public Material TerrainMaterial;
     public GameObject CoastBlocker;
+    public GameObject CoastBlockerPole;
     [Range(0.01f, 20)] public float CoastBlockerLength = 1;
     [Range(0f, 50f)] public float CoastInlandOffset = 5f;
     public SplatPrototypeSerializable RoadSplatPrototype;

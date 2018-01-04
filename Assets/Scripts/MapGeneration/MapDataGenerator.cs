@@ -146,7 +146,7 @@ public static class MapDataGenerator
 
         // Find cells covered by the road polygon
         foreach (var road in roads)
-             indexes.UnionWith(DiscretizeConvexPolygon(biomeConfiguration.HeightMapResolution, cellSize, road));
+            indexes.UnionWith(DiscretizeConvexPolygon(biomeConfiguration.HeightMapResolution, cellSize, road));
 
         // Set alphamap values to only road draw
         foreach (var index in indexes)
@@ -215,11 +215,12 @@ public static class MapDataGenerator
     }
 
     // Generate blocking gameobjects along the coast to prevent players from going into the water
-    public static GameObject GenerateCoastBlockers(Terrain terrain, WorldStructure worldStructure, GameObject blocker, float blockerLength)
+    public static GameObject GenerateCoastBlockers(Terrain terrain, WorldStructure worldStructure, GameObject blocker, GameObject pole, float blockerLength)
     {
         var result = new GameObject("Coast Blockers");
 
         // Iterate over all coastal borders
+        Transform lastTransform = null;
         for (var i = 0; i < worldStructure.CoastBlockerPolygon.Count; i++)
         {
             var p0 = worldStructure.CoastBlockerPolygon[i];
@@ -236,10 +237,23 @@ public static class MapDataGenerator
             {
                 var position2D = p0 + direction * blockerLength * j;
                 var position = new Vector3(position2D.x, 0, position2D.y) - terrain.transform.position;
-                var go = Object.Instantiate(blocker);
+                position = new Vector3(position.x, terrain.SampleHeight(position), position.z) +
+                           terrain.transform.position;
+
+                GameObject go;
+                if (lastTransform == null)
+                    go = Object.Instantiate(pole);
+                else
+                {
+                    var orientation = lastTransform.position - position;
+                    go = Object.Instantiate(blocker);
+                    go.transform.rotation = Quaternion.LookRotation(orientation.normalized, Vector3.up);
+                    go.transform.localScale = new Vector3(1, 1, 1 + (orientation.magnitude - blockerLength) / blockerLength);
+                }
+                go.transform.position = position;
                 go.transform.parent = line.transform;
-                go.transform.position = new Vector3(position.x, terrain.SampleHeight(position), position.z) + terrain.transform.position;
-                //TODO: orientation
+
+                lastTransform = go.transform;
             }
         }
 

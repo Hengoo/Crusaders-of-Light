@@ -21,9 +21,9 @@ GameObject:
   - component: {fileID: 4647618226374608}
   - component: {fileID: 33404317924325506}
   - component: {fileID: 23491895368012826}
-  - component: {fileID: 95588257286544032}
+  - component: {fileID: 65751476472929468}
   m_Layer: 0
-  m_Name: FanceMiddle
+  m_Name: FenceMiddle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,7 +35,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1291845913489022}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.52496433, y: 2.506, z: 20.9539}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -83,20 +83,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1291845913489022}
   m_Mesh: {fileID: 4300000, guid: 07940a36fa4afef489579e73cc15a4cb, type: 3}
---- !u!95 &95588257286544032
-Animator:
-  serializedVersion: 3
+--- !u!65 &65751476472929468
+BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1291845913489022}
+  m_Material: {fileID: 13400000, guid: 7cce50619d8397f4286efdf9a6b17a67, type: 2}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 07940a36fa4afef489579e73cc15a4cb, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
+  serializedVersion: 2
+  m_Size: {x: 3.29298, y: 0.194361, z: 1.276059}
+  m_Center: {x: 0, y: -0.0081845, z: -0.38170248}

@@ -114,7 +114,7 @@ public class MapGenerator : MonoBehaviour
 
         /* Add fences to coast */
         var fences = MapDataGenerator.GenerateCoastBlockers(terrain.GetComponent<Terrain>(), _worldStructure,
-            BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerLength);
+            BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerPole, BiomeGlobalConfiguration.CoastBlockerLength);
         fences.transform.parent = terrain.transform;
 
         /* Fill terrain with scenery */
