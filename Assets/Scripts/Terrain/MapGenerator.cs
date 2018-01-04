@@ -66,6 +66,9 @@ public class MapGenerator : MonoBehaviour
         /* Create splat textures alphamap */
         var alphamap = TerrainDataGenerator.GenerateAlphaMap(_terrainStructure);
 
+        /* Draw borders */
+        TerrainDataGenerator.EncloseAreas(_terrainStructure,  heightMap, _worldStructure.AreaBorders, 3);
+
         /* Draw roads onto alphamap */
         TerrainDataGenerator.DrawLineRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadLines, 3);
 

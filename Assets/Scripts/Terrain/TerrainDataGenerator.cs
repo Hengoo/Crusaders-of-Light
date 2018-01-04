@@ -99,6 +99,20 @@ public static class TerrainDataGenerator
         return result;
     }
 
+    public static void EncloseAreas(TerrainStructure terrainStructure, float[,] heightmap, List<Vector2[]> areaBorders,
+        int squareSize)
+    {
+        var biomeConfiguration = terrainStructure.BiomeConfiguration;
+        var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
+
+        // Find cells covered by the borders
+        var indexes = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, areaBorders, squareSize);
+        foreach (var index in indexes)
+        {
+            heightmap[index.x, index.y] = 1; //set to max height
+        }
+    }
+
     // Draw roads onto the alpha and height maps
     public static void DrawLineRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, List<Vector2[]> roads, int squareSize)
     {
@@ -120,6 +134,8 @@ public static class TerrainDataGenerator
             // Road texture to 1
             alphamap[index.x, index.y, terrainStructure.RoadSplatIndex] = 1;
         }
+
+        //TODO: smooth path in heightmap
     }
 
 
