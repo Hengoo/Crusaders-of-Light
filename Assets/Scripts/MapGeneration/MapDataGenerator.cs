@@ -7,7 +7,7 @@ public static class MapDataGenerator
     // Generate a heightmap given terrain structure and biome configuration
     public static float[,] GenerateHeightMap(TerrainStructure terrainStructure)
     {
-        var biomeConfiguration = terrainStructure.BiomeConfiguration;
+        var biomeConfiguration = terrainStructure.BiomeGlobalConfiguration;
         var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution];
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
@@ -48,7 +48,7 @@ public static class MapDataGenerator
     // Set alphamap texture based on biome configuration
     public static float[,,] GenerateAlphaMap(TerrainStructure terrainStructure)
     {
-        var biomeConfiguration = terrainStructure.BiomeConfiguration;
+        var biomeConfiguration = terrainStructure.BiomeGlobalConfiguration;
         var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution, terrainStructure.TextureCount];
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
@@ -102,7 +102,7 @@ public static class MapDataGenerator
     public static void EncloseAreas(TerrainStructure terrainStructure, float[,] heightmap, List<Vector2[]> areaBorders,
         int squareSize)
     {
-        var biomeConfiguration = terrainStructure.BiomeConfiguration;
+        var biomeConfiguration = terrainStructure.BiomeGlobalConfiguration;
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
         // Find cells covered by the borders
@@ -116,7 +116,7 @@ public static class MapDataGenerator
     // Draw roads onto the alpha and height maps
     public static void DrawLineRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, List<Vector2[]> roads, int squareSize)
     {
-        var biomeConfiguration = terrainStructure.BiomeConfiguration;
+        var biomeConfiguration = terrainStructure.BiomeGlobalConfiguration;
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
         // Find cells covered by the road polygon
@@ -140,7 +140,7 @@ public static class MapDataGenerator
     // Draw roads onto the alpha and height maps - TODO: future work
     public static void DrawPolygonalRoads(TerrainStructure terrainStructure, float[,] heightMap, float[,,] alphamap, List<Vector2[]> roads)
     {
-        var biomeConfiguration = terrainStructure.BiomeConfiguration;
+        var biomeConfiguration = terrainStructure.BiomeGlobalConfiguration;
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
         var indexes = new HashSet<Vector2Int>();
 
@@ -214,9 +214,10 @@ public static class MapDataGenerator
         SmoothHeightMapCells(heightMap, cellsToSmooth, squareSize);
     }
 
-    public static GameObject GenerateCoastColliders(WorldStructure worldStructure)
+    // Generate blocking gameobjects along the coast to prevent players from going into the water
+    public static GameObject GenerateCoastBlockers(WorldStructure worldStructure)
     {
-        var result = new GameObject("Coast Colliders");
+        var result = new GameObject("Coast Blockers");
 
         return result;
     }

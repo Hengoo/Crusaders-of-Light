@@ -54,7 +54,7 @@ public class BiomeHeight
 
 
 [Serializable]
-public class BiomeConfiguration
+public class BiomeGlobalConfiguration
 {
     [Range(16, 1024)] public int HeightMapResolution = 512;
     [Range(16, 1024)] public float MapSize = 1024;
@@ -69,6 +69,7 @@ public class BiomeConfiguration
     public BiomeSettings CliffBiome;
     public Material WaterMaterial;
     public Material TerrainMaterial;
+    public GameObject CoastBlocker;
     public SplatPrototypeSerializable RoadSplatPrototype;
     [Range(0, 5)] public int OverallSmoothing = 2;
     public bool SmoothEdges = true;

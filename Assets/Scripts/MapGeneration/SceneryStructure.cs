@@ -102,7 +102,7 @@ public class SceneryStructure
         {
             var point = sample + sceneryAreaFill.BoundMin;
             var height = terrain.SampleHeight(new Vector3(point.x, 0, point.y));
-            if (height <= (TerrainStructure.BiomeConfiguration.SeaHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
+            if (height <= (TerrainStructure.BiomeGlobalConfiguration.SeaHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
                 !point.IsInsidePolygon(sceneryAreaFill.Polygon) || //not outside of the area
                 !sceneryAreaFill.ClearPolygons.TrueForAll(a => !point.IsInsidePolygon(a))) //not inside of any clear polygon
                 continue;
