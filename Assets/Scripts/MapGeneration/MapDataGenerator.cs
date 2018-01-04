@@ -229,7 +229,7 @@ public static class MapDataGenerator
             //Discretize line and get direction normalized
             var direction = (p1 - p0).normalized;
             var numberOfBlockers = Mathf.CeilToInt((p1 - p0).magnitude / blockerLength);
-            var line = new GameObject("Coast Bloacker Line");
+            var line = new GameObject("Coast Blocker Line");
             line.transform.parent = result.transform;
 
             //Instatiate each blocker with correct positions and orientations
