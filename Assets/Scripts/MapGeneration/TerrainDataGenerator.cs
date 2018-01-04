@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using csDelaunay;
 using UnityEngine;
 
 public static class TerrainDataGenerator
