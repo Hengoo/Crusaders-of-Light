@@ -71,7 +71,7 @@ public class MapGenerator : MonoBehaviour
         MapDataGenerator.EncloseAreas(_terrainStructure,  heightMap, _worldStructure.AreaBorders, 3);
 
         /* Draw roads onto alphamap */
-        MapDataGenerator.DrawLineRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadLines, 3);
+        MapDataGenerator.DrawLineRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadLines, 1);
 
         /* Smoothing passes */
         alphamap = MapDataGenerator.SmoothAlphaMap(alphamap, 1);

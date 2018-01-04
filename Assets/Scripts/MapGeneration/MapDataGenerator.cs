@@ -106,7 +106,7 @@ public static class MapDataGenerator
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
         // Find cells covered by the borders
-        var indexes = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, areaBorders, squareSize);
+        var indexes = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, areaBorders, squareSize, true);
         foreach (var index in indexes)
         {
             heightmap[index.x, index.y] = 1; //set to max height
@@ -120,7 +120,7 @@ public static class MapDataGenerator
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
         // Find cells covered by the road polygon
-        var cellsToSmooth = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, roads, squareSize).ToArray();
+        var cellsToSmooth = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, roads, squareSize, true).ToArray();
 
         // Set alphamap values to only road draw
         foreach (var index in cellsToSmooth)
@@ -194,7 +194,7 @@ public static class MapDataGenerator
     public static void SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<Vector2[]> lines, int lineWidth, int squareSize)
     {
         var length = heightMap.GetLength(0);
-        var cellsToSmooth = new HashSet<Vector2Int>(DiscretizeLines(heightMap.GetLength(0), cellSize, lines, lineWidth));
+        var cellsToSmooth = new HashSet<Vector2Int>(DiscretizeLines(heightMap.GetLength(0), cellSize, lines, lineWidth, false));
 
         // Add extra cells to the line thickness
         var tempCopy = new HashSet<Vector2Int>(cellsToSmooth);
@@ -308,7 +308,7 @@ public static class MapDataGenerator
         // Get grid cell borders
         for (var i = 0; i < lines.Count; i++)
         {
-            discretizedBorders[i] = BresenhamLine(resolution, cellSize, lines[i], 1);
+            discretizedBorders[i] = BresenhamLine(resolution, cellSize, lines[i], 1, false);
             result.UnionWith(discretizedBorders[i]);
         }
 
@@ -345,18 +345,18 @@ public static class MapDataGenerator
     }
 
     // Match multiple lines to cells in a grid
-    private static IEnumerable<Vector2Int> DiscretizeLines(int resolution, float cellSize, IEnumerable<Vector2[]> lines, int lineWidth)
+    private static IEnumerable<Vector2Int> DiscretizeLines(int resolution, float cellSize, IEnumerable<Vector2[]> lines, int lineWidth, bool addNoise)
     {
         var result = new HashSet<Vector2Int>();
         foreach (var line in lines)
         {
-            result.UnionWith(BresenhamLine(resolution, cellSize, line, lineWidth));
+            result.UnionWith(BresenhamLine(resolution, cellSize, line, lineWidth, addNoise));
         }
         return result;
     }
 
     // Match a line to cells in a grid
-    private static HashSet<Vector2Int> BresenhamLine(int resolution, float cellSize, IList<Vector2> line, int lineWidth)
+    private static HashSet<Vector2Int> BresenhamLine(int resolution, float cellSize, IList<Vector2> line, int lineWidth, bool addNoise)
     {
         var result = new HashSet<Vector2Int>();
 
@@ -408,9 +408,31 @@ public static class MapDataGenerator
         var temp = new HashSet<Vector2Int>(result);
         foreach (var cell in temp)
         {
-            for (int y = -lineWidth; y < lineWidth; y++)
+
+
+            int random = Random.Range(0, 5);
+            int top = 0, bottom = 0, right = 0, left = 0;
+            switch (random)
             {
-                for (int x = -lineWidth; x < lineWidth; x++)
+                case 0:
+                    top = 1;
+                    break;
+                case 1:
+                    bottom = 1;
+                    break;
+                case 2:
+                    right = 1;
+                    break;
+                case 3:
+                    left = 1;
+                    break;
+                default:
+                    break;
+            }
+
+            for (var y = -(lineWidth + bottom); y < lineWidth + top; y++)
+            {
+                for (var x = -(lineWidth + left); x < lineWidth + right; x++)
                 {
                     var neighbor = cell + new Vector2Int(x, y);
                     if (neighbor.x < 0 || neighbor.x >= resolution || neighbor.y < 0 ||
