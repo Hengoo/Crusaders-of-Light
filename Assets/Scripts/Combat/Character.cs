@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class Character : MonoBehaviour {
+public class Character : MonoBehaviour
+{
 
     public enum TeamAlignment // Used for Skills!
     {
@@ -57,7 +59,7 @@ public class Character : MonoBehaviour {
     // Two Handed: Write Both (unequip other weapon!).
 
     public ItemSkill[] ItemSkillSlots = new ItemSkill[4];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
-    
+
 
     public int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
     //public float SkillActivationTimer = 0.0f;
@@ -74,6 +76,8 @@ public class Character : MonoBehaviour {
     //[Header("GUI (for Testing Purposes):")]
     private GUICharacterFollow GUIChar;
 
+    private UnityAction _onCharacterDeathAction; // Event system for character death
+
     protected void Start()
     {
         PhysCont = new PhysicsController(gameObject);
@@ -86,7 +90,7 @@ public class Character : MonoBehaviour {
         UpdateAllConditions();
         UpdateCurrentSkillActivation();
         UpdateAllCooldowns();
-        
+
     }
 
     protected void LateUpdate()
@@ -113,7 +117,7 @@ public class Character : MonoBehaviour {
         if (!CheckIfCharacterDied())
         {
             GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
-        }         
+        }
     }
 
     protected bool CheckIfCharacterDied()
@@ -131,7 +135,7 @@ public class Character : MonoBehaviour {
 
     protected void CharacterDied()
     {
-        CharacterIsDead = true; 
+        CharacterIsDead = true;
 
         // Unequip Weapons (so they drop on the gound):
         for (int i = 0; i < WeaponSlots.Length; i++)
@@ -144,6 +148,10 @@ public class Character : MonoBehaviour {
 
         // Remove GUI:
         RemoveCharacterFollowGUI();
+
+        // Invoke death actions
+        if(_onCharacterDeathAction != null)
+            _onCharacterDeathAction.Invoke();
 
         // Destroy this Character:
         Destroy(this.gameObject);
@@ -227,7 +235,7 @@ public class Character : MonoBehaviour {
                 // Drop Old Weapon:
                 UnEquipWeapon(SlotID);
             }
-                                        // Single Handed Weapon, nothing equipped in Slot (now):
+            // Single Handed Weapon, nothing equipped in Slot (now):
             // Equip New Weapon:
             WeaponSlots[SlotID] = Weapon;
             EquipWeaponVisually(Weapon, SlotID);
@@ -305,15 +313,15 @@ public class Character : MonoBehaviour {
         Weapon.transform.position = Weapon.GetEquippedPosition();
         Weapon.transform.localRotation = Quaternion.Euler(Weapon.GetEquippedRotation());
 
-     //   int ScaleFlipMod = 1;
-      //          if (HandSlotID == 1)
-       //         {
-       //             ScaleFlipMod = -1;
-       //         }
+        //   int ScaleFlipMod = 1;
+        //          if (HandSlotID == 1)
+        //         {
+        //             ScaleFlipMod = -1;
+        //         }
 
-               // Weapon.transform.localScale = new Vector3(Weapon.transform.localScale.x, Mathf.Abs(Weapon.transform.localScale.y) * ScaleFlipMod, Weapon.transform.localScale.z);
-                
-     //   BoxCollider test = Weapon.GetComponent<BoxCollider>();
+        // Weapon.transform.localScale = new Vector3(Weapon.transform.localScale.x, Mathf.Abs(Weapon.transform.localScale.y) * ScaleFlipMod, Weapon.transform.localScale.z);
+
+        //   BoxCollider test = Weapon.GetComponent<BoxCollider>();
 
         //test.size = new Vector3(test.size.x, Mathf.Abs(test.size.y) * ScaleFlipMod, test.size.z);
 
@@ -368,7 +376,7 @@ public class Character : MonoBehaviour {
         if (!ItemSkillSlots[WeaponSkillSlotID]) { return; }
 
         if (!ItemSkillSlots[WeaponSkillSlotID].StartSkillActivation()) { return; }
-        
+
         if (WeaponSkillSlotID < SkillsPerWeapon || TwoHandedWeaponEquipped)
         {
             SkillCurrentlyActivating[0] = WeaponSkillSlotID;
@@ -383,15 +391,15 @@ public class Character : MonoBehaviour {
 
     protected virtual void UpdateCurrentSkillActivation() { }
 
- /*   public void StopCurrentSkillActivation() // Unused!
-    {
-        if (SkillCurrentlyActivating >= 0)
-        {
-            SkillCurrentlyActivating = -1;
-            SkillActivationTimer = 0.0f;
-        }
-    }
-*/
+    /*   public void StopCurrentSkillActivation() // Unused!
+       {
+           if (SkillCurrentlyActivating >= 0)
+           {
+               SkillCurrentlyActivating = -1;
+               SkillActivationTimer = 0.0f;
+           }
+       }
+   */
 
     public virtual void FinishedCurrentSkillActivation(int WeaponSlotID)
     {
@@ -400,7 +408,7 @@ public class Character : MonoBehaviour {
             return;
         }*/
         SkillCurrentlyActivating[WeaponSlotID] = -1;
-       // SkillActivationTimer = 0.0f; // Now handled in ItemSkill/Item
+        // SkillActivationTimer = 0.0f; // Now handled in ItemSkill/Item
     }
 
     private void UpdateAllCooldowns()
@@ -518,7 +526,7 @@ public class Character : MonoBehaviour {
             float UpdateTime = Time.deltaTime;
             TimeCounter += UpdateTime;
             TickCounter += UpdateTime;
-            
+
             if (Cond.ReachedTick(TickCounter))
             {
                 TickCounter -= Cond.GetTickTime();
@@ -552,7 +560,7 @@ public class Character : MonoBehaviour {
 
     private void UpdateAllConditions()
     {
-       // ActiveCondition CurrentCondition;
+        // ActiveCondition CurrentCondition;
         List<ActiveCondition> ConditionsEnded = new List<ActiveCondition>();
 
         for (int i = 0; i < ActiveConditions.Count; i++)
@@ -563,17 +571,17 @@ public class Character : MonoBehaviour {
                 ConditionsEnded.Add(ActiveConditions[i]);
             }
         }
-/*
-        foreach (ActiveCondition AC in ActiveConditions)
-        {
-            CurrentCondition = AC;
-            Debug.Log("FOREACH");
-            if (CurrentCondition.UpdateCondition())
-            {
-                ConditionsEnded.Add(CurrentCondition);
-            }
-        }
-        */
+        /*
+                foreach (ActiveCondition AC in ActiveConditions)
+                {
+                    CurrentCondition = AC;
+                    Debug.Log("FOREACH");
+                    if (CurrentCondition.UpdateCondition())
+                    {
+                        ConditionsEnded.Add(CurrentCondition);
+                    }
+                }
+                */
         foreach (ActiveCondition AC in ConditionsEnded)
         {
             ActiveConditions.Remove(AC);
@@ -629,4 +637,21 @@ public class Character : MonoBehaviour {
     }
 
     // ========================================== /GUI ==========================================
+
+
+    // =========================================== EVENTS ==========================================
+
+    public void SubscribeAction(UnityAction action)
+    {
+        if(action != null)
+            _onCharacterDeathAction += action;
+    }
+
+    public void UnsubscribeAction(UnityAction action)
+    {
+        if (action != null && _onCharacterDeathAction != null)
+            _onCharacterDeathAction -= action;
+    }
+
+    // ========================================== /EVENTS ==========================================
 }
