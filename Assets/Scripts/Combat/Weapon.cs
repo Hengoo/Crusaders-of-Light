@@ -30,4 +30,9 @@ public class Weapon : Item {
     {
         return TwoHanded;
     }
+
+    public int GetPowerLevel()
+    {
+        return 0;
+    }
 }
