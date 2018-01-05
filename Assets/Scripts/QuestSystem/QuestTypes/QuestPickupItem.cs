@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "PickupItemQuest", menuName = "Quests/Pick up item")]
 public class QuestPickupItem : QuestBase {
 
     protected override void QuestStarted()
