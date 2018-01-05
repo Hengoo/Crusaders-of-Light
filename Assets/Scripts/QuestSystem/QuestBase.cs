@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public abstract class Quest : ScriptableObject
+public abstract class QuestBase : ScriptableObject
 {
+    public string Title;
+    public string Description;
+
     public void OnQuestStarted()
     {
         QuestStartedAction();

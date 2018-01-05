@@ -149,7 +149,7 @@ public class Character : MonoBehaviour
         // Remove GUI:
         RemoveCharacterFollowGUI();
 
-        // Invoke death actions
+        // Invoke death actions (e.g. Quest System)
         if(_onCharacterDeathAction != null)
             _onCharacterDeathAction.Invoke();
 

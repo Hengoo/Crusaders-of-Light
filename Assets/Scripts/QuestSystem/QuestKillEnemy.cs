@@ -3,18 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuestKillEnemy : Quest
+[CreateAssetMenu(fileName = "KillEnemyQuest", menuName = "Quests/Kill enemy")]
+public class QuestKillEnemy : QuestBase
 {
     public GameObject SpawnPoint;
     public CharacterEnemy Enemy;
     
     protected override void QuestStartedAction()
     {
-        throw new NotImplementedException();
+        //TODO: spawn enemy
     }
 
     protected override void QuestCompletedAction()
     {
-        throw new NotImplementedException();
+        //TODO: give rewards?
     }
 }
