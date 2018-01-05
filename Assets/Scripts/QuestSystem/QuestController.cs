@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuestBomb : MonoBehaviour {
+public class QuestController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

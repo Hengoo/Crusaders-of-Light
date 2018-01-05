@@ -7,12 +7,12 @@ public class QuestReachPlace : QuestBase
 {
     public GameObject Place;
 
-    protected override void QuestStartedAction()
+    protected override void QuestStarted()
     {
         //TODO: ??
     }
 
-    protected override void QuestCompletedAction()
+    protected override void QuestCompleted()
     {
         //TODO: ??
     }

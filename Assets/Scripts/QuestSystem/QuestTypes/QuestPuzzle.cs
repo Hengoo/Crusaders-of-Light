@@ -7,13 +7,13 @@ public class QuestPuzzle : QuestBase
 {
     public PuzzleBase Puzzle;
 
-    protected override void QuestStartedAction()
+    protected override void QuestStarted()
     {
         Puzzle.SubscribeAction(OnQuestCompleted);
         //TODO: ??
     }
 
-    protected override void QuestCompletedAction()
+    protected override void QuestCompleted()
     {
         //TODO: ??
     }

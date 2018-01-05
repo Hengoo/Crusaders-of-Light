@@ -9,12 +9,12 @@ public class QuestKillEnemy : QuestBase
     public GameObject SpawnPoint;
     public CharacterEnemy Enemy;
     
-    protected override void QuestStartedAction()
+    protected override void QuestStarted()
     {
         //TODO: spawn enemy
     }
 
-    protected override void QuestCompletedAction()
+    protected override void QuestCompleted()
     {
         //TODO: give rewards?
     }

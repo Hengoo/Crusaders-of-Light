@@ -7,17 +7,20 @@ public abstract class QuestBase : ScriptableObject
 {
     public string Title;
     public string Description;
+    public QuestBase[] SubQuests;
+    public UnityAction QuestEndAction;
 
     public void OnQuestStarted()
     {
-        QuestStartedAction();
+        QuestStarted();
     }
 
     public void OnQuestCompleted()
     {
-        QuestCompletedAction();
+        QuestCompleted();
+        QuestEndAction.Invoke();
     }
     
-    protected abstract void QuestStartedAction();
-    protected abstract void QuestCompletedAction();
+    protected abstract void QuestStarted();
+    protected abstract void QuestCompleted();
 }
