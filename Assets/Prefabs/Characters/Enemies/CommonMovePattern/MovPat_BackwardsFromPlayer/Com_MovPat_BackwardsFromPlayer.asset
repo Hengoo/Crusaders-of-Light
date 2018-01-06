@@ -11,6 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8774f1508d320c047b3312b83836d0fb, type: 3}
   m_Name: Com_MovPat_BackwardsFromPlayer
   m_EditorClassIdentifier: 
-  AIDecisionMaker: {fileID: 11400000, guid: 892678f292453a34fa549bcd6bdc3457, type: 2}
+  AIDecisionMaker: {fileID: 11400000, guid: 2d7a6dd52d1ab6c47817e49defba7cc7, type: 2}
   ViewDirection: 1
   MovementSpeedFactor: -3

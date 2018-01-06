@@ -21,6 +21,7 @@ public class SkillTypeProjectile : SkillType
         SpawnedProjectile.InitializeProjectile(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, this);
 
         // Stop Skill Activation:
+        RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
         SourceItemSkill.FinishedSkillActivation();
     }
 }

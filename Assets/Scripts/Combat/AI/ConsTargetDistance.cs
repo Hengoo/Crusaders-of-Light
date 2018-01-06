@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "cons_target_distance", menuName = "Combat/AI/ConsTargetDistance", order = 1)]
+[CreateAssetMenu(fileName = "cons_target_distance", menuName = "Combat/AI/ConsTargetDistance", order = 10)]
 public class ConsTargetDistance : Consideration {
 
     [Header("Consideration Target Distance:")]
@@ -11,7 +11,7 @@ public class ConsTargetDistance : Consideration {
 
     public override float CalculateScore(Context SkillContext)
     {
-        float InputValue = Vector3.Distance(SkillContext.User.transform.position, SkillContext.Target.transform.position);
+        float InputValue = CalcInputValue(SkillContext);
 
         InputValue = ClampInputValue(InputValue, MinDistance, MaxDistance);
 

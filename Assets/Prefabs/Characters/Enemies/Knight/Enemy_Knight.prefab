@@ -80,6 +80,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1318424654206704
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4992903867064542}
+  - component: {fileID: 135146889492806764}
+  - component: {fileID: 114599877543414204}
+  m_Layer: 9
+  m_Name: Enemy_Character_Attention_Trigger
+  m_TagString: Attention
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1425992459904340
 GameObject:
   m_ObjectHideFlags: 1
@@ -190,6 +207,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4351069956755324}
+  - {fileID: 4992903867064542}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -316,6 +334,19 @@ Transform:
   m_LocalScale: {x: 1.0120211, y: 1.0120211, z: 1.0120211}
   m_Children: []
   m_Father: {fileID: 4351069956755324}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4992903867064542
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1318424654206704}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4006180302695070}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &23101631479127986
@@ -656,6 +687,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  SkillLevelModifier: 0
   CharacterHands:
   - {fileID: 4804467699817452}
   - {fileID: 4068877439804778}
@@ -672,13 +704,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   SkillCurrentlyActivating: ffffffffffffffff
+  HindranceLevel: 0
   ActiveConditions: []
   HandAnimators:
   - {fileID: 95233661878989760}
   - {fileID: 95284960341309956}
+  CharAttention: {fileID: 114599877543414204}
   Alignment: 2
-  PlayersInAttentionRange:
-  - {fileID: 0}
   IdleSkillScore: 0.2
   IdleDuration: 0.2
   ActiveMovePattern: {fileID: 11400000, guid: 76fb1f41306999c47a678806d919f6c8, type: 2}
@@ -689,6 +721,33 @@ MonoBehaviour:
   MovePatternEvaluationCycleTimer: 0
   IdleMoveScore: 0.2
   IdleMoveDuration: 0.2
+--- !u!114 &114599877543414204
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1318424654206704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb7e8202a82267c499d5ed6807debbed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: {fileID: 114587697657262122}
+  Tag: Attention
+  PlayersInAttentionRange: []
+  EnemiesInAttentionRange: []
+--- !u!135 &135146889492806764
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1318424654206704}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 20
+  m_Center: {x: 0, y: 1.18, z: 0}
 --- !u!136 &136888056597231372
 CapsuleCollider:
   m_ObjectHideFlags: 1

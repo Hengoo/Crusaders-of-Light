@@ -35,6 +35,9 @@ public class Item : MonoBehaviour {
 
     public int EquippedSlotID = -1;
 
+    [Header("Item AI:")]
+    public int ItemPowerLevel = 0; // Only for the Item itself, the Skills it grants is already calculated through it's skills.
+
     public virtual void EquipItem(Character CharacterToEquipTo, int SlotID)
     {
 
@@ -108,6 +111,14 @@ public class Item : MonoBehaviour {
         return CurrentEquipSlot;
     }
 
+    public void SetAllItemSkillsLevel(int Value)
+    {
+        for (int i = 0; i < ItemSkills.Length; i++)
+        {
+            ItemSkills[i].SetSkillLevel(Value);
+        }
+    }
+
     public void SetSkillActivationTimer(float value)
     {
         SkillActivationTimer = value;
@@ -152,12 +163,23 @@ public class Item : MonoBehaviour {
 
         // Try to hit all Characters already in the hit box:
 
+        List<Character> CleanUpMissingCharacters = new List<Character>();
+
         for (int i = 0; i < CurrentlyCollidingCharacters.Count; i++)
         {
-            if (CheckIfEnterCharacterLegit(CurrentlyCollidingCharacters[i]))
+            if (CurrentlyCollidingCharacters[i] == null)
+            {
+                CleanUpMissingCharacters.Add(CurrentlyCollidingCharacters[i]);
+            }
+            else if (CheckIfEnterCharacterLegit(CurrentlyCollidingCharacters[i]))
             {
                 ApplyCurrentSkillEffectsToCharacter(CurrentlyCollidingCharacters[i]);
             }
+        }
+
+        for (int i = 0; i < CleanUpMissingCharacters.Count; i++)
+        {
+            CurrentlyCollidingCharacters.Remove(CleanUpMissingCharacters[i]);
         }
     }
 
@@ -165,7 +187,7 @@ public class Item : MonoBehaviour {
     {
         SkillCurrentlyUsingItemHitBox = null;
         ItemSkillCurrentlyUsingItemHitBox = null;
-        AlreadyHitCharacters.Clear();
+        AlreadyHitCharacters = new List<Character>();
     }
 
     public bool CheckIfSkillIsUsingHitBox(ItemSkill SkillToCheck)
@@ -236,6 +258,18 @@ public class Item : MonoBehaviour {
 
             CurrentlyCollidingCharacters.Remove(OtherCharacter);
         }
+    }
+
+    public int GetTotalPowerLevel()
+    {
+        int TempPowerLevel = ItemPowerLevel;
+
+        for (int i = 0; i < ItemSkills.Length; i++)
+        {
+            TempPowerLevel += ItemSkills[i].GetBasePowerLevel();
+        }
+
+        return TempPowerLevel;
     }
 
 

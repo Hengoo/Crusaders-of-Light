@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1064df3399af0fc4dba68f74c60561de, type: 3}
+  m_Name: Skill_Small_Shield_Block
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.3
+  ActivationIntervall: -1
+  Cooldown: -1
+  ActivationMovementModifier: -0.5
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 0
+  Effects: []
+  HindranceLevel: 2
+  AnimationName: Melee_Block
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: a954813283b945343902ec50662a24c9, type: 2}
+  ActivationTimeMax: -1
+  EffectsStart:
+  - {fileID: 11400000, guid: 40677f85ae389c547b4de4b6d928ef0a, type: 2}
+  EffectsEnd:
+  - {fileID: 11400000, guid: c60f49199b92b4949980fb4d23b42a4a, type: 2}
+  IdleAnimation: Channel_Idle
+  ReleaseAnimation: Channel_Released

@@ -13,6 +13,12 @@ public class CharacterPlayer : Character {
     [Header("Close Items List:")]
     public List<Item> ItemsInRange = new List<Item>();
 
+    protected override void Start()
+    {
+        base.Start();
+        SpawnAndEquipStartingWeapons();
+    }
+
     protected override void Update()
     {
         PlayerInput();
@@ -21,7 +27,7 @@ public class CharacterPlayer : Character {
 
     private void FixedUpdate()
     {
-        float speedfaktor = 10;
+        float speedfaktor = 10 * GetMovementRateModifier();
         //left stick
         Vector3 targetVel = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")) * speedfaktor;
 

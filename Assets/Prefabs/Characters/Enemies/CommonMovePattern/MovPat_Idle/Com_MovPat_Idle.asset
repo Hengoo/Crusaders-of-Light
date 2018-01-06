@@ -11,4 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2862f2ab1fbd80747bca6a397923eff8, type: 3}
   m_Name: Com_MovPat_Idle
   m_EditorClassIdentifier: 
-  AIDecisionMaker: {fileID: 11400000, guid: ea2998593c18814438df36793b91b941, type: 2}
+  AIDecisionMaker: {fileID: 11400000, guid: 785f621902c96ab40b6802d48d2c044c, type: 2}

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46bb924257699d240846c00a1f0a2b9c, type: 3}
+  m_Name: Condition_Blocking_Light
+  m_EditorClassIdentifier: 
+  Name: Blocking_Light
+  OnApply:
+  - {fileID: 11400000, guid: a2536fdd593fd114ba4fafddcf4e77e3, type: 2}
+  - {fileID: 11400000, guid: 25ec5af296c8f9a498dc26d92755e316, type: 2}
+  OnTick: []
+  OnEnd:
+  - {fileID: 11400000, guid: 1fc199938ebd8ab4788e59c0e0435018, type: 2}
+  - {fileID: 11400000, guid: 4c79e0902b9811a40a6c44735108eb52, type: 2}
+  Duration: -1
+  TickTime: -1
+  StackMaximum: 1
+  InstanceMaximum: 1

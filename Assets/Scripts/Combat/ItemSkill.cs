@@ -9,29 +9,46 @@ public class ItemSkill : MonoBehaviour {
 
     public SkillType SkillObject;
 
-    public float CurrentCooldown;
-
     public int Level;
 
-    private float ActivationIntervallTimer = 0.0f;
+    [Header("Item Skill (Do not set - Shown for testing only):")]
+    public float CurrentCooldown;
 
-    private bool EffectOnlyOnceBool = false;
+    public float ActivationIntervallTimer = 0.0f;
 
-    [Header("Animation:")]
-    public string AnimationName = "no_animation";
+    public bool EffectOnlyOnceBool = false;
+    public float EffectFloat = 0.0f;
+
+    //[Header("Animation:")]
+    //public string AnimationName = "no_animation";
 
     //public List<Character> AlreadyHitCharacters = new List<Character>();
 
     public bool StartSkillActivation()
     {
         if (CurrentCooldown > 0.0f) { return false; }
-        
-        ParentItem.GetOwner().StartAnimation(AnimationName, SkillObject.GetTotalActivationTime(), ParentItem.GetEquippedSlotID());
 
         ActivationIntervallTimer = 0.0f;
         EffectOnlyOnceBool = false;
+        EffectFloat = 0.0f;
 
-        return SkillObject.StartSkillActivation(this, GetCurrentOwner());
+        bool ActivationSuccessful = SkillObject.StartSkillActivation(this, GetCurrentOwner());
+        
+        if (!ActivationSuccessful)
+        {
+            return false;
+        }
+
+        if (SkillObject.GetOverwriteAnimationSpeedScaling() > 0)
+        {
+            ParentItem.GetOwner().StartAnimation(SkillObject.GetAnimationName(), SkillObject.GetOverwriteAnimationSpeedScaling(), ParentItem.GetEquippedSlotID());
+        }
+        else
+        {
+            ParentItem.GetOwner().StartAnimation(SkillObject.GetAnimationName(), SkillObject.GetTotalActivationTime(), ParentItem.GetEquippedSlotID());
+        }
+        
+        return true;
     }
 
     public void SetCurrentCooldown(float NewCooldown)
@@ -76,10 +93,38 @@ public class ItemSkill : MonoBehaviour {
         SkillObject.UpdateSkillActivation(this, ParentItem.GetSkillActivationTimer(), StillActivating, false);
     }
 
+    public void UpdateSkillActivation(float MaxActivationTime)
+    {
+        if (MaxActivationTime >= 0 && ParentItem.GetSkillActivationTimer() + Time.deltaTime >= MaxActivationTime)
+        {
+            UpdateSkillActivation(false);
+        }
+        else
+        {
+            UpdateSkillActivation(true);
+        }
+    }
+
+    public void UpdateSkillActivation(bool StillActivating, float MaxActivationTime)
+    {
+        if (!StillActivating)
+        {
+            UpdateSkillActivation(false);
+        }
+        else if (MaxActivationTime >= 0)
+        {
+            UpdateSkillActivation(MaxActivationTime);
+        }
+        else
+        {
+            UpdateSkillActivation(true);
+        }
+    }
+
     public void FinishedSkillActivation()
     {
         ParentItem.SetSkillActivationTimer(0.0f);
-        GetCurrentOwner().FinishedCurrentSkillActivation(ParentItem.GetCurrentEquipSlot());
+        GetCurrentOwner().FinishedCurrentSkillActivation(ParentItem.GetCurrentEquipSlot(), -1 * SkillObject.GetHindranceLevel());
     }
 
     public bool CheckIfSkillIsUsingHitBox(ItemSkill SkillToCheck)
@@ -120,7 +165,27 @@ public class ItemSkill : MonoBehaviour {
     // Note: If a Character can have buffs/changes to Skill Levels, then this function has to include those changes.
     public int GetSkillLevel()
     {
-        return Level;
+        return Level + GetCurrentOwner().GetSkillLevelModifier();
+    }
+
+    public void SetSkillLevel(int Value)
+    {
+        Level = Value;
+    }
+
+    public int GetParentItemEquipmentSlot()
+    {
+        return ParentItem.GetCurrentEquipSlot();
+    }
+
+    public float GetCurrentSkillActivationTime()
+    {
+        return ParentItem.GetSkillActivationTimer();
+    }
+
+    public int GetBasePowerLevel()
+    {
+        return SkillObject.GetPowerLevel();
     }
 
     public bool GetEffectOnlyOnceBool()
@@ -133,8 +198,39 @@ public class ItemSkill : MonoBehaviour {
         EffectOnlyOnceBool = state;
     }
 
+    public float GetEffectFloat()
+    {
+        return EffectFloat;
+    }
+
+    public void SetEffectFloat(float value)
+    {
+        EffectFloat = value;
+    }
+
+    public void ChangeEffectFloat(float change)
+    {
+        EffectFloat += change;
+    }
+       
+
     public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()
     {
         return SkillObject.AICalculateSkillScoreAndApplication(this, GetCurrentOwner());
+    }
+
+    public float AIGetSensibleActivationTime()
+    {
+        return SkillObject.GetDecisionMaker().AIGetSensibleActivationTime();
+    }
+
+    public MovePattern[] AIGetSkillMovePatterns()
+    {
+        return SkillObject.GetDecisionMaker().AISkillMovePatterns;
+    }
+
+    public float AIGetSkillEvaluationCycle()
+    {
+        return SkillObject.GetDecisionMaker().SkillEvaluationCycle;
     }
 }

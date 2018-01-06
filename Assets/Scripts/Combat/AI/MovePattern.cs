@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MovePattern : ScriptableObject {
 
-    public DecisionMaker AIDecisionMaker;
+    public DecisionMakerMoves AIDecisionMaker;
 
     public DecisionMaker.AIDecision AICalculateMovePatternScore(Character Self)
     {
