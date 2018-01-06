@@ -126,21 +126,21 @@ public class Spawner : MonoBehaviour {
 
             if (CurrentEnemy.PowerLevel <= RemainingPowerLevel)
             {
-                Debug.Log("GENERATED ENEMEY WITH POWER LEVEL : " + CurrentEnemy.PowerLevel);
+                //Debug.Log("GENERATED ENEMEY WITH POWER LEVEL : " + CurrentEnemy.PowerLevel);
                 RemainingPowerLevel -= CurrentEnemy.PowerLevel;
-                Debug.Log("REMAINING POWER LEVEL: " + RemainingPowerLevel);
+                //Debug.Log("REMAINING POWER LEVEL: " + RemainingPowerLevel);
                 CurrentlyGeneratedEnemies.Add(CurrentEnemy);          
             }
             // If not enough Powerlevel remaining: Chance to still spawn the enemy: Weighted Chance between Remaining PowerLevel (Spawn) and Enemy Cost (don't Spawn).
             else if (Random.Range(0, CurrentEnemy.PowerLevel + RemainingPowerLevel) < RemainingPowerLevel) 
             {
                 CurrentlyGeneratedEnemies.Add(CurrentEnemy);
-                Debug.Log("GENERATED ENEMEY WITH POWER LEVEL : " + CurrentEnemy.PowerLevel + " BY CHANCE!");
+                //Debug.Log("GENERATED ENEMEY WITH POWER LEVEL : " + CurrentEnemy.PowerLevel + " BY CHANCE!");
                 break;
             }
             else
             {
-                Debug.Log("DID NOT GENERATED ENEMY DUE TO NOT ENOUGH POWER LEVEL!");
+                //Debug.Log("DID NOT GENERATED ENEMY DUE TO NOT ENOUGH POWER LEVEL!");
                 break;
             }
         }
