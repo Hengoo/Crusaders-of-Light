@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "Spawner_Order", menuName = "Spawner/SpawnerOrder", order = 4)]
 public class SpawnerOrder : ScriptableObject {
 
     public enum Mode
@@ -20,7 +21,7 @@ public class SpawnerOrder : ScriptableObject {
 
         for (int i = 0; i < OriginalWeaponList.Length; i++)
         {
-            if (ContainsWeapon(OriginalWeaponList[i].SpawnWeapon))
+            if (!ContainsWeapon(OriginalWeaponList[i].SpawnWeapon))
             {
                 ModifiedList.Add(OriginalWeaponList[i]);
             }

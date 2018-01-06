@@ -168,6 +168,11 @@ public class ItemSkill : MonoBehaviour {
         return Level + GetCurrentOwner().GetSkillLevelModifier();
     }
 
+    public void SetSkillLevel(int Value)
+    {
+        Level = Value;
+    }
+
     public int GetParentItemEquipmentSlot()
     {
         return ParentItem.GetCurrentEquipSlot();
@@ -176,6 +181,11 @@ public class ItemSkill : MonoBehaviour {
     public float GetCurrentSkillActivationTime()
     {
         return ParentItem.GetSkillActivationTimer();
+    }
+
+    public int GetBasePowerLevel()
+    {
+        return SkillObject.GetPowerLevel();
     }
 
     public bool GetEffectOnlyOnceBool()

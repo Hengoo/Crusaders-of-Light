@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "Spawner_Tag_Biome", menuName = "Spawner/SpawnerTagBiome", order = 9)]
 public class TagBiome : ScriptableObject {
 
     public bool IsSameAs(TagBiome OtherTag)

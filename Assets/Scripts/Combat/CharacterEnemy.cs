@@ -28,6 +28,10 @@ public class CharacterEnemy : Character {
     private float[] SkillEvaluationCycleTimers = { 0, 0 };
     private bool[] SkillContinueActivation = { false, false };
 
+    public int BasePowerLevel = 0;
+
+    public Spawner SpawnedBy;
+
     protected override void Update()
     {
         base.Update();
@@ -47,6 +51,35 @@ public class CharacterEnemy : Character {
     public override TeamAlignment GetAlignment()
     {
         return Alignment;
+    }
+
+    public void InitializeEnemy(Spawner SpawnedFrom, Weapon[] SpawnEquippedWeapons, int[] SpawnWeaponsLevel)
+    {
+        SetSpawner(SpawnedFrom);
+
+        StartingWeapons = SpawnEquippedWeapons;
+
+        SpawnAndEquipStartingWeapons();
+
+        for (int i = 0; i < WeaponSlots.Length; i++)
+        {
+            if (WeaponSlots[i])
+            {
+                WeaponSlots[i].SetAllItemSkillsLevel(SpawnWeaponsLevel[i]);
+            }
+        }
+    }
+
+    public void SetSpawner(Spawner SpawnedFrom)
+    {
+        SpawnedBy = SpawnedFrom;
+    }
+
+    protected override void CharacterDied()
+    {
+        SpawnedBy.SpawnedCharacterDied(this);
+
+        base.CharacterDied();
     }
 
     // ========================================= AI =========================================
@@ -203,6 +236,10 @@ public class CharacterEnemy : Character {
         }
     }
 
+    public int GetBasePowerLevel()
+    {
+        return BasePowerLevel;
+    }
 
     // ======================================== /AI =========================================
 
@@ -250,6 +287,7 @@ public class CharacterEnemy : Character {
 
         return true;
     }
+
 
     // =================================== /SKILL ACTIVATION ====================================
 

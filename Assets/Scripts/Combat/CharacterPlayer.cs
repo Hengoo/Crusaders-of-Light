@@ -13,6 +13,12 @@ public class CharacterPlayer : Character {
     [Header("Close Items List:")]
     public List<Item> ItemsInRange = new List<Item>();
 
+    protected override void Start()
+    {
+        base.Start();
+        SpawnAndEquipStartingWeapons();
+    }
+
     protected override void Update()
     {
         PlayerInput();

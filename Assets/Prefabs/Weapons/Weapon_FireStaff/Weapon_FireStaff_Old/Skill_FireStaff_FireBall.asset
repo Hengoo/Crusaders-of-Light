@@ -21,8 +21,9 @@ MonoBehaviour:
   Effects:
   - {fileID: 11400000, guid: 9ee20f1d23c44c848a6997547ce32eca, type: 2}
   HindranceLevel: 0
-  AnimationName: no_animation
+  AnimationName: Magic_Staff_Cast
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 3a0ff531db5856443a87ae9d96df9316, type: 2}
+  PowerLevel: 0
   ProjectilePrefab: {fileID: 114435675793627354, guid: 57e72f3911d306a49b2bfa5c7ef8857d,
     type: 2}

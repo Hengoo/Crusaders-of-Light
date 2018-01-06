@@ -84,11 +84,11 @@ public class Character : MonoBehaviour
     [Header("Attention:")]
     public CharacterAttention CharAttention;
 
-    protected void Start()
+    protected virtual void Start()
     {
         PhysCont = new PhysicsController(gameObject);
         CreateCharacterFollowGUI();     // Could be changed to when entering camera view or close to players, etc... as optimization.
-        SpawnAndEquipStartingWeapons();
+        // SpawnAndEquipStartingWeapons();
     }
 
     protected virtual void Update()
@@ -139,7 +139,7 @@ public class Character : MonoBehaviour
         return false;
     }
 
-    protected void CharacterDied()
+    protected virtual void CharacterDied()
     {
         CharacterIsDead = true;
 
@@ -361,7 +361,7 @@ public class Character : MonoBehaviour
         WeaponSlots[HandSlotID].gameObject.transform.parent = null;
     }
 
-    private void SpawnAndEquipStartingWeapons()
+    protected void SpawnAndEquipStartingWeapons()
     {
         Item CurrentItem = null;
         for (int i = 0; i < StartingWeapons.Length; i++)

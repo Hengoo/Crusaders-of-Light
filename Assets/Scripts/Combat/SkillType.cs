@@ -36,7 +36,7 @@ public class SkillType : ScriptableObject {
 
     [Header("Skill Enemy AI:")]
     public DecisionMakerSkills AIDecisionMaker;
-
+    public int PowerLevel = 0;
 
 
 
@@ -59,6 +59,11 @@ public class SkillType : ScriptableObject {
     public DecisionMakerSkills GetDecisionMaker()
     {
         return AIDecisionMaker;
+    }
+
+    public int GetPowerLevel()
+    {
+        return PowerLevel;
     }
 
     public string GetAnimationName()

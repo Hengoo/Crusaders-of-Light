@@ -3382,7 +3382,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 404881676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 641.5, y: 314, z: 0}
+  m_LocalPosition: {x: 641.5, y: 319, z: 0}
   m_LocalScale: {x: 0.66822916, y: 0.66822916, z: 0.66822916}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4254,6 +4254,7 @@ MonoBehaviour:
   AlreadyHitCharacters: []
   CurrentItemHitBoxAlignment: 0
   EquippedSlotID: -1
+  ItemPowerLevel: 0
   TwoHanded: 0
 --- !u!95 &496379259
 Animator:
@@ -16008,6 +16009,8 @@ MonoBehaviour:
   MovePatternEvaluationCycleTimer: 0
   IdleMoveScore: 0.2
   IdleMoveDuration: 0.2
+  BasePowerLevel: 0
+  SpawnedBy: {fileID: 0}
 --- !u!1001 &1808885656
 Prefab:
   m_ObjectHideFlags: 0
@@ -16136,6 +16139,105 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 61c5572780389b448854ec10b9a60678, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1829204996
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1829204998}
+  - component: {fileID: 1829204997}
+  - component: {fileID: 1829204999}
+  - component: {fileID: 1829205000}
+  m_Layer: 10
+  m_Name: Spawner
+  m_TagString: Spawner
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1829204997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1829204996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c8e3d8b00d76fc4aa9c58ca35e4c843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PowerLevelCostPerLevelUp: 3
+  SpawnSets: {fileID: 11400000, guid: 7852940b79999774fa45365813727be0, type: 2}
+  Tag: Attention
+  PowerlevelAllowance: 0
+  LevelMin: 0
+  LevelMax: 0
+  Positions: []
+  Rotations: []
+  RelevantSpawnSets: []
+  OrdersForce: []
+  OrdersForbid: []
+  FixSpawns: []
+  FixSpawnsCounter: 0
+  TagsBiome: []
+  GeneratedEnemies: []
+  SpawnedEnemies: []
+--- !u!4 &1829204998
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1829204996}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 91.93, y: 12.14, z: 136.84}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 33
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1829204999
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1829204996}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 75
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1829205000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1829204996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d085a0221c0ddb14eada8c6bfc3d7c4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpawnerToTest: {fileID: 1829204997}
+  LevelMin: 1
+  LevelMax: 3
+  TestSeed: 0
+  TestOrders: []
+  PowerlevelAllowance: 20
+  Positions:
+  - {x: 80, y: 12, z: 136}
+  - {x: 90, y: 12, z: 136}
+  - {x: 100, y: 12, z: 136}
+  Rotations:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  FixSpawns: []
+  TagsBiome:
+  - {fileID: 11400000, guid: a9de5121419c2c24f940a6c287073ed7, type: 2}
+  - {fileID: 11400000, guid: 2d28a3845e00d044c984f296a8b4222f, type: 2}
 --- !u!1001 &1829767531
 Prefab:
   m_ObjectHideFlags: 0
@@ -17291,7 +17393,7 @@ Prefab:
       objectReference: {fileID: 1789461354}
     - target: {fileID: 1190281747256084, guid: 6c5655d12222f234ba763facca60192b, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114587697657262122, guid: 6c5655d12222f234ba763facca60192b,
         type: 2}
@@ -17306,7 +17408,7 @@ Prefab:
       objectReference: {fileID: 1950900758}
     - target: {fileID: 4992903867064542, guid: 6c5655d12222f234ba763facca60192b, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6c5655d12222f234ba763facca60192b, type: 2}

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnerEnemyObject : MonoBehaviour {
+[CreateAssetMenu(fileName = "Spawner_Enemy", menuName = "Spawner/SpawnerEnemy", order = 2)]
+public class SpawnerEnemyObject : ScriptableObject {
 
     [System.Serializable]
     public struct SpawnItem
@@ -36,14 +37,35 @@ public class SpawnerEnemyObject : MonoBehaviour {
         GeneratedEnemy.Weapons = new Weapon[2];
         GeneratedEnemy.Weapons[0] = RollForWeapon(MainSpawner, 0).SpawnWeapon;
 
-        if (!GeneratedEnemy.Weapons[0].IsTwoHanded())
+        if (!GeneratedEnemy.Weapons[0] || (GeneratedEnemy.Weapons[0] && !GeneratedEnemy.Weapons[0].IsTwoHanded()))
         {
             GeneratedEnemy.Weapons[1] = RollForWeapon(MainSpawner, 1).SpawnWeapon;
         }
 
-        GeneratedEnemy.WeaponLevels = new int[2];
-        GeneratedEnemy.WeaponLevels[0] = MainSpawner.GetMinLevel();
-        GeneratedEnemy.WeaponLevels[1] = MainSpawner.GetMinLevel();
+        GeneratedEnemy.WeaponLevels = new int[GeneratedEnemy.Weapons.Length];
+        for (int i = 0; i < GeneratedEnemy.Weapons.Length; i++)
+        {
+            if (GeneratedEnemy.Weapons[i])
+            {
+                GeneratedEnemy.WeaponLevels[i] = Random.Range(MainSpawner.GetMinLevel(), MainSpawner.GetMaxLevel());
+            }
+            else
+            {
+                GeneratedEnemy.WeaponLevels[i] = 0;
+            }
+        }
+
+        int TotalPowerLevel = GeneratedEnemy.CharacterBase.GetBasePowerLevel();
+        for (int i = 0; i < GeneratedEnemy.Weapons.Length; i++)
+        {
+            if (GeneratedEnemy.Weapons[i])
+            {
+                TotalPowerLevel += GeneratedEnemy.Weapons[i].GetTotalPowerLevel();
+                TotalPowerLevel += GeneratedEnemy.WeaponLevels[i] * MainSpawner.GetPowerLevelCostPerLevelUp();
+            }
+        }
+
+        GeneratedEnemy.PowerLevel = TotalPowerLevel;
 
         return GeneratedEnemy;
     }

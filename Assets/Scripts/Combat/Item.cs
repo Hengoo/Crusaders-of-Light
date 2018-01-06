@@ -35,6 +35,9 @@ public class Item : MonoBehaviour {
 
     public int EquippedSlotID = -1;
 
+    [Header("Item AI:")]
+    public int ItemPowerLevel = 0; // Only for the Item itself, the Skills it grants is already calculated through it's skills.
+
     public virtual void EquipItem(Character CharacterToEquipTo, int SlotID)
     {
 
@@ -106,6 +109,14 @@ public class Item : MonoBehaviour {
     public int GetCurrentEquipSlot()
     {
         return CurrentEquipSlot;
+    }
+
+    public void SetAllItemSkillsLevel(int Value)
+    {
+        for (int i = 0; i < ItemSkills.Length; i++)
+        {
+            ItemSkills[i].SetSkillLevel(Value);
+        }
     }
 
     public void SetSkillActivationTimer(float value)
@@ -247,6 +258,18 @@ public class Item : MonoBehaviour {
 
             CurrentlyCollidingCharacters.Remove(OtherCharacter);
         }
+    }
+
+    public int GetTotalPowerLevel()
+    {
+        int TempPowerLevel = ItemPowerLevel;
+
+        for (int i = 0; i < ItemSkills.Length; i++)
+        {
+            TempPowerLevel += ItemSkills[i].GetBasePowerLevel();
+        }
+
+        return TempPowerLevel;
     }
 
 
