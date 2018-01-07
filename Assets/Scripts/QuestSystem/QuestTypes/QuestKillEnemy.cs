@@ -19,6 +19,7 @@ public class QuestKillEnemy : QuestBase
     {
         var enemy = Object.Instantiate(_enemyPrefab);
         enemy.SetActive(true);
+        enemy.GetComponent<CharacterEnemy>().SpawnAndEquipStartingWeapons();
         enemy.GetComponent<CharacterEnemy>().SubscribeDeathAction(OnQuestCompleted);
         enemy.transform.position = _spawnPoint.position;
     }

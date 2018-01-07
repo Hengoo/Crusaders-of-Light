@@ -368,7 +368,8 @@ public class Character : MonoBehaviour
         WeaponSlots[HandSlotID].gameObject.transform.parent = null;
     }
 
-    protected void SpawnAndEquipStartingWeapons()
+    //Need this for quest fire wizard spawning - Jean
+    public void SpawnAndEquipStartingWeapons()
     {
         Item CurrentItem = null;
         for (int i = 0; i < StartingWeapons.Length; i++)

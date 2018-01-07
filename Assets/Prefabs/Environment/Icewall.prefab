@@ -9,21 +9,21 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1854139390454470}
+  m_RootGameObject: {fileID: 1044869818957656}
   m_IsPrefabParent: 1
---- !u!1 &1854139390454470
+--- !u!1 &1044869818957656
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4232779105018124}
-  - component: {fileID: 33661527824309288}
-  - component: {fileID: 65620248502669030}
-  - component: {fileID: 23854563719352474}
-  - component: {fileID: 114464289258635058}
-  - component: {fileID: 54067425298118464}
+  - component: {fileID: 4439215471901078}
+  - component: {fileID: 33042419967769908}
+  - component: {fileID: 65159159684777484}
+  - component: {fileID: 23899244252879792}
+  - component: {fileID: 114908810881589058}
+  - component: {fileID: 54969927013422056}
   m_Layer: 0
   m_Name: Icewall
   m_TagString: Character
@@ -31,25 +31,56 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4232779105018124
+--- !u!1 &1548268234644818
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4027281919285528}
+  - component: {fileID: 65841160110440014}
+  - component: {fileID: 114279913777745460}
+  m_Layer: 9
+  m_Name: Sphere
+  m_TagString: Attention
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4027281919285528
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1854139390454470}
+  m_GameObject: {fileID: 1548268234644818}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4439215471901078}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4439215471901078
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1044869818957656}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -230.1257, y: 392.34375, z: -300.01367}
-  m_LocalScale: {x: 1, y: 23.670065, z: 3.069799}
-  m_Children: []
+  m_LocalScale: {x: 53.702145, y: 23.670065, z: 3.069799}
+  m_Children:
+  - {fileID: 4027281919285528}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23854563719352474
+--- !u!23 &23899244252879792
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1854139390454470}
+  m_GameObject: {fileID: 1044869818957656}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -78,19 +109,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33661527824309288
+--- !u!33 &33042419967769908
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1854139390454470}
+  m_GameObject: {fileID: 1044869818957656}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!54 &54067425298118464
+--- !u!54 &54969927013422056
 Rigidbody:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1854139390454470}
+  m_GameObject: {fileID: 1044869818957656}
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
@@ -100,24 +131,51 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &65620248502669030
+--- !u!65 &65159159684777484
 BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1854139390454470}
+  m_GameObject: {fileID: 1044869818957656}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.1, y: 1.1, z: 1.1}
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114464289258635058
+--- !u!65 &65841160110440014
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1548268234644818}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114279913777745460
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1854139390454470}
+  m_GameObject: {fileID: 1548268234644818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb7e8202a82267c499d5ed6807debbed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: {fileID: 114908810881589058}
+  Tag: Attention
+  PlayersInAttentionRange: []
+  EnemiesInAttentionRange: []
+--- !u!114 &114908810881589058
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1044869818957656}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
@@ -138,6 +196,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  SkillLevelModifier: 0
   CharacterHands:
   - {fileID: 0}
   - {fileID: 0}
@@ -152,12 +211,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   SkillCurrentlyActivating: ffffffffffffffff
+  HindranceLevel: 0
   ActiveConditions: []
   HandAnimators:
   - {fileID: 0}
   - {fileID: 0}
+  CharAttention: {fileID: 114279913777745460}
   Alignment: 2
-  PlayersInAttentionRange: []
   IdleSkillScore: 1
   IdleDuration: 100
   ActiveMovePattern: {fileID: 11400000, guid: 76fb1f41306999c47a678806d919f6c8, type: 2}
@@ -167,3 +227,5 @@ MonoBehaviour:
   MovePatternEvaluationCycleTimer: 0
   IdleMoveScore: 0.2
   IdleMoveDuration: 0.2
+  BasePowerLevel: 0
+  SpawnedBy: {fileID: 0}
