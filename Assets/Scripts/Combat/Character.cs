@@ -84,11 +84,10 @@ public class Character : MonoBehaviour
     // Attention:
     [Header("Attention:")]
     public CharacterAttention CharAttention;
-
-    protected virtual void Start()
+    
     private UnityAction _onCharacterDeathAction; // Event system for character death
 
-    protected void Start()
+    protected virtual void Start()
     {
         PhysCont = new PhysicsController(gameObject);
         CreateCharacterFollowGUI();     // Could be changed to when entering camera view or close to players, etc... as optimization.
