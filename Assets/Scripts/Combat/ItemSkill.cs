@@ -271,4 +271,9 @@ public class ItemSkill : MonoBehaviour {
     {
         return SkillObject.GetDecisionMaker().SkillEvaluationCycle;
     }
+
+    public float[] AIGetThreat()
+    {
+        return SkillObject.GetThreat();
+    }
 }

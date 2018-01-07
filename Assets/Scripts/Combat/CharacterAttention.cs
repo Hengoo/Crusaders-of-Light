@@ -7,10 +7,12 @@ public class CharacterAttention : MonoBehaviour {
     [Header("Character Attention:")]
     public Character Owner;
     public string Tag = "Attention";
+    public string TagHitObjects = "Skills";
 
     public List<Character> PlayersInAttentionRange = new List<Character>();
     public List<Character> EnemiesInAttentionRange = new List<Character>();
 
+    public List<SkillHitObject> PlayerHitObjectsInRange = new List<SkillHitObject>();
 
     public Character GetOwner()
     {
@@ -58,6 +60,16 @@ public class CharacterAttention : MonoBehaviour {
                 EnemyEntersAttentionRange(OtherAttention.GetOwner());
             }
         }
+        else if (other.tag == TagHitObjects)
+        {
+            SkillHitObject OtherHitObject = other.gameObject.GetComponent<SkillHitObject>();
+
+            if (OtherHitObject.GetAlignment() == Character.TeamAlignment.ALL
+                || OtherHitObject.GetAlignment() == Character.TeamAlignment.PLAYERS)
+            {
+                PlayerHitObjectsInRange.Add(OtherHitObject);
+            }
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -73,6 +85,16 @@ public class CharacterAttention : MonoBehaviour {
             else
             {
                 EnemyLeavesAttentionRange(OtherAttention.GetOwner());
+            }
+        }
+        else if (other.tag == TagHitObjects)
+        {
+            SkillHitObject OtherHitObject = other.gameObject.GetComponent<SkillHitObject>();
+
+            if (OtherHitObject.GetAlignment() == Character.TeamAlignment.ALL
+                || OtherHitObject.GetAlignment() == Character.TeamAlignment.PLAYERS)
+            {
+                PlayerHitObjectsInRange.Remove(OtherHitObject);
             }
         }
     }

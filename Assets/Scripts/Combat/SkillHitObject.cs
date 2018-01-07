@@ -212,4 +212,9 @@ public class SkillHitObject : MonoBehaviour {
         }
         return false;
     }
+
+    public Character.TeamAlignment GetAlignment()
+    {
+        return HitObjectAlignment;
+    }
 }

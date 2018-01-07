@@ -34,9 +34,10 @@ public class SkillType : ScriptableObject {
     public string AnimationName = "no_animation";
     public float OverwriteAnimationSpeedScaling = -1; // If > 0 : Use other Speed scaling. Which one, depends on the exact Skill Type! Base: This Value.
 
-    [Header("Skill Enemy AI:")]
+    [Header("Skill Enemy AI (Threat Array has to have Size 3!):")]
     public DecisionMakerSkills AIDecisionMaker;
     public int PowerLevel = 0;
+    public float[] Threat = new float[3]; // 0: Threat Active, 1: Threat Active Close Range, 2: Threat Long Range
 
 
 
@@ -179,5 +180,10 @@ public class SkillType : ScriptableObject {
     public float GetTotalActivationTime()
     {
         return ActivationTime;
+    }
+
+    public float[] GetThreat()
+    {
+        return Threat;
     }
 }

@@ -794,6 +794,38 @@ public class Character : MonoBehaviour
 
     // ========================================== /ANIMATION ==========================================
 
+    // ========================================= AI =========================================
+
+    public float GetCurrentThreatLevel(bool IncludeMeleeRange, bool IncludeFarRange)
+    {
+        float TotalThreat = 0.0f;
+        float[] CurrentThreat = new float[3];
+
+        for (int i = 0; i < SkillCurrentlyActivating.Length; i++)
+        {
+            if(SkillCurrentlyActivating[i] >= 0)
+            {
+                CurrentThreat = ItemSkillSlots[SkillCurrentlyActivating[i]].AIGetThreat();
+
+                TotalThreat += CurrentThreat[0];
+
+                if (IncludeMeleeRange)
+                {
+                    TotalThreat += CurrentThreat[1];
+                }
+
+                if (IncludeFarRange)
+                {
+                    TotalThreat += CurrentThreat[2];
+                }
+            }
+        }
+
+        return TotalThreat;
+    }
+
+    // ========================================= /AI =========================================
+
     // =========================================== GUI ==========================================
 
     private void CreateCharacterFollowGUI()

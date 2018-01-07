@@ -11,8 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a358bdf9369a6de42843121de4896289, type: 3}
   m_Name: Skill_Sword_Inspire_AI_DecisionMaker
   m_EditorClassIdentifier: 
-  Weight: 1
-  ConsiderationsTargeted: []
+  Weight: 2
+  ConsiderationsTargeted:
+  - {fileID: 0}
   ConsiderationsSelf: []
   SensibleActivationTime: -1
   SkillEvaluationCycle: -1
