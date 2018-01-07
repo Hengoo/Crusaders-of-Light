@@ -1,4 +1,5 @@
-﻿using UnityEngine.Events;
+﻿using System.Diagnostics;
+using UnityEngine.Events;
 
 
 public abstract class QuestBase
@@ -20,6 +21,7 @@ public abstract class QuestBase
 
     public void OnQuestCompleted()
     {
+        UnityEngine.Debug.Log("QuestCompleted");
         QuestCompleted();
         QuestEndAction.Invoke();
     }

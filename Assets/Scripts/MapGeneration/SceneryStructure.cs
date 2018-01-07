@@ -49,6 +49,12 @@ public class SceneryStructure
         var levelController = LevelController.Instance;
         if (!levelController)
             levelController = GameObject.Find("LevelController").GetComponent<LevelController>();
+
+        //Clear previously generated quests in editor when not playing
+        if (!Application.isPlaying)
+            levelController.QuestController.ClearQuests(); 
+
+        //Add all quests
         foreach (var quest in quests)
             levelController.QuestController.AddQuest(quest);
 

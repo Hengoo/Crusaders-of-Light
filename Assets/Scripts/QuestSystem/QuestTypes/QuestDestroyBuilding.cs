@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class QuestDestroyBuilding : QuestBase
 {
-
-    private CharacterEnemy _building;
+    private readonly CharacterEnemy _building;
 
     public QuestDestroyBuilding(CharacterEnemy building, string title, string description) : base(title, description)
     {

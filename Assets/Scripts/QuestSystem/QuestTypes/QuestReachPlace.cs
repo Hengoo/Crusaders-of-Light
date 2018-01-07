@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class QuestReachPlace : QuestBase
 {
-    private float _radius; //Radius of "reached place" trigger
+    private readonly float _radius; //Radius of "reached place" trigger
     private readonly GameObject _place; //Place to reach
 
     public QuestReachPlace(GameObject place, float radius, string title, string description) : base(title, description)
@@ -22,7 +22,7 @@ public class QuestReachPlace : QuestBase
         collider.radius = _radius;
         collider.isTrigger = true;
 
-        trigger.TriggerEnterAction += OnQuestCompleted;
+        trigger.AddTriggerAction(OnQuestCompleted);
     }
 
     protected override void QuestCompleted()

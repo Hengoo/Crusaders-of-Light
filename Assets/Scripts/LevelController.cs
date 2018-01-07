@@ -10,6 +10,11 @@ public class LevelController : Singleton<LevelController>
 
     public QuestController QuestController;
 
+    public void StartGame()
+    {
+        QuestController.ClearQuests();
+    }
+
     public void EndGame()
     {
         //TODO: implement

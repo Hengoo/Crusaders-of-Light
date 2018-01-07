@@ -27,6 +27,7 @@ public class MapGenerator : MonoBehaviour
     public int ExtraEdges = 20;
     public bool FillTerrain = true;
     public float RoadHalfWidth = 10;
+    public bool GenerateOnPlay = false;
     public int Seed = 0;
 
     /* Debug variables */
@@ -34,11 +35,21 @@ public class MapGenerator : MonoBehaviour
     private WorldStructure _worldStructure;
     private SceneryStructure _sceneryStructure;
 
+    void Start()
+    {
+        DrawMode = DrawModeEnum.GameMap;
+        Seed = GameController.Instance.Seed;
+        LevelController.Instance.StartGame();
+        GeneratePreview();
+    }
+
     /* Redraws preview in the scene editor */
     public void GeneratePreview()
     {
-        if (Application.isPlaying)
+#if UNITY_EDITOR
+        if (!GenerateOnPlay)
             return;
+#endif
 
         ClearDisplay();
         Random.InitState(Seed);

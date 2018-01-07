@@ -34,9 +34,18 @@ public class QuestController : Singleton<QuestController>
             QuestDescriptionHUDText.text = CurrentQuest.Description;
             CurrentQuest.QuestEndAction += NextQuest;
 
+
             CurrentQuest.OnQuestStarted(); //Start quest
         }
     }
 
+
+    public void ClearQuests()
+    {
+        CurrentQuest = null;
+        QuestsQueue.Clear();
+        QuestTitleHUDText.text = "TITLE";
+        QuestDescriptionHUDText.text = "DESCRIPTION";
+    }
 
 }

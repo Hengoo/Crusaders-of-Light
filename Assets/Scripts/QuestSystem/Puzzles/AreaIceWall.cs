@@ -42,10 +42,10 @@ public class AreaIceWall : AreaBase
         fireMageSpawn.transform.position = new Vector3(spawnPosition2D.x, 0, spawnPosition2D.y);
 
         //Create ice wall in the game world
-        var iceWall = Instantiate(IceWallPrefab);
         var iceWallCrossingLine = worldStructure.AreaCrossingBorders[assignedArea];
         var iceWallPosition2D = (iceWallCrossingLine[0] + iceWallCrossingLine[1]) / 2;
         var iceWallOrientationLine = iceWallCrossingLine[1] - iceWallCrossingLine[0];
+        var iceWall = Instantiate(IceWallPrefab);
         iceWall.transform.position = new Vector3(iceWallPosition2D.x, 0, iceWallPosition2D.y);
         iceWall.transform.localScale = new Vector3(iceWallOrientationLine.magnitude, terrainStructure.BiomeGlobalConfiguration.MapHeight, 10);
         iceWall.transform.rotation = Quaternion.LookRotation(iceWall.transform.position + Vector3.Cross(new Vector3(iceWallOrientationLine.x, 0, iceWallOrientationLine.y), Vector3.up) * 10);
@@ -54,11 +54,11 @@ public class AreaIceWall : AreaBase
         sceneryStructure.AddSceneryQuestObject(fireMageSpawn);
         sceneryStructure.AddSceneryQuestObject(iceWall);
 
-        //Give fire mage the special weapon
+        //Get fire mage the special weapon
         var firestaff = FireMage.GetComponent<Character>().StartingWeapons[1]; //TODO: might cause exceptions, find better way
 
         //Find ice wall
-        _questSteps.Add(new QuestReachPlace(iceWall, 5, "The Wall", "Explore the area and find the ice wall location"));
+        _questSteps.Add(new QuestReachPlace(iceWall, .5f, "The Wall", "Explore the area and find the ice wall location"));
 
         //Find fire mage camp
         _questSteps.Add(new QuestReachPlace(fireMageSpawn, 5, "The Wall", "Find the fire wizard"));
