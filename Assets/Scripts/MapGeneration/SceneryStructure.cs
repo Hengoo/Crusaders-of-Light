@@ -116,7 +116,7 @@ public class SceneryStructure
     }
 
     /* Fill an area with prefabs */
-    public GameObject FillSceneryArea(SceneryAreaFill sceneryAreaFill, Terrain terrain)
+    private GameObject FillSceneryArea(SceneryAreaFill sceneryAreaFill, Terrain terrain)
     {
         var result = new GameObject("SceneryAreaFill");
         result.transform.position = Vector3.zero;
