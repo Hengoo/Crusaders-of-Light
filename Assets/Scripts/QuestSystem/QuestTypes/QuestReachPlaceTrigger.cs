@@ -14,7 +14,7 @@ public class QuestReachPlaceTrigger : MonoBehaviour
     {
         if (!other.gameObject.name.ToLower().Contains("player")) return;
 
-        if(TriggerEnterAction != null)
+        if (TriggerEnterAction != null)
             TriggerEnterAction.Invoke();
         else
             Debug.LogWarning("No action added to trigger at GameObject: " + gameObject.name);

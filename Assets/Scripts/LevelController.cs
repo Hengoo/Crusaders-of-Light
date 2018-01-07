@@ -15,7 +15,6 @@ public class LevelController : Singleton<LevelController>
     public SceneryStructure SceneryStructure;
     public Terrain Terrain;
     
-    
     public void InitializeLevel()
     {
         QuestController.ClearQuests();

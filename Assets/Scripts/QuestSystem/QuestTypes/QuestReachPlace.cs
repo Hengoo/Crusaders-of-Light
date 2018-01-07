@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public class QuestReachPlace : QuestBase
 {
@@ -22,7 +23,12 @@ public class QuestReachPlace : QuestBase
         collider.radius = _radius;
         collider.isTrigger = true;
 
-        trigger.AddTriggerAction(OnQuestCompleted);
+        trigger.AddTriggerAction(() =>
+        {
+            OnQuestCompleted();
+            Object.Destroy(collider);
+            Object.Destroy(trigger);
+        });
     }
 
     protected override void QuestCompleted()
