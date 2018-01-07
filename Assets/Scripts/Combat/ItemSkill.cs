@@ -169,7 +169,11 @@ public class ItemSkill : MonoBehaviour {
     // Note: If a Character can have buffs/changes to Skill Levels, then this function has to include those changes.
     public int GetSkillLevel()
     {
-        return Level + GetCurrentOwner().GetSkillLevelModifier();
+        if (GetCurrentOwner())
+        {
+            return Level + GetCurrentOwner().GetSkillLevelModifier();
+        }
+        return Level;
     }
 
     public void SetSkillLevel(int Value)

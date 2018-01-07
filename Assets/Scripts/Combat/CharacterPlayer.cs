@@ -68,11 +68,13 @@ public class CharacterPlayer : Character {
 
         int EquipSlotID = -1;
 
-        if (SkillActivationButtonsPressed[0] || SkillActivationButtonsPressed[1])
+        if ((SkillActivationButtonsPressed[0] || SkillActivationButtonsPressed[1])
+            && SkillCurrentlyActivating[0] < 0)
         {
             EquipSlotID = 0;
         }
-        else if (SkillActivationButtonsPressed[2] || SkillActivationButtonsPressed[3])
+        else if ((SkillActivationButtonsPressed[2] || SkillActivationButtonsPressed[3])
+            && SkillCurrentlyActivating[1] < 0)
         {
             EquipSlotID = 1;
         }
@@ -163,7 +165,7 @@ public class CharacterPlayer : Character {
         }
 
         // Weapon PickUp:
-        if (Input.GetButtonDown("IPickUp"))
+        if (Input.GetButton("IPickUp"))
         {
             if (PickUpClosestItem())
             {
