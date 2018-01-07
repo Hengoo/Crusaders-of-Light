@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine.Events;
 
-public abstract class QuestBase : ScriptableObject
+
+public abstract class QuestBase
 {
     public string Title;
     public string Description;
-    public QuestBase[] SubQuests;
     public UnityAction QuestEndAction;
 
     public void OnQuestStarted()

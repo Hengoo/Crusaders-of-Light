@@ -1,15 +1,28 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ReachPlaceQuest", menuName = "Quests/Reach place")]
 public class QuestReachPlace : QuestBase
 {
-    public GameObject Place;
+    private float _radius; //Radius of "reached place" trigger
+    private readonly GameObject _place; //Place to reach
+
+    public QuestReachPlace(GameObject place, float radius)
+    {
+        _place = place;
+        _radius = radius;
+    }
 
     protected override void QuestStarted()
     {
-        //TODO: ??
+        var collider = _place.AddComponent<SphereCollider>();
+        var trigger = _place.AddComponent<QuestReachPlaceTrigger>();
+
+        collider.radius = _radius;
+        collider.isTrigger = true;
+
+        trigger.TriggerEnterAction += OnQuestCompleted;
     }
 
     protected override void QuestCompleted()

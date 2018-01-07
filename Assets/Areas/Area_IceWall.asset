@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74a601ddcb2606541a06fb9085b3b861, type: 3}
+  m_Name: Area_IceWall
+  m_EditorClassIdentifier: 
+  IceWallPrefab: {fileID: 0}
+  FireMage: {fileID: 1437983783161170, guid: ad28956eafc60984ca0fec1fc9ef2039, type: 2}
+  FireStaff: {fileID: 114262640344697314, guid: 3150fd57347ee5f488a27884513d66df,
+    type: 2}

@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "DeliverItemQuest", menuName = "Quests/Deliver item")]
 public class QuestDeliverItem : QuestBase {
 
     protected override void QuestStarted()

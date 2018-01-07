@@ -641,16 +641,10 @@ public class Character : MonoBehaviour
 
     // =========================================== EVENTS ==========================================
 
-    public void SubscribeAction(UnityAction action)
+    public void SubscribeDeathAction(UnityAction action)
     {
         if(action != null)
             _onCharacterDeathAction += action;
-    }
-
-    public void UnsubscribeAction(UnityAction action)
-    {
-        if (action != null && _onCharacterDeathAction != null)
-            _onCharacterDeathAction -= action;
     }
 
     // ========================================== /EVENTS ==========================================

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Item : MonoBehaviour {
 
@@ -35,14 +36,19 @@ public class Item : MonoBehaviour {
 
     public int EquippedSlotID = -1;
 
+    private UnityAction _itemPickupAction;
+    private UnityAction _itemDropAction;
+
     public virtual void EquipItem(Character CharacterToEquipTo, int SlotID)
     {
-
+        if(_itemPickupAction != null)
+            _itemPickupAction.Invoke();
     }
 
     public virtual void UnEquipItem()
     {
-
+        if(_itemDropAction != null)
+            _itemDropAction.Invoke();
     }
 
     // Currently Unused, but might be useful later.
@@ -238,5 +244,13 @@ public class Item : MonoBehaviour {
         }
     }
 
+    public void SubscribeItemPickup(UnityAction action)
+    {
+        
+    }
 
+    public void SubscribeItemDrop(UnityAction action)
+    {
+        
+    }
 }

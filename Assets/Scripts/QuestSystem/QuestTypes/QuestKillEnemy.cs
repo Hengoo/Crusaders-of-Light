@@ -2,16 +2,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-[CreateAssetMenu(fileName = "KillEnemyQuest", menuName = "Quests/Kill enemy")]
 public class QuestKillEnemy : QuestBase
 {
-    public GameObject SpawnPoint;
-    public CharacterEnemy Enemy;
-    
+    private readonly Transform _spawnPoint;
+    private readonly GameObject _enemyPrefab;
+
+    public QuestKillEnemy(Transform spawnPoint, GameObject enemyPrefab)
+    {
+        _spawnPoint = spawnPoint;
+        _enemyPrefab = enemyPrefab;
+    }
+
     protected override void QuestStarted()
     {
-        //TODO: spawn enemy
+        var enemy = Object.Instantiate(_enemyPrefab);
+        enemy.GetComponent<CharacterEnemy>().SubscribeDeathAction(OnQuestCompleted);
     }
 
     protected override void QuestCompleted()
