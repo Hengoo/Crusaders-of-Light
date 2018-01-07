@@ -8,7 +8,7 @@ public class QuestReachPlace : QuestBase
     private float _radius; //Radius of "reached place" trigger
     private readonly GameObject _place; //Place to reach
 
-    public QuestReachPlace(GameObject place, float radius)
+    public QuestReachPlace(GameObject place, float radius, string title, string description) : base(title, description)
     {
         _place = place;
         _radius = radius;

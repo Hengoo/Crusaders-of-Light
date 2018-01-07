@@ -6,5 +6,5 @@ using UnityEngine.Events;
  */
 public abstract class AreaBase : ScriptableObject
 {
-    public abstract QuestBase[] GenerateQuests(SceneryStructure sceneryStructure);
+    public abstract QuestBase[] GenerateQuests(SceneryStructure sceneryStructure, int assignedArea);
 }

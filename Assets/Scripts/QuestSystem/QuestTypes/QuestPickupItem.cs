@@ -7,7 +7,7 @@ public class QuestPickupItem : QuestBase
 {
     private readonly Item _item;
 
-    public QuestPickupItem(Item item)
+    public QuestPickupItem(Item item, string title, string description) : base(title, description)
     {
         _item = item;
     }

@@ -20,46 +20,58 @@ public class AreaIceWall : AreaBase
 
     public GameObject IceWallPrefab;
     public GameObject FireMage; //Must have enemy character script attached to it
-    public Weapon FireStaff;
 
-    private Transform _iceWallTransform;
-    private Transform _fireMageTransform;
-
-    [HideInInspector] private List<QuestBase> _questSteps = new List<QuestBase>();
-
-    public AreaIceWall(Transform iceWallTransform, Transform fireMageTransform)
-    {
-        _iceWallTransform = iceWallTransform;
-        _fireMageTransform = fireMageTransform;
-    }
+    [HideInInspector] private readonly List<QuestBase> _questSteps = new List<QuestBase>();
 
     //Generate the quests to be given to the quest controller
-    public override QuestBase[] GenerateQuests(SceneryStructure sceneryStructure)
+    public override QuestBase[] GenerateQuests(SceneryStructure sceneryStructure, int assignedArea)
     {
+        var worldStructure = sceneryStructure.WorldStructure;
+        var terrainStructure = sceneryStructure.TerrainStructure;
+
+        //Get a random position for the fire mage TODO: improve this selection if needed
+        int node;
+        var availableBiomes = worldStructure.AreaBiomes[assignedArea].ToArray();
+        do
+        {
+            node = availableBiomes[Random.Range(0, availableBiomes.Length)];
+        } while (node == terrainStructure.StartBiomeNode.Value);
+        var spawnPosition2D = terrainStructure.BiomeGraph.GetNodeData(node).Center;
+        var fireMageSpawn = new GameObject("Fire Mage Spawn Point");
+
+        fireMageSpawn.transform.position = new Vector3(spawnPosition2D.x, 0, spawnPosition2D.y);
+
         //Create ice wall in the game world
         var iceWall = Instantiate(IceWallPrefab);
-        iceWall.transform.position = _iceWallTransform.position;
-        iceWall.transform.rotation = _iceWallTransform.rotation;
-        iceWall.transform.localScale = _iceWallTransform.localScale;
+        var iceWallCrossingLine = worldStructure.AreaCrossingBorders[assignedArea];
+        var iceWallPosition2D = (iceWallCrossingLine[0] + iceWallCrossingLine[1]) / 2;
+        var iceWallOrientationLine = iceWallCrossingLine[1] - iceWallCrossingLine[0];
+        iceWall.transform.position = new Vector3(iceWallPosition2D.x, 0, iceWallPosition2D.y);
+        iceWall.transform.localScale = new Vector3(iceWallOrientationLine.magnitude, terrainStructure.BiomeGlobalConfiguration.MapHeight, 10);
+        iceWall.transform.rotation = Quaternion.LookRotation(iceWall.transform.position + Vector3.Cross(new Vector3(iceWallOrientationLine.x, 0, iceWallOrientationLine.y), Vector3.up) * 10);
+
+        //Add GameObjects to the scenery objects list (for height adjustment)
+        sceneryStructure.AddSceneryQuestObject(fireMageSpawn);
+        sceneryStructure.AddSceneryQuestObject(iceWall);
 
         //Give fire mage the special weapon
-        var firestaff = FireMage.GetComponent<Character>().StartingWeapons.First(a => a.name.ToLower() == "firestaff");
-        
+        var firestaff = FireMage.GetComponent<Character>().StartingWeapons[1]; //TODO: might cause exceptions, find better way
+
         //Find ice wall
-        _questSteps.Add(new QuestReachPlace(iceWall, 5));
+        _questSteps.Add(new QuestReachPlace(iceWall, 5, "The Wall", "Explore the area and find the ice wall location"));
 
         //Find fire mage camp
-        _questSteps.Add(new QuestReachPlace(_fireMageTransform.gameObject, 5));
+        _questSteps.Add(new QuestReachPlace(fireMageSpawn, 5, "The Wall", "Find the fire wizard"));
 
         //Kill fire mage
-        _questSteps.Add(new QuestKillEnemy(_fireMageTransform, FireMage));
+        _questSteps.Add(new QuestKillEnemy(fireMageSpawn.transform, FireMage, "The Wall", "Kill the fire wizard"));
 
         //Pickup fire mage staff
-        _questSteps.Add(new QuestPickupItem(firestaff));
+        _questSteps.Add(new QuestPickupItem(firestaff, "The Wall", "Pickup the fire mage staff"));
 
         //Destroy the ice wall
-        _questSteps.Add(new QuestDestroyBuilding(iceWall.GetComponent<CharacterEnemy>()));
+        _questSteps.Add(new QuestDestroyBuilding(iceWall.GetComponent<CharacterEnemy>(), "The Wall", "Destroy the wall with the fire staff"));
 
         return _questSteps.ToArray();
-    } 
+    }
 }

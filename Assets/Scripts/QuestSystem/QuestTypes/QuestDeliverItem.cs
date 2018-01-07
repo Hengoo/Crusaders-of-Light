@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class QuestDeliverItem : QuestBase {
 
+
+    public QuestDeliverItem(string title, string description) : base(title, description)
+    {
+
+    }
+
     protected override void QuestStarted()
     {
         throw new System.NotImplementedException();

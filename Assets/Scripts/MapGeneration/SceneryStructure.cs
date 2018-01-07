@@ -15,6 +15,8 @@ public class SceneryStructure
     public AreaBase[] NormalAreas { get; private set; }
     public AreaBase[] BossAreas { get; private set; }
 
+    private List<GameObject> _sceneryQuestObjects = new List<GameObject>();
+
     public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, AreaBase[] normalAreas, AreaBase[] bossAreas, float roadWidth)
     {
         SceneryAreas = new List<SceneryAreaFill>();
@@ -43,7 +45,12 @@ public class SceneryStructure
 
 
         //Fill areas 
-        var quests = NormalAreas[0].GenerateQuests(this);
+        var quests = NormalAreas[0].GenerateQuests(this, 0);
+        var levelController = LevelController.Instance;
+        if (!levelController)
+            levelController = GameObject.Find("LevelController").GetComponent<LevelController>();
+        foreach (var quest in quests)
+            levelController.QuestController.AddQuest(quest);
 
         //Create road polygons and road lines
         foreach (var edge in WorldStructure.NavigationGraph.GetAllEdges().Union(WorldStructure.AreaCrossingNavigationEdges))
@@ -85,11 +92,19 @@ public class SceneryStructure
     public IEnumerable<GameObject> FillAllSceneryAreas(Terrain terrain)
     {
         var result = new List<GameObject>();
+
+        var questObjects = new GameObject("Quest Objects");
+        result.Add(questObjects);
+        foreach (var obj in _sceneryQuestObjects)
+        {
+            obj.transform.position += new Vector3(0, terrain.SampleHeight(obj.transform.position), 0);
+            obj.transform.parent = questObjects.transform;
+        }
+
         foreach (var sceneryArea in SceneryAreas)
         {
             var fill = FillSceneryArea(sceneryArea, terrain);
             result.Add(fill);
-
         }
         return result;
     }
@@ -123,6 +138,12 @@ public class SceneryStructure
         }
 
         return result;
+    }
+
+    // Add a scenery object that needs height adjustment when the terrain is generated
+    public void AddSceneryQuestObject(GameObject questObject)
+    {
+        _sceneryQuestObjects.Add(questObject);
     }
 }
 

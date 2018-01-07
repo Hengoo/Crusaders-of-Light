@@ -10,11 +10,6 @@ public class LevelController : Singleton<LevelController>
 
     public QuestController QuestController;
 
-    public void Start()
-    {
-        //QuestController.AddQuest(QuestAreaPool.First());
-    }
-
     public void EndGame()
     {
         //TODO: implement

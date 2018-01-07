@@ -3,9 +3,15 @@
 
 public abstract class QuestBase
 {
-    public string Title;
-    public string Description;
+    public readonly string Title;
+    public readonly string Description;
     public UnityAction QuestEndAction;
+
+    protected QuestBase(string title, string description)
+    {
+        Title = title;
+        Description = description;
+    }
 
     public void OnQuestStarted()
     {
