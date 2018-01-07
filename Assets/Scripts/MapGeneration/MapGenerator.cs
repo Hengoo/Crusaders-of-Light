@@ -18,9 +18,8 @@ public class MapGenerator : MonoBehaviour
     public BiomeGlobalConfiguration BiomeGlobalConfiguration;
     public List<BiomeSettings> AvailableBiomes;
     
-    public int NumberOfAreas = 3;
     public AreaBase[] NormalAreas;
-    public AreaBase[] BossAreas;
+    public AreaBase BossArea;
 
 
     public int ExtraEdges = 20;
@@ -46,7 +45,7 @@ public class MapGenerator : MonoBehaviour
     public void GeneratePreview()
     {
 #if UNITY_EDITOR
-        if (!GenerateOnPlay)
+        if (!GenerateOnPlay && Application.isPlaying)
             return;
 #endif
 
@@ -54,8 +53,9 @@ public class MapGenerator : MonoBehaviour
         Random.InitState(Seed);
 
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeGlobalConfiguration);
-        _worldStructure = new WorldStructure(_terrainStructure, NumberOfAreas, ExtraEdges);
-        _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, NormalAreas, BossAreas, RoadHalfWidth);
+        _worldStructure = new WorldStructure(_terrainStructure, NormalAreas.Length + 1, ExtraEdges);
+        if(DrawMode == DrawModeEnum.GameMap)
+            _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, NormalAreas, BossArea, RoadHalfWidth);
 
         switch (DrawMode)
         {

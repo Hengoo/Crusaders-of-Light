@@ -17,6 +17,8 @@ public class QuestReachPlace : QuestBase
 
     protected override void QuestStarted()
     {
+        if (!_place) return;
+
         var collider = _place.AddComponent<SphereCollider>();
         var trigger = _place.AddComponent<QuestReachPlaceTrigger>();
 

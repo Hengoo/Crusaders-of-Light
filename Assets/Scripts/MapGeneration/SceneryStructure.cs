@@ -11,11 +11,11 @@ public class SceneryStructure
     public List<Vector2[]> RoadLines { get; private set; }
 
     public AreaBase[] NormalAreas { get; private set; }
-    public AreaBase[] BossAreas { get; private set; }
+    public AreaBase BossArea { get; private set; }
 
     private List<GameObject> _sceneryQuestObjects = new List<GameObject>();
 
-    public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, AreaBase[] normalAreas, AreaBase[] bossAreas, float roadWidth)
+    public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, AreaBase[] normalAreas, AreaBase bossArea, float roadWidth)
     {
         SceneryAreas = new List<SceneryAreaFill>();
         RoadPolygons = new List<Vector2[]>();
@@ -25,7 +25,7 @@ public class SceneryStructure
         WorldStructure = worldStructure;
 
         NormalAreas = normalAreas;
-        BossAreas = bossAreas;
+        BossArea = bossArea;
 
         CreateFill(roadWidth);
     }
@@ -41,9 +41,11 @@ public class SceneryStructure
             SceneryAreas.Add(new SceneryAreaFill(prefabs[i], polygons[i], minDistances[i]));
         }
 
-
         //Fill areas 
-        var quests = NormalAreas[0].GenerateQuests(this, 0);
+        QuestBase[] quests = new QuestBase[0];
+        for(int i = 0; i < NormalAreas.Length; i++)
+            quests = quests.Union(NormalAreas[i].GenerateQuests(this, i)).ToArray();
+        
         var levelController = LevelController.Instance;
         if (!levelController)
             levelController = GameObject.Find("LevelController").GetComponent<LevelController>();

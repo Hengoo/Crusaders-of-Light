@@ -18,6 +18,6 @@ public class QuestDestroyBuilding : QuestBase
 
     protected override void QuestCompleted()
     {
-        throw new System.NotImplementedException();
+
     }
 }

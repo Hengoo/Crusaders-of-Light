@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 /*
  * This class creates the Ice Wall area
@@ -31,11 +32,31 @@ public class AreaIceWall : AreaBase
 
         //Get a random position for the fire mage TODO: improve this selection if needed
         int node;
-        var availableBiomes = worldStructure.AreaBiomes[assignedArea].ToArray();
+        int desiredNeighbors = 1;
+        var availableBiomes = worldStructure.AreaBiomes[assignedArea].ToList();
+        var startNode = terrainStructure.StartBiomeNode.Value;
+        bool found = false;
         do
         {
-            node = availableBiomes[Random.Range(0, availableBiomes.Length)];
-        } while (node == terrainStructure.StartBiomeNode.Value);
+            var temp = new List<int>(availableBiomes);
+            do
+            {
+                node = temp[Random.Range(0, temp.Count)];
+                temp.Remove(node);
+                var neighborhood = worldStructure.NavigationGraph.GetNeighbours(node);
+                var center = worldStructure.NavigationGraph.GetNodeData(node).Center;
+
+                found = !(neighborhood.Length > desiredNeighbors ||
+                          !neighborhood.All(a => availableBiomes.Contains(a)) ||
+                          neighborhood.Contains(terrainStructure.StartBiomeNode.Value) ||
+                          node == startNode ||
+                          worldStructure.AreaCrossingNavigationEdges.Any(a => a.x == node || a.y == node));
+            } while (!found && temp.Count > 0);
+            desiredNeighbors++;
+
+        } while (desiredNeighbors <= 4 && !found);
+        
+
         var spawnPosition2D = terrainStructure.BiomeGraph.GetNodeData(node).Center;
         var fireMageSpawn = new GameObject("Fire Mage Spawn Point");
 
@@ -47,7 +68,7 @@ public class AreaIceWall : AreaBase
         var iceWallOrientationLine = iceWallCrossingLine[1] - iceWallCrossingLine[0];
         var iceWall = Instantiate(IceWallPrefab);
         iceWall.transform.position = new Vector3(iceWallPosition2D.x, 0, iceWallPosition2D.y);
-        iceWall.transform.localScale = new Vector3(iceWallOrientationLine.magnitude, terrainStructure.BiomeGlobalConfiguration.MapHeight, 10);
+        iceWall.transform.localScale = new Vector3(iceWallOrientationLine.magnitude * 1.2f, terrainStructure.BiomeGlobalConfiguration.MapHeight, 15);
         iceWall.transform.rotation = Quaternion.LookRotation(iceWall.transform.position + Vector3.Cross(new Vector3(iceWallOrientationLine.x, 0, iceWallOrientationLine.y), Vector3.up) * 10);
 
         //Add GameObjects to the scenery objects list (for height adjustment)
@@ -58,10 +79,10 @@ public class AreaIceWall : AreaBase
         var firestaff = FireMage.GetComponent<Character>().StartingWeapons[1]; //TODO: might cause exceptions, find better way
 
         //Find ice wall
-        _questSteps.Add(new QuestReachPlace(iceWall, .5f, "The Wall", "Explore the area and find the ice wall location"));
+        _questSteps.Add(new QuestReachPlace(iceWall, .3f, "The Wall", "Explore the area and find the ice wall location"));
 
         //Find fire mage camp
-        _questSteps.Add(new QuestReachPlace(fireMageSpawn, 5, "The Wall", "Find the fire wizard"));
+        _questSteps.Add(new QuestReachPlace(fireMageSpawn, 30, "The Wall", "Find the fire wizard"));
 
         //Kill fire mage
         _questSteps.Add(new QuestKillEnemy(fireMageSpawn.transform, FireMage, "The Wall", "Kill the fire wizard"));
