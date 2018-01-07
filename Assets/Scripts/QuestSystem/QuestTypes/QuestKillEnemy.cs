@@ -18,6 +18,7 @@ public class QuestKillEnemy : QuestBase
     protected override void QuestStarted()
     {
         var enemy = Object.Instantiate(_enemyPrefab);
+        enemy.SetActive(true);
         enemy.GetComponent<CharacterEnemy>().SubscribeDeathAction(OnQuestCompleted);
         enemy.transform.position = _spawnPoint.position;
     }

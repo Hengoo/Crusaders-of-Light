@@ -74,10 +74,7 @@ public class AreaIceWall : AreaBase
         //Add GameObjects to the scenery objects list (for height adjustment)
         sceneryStructure.AddSceneryQuestObject(fireMageSpawn);
         sceneryStructure.AddSceneryQuestObject(iceWall);
-
-        //Get fire mage the special weapon
-        var firestaff = FireMage.GetComponent<Character>().StartingWeapons[1]; //TODO: might cause exceptions, find better way
-
+        
         //Find ice wall
         _questSteps.Add(new QuestReachPlace(iceWall, .3f, "The Wall", "Explore the area and find the ice wall location"));
 
@@ -88,7 +85,7 @@ public class AreaIceWall : AreaBase
         _questSteps.Add(new QuestKillEnemy(fireMageSpawn.transform, FireMage, "The Wall", "Kill the fire wizard"));
 
         //Pickup fire mage staff
-        _questSteps.Add(new QuestPickupItem(firestaff, "The Wall", "Pickup the fire mage staff"));
+        _questSteps.Add(new QuestPickupItem(FireMage.GetComponent<Character>().StartingWeapons[1], "The Wall", "Pickup the fire mage staff"));
 
         //Destroy the ice wall
         _questSteps.Add(new QuestDestroyBuilding(iceWall.GetComponent<CharacterEnemy>(), "The Wall", "Destroy the wall with the fire staff"));

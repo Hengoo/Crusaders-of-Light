@@ -43,7 +43,7 @@ public class SceneryStructure
 
         //Fill areas 
         QuestBase[] quests = new QuestBase[0];
-        for(int i = 0; i < NormalAreas.Length-1; i++)
+        for(int i = 0; i < NormalAreas.Length; i++)
             quests = quests.Union(NormalAreas[i].GenerateQuests(this, i)).ToArray();
         
         var levelController = LevelController.Instance;
