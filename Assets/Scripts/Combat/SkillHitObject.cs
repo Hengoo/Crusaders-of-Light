@@ -7,8 +7,16 @@ public class SkillHitObject : MonoBehaviour {
     [Header("Hit Object Attributes:")]
     public float MaxTimeAlive = 0;
     private float TimeAliveCounter = 0;
+
+    public float TickTime = 0;
+    public float CurrentTickTime = 0.0f;
+    public bool TickTimeReached = false;
+
     public bool CanHitSameTargetMultipleTime = false;
     public int MaxNumberOfTargets = -1;
+    public bool HitObjectIsChildOfOwner = false;
+
+    public bool AlwaysHitOwner = false;
 
     [Header("Hit Object - Does not need to be set in Editor!:")]
     public Character Owner;
@@ -16,8 +24,9 @@ public class SkillHitObject : MonoBehaviour {
     public ItemSkill SourceItemSkill;
     public int FixedLevel;
     public Character.TeamAlignment HitObjectAlignment = Character.TeamAlignment.NONE;
+    public List<Character> HitCharacters = new List<Character>();
 
-    private List<Character> AlreadyHitCharacters = new List<Character>();
+    public List<Character> AlreadyHitCharacters = new List<Character>();
 
     public void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
     {
@@ -49,20 +58,90 @@ public class SkillHitObject : MonoBehaviour {
         }
 
         HitObjectAlignment = (Character.TeamAlignment)(counter);
+
+        // Living Time:
+        if (MaxTimeAlive <= 0)
+        {
+            SourceItemSkill.AddEffectSkillHitObject(this);
+        }
+
+        if (TickTime > 0)
+        {
+            CurrentTickTime = TickTime;
+        }
+
+        // Parenting:
+        if (HitObjectIsChildOfOwner)
+        {
+            transform.SetParent(Owner.transform);
+        }
+
+        if (AlwaysHitOwner)
+        {
+            HitTarget(Owner);
+        }
     }
 
     public void Update()
     {
-        TimeAliveCounter += Time.deltaTime;
-
-        if (TimeAliveCounter >= MaxTimeAlive)
+        if (MaxTimeAlive > 0)
         {
-            HitObjectTimeOut();
-            return;
+            TimeAliveCounter += Time.deltaTime;
+
+            if (TimeAliveCounter >= MaxTimeAlive)
+            {
+                HitObjectTimeOut();
+                return;
+            }
+        }    
+
+        if (TickTime > 0)
+        {
+            CurrentTickTime -= Time.deltaTime;
+
+            if (CurrentTickTime <= 0)
+            {
+                TickTimeReached = true;
+
+                if (AlwaysHitOwner)
+                {
+                    HitTarget(Owner);
+                }
+
+                List<Character> CleanUpMissingCharacters = new List<Character>();
+
+                for (int i = 0; i < HitCharacters.Count; i++)
+                {
+                    if (HitCharacters[i] == null)
+                    {
+                        CleanUpMissingCharacters.Add(HitCharacters[i]);
+                    }
+                    else
+                    {
+                        HitTarget(HitCharacters[i]);
+                    }
+                }
+
+                for (int i = 0; i < CleanUpMissingCharacters.Count; i++)
+                {
+                    HitCharacters.Remove(CleanUpMissingCharacters[i]);
+                }
+
+                CurrentTickTime += TickTime;
+            }
+            else if (TickTimeReached)
+            {
+                TickTimeReached = false;
+            }
         }
     }
 
     public void HitObjectTimeOut()
+    {
+        Destroy(this.gameObject);
+    }
+
+    public void HitObjectSkillActivationEnd()
     {
         Destroy(this.gameObject);
     }
@@ -107,7 +186,30 @@ public class SkillHitObject : MonoBehaviour {
     {
         if (other.gameObject.tag == "Character")
         {
+            HitCharacters.Add(other.GetComponent<Character>());
+
+            if (TickTime > 0 && !TickTimeReached)
+            {
+                return;
+            }
             HitTarget(other.gameObject.GetComponent<Character>());
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Character")
+        {
+            HitCharacters.Remove(other.GetComponent<Character>());
+        }
+    }
+
+    public bool IsParentSkill(SkillType Skill)
+    {
+        if (Skill == SourceSkill)
+        {
+            return true;
+        }
+        return false;
     }
 }

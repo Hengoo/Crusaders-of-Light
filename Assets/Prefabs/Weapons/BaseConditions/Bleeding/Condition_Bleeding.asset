@@ -16,7 +16,5 @@ MonoBehaviour:
   OnTick:
   - {fileID: 11400000, guid: b34b2c3f05bcf5143b2eaf0207a01c25, type: 2}
   OnEnd: []
-  Duration: 5
   TickTime: 0.5
-  StackMaximum: 1
-  InstanceMaximum: 1
+  InstanceMaximum: 5

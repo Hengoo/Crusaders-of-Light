@@ -23,9 +23,9 @@ GameObject:
   - component: {fileID: 135658221788836598}
   - component: {fileID: 23938332814992048}
   - component: {fileID: 114498326846323124}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Skill_Sword_Inspire_HitObject_AoE
-  m_TagString: Untagged
+  m_TagString: Skills
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -96,8 +96,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxTimeAlive: 0.1
+  TickTime: 0
   CanHitSameTargetMultipleTime: 0
   MaxNumberOfTargets: -1
+  HitObjectIsChildOfOwner: 0
   Owner: {fileID: 0}
   SourceSkill: {fileID: 0}
   SourceItemSkill: {fileID: 0}

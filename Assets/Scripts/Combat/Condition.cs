@@ -16,7 +16,7 @@ public class Condition : ScriptableObject {
     private float Duration = 0.0f; // Currently unsused!
     public float TickTime = 0.5f;
 
-    public int StackMaximum = 1;
+    //public int StackMaximum = 1;
     public int InstanceMaximum = 1;
 
 
@@ -85,9 +85,9 @@ public class Condition : ScriptableObject {
     {
         return InstanceMaximum;
     }
-
+/*
     public int GetStackMaximum()
     {
         return StackMaximum;
-    }
+    }*/
 }

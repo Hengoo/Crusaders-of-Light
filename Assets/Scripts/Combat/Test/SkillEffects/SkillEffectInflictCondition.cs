@@ -8,15 +8,15 @@ public class SkillEffectInflictCondition : SkillEffect {
     [Header("Skill Effect Inflict Condition:")]
     public Condition ConditionToApply;
 
-    public int DurationBase = 0;
-    public int DurationPerLevel = 0;
+    public float DurationBase = 0;
+    public float DurationPerLevel = 0;
 
     [Header("Skill Effect Condition Duration Modifier:")]
     public SkillEffectValueModifier[] DurationModifiers = new SkillEffectValueModifier[0];
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
-        int FinalDuration = DurationBase;
+        float FinalDuration = DurationBase;
 
         FinalDuration += DurationPerLevel * SourceItemSkill.GetSkillLevel();
 
@@ -30,7 +30,7 @@ public class SkillEffectInflictCondition : SkillEffect {
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
     {
-        int FinalDuration = DurationBase;
+        float FinalDuration = DurationBase;
 
         FinalDuration += DurationPerLevel * FixedLevel;
 

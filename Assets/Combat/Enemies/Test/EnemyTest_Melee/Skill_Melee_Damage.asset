@@ -11,6 +11,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cebab813fce92f40b989e69718a2f6f, type: 3}
   m_Name: Skill_Melee_Damage
   m_EditorClassIdentifier: 
-  DamageValueBase: 5
-  DamageValuePerLevel: 3
+  DamageValueBase: 50
+  DamageValuePerLevel: 30
+  DefenseType: -1
   DamageType: 0
+  DamageValueModifiers: []
+  IgnoreDefenseValueBase: 0
+  IgnoreDefenseValuePerLevel: 0
+  IgnoreResistanceValueBase: 0
+  IgnoreResistanceValuePerLevel: 0
+  IgnoreValueModifiers: []

@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Name: Condition_Bleeding_Damage
   m_EditorClassIdentifier: 
   DamageValueBase: 0
-  DamageValuePerLevel: 1
+  DamageValuePerLevel: 10
   DefenseType: -1
   DamageType: -1
   DamageValueModifiers: []
+  IgnoreDefenseValueBase: 0
+  IgnoreDefenseValuePerLevel: 0
+  IgnoreResistanceValueBase: 0
+  IgnoreResistanceValuePerLevel: 0
+  IgnoreValueModifiers: []

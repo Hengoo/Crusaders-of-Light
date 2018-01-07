@@ -494,11 +494,11 @@ public class Character : MonoBehaviour
     // =================================== EFFECT INTERACTION ===================================
 
     // Note: DamageAmount is assumed to be positive!
-    public int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount)
+    public int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount, int DefenseIgnore, int ResistanceIgnore)
     {
-        int FinalAmount = DamageCalculationDefense(DefenseType, Amount);
+        int FinalAmount = DamageCalculationDefense(DefenseType, Amount, DefenseIgnore);
 
-        FinalAmount = DamageCalculationResistance(DamageType, FinalAmount);
+        FinalAmount = DamageCalculationResistance(DamageType, FinalAmount, ResistanceIgnore);
 
 
         ChangeHealthCurrent(-1 * FinalAmount);
@@ -506,7 +506,7 @@ public class Character : MonoBehaviour
         return FinalAmount; // Note: Currently returns the amount of Damage that would theoretically be inflicted, not the actual amount of health lost.
     }
 
-    private int DamageCalculationResistance(Resistance DamageType, int Amount)
+    private int DamageCalculationResistance(Resistance DamageType, int Amount, int ResistanceIgnore)
     {
         int DamageTypeID = (int)(DamageType);
 
@@ -518,10 +518,10 @@ public class Character : MonoBehaviour
         // return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Resistances[DamageTypeID])); // Resistance as Percentage Reduction.
 
         // Damage: At 0: Damage Value / At 10: 0.5 Value / At 20: 0.25 Value / At 30: 0.125 Value / ... At -10: 2 Value / At -20: 4 Value / ...
-        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Resistances[DamageTypeID]) / 10.0f)));
+        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Mathf.Max(0, Resistances[DamageTypeID] - ResistanceIgnore)) / 10.0f)));
     }
 
-    private int DamageCalculationDefense(Defense DefenseType, int Amount)
+    private int DamageCalculationDefense(Defense DefenseType, int Amount, int DefenseIgnore)
     {
         int DamageTypeID = (int)(DefenseType);
 
@@ -533,7 +533,7 @@ public class Character : MonoBehaviour
         // return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Defenses[DamageTypeID])); // Defense as Percentage Reduction.
 
         // Damage: At 0: Damage Value / At 10: 0.5 Value / At 20: 0.25 Value / At 30: 0.125 Value / ... At -10: 2 Value / At -20: 4 Value / ...
-        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Defenses[DamageTypeID]) / 10.0f)));
+        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Mathf.Max(Defenses[DamageTypeID] - DefenseIgnore)) / 10.0f)));
     }
 
     public void ChangeResistance(Resistance ResistanceType, float Amount)
@@ -666,7 +666,12 @@ public class Character : MonoBehaviour
 
     public void ApplyNewCondition(Condition NewCondition, Character SourceCharacter, ItemSkill SourceItemSkill, float Duration)
     {
-        // TODO : Check first if Condition already exists / Logic for Stacking Conditions!
+        // If the maximum Instances of this Condition is reached, one is removed and the new one applied:
+        if (CheckIfConditionExists(NewCondition) >= NewCondition.GetInstanceMaximum())
+        {
+            RemoveCondition(NewCondition);
+        }
+
         ActiveCondition NewActiveCondition = new ActiveCondition(this, SourceCharacter, SourceItemSkill, NewCondition, Duration);
         ActiveConditions.Add(NewActiveCondition);
     }
@@ -703,16 +708,22 @@ public class Character : MonoBehaviour
         ConditionsEnded.Clear();
     }
 
-    public bool CheckIfConditionExists(Condition ConditionToCheck)
+    public int CheckIfConditionExists(Condition ConditionToCheck)
     {
+        int NumberConditions = 0;
+
         for (int i = 0; i < ActiveConditions.Count; i++)
         {
             if (ActiveConditions[i].RepresentsThisCondition(ConditionToCheck))
             {
-                return true;
+                NumberConditions++;
+                if (ConditionToCheck.GetInstanceMaximum() >= NumberConditions)
+                {
+                    return NumberConditions;
+                }
             }
         }
-        return false;
+        return NumberConditions;
     }
 
     public void RemoveCondition(Condition ConditionToRemove)

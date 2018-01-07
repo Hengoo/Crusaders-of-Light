@@ -12,7 +12,7 @@ public class SkillEffectConSpecificCondition : SkillEffect {
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
-        if (Target.CheckIfConditionExists(RequiredCondition))
+        if (Target.CheckIfConditionExists(RequiredCondition) > 0)
         {
             for (int i = 0; i < SkillEffectsIfHasCondition.Length; i++)
             {

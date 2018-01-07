@@ -18,6 +18,7 @@ public class ItemSkill : MonoBehaviour {
 
     public bool[] EffectOnlyOnceBool = { false, false };
     public float EffectFloat = 0.0f;
+    public List<SkillHitObject> EffectSkillHitObjects = new List<SkillHitObject>();
 
     //[Header("Animation:")]
     //public string AnimationName = "no_animation";
@@ -221,6 +222,35 @@ public class ItemSkill : MonoBehaviour {
         EffectFloat += change;
     }
        
+    public void AddEffectSkillHitObject(SkillHitObject HitObject)
+    {
+        EffectSkillHitObjects.Add(HitObject);
+    }
+
+    public bool RemoveEffectSkillHitObject(SkillHitObject HitObject)
+    {
+        return EffectSkillHitObjects.Remove(HitObject);
+    }
+
+    public void StoppedActivatingSkillWithHitObjects(SkillType SkillStopped)
+    {
+        List<SkillHitObject> EndHitObjects = new List<SkillHitObject>();
+
+        for (int i = 0; i < EffectSkillHitObjects.Count; i++)
+        {
+            if (EffectSkillHitObjects[i].IsParentSkill(SkillStopped))
+            {
+                EndHitObjects.Add(EffectSkillHitObjects[i]);
+                EffectSkillHitObjects[i].HitObjectSkillActivationEnd();
+            }
+        }
+
+        for (int i = 0; i < EndHitObjects.Count; i++)
+        {
+            EffectSkillHitObjects.Remove(EndHitObjects[i]);
+        }
+    }
+
 
     public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()
     {

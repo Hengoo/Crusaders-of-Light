@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 136565905700502342}
   - component: {fileID: 114357049156064192}
   - component: {fileID: 54686031273656990}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy_Rogue
   m_TagString: Character
   m_Icon: {fileID: 0}
@@ -688,8 +688,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 90
-  HealthMax: 90
+  HealthCurrent: 900
+  HealthMax: 900
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
@@ -738,6 +738,9 @@ MonoBehaviour:
   MovePatternEvaluationCycleTimer: 0
   IdleMoveScore: 0.2
   IdleMoveDuration: 0.2
+  BasePowerLevel: 0
+  SpawnedBy: {fileID: 0}
+  SpawnStartingWeaponsOnStart: 0
 --- !u!135 &135303233003176886
 SphereCollider:
   m_ObjectHideFlags: 1
