@@ -22,16 +22,25 @@ public class AreaIceWall : AreaBase
     public GameObject FireMage; //Must have enemy character script attached to it
     public Weapon FireStaff;
 
+    private Transform _iceWallTransform;
+    private Transform _fireMageTransform;
+
     [HideInInspector] private List<QuestBase> _questSteps = new List<QuestBase>();
 
+    public AreaIceWall(Transform iceWallTransform, Transform fireMageTransform)
+    {
+        _iceWallTransform = iceWallTransform;
+        _fireMageTransform = fireMageTransform;
+    }
+
     //Generate the quests to be given to the quest controller
-    public QuestBase[] GenerateQuests(Transform iceWallTransform, Transform fireMageTransform)
+    public override QuestBase[] GenerateQuests(SceneryStructure sceneryStructure)
     {
         //Create ice wall in the game world
         var iceWall = Instantiate(IceWallPrefab);
-        iceWall.transform.position = iceWallTransform.position;
-        iceWall.transform.rotation = iceWallTransform.rotation;
-        iceWall.transform.localScale = iceWallTransform.localScale;
+        iceWall.transform.position = _iceWallTransform.position;
+        iceWall.transform.rotation = _iceWallTransform.rotation;
+        iceWall.transform.localScale = _iceWallTransform.localScale;
 
         //Give fire mage the special weapon
         var firestaff = FireMage.GetComponent<Character>().StartingWeapons.First(a => a.name.ToLower() == "firestaff");
@@ -40,10 +49,10 @@ public class AreaIceWall : AreaBase
         _questSteps.Add(new QuestReachPlace(iceWall, 5));
 
         //Find fire mage camp
-        _questSteps.Add(new QuestReachPlace(fireMageTransform.gameObject, 5));
+        _questSteps.Add(new QuestReachPlace(_fireMageTransform.gameObject, 5));
 
         //Kill fire mage
-        _questSteps.Add(new QuestKillEnemy(fireMageTransform, FireMage));
+        _questSteps.Add(new QuestKillEnemy(_fireMageTransform, FireMage));
 
         //Pickup fire mage staff
         _questSteps.Add(new QuestPickupItem(firestaff));

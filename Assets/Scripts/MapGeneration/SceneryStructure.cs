@@ -12,7 +12,10 @@ public class SceneryStructure
     public List<Vector2[]> RoadPolygons { get; private set; }
     public List<Vector2[]> RoadLines { get; private set; }
 
-    public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, float roadWidth)
+    public AreaBase[] NormalAreas { get; private set; }
+    public AreaBase[] BossAreas { get; private set; }
+
+    public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, AreaBase[] normalAreas, AreaBase[] bossAreas, float roadWidth)
     {
         SceneryAreas = new List<SceneryAreaFill>();
         RoadPolygons = new List<Vector2[]>();
@@ -21,12 +24,15 @@ public class SceneryStructure
         TerrainStructure = terrainStructure;
         WorldStructure = worldStructure;
 
+        NormalAreas = normalAreas;
+        BossAreas = bossAreas;
+
         CreateFill(roadWidth);
     }
 
     private void CreateFill(float roadWidth)
     {
-        //Get the biome edges from the terrain structure and create areas to fill with prefabs
+        //Get the biome edges from the terrain structure and create areas to fill with prefabs and quests
         List<GameObject[]> prefabs;
         List<float> minDistances;
         var polygons = TerrainStructure.GetBiomePolygons(out prefabs, out minDistances);
@@ -34,6 +40,10 @@ public class SceneryStructure
         {
             SceneryAreas.Add(new SceneryAreaFill(prefabs[i], polygons[i], minDistances[i]));
         }
+
+
+        //Fill areas 
+        var quests = NormalAreas[0].GenerateQuests(this);
 
         //Create road polygons and road lines
         foreach (var edge in WorldStructure.NavigationGraph.GetAllEdges().Union(WorldStructure.AreaCrossingNavigationEdges))
@@ -62,10 +72,10 @@ public class SceneryStructure
         {
             foreach (var vertex in polygon)
             {
-                foreach (var area in SceneryAreas)
+                foreach (var sceneryArea in SceneryAreas)
                 {
-                    if(vertex.IsInsidePolygon(area.Polygon))
-                        area.AddClearPolygon(polygon);
+                    if(vertex.IsInsidePolygon(sceneryArea.Polygon))
+                        sceneryArea.AddClearPolygon(polygon);
                 }
             }
         }

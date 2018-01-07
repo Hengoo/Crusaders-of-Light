@@ -20,6 +20,10 @@ public class MapGenerator : MonoBehaviour
     public List<BiomeSettings> AvailableBiomes;
     
     public int NumberOfAreas = 3;
+    public AreaBase[] NormalAreas;
+    public AreaBase[] BossAreas;
+
+
     public int ExtraEdges = 20;
     public bool FillTerrain = true;
     public float RoadHalfWidth = 10;
@@ -41,7 +45,7 @@ public class MapGenerator : MonoBehaviour
 
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeGlobalConfiguration);
         _worldStructure = new WorldStructure(_terrainStructure, NumberOfAreas, ExtraEdges);
-        _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, RoadHalfWidth);
+        _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, NormalAreas, BossAreas, RoadHalfWidth);
 
         switch (DrawMode)
         {

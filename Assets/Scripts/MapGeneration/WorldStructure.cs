@@ -10,8 +10,8 @@ public class WorldStructure
 {
     public Graph<Biome> NavigationGraph { get; private set; }
     public List<Vector2Int> AreaCrossingNavigationEdges { get; private set; }
-    public List<Vector2[]> AreaCrossingBorders { get; private set; }
-    public List<Vector2[]> AreaPolygons { get; private set; }
+    public Vector2[][] AreaCrossingBorders { get; private set; }
+    public Vector2[][] AreaPolygons { get; private set; }
     public List<Vector2[]> AreaBorders { get; private set; }
     public List<Vector2> CoastBlockerPolygon { get; private set; }
     public int NumberOfAreas { get; private set; }
@@ -22,9 +22,9 @@ public class WorldStructure
         _terrainStructure = terrainStructure;
         NavigationGraph = new Graph<Biome>(_terrainStructure.MinimumSpanningTree);
         AreaCrossingNavigationEdges = new List<Vector2Int>(numAreas - 1);
-        AreaPolygons = new List<Vector2[]>(numAreas);
+        AreaPolygons = new Vector2[numAreas][];
+        AreaCrossingBorders = new Vector2[numAreas - 1][];
         AreaBorders = new List<Vector2[]>();
-        AreaCrossingBorders = new List<Vector2[]>();
         CoastBlockerPolygon = new List<Vector2>();
         NumberOfAreas = numAreas;
 
@@ -108,15 +108,19 @@ public class WorldStructure
             }
 
             // Area Polygon
-            AreaPolygons.Add(areaEdges.EdgesToPolygon().ToArray());
+            AreaPolygons[i] = areaEdges.EdgesToPolygon().ToArray();
         }
 
         //Create border line segments
         var borderEdges = new List<Edge>(128);
-        var crossableEdges = new List<Edge>(128);
+        var crossableEdges = new Edge[AreaCrossingBorders.Length];
         var coastEdges = new List<KeyValuePair<Edge, Vector2>>();
         foreach (var edge in _terrainStructure.VoronoiDiagram.Edges)
         {
+
+            //Check if this edge is visible before continuing
+            if (!edge.Visible()) continue;
+
             var biomeRight = _terrainStructure.GetNodeIDFromSite(edge.RightSite.Coord);
             var biomeLeft = _terrainStructure.GetNodeIDFromSite(edge.LeftSite.Coord);
             var areaRight = -1;
@@ -140,7 +144,10 @@ public class WorldStructure
                 //Check if edge is crossable between areas or not
                 if (AreaCrossingNavigationEdges.Contains(new Vector2Int(biomeLeft, biomeRight))
                     || AreaCrossingNavigationEdges.Contains(new Vector2Int(biomeRight, biomeLeft)))
-                    crossableEdges.Add(edge);
+                {
+                    //Find lowest area id
+                    crossableEdges[areaLeft < areaRight ? areaLeft : areaRight] = edge;
+                }
                 else
                     borderEdges.Add(edge);
             }
@@ -158,10 +165,10 @@ public class WorldStructure
             AreaBorders.Add(new []{edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
         }
 
-        foreach (var edge in crossableEdges)
+        for (var i = 0; i < AreaCrossingBorders.Length; i++)
         {
-            if (!edge.Visible()) continue;
-            AreaCrossingBorders.Add(new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
+            var edge = crossableEdges[i];
+            AreaCrossingBorders[i] = new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() };
         }
 
         var coastLines = coastEdges.Select(pair => pair.Key).ToList().EdgesToSortedLines();

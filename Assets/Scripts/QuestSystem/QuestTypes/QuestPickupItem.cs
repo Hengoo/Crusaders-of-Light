@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class QuestPickupItem : QuestBase
 {
-    private Item _item;
+    private readonly Item _item;
 
     public QuestPickupItem(Item item)
     {
@@ -14,7 +14,9 @@ public class QuestPickupItem : QuestBase
 
     protected override void QuestStarted()
     {
-        
+        _item.SubscribeItemPickup(OnQuestCompleted);
+
+        //TODO: mechanics to warn if the item is dropped
     }
 
     protected override void QuestCompleted()

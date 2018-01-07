@@ -3279,8 +3279,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 404881676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 960, y: 540, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 791.5, y: 445, z: 0}
+  m_LocalScale: {x: 0.82447916, y: 0.82447916, z: 0.82447916}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -7780,23 +7780,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DrawMode: 1
-  BiomeConfiguration:
-    HeightMapResolution: 256
-    MapSize: 256
-    MapHeight: 40
-    BiomeSamples: 40
+  BiomeGlobalConfiguration:
+    HeightMapResolution: 512
+    MapSize: 1024
+    MapHeight: 80
+    BiomeSamples: 45
     MaxHeight: 1
     SeaHeight: 0.15
-    BorderNoise: 3
-    LloydRelaxation: 2
-    Octaves: 2
-    BorderBiome: {fileID: 11400000, guid: 861766d1f31f00c4ba9601f551715601, type: 2}
-    CliffBiome: {fileID: 11400000, guid: 0b96cb55724ac1f46bdaf4207bd32742, type: 2}
-    WaterMaterial: {fileID: 2100000, guid: 5e37ecf4f3515d34e9bb6ec9a54f158a, type: 2}
+    BorderNoise: 8
+    LloydRelaxation: 5
+    Octaves: 3
+    BorderBiome: {fileID: 0}
+    CliffBiome: {fileID: 0}
+    WaterMaterial: {fileID: 0}
     TerrainMaterial: {fileID: 0}
+    CoastBlocker: {fileID: 0}
+    CoastBlockerPole: {fileID: 0}
+    CoastBlockerLength: 1
+    CoastInlandOffset: 5
+    RoadSplatPrototype:
+      texture: {fileID: 0}
+      normalMap: {fileID: 0}
+      metallic: 0
+      smoothness: 0
+      tileOffset: {x: 0, y: 0}
+      tileSize: {x: 0, y: 0}
     OverallSmoothing: 2
     SmoothEdges: 1
-    EdgeWidth: 4
+    EdgeWidth: 3
     SquareSize: 2
   AvailableBiomes:
   - {fileID: 11400000, guid: 64bd5e1550fae0e4bb489993e444dfb6, type: 2}
@@ -9994,7 +10005,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00cef7c548985184e8e9f469c09039be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Seed: 0
+  GameState: 2
 --- !u!4 &1338770348
 Transform:
   m_ObjectHideFlags: 0
@@ -13945,6 +13956,48 @@ Transform:
   m_PrefabParentObject: {fileID: 4543342140032782, guid: 61c5572780389b448854ec10b9a60678,
     type: 2}
   m_PrefabInternal: {fileID: 478181872}
+--- !u!1001 &1588326957
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1467788838}
+    m_Modifications:
+    - target: {fileID: 4232779105018124, guid: e81bef891dfaaea438a7e10bd9cd7102, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -230.1257
+      objectReference: {fileID: 0}
+    - target: {fileID: 4232779105018124, guid: e81bef891dfaaea438a7e10bd9cd7102, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 392.34375
+      objectReference: {fileID: 0}
+    - target: {fileID: 4232779105018124, guid: e81bef891dfaaea438a7e10bd9cd7102, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -300.01367
+      objectReference: {fileID: 0}
+    - target: {fileID: 4232779105018124, guid: e81bef891dfaaea438a7e10bd9cd7102, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4232779105018124, guid: e81bef891dfaaea438a7e10bd9cd7102, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4232779105018124, guid: e81bef891dfaaea438a7e10bd9cd7102, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4232779105018124, guid: e81bef891dfaaea438a7e10bd9cd7102, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4232779105018124, guid: e81bef891dfaaea438a7e10bd9cd7102, type: 2}
+      propertyPath: m_RootOrder
+      value: 68
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: e81bef891dfaaea438a7e10bd9cd7102, type: 2}
+  m_IsPrefabParent: 0
 --- !u!4 &1589584764 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4862445592569154, guid: 1355bd09a5830c443838e1c0568d3d54,
@@ -15064,162 +15117,11 @@ Transform:
   m_PrefabParentObject: {fileID: 4867536667566690, guid: 204ec3c2bd40f4046afdf38e73adea24,
     type: 2}
   m_PrefabInternal: {fileID: 706195976}
---- !u!1 &1808154853
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1808154857}
-  - component: {fileID: 1808154856}
-  - component: {fileID: 1808154855}
-  - component: {fileID: 1808154854}
-  - component: {fileID: 1808154859}
-  - component: {fileID: 1808154858}
-  m_Layer: 0
-  m_Name: Icewall
-  m_TagString: Character
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!23 &1808154854
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1808154853}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_Materials:
-  - {fileID: 2100000, guid: 07f6e5b5bf3b3aa45aa01c13857ffcb3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 1
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!65 &1808154855
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1808154853}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.1, y: 1.1, z: 1.1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!33 &1808154856
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1808154853}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &1808154857
+--- !u!4 &1808154857 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1808154853}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -230.1257, y: 392.34375, z: -300.01367}
-  m_LocalScale: {x: 53.702145, y: 23.670065, z: 3.069799}
-  m_Children: []
-  m_Father: {fileID: 1467788838}
-  m_RootOrder: 68
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &1808154858
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1808154853}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &1808154859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1808154853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HealthCurrent: 100
-  HealthMax: 100
-  EnergyCurrent: 100
-  EnergyMax: 100
-  Resistances:
-  - 3
-  - 3
-  - 0
-  - 3
-  - 3
-  - 3
-  Defenses:
-  - 0
-  - 0
-  - 0
-  CharacterHands:
-  - {fileID: 0}
-  - {fileID: 0}
-  StartingWeapons: []
-  SkillsPerWeapon: 2
-  WeaponSlots:
-  - {fileID: 0}
-  - {fileID: 0}
-  ItemSkillSlots:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  SkillCurrentlyActivating: ffffffffffffffff
-  ActiveConditions: []
-  HandAnimators:
-  - {fileID: 0}
-  - {fileID: 0}
-  Alignment: 2
-  PlayersInAttentionRange: []
-  IdleSkillScore: 1
-  IdleDuration: 100
-  ActiveMovePattern: {fileID: 11400000, guid: 76fb1f41306999c47a678806d919f6c8, type: 2}
-  MovePatterns:
-  - {fileID: 11400000, guid: 70169f3e00392e046bd66d1aac4a628b, type: 2}
-  MovePatternEvaluationCycle: 100
-  MovePatternEvaluationCycleTimer: 0
-  IdleMoveScore: 0.2
-  IdleMoveDuration: 0.2
+  m_PrefabParentObject: {fileID: 4232779105018124, guid: e81bef891dfaaea438a7e10bd9cd7102,
+    type: 2}
+  m_PrefabInternal: {fileID: 1588326957}
 --- !u!1001 &1808885656
 Prefab:
   m_ObjectHideFlags: 0
