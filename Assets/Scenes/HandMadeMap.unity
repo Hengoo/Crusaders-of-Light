@@ -3382,8 +3382,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 404881676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 641.5, y: 319, z: 0}
-  m_LocalScale: {x: 0.66822916, y: 0.66822916, z: 0.66822916}
+  m_LocalPosition: {x: 271.5, y: 319, z: 0}
+  m_LocalScale: {x: 0.2828125, y: 0.2828125, z: 0.2828125}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -4379,6 +4379,11 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114587697657262122, guid: 6c5655d12222f234ba763facca60192b,
+        type: 2}
+      propertyPath: SpawnStartingWeaponsOnStart
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6c5655d12222f234ba763facca60192b, type: 2}
   m_IsPrefabParent: 0
@@ -4801,6 +4806,11 @@ Prefab:
       objectReference: {fileID: 1789461354}
     - target: {fileID: 1154009503558946, guid: 7b940a880da99f74694ab5721060c604, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114357049156064192, guid: 7b940a880da99f74694ab5721060c604,
+        type: 2}
+      propertyPath: SpawnStartingWeaponsOnStart
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -5776,6 +5786,11 @@ Prefab:
         type: 2}
     - target: {fileID: 1437983783161170, guid: a2f50ba4b979fa54a82d6fd7e3902bd2, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114301975722172286, guid: a2f50ba4b979fa54a82d6fd7e3902bd2,
+        type: 2}
+      propertyPath: SpawnStartingWeaponsOnStart
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -6835,6 +6850,11 @@ Prefab:
       objectReference: {fileID: 1789461354}
     - target: {fileID: 1154009503558946, guid: 7b940a880da99f74694ab5721060c604, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114357049156064192, guid: 7b940a880da99f74694ab5721060c604,
+        type: 2}
+      propertyPath: SpawnStartingWeaponsOnStart
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -8335,23 +8355,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DrawMode: 1
-  BiomeConfiguration:
-    HeightMapResolution: 256
-    MapSize: 256
-    MapHeight: 40
-    BiomeSamples: 40
+  BiomeGlobalConfiguration:
+    HeightMapResolution: 512
+    MapSize: 1024
+    MapHeight: 80
+    BiomeSamples: 45
     MaxHeight: 1
     SeaHeight: 0.15
-    BorderNoise: 3
-    LloydRelaxation: 2
-    Octaves: 2
-    BorderBiome: {fileID: 11400000, guid: 861766d1f31f00c4ba9601f551715601, type: 2}
-    CliffBiome: {fileID: 11400000, guid: 0b96cb55724ac1f46bdaf4207bd32742, type: 2}
-    WaterMaterial: {fileID: 2100000, guid: 5e37ecf4f3515d34e9bb6ec9a54f158a, type: 2}
+    BorderNoise: 8
+    LloydRelaxation: 5
+    Octaves: 3
+    BorderBiome: {fileID: 0}
+    CliffBiome: {fileID: 0}
+    WaterMaterial: {fileID: 0}
     TerrainMaterial: {fileID: 0}
+    CoastBlocker: {fileID: 0}
+    CoastBlockerPole: {fileID: 0}
+    CoastBlockerLength: 1
+    CoastInlandOffset: 5
+    RoadSplatPrototype:
+      texture: {fileID: 0}
+      normalMap: {fileID: 0}
+      metallic: 0
+      smoothness: 0
+      tileOffset: {x: 0, y: 0}
+      tileSize: {x: 0, y: 0}
     OverallSmoothing: 2
     SmoothEdges: 1
-    EdgeWidth: 4
+    EdgeWidth: 3
     SquareSize: 2
   AvailableBiomes:
   - {fileID: 11400000, guid: 64bd5e1550fae0e4bb489993e444dfb6, type: 2}
@@ -10607,7 +10638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00cef7c548985184e8e9f469c09039be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Seed: 0
+  GameState: 2
 --- !u!4 &1338770348
 Transform:
   m_ObjectHideFlags: 0
@@ -11249,6 +11280,11 @@ Prefab:
       objectReference: {fileID: 1789461354}
     - target: {fileID: 1190281747256084, guid: 6c5655d12222f234ba763facca60192b, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114587697657262122, guid: 6c5655d12222f234ba763facca60192b,
+        type: 2}
+      propertyPath: SpawnStartingWeaponsOnStart
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -13333,6 +13369,11 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114357049156064192, guid: 7b940a880da99f74694ab5721060c604,
+        type: 2}
+      propertyPath: SpawnStartingWeaponsOnStart
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7b940a880da99f74694ab5721060c604, type: 2}
   m_IsPrefabParent: 0
@@ -13777,6 +13818,11 @@ Prefab:
       objectReference: {fileID: 1789461354}
     - target: {fileID: 1190281747256084, guid: 6c5655d12222f234ba763facca60192b, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114587697657262122, guid: 6c5655d12222f234ba763facca60192b,
+        type: 2}
+      propertyPath: SpawnStartingWeaponsOnStart
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -14347,6 +14393,11 @@ Prefab:
       objectReference: {fileID: 1789461354}
     - target: {fileID: 1190281747256084, guid: 6c5655d12222f234ba763facca60192b, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114587697657262122, guid: 6c5655d12222f234ba763facca60192b,
+        type: 2}
+      propertyPath: SpawnStartingWeaponsOnStart
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -16011,6 +16062,7 @@ MonoBehaviour:
   IdleMoveDuration: 0.2
   BasePowerLevel: 0
   SpawnedBy: {fileID: 0}
+  SpawnStartingWeaponsOnStart: 0
 --- !u!1001 &1808885656
 Prefab:
   m_ObjectHideFlags: 0
@@ -16505,6 +16557,11 @@ Prefab:
       objectReference: {fileID: 1789461354}
     - target: {fileID: 1437983783161170, guid: a2f50ba4b979fa54a82d6fd7e3902bd2, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114301975722172286, guid: a2f50ba4b979fa54a82d6fd7e3902bd2,
+        type: 2}
+      propertyPath: SpawnStartingWeaponsOnStart
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -17968,6 +18025,11 @@ Prefab:
       objectReference: {fileID: 1789461354}
     - target: {fileID: 1154009503558946, guid: 7b940a880da99f74694ab5721060c604, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114357049156064192, guid: 7b940a880da99f74694ab5721060c604,
+        type: 2}
+      propertyPath: SpawnStartingWeaponsOnStart
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

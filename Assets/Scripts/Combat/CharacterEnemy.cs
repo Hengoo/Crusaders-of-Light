@@ -32,6 +32,18 @@ public class CharacterEnemy : Character {
 
     public Spawner SpawnedBy;
 
+    [Header("Enemy Testing:")]
+    public bool SpawnStartingWeaponsOnStart = false;
+
+    protected override void Start()
+    {
+        base.Start();
+        if (SpawnStartingWeaponsOnStart)
+        {
+            SpawnAndEquipStartingWeapons();
+        }
+    }
+
     protected override void Update()
     {
         base.Update();
