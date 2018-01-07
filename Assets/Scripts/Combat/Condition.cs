@@ -13,7 +13,7 @@ public class Condition : ScriptableObject {
     public SkillEffect[] OnEnd = new SkillEffect[0];
 
     [Header("Condition Duration:")]
-    public float Duration = 0.0f;
+    private float Duration = 0.0f; // Currently unsused!
     public float TickTime = 0.5f;
 
     public int StackMaximum = 1;

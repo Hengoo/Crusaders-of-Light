@@ -146,11 +146,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114514537758392172}
-  SkillObject: {fileID: 11400000, guid: 3a6b9bca2200f0b4c9d211f88057c55f, type: 2}
+  SkillObject: {fileID: 11400000, guid: 3b329ead8a155ab48aca25562485d55f, type: 2}
   Level: 1
   CurrentCooldown: 0
   ActivationIntervallTimer: 0
-  EffectOnlyOnceBool: 0
+  EffectOnlyOnceBool: 0000
   EffectFloat: 0
 --- !u!114 &114489832379128138
 MonoBehaviour:
@@ -168,7 +168,7 @@ MonoBehaviour:
   Level: 1
   CurrentCooldown: 0
   ActivationIntervallTimer: 0
-  EffectOnlyOnceBool: 0
+  EffectOnlyOnceBool: 0000
   EffectFloat: 0
 --- !u!114 &114514537758392172
 MonoBehaviour:
@@ -199,4 +199,5 @@ MonoBehaviour:
   AlreadyHitCharacters: []
   CurrentItemHitBoxAlignment: 0
   EquippedSlotID: -1
+  ItemPowerLevel: 0
   TwoHanded: 0

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 459ba0e85ac88e64381693d37b49b7ee, type: 3}
+  m_Name: Skill_Axe_Execute
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.4
+  ActivationIntervall: -1
+  Cooldown: 3
+  ActivationMovementModifier: -0.6
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: f161dee21591c1f4ba4dcef9101aa557, type: 2}
+  - {fileID: 11400000, guid: fbebda45e1bee4b4aa4f670a633238a6, type: 2}
+  HindranceLevel: 2
+  AnimationName: Melee_ChargeUp_Swing
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: 85131ec5c7d12e845882ef12aa5e2b32, type: 2}
+  PowerLevel: 0
+  ChargeUpTimeMax: -1
+  EffectiveChargeUpTimeMax: 1.4
+  HitEachCharacterOnlyOnce: 1
+  AfterReleaseActivationTime: 0.25
+  ScaleAfterReleaseTimeWithChannelTime: 0
+  MinTime: 0
+  MaxTime: 1.4
+  MinModifier: 1
+  MaxModifier: 1
+  EffectsSelfOnMinimumActivationTimeEnd: []
+  EffectsSelfOnRelease: []
+  EffectsSelfOnEnd: []
+  ReleaseAnimation: Charge_Released

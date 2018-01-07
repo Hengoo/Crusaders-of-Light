@@ -16,7 +16,7 @@ public class ItemSkill : MonoBehaviour {
 
     public float ActivationIntervallTimer = 0.0f;
 
-    public bool EffectOnlyOnceBool = false;
+    public bool[] EffectOnlyOnceBool = { false, false };
     public float EffectFloat = 0.0f;
 
     //[Header("Animation:")]
@@ -29,7 +29,11 @@ public class ItemSkill : MonoBehaviour {
         if (CurrentCooldown > 0.0f) { return false; }
 
         ActivationIntervallTimer = 0.0f;
-        EffectOnlyOnceBool = false;
+        for (int i = 0; i < EffectOnlyOnceBool.Length; i++)
+        {
+            EffectOnlyOnceBool[i] = false;
+        }
+
         EffectFloat = 0.0f;
 
         bool ActivationSuccessful = SkillObject.StartSkillActivation(this, GetCurrentOwner());
@@ -188,14 +192,14 @@ public class ItemSkill : MonoBehaviour {
         return SkillObject.GetPowerLevel();
     }
 
-    public bool GetEffectOnlyOnceBool()
+    public bool GetEffectOnlyOnceBool(int ID)
     {
-        return EffectOnlyOnceBool;
+        return EffectOnlyOnceBool[ID];
     }
 
-    public void SetEffectOnlyOnceBool(bool state)
+    public void SetEffectOnlyOnceBool(int ID, bool state)
     {
-        EffectOnlyOnceBool = state;
+        EffectOnlyOnceBool[ID] = state;
     }
 
     public float GetEffectFloat()

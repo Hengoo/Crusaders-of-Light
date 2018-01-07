@@ -22,9 +22,9 @@ public class SkillTypeChannelSelf : SkillType
             return;
         }
 
-        if (!SourceItemSkill.GetEffectOnlyOnceBool())
+        if (!SourceItemSkill.GetEffectOnlyOnceBool(0))
         {
-            SourceItemSkill.SetEffectOnlyOnceBool(true);
+            SourceItemSkill.SetEffectOnlyOnceBool(0, true);
             
             for (int i = 0; i < EffectsStart.Length; i++)
             {

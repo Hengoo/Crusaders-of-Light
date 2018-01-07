@@ -13,4 +13,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DamageValueBase: 6
   DamageValuePerLevel: 3
+  DefenseType: 1
   DamageType: 0
+  DamageValueModifiers: []

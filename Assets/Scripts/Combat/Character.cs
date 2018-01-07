@@ -592,8 +592,10 @@ public class Character : MonoBehaviour
         float TickCounter;
         [SerializeField]
         int FixedLevel;
+        [SerializeField]
+        float MaxDuration;
 
-        public ActiveCondition(Character _TargetCharacter, Character _SourceCharacter, ItemSkill _SourceItemSkill, Condition _Condition)
+        public ActiveCondition(Character _TargetCharacter, Character _SourceCharacter, ItemSkill _SourceItemSkill, Condition _Condition, float Duration)
         {
             TargetCharacter = _TargetCharacter;
             SourceCharacter = _SourceCharacter;
@@ -602,6 +604,8 @@ public class Character : MonoBehaviour
             TimeCounter = 0f;
             TickCounter = 0f;
             FixedLevel = SourceItemSkill.GetSkillLevel();
+
+            MaxDuration = Duration;
 
             ApplyCondition();
         }
@@ -628,7 +632,7 @@ public class Character : MonoBehaviour
             }
 
             TimeCounter += UpdateTime;
-            if (Cond.ReachedEnd(TimeCounter))
+            if (ReachedEnd(TimeCounter))
             {
                 Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
                 return true;
@@ -649,12 +653,21 @@ public class Character : MonoBehaviour
         {
             Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
         }
+
+        public bool ReachedEnd(float TimeCounter)
+        {
+            if (MaxDuration >= 0 && TimeCounter >= MaxDuration)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
-    public void ApplyNewCondition(Condition NewCondition, Character SourceCharacter, ItemSkill SourceItemSkill)
+    public void ApplyNewCondition(Condition NewCondition, Character SourceCharacter, ItemSkill SourceItemSkill, float Duration)
     {
         // TODO : Check first if Condition already exists / Logic for Stacking Conditions!
-        ActiveCondition NewActiveCondition = new ActiveCondition(this, SourceCharacter, SourceItemSkill, NewCondition);
+        ActiveCondition NewActiveCondition = new ActiveCondition(this, SourceCharacter, SourceItemSkill, NewCondition, Duration);
         ActiveConditions.Add(NewActiveCondition);
     }
 
@@ -747,7 +760,6 @@ public class Character : MonoBehaviour
     public void StartAnimation(string AnimationName, float AnimationSpeed, int HandID)
     {
         HandAnimators[HandID].SetTrigger("Trigger_" + AnimationName);
-        Debug.Log("Trigger_" + AnimationName);
         HandAnimators[HandID].speed = 1 / AnimationSpeed;
     }
 
