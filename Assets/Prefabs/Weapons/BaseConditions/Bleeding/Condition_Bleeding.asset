@@ -18,3 +18,5 @@ MonoBehaviour:
   OnEnd: []
   TickTime: 0.5
   InstanceMaximum: 5
+  VisualEffectObject: {fileID: 1533183204227754, guid: a935169cab8b4b14c92fb66c5207499e,
+    type: 2}

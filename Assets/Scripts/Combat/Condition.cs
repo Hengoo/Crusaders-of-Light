@@ -19,6 +19,9 @@ public class Condition : ScriptableObject {
     //public int StackMaximum = 1;
     public int InstanceMaximum = 1;
 
+    [Header("Condition Visual:")]
+    public GameObject VisualEffectObject;
+
 
     public void ApplyCondition(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
     {
@@ -84,6 +87,11 @@ public class Condition : ScriptableObject {
     public int GetInstanceMaximum()
     {
         return InstanceMaximum;
+    }
+
+    public GameObject GetVisualEffectObject()
+    {
+        return VisualEffectObject;
     }
 /*
     public int GetStackMaximum()

@@ -595,6 +595,9 @@ public class Character : MonoBehaviour
         [SerializeField]
         float MaxDuration;
 
+        [SerializeField]
+        GameObject VisualEffectObject;
+
         public ActiveCondition(Character _TargetCharacter, Character _SourceCharacter, ItemSkill _SourceItemSkill, Condition _Condition, float Duration)
         {
             TargetCharacter = _TargetCharacter;
@@ -606,6 +609,12 @@ public class Character : MonoBehaviour
             FixedLevel = SourceItemSkill.GetSkillLevel();
 
             MaxDuration = Duration;
+
+            if (Cond.GetVisualEffectObject())
+            {
+                VisualEffectObject = Instantiate(Cond.GetVisualEffectObject(), TargetCharacter.transform.position, TargetCharacter.transform.rotation);
+                VisualEffectObject.transform.SetParent(TargetCharacter.transform, true);
+            }
 
             ApplyCondition();
         }
@@ -634,7 +643,7 @@ public class Character : MonoBehaviour
             TimeCounter += UpdateTime;
             if (ReachedEnd(TimeCounter))
             {
-                Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
+                EndCondition();
                 return true;
             }
             return false;
@@ -651,6 +660,15 @@ public class Character : MonoBehaviour
 
         public void RemoveThisCondition()
         {
+            EndCondition();
+        }
+
+        private void EndCondition()
+        {
+            if (VisualEffectObject)
+            {
+                Destroy(VisualEffectObject.gameObject);
+            }
             Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
         }
 

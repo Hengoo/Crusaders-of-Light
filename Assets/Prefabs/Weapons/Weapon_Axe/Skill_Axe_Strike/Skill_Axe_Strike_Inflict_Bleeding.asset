@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Skill_Axe_Strike_Inflict_Bleeding
   m_EditorClassIdentifier: 
   ConditionToApply: {fileID: 11400000, guid: 5a383d4247ce5bf4a8c2b794db79dcab, type: 2}
-  DurationBase: 1
-  DurationPerLevel: 0
+  DurationBase: 0
+  DurationPerLevel: 1
   DurationModifiers:
   - {fileID: 11400000, guid: a8aab20ebe7d3654ca2b7ef6ae614fd8, type: 2}
