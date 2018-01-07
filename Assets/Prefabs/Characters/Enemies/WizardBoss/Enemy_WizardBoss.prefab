@@ -606,8 +606,7 @@ MonoBehaviour:
   - {fileID: 95021089899738254}
   - {fileID: 95518203912687654}
   Alignment: 2
-  PlayersInAttentionRange:
-  - {fileID: 0}
+  PlayersInAttentionRange: []
   IdleSkillScore: 0.2
   IdleDuration: 0.2
   ActiveMovePattern: {fileID: 11400000, guid: 76fb1f41306999c47a678806d919f6c8, type: 2}

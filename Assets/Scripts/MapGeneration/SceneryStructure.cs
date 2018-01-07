@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using csDelaunay;
-using TriangleNet.Voronoi;
 using UnityEngine;
 
 public class SceneryStructure
