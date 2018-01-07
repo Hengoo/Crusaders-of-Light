@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using csDelaunay;
-using TriangleNet.Voronoi;
 using UnityEngine;
 
 public class SceneryStructure
@@ -12,7 +10,12 @@ public class SceneryStructure
     public List<Vector2[]> RoadPolygons { get; private set; }
     public List<Vector2[]> RoadLines { get; private set; }
 
-    public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, float roadWidth)
+    public AreaBase[] NormalAreas { get; private set; }
+    public AreaBase BossArea { get; private set; }
+
+    private List<GameObject> _sceneryQuestObjects = new List<GameObject>();
+
+    public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, AreaBase[] normalAreas, AreaBase bossArea, float roadWidth)
     {
         SceneryAreas = new List<SceneryAreaFill>();
         RoadPolygons = new List<Vector2[]>();
@@ -21,12 +24,15 @@ public class SceneryStructure
         TerrainStructure = terrainStructure;
         WorldStructure = worldStructure;
 
+        NormalAreas = normalAreas;
+        BossArea = bossArea;
+
         CreateFill(roadWidth);
     }
 
     private void CreateFill(float roadWidth)
     {
-        //Get the biome edges from the terrain structure and create areas to fill with prefabs
+        //Get the biome edges from the terrain structure and create areas to fill with prefabs and quests
         List<GameObject[]> prefabs;
         List<float> minDistances;
         var polygons = TerrainStructure.GetBiomePolygons(out prefabs, out minDistances);
@@ -34,6 +40,23 @@ public class SceneryStructure
         {
             SceneryAreas.Add(new SceneryAreaFill(prefabs[i], polygons[i], minDistances[i]));
         }
+
+        //Fill areas 
+        QuestBase[] quests = new QuestBase[0];
+        for(int i = 0; i < NormalAreas.Length; i++)
+            quests = quests.Union(NormalAreas[i].GenerateQuests(this, i)).ToArray();
+        
+        var levelController = LevelController.Instance;
+        if (!levelController)
+            levelController = GameObject.Find("LevelController").GetComponent<LevelController>();
+
+        //Clear previously generated quests in editor when not playing
+        if (!Application.isPlaying)
+            levelController.QuestController.ClearQuests(); 
+
+        //Add all quests
+        foreach (var quest in quests)
+            levelController.QuestController.AddQuest(quest);
 
         //Create road polygons and road lines
         foreach (var edge in WorldStructure.NavigationGraph.GetAllEdges().Union(WorldStructure.AreaCrossingNavigationEdges))
@@ -62,10 +85,10 @@ public class SceneryStructure
         {
             foreach (var vertex in polygon)
             {
-                foreach (var area in SceneryAreas)
+                foreach (var sceneryArea in SceneryAreas)
                 {
-                    if(vertex.IsInsidePolygon(area.Polygon))
-                        area.AddClearPolygon(polygon);
+                    if(vertex.IsInsidePolygon(sceneryArea.Polygon))
+                        sceneryArea.AddClearPolygon(polygon);
                 }
             }
         }
@@ -75,17 +98,25 @@ public class SceneryStructure
     public IEnumerable<GameObject> FillAllSceneryAreas(Terrain terrain)
     {
         var result = new List<GameObject>();
+
+        var questObjects = new GameObject("Quest Objects");
+        result.Add(questObjects);
+        foreach (var obj in _sceneryQuestObjects)
+        {
+            obj.transform.position += new Vector3(0, terrain.SampleHeight(obj.transform.position), 0);
+            obj.transform.parent = questObjects.transform;
+        }
+
         foreach (var sceneryArea in SceneryAreas)
         {
             var fill = FillSceneryArea(sceneryArea, terrain);
             result.Add(fill);
-
         }
         return result;
     }
 
     /* Fill an area with prefabs */
-    public GameObject FillSceneryArea(SceneryAreaFill sceneryAreaFill, Terrain terrain)
+    private GameObject FillSceneryArea(SceneryAreaFill sceneryAreaFill, Terrain terrain)
     {
         var result = new GameObject("SceneryAreaFill");
         result.transform.position = Vector3.zero;
@@ -113,6 +144,12 @@ public class SceneryStructure
         }
 
         return result;
+    }
+
+    // Add a scenery object that needs height adjustment when the terrain is generated
+    public void AddSceneryQuestObject(GameObject questObject)
+    {
+        _sceneryQuestObjects.Add(questObject);
     }
 }
 

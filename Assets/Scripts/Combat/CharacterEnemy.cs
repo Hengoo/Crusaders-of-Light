@@ -77,7 +77,8 @@ public class CharacterEnemy : Character {
 
     protected override void CharacterDied()
     {
-        SpawnedBy.SpawnedCharacterDied(this);
+        if(SpawnedBy)
+            SpawnedBy.SpawnedCharacterDied(this);
 
         base.CharacterDied();
     }

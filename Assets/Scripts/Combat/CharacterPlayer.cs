@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CharacterPlayer : Character {
 
@@ -18,6 +19,8 @@ public class CharacterPlayer : Character {
         base.Start();
         SpawnAndEquipStartingWeapons();
     }
+
+    private UnityAction _itemPickupAction;
 
     protected override void Update()
     {
@@ -97,6 +100,10 @@ public class CharacterPlayer : Character {
 
         ClosestItem.EquipItem(this, EquipSlotID);
         ItemsInRange.Remove(ClosestItem);
+
+
+        if (_itemPickupAction != null)
+            _itemPickupAction.Invoke();
 
         return true;
     }
@@ -207,4 +214,18 @@ public class CharacterPlayer : Character {
     }
 
     // ======================================== /INPUT =========================================
+
+    // ======================================== EVENT =========================================
+
+    public void SubscribeItemPickupAction(UnityAction action)
+    {
+        _itemPickupAction += action;
+    }
+
+    public void ClearItemPickupActions()
+    {
+        _itemPickupAction = null;
+    }
+
+    // ======================================== /EVENT =========================================
 }

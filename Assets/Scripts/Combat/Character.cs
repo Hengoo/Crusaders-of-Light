@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Character : MonoBehaviour
 {
@@ -83,6 +84,8 @@ public class Character : MonoBehaviour
     // Attention:
     [Header("Attention:")]
     public CharacterAttention CharAttention;
+    
+    private UnityAction _onCharacterDeathAction; // Event system for character death
 
     protected virtual void Start()
     {
@@ -157,6 +160,10 @@ public class Character : MonoBehaviour
 
         // Remove GUI:
         RemoveCharacterFollowGUI();
+
+        // Invoke death actions (e.g. Quest System)
+        if(_onCharacterDeathAction != null)
+            _onCharacterDeathAction.Invoke();
 
         // Destroy this Character:
         Destroy(this.gameObject);
@@ -361,7 +368,8 @@ public class Character : MonoBehaviour
         WeaponSlots[HandSlotID].gameObject.transform.parent = null;
     }
 
-    protected void SpawnAndEquipStartingWeapons()
+    //Need this for quest fire wizard spawning - Jean
+    public void SpawnAndEquipStartingWeapons()
     {
         Item CurrentItem = null;
         for (int i = 0; i < StartingWeapons.Length; i++)
@@ -777,4 +785,13 @@ public class Character : MonoBehaviour
     // ========================================== /GUI ==========================================
 
 
+    // =========================================== EVENTS ==========================================
+
+    public void SubscribeDeathAction(UnityAction action)
+    {
+        if(action != null)
+            _onCharacterDeathAction += action;
+    }
+
+    // ========================================== /EVENTS ==========================================
 }

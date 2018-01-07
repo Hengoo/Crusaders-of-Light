@@ -40,12 +40,10 @@ public class Item : MonoBehaviour {
 
     public virtual void EquipItem(Character CharacterToEquipTo, int SlotID)
     {
-
     }
 
     public virtual void UnEquipItem()
     {
-
     }
 
     // Currently Unused, but might be useful later.
@@ -271,6 +269,4 @@ public class Item : MonoBehaviour {
 
         return TempPowerLevel;
     }
-
-
 }
