@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "decision_maker", menuName = "Combat/AI/DecisionMaker", order = 0)]
 public class DecisionMaker : ScriptableObject {
 
     public struct AIDecision
@@ -12,10 +11,13 @@ public class DecisionMaker : ScriptableObject {
         public int ConsiderationsCounter;
     }
 
+    [Header("Decision Maker Considerations:")]
     public float Weight = 1.0f;
 
     public Consideration[] ConsiderationsTargeted = new Consideration[0];
     public Consideration[] ConsiderationsSelf = new Consideration[0];
+
+
 
     public AIDecision CalculateTotalScore(Character Self)
     {
@@ -31,6 +33,15 @@ public class DecisionMaker : ScriptableObject {
             Score = 1,
             ConsiderationsCounter = 0
         };
+
+        CharacterEnemy User = (CharacterEnemy)(Self);
+        List<Character> PlayersInAttentionRange = User.GetAttention().GetPlayersInAttentionRange();
+
+        if (PlayersInAttentionRange.Count <= 0)
+        {
+            Decision.Score = 0;
+            return Decision;
+        }
 
         // Score of Self Targeted Considerations:
         Consideration.Context TempContext = new Consideration.Context
@@ -48,10 +59,6 @@ public class DecisionMaker : ScriptableObject {
         Decision.ConsiderationsCounter += ConsiderationsSelf.Length;
 
         // Score of Targeted Considerations:
-
-        CharacterEnemy User = (CharacterEnemy)(Self);
-
-        List<Character> PlayersInAttentionRange = User.GetPlayersInAttentionRange();
 
         float TempScore = 1;
         float TempBestScore = 0;

@@ -11,6 +11,10 @@ public class SkillTypeChannelSelf : SkillType
     public SkillEffect[] EffectsStart;
     public SkillEffect[] EffectsEnd;
 
+    [Header("Skill Channel Self Animation: (Only set to something else if fully intended)")]
+    public string IdleAnimation = "Channel_Idle";
+    public string ReleaseAnimation = "Channel_Released";
+
     public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime < ActivationTime)
@@ -26,6 +30,8 @@ public class SkillTypeChannelSelf : SkillType
             {
                 EffectsStart[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
             }
+
+            SourceItemSkill.GetCurrentOwner().StartAnimation(IdleAnimation, 1, SourceItemSkill.GetParentItemEquipmentSlot());
         }
 
         if (ActivationIntervallReached)
@@ -40,7 +46,10 @@ public class SkillTypeChannelSelf : SkillType
                 EffectsEnd[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
             }
 
+            SourceItemSkill.GetCurrentOwner().StartAnimation(ReleaseAnimation, 1, SourceItemSkill.GetParentItemEquipmentSlot());
+
             // Stop Skill Activation:
+            RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
             SourceItemSkill.FinishedSkillActivation();
         }
     }

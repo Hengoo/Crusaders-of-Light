@@ -13,12 +13,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cost: 0
   ActivationTime: 1
+  ActivationIntervall: -1
   Cooldown: -1
+  ActivationMovementModifier: 0
   AllowTargetFriendly: 0
   AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: d14c4a5e4a527bf4b867385a747c0e06, type: 2}
-  AIDecisionMaker: {fileID: 11400000, guid: 99c52f6d08b6a2e42a4567df6e955976, type: 2}
+  HindranceLevel: 0
+  AnimationName: Melee_Swing
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: 19dd716f5fa130c4b8fb98cd398d9eca, type: 2}
+  PowerLevel: 0
   HitTimeStart: 0.5
   HitTimeStop: 0.87
   HitEachCharacterOnlyOnce: 1

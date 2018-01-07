@@ -17,7 +17,7 @@ public class MovPatTowardsPlayer : MovePattern {
             new Vector3(TargetCharacter.transform.position.x, 0, TargetCharacter.transform.position.z) * ViewDirection
             - new Vector3(Self.transform.position.x, 0, Self.transform.position.z) * ViewDirection);
 
-        Vector3 targetVel = targetDir * MovementSpeedFactor;
+        Vector3 targetVel = targetDir * MovementSpeedFactor * Self.GetMovementRateModifier();
 
         PhysCont.SetVelRot(targetVel, targetDir);
     }

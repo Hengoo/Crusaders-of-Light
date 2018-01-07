@@ -5,12 +5,28 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "skill_melee_charge", menuName = "Combat/SkillArchetypes/SkillMeleeCharge", order = 4)]
 public class SkillTypeMeleeCharge : SkillType {
 
-    [Header("Skill Channel Self:")]
-    public float ActivationTimeMax = -1;
+    [Header("Skill Charge Up Melee:")]
+    public float ChargeUpTimeMax = -1; // If > 0 : Hard limit, after that time Skill automatically activates as if releasing the button.
+    public float EffectiveChargeUpTimeMax = 1; // Effective Limit: After this time further charging has no effect. This is not calculated, it has to be set manually.
+    public bool HitEachCharacterOnlyOnce = true;
 
-    public SkillEffect[] EffectsStart;
-    public SkillEffect[] EffectsEnd;
+    [Header("Skill Charge Up Melee After Release Time:")]
+    public float AfterReleaseActivationTime = 1f;
+    public bool ScaleAfterReleaseTimeWithChannelTime = false;
+    public float MinTime = 0.0f;
+    public float MaxTime = 1.0f;
+    public float MinModifier = 1.0f;
+    public float MaxModifier = 1.0f;
 
+
+
+    [Header("Skill Charge Up Melee Additional Effects:")]
+    public SkillEffect[] EffectsSelfOnRelease = new SkillEffect[0];
+    public SkillEffect[] EffectsSelfOnEnd = new SkillEffect[0];
+
+    [Header("Skill Charge Up Melee Animation: (Only set to something else if fully intended)")]
+    public string ReleaseAnimation = "Charge_Released";
+ 
     public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime < ActivationTime)
@@ -18,6 +34,46 @@ public class SkillTypeMeleeCharge : SkillType {
             return;
         }
 
+        if (!StillActivating || (ChargeUpTimeMax > 0 && CurrentActivationTime >= ChargeUpTimeMax))
+        {
+            if (!SourceItemSkill.GetEffectOnlyOnceBool())
+            {
+                float TimeAfterRelease = AfterReleaseActivationTime;
+
+                if (ScaleAfterReleaseTimeWithChannelTime)
+                {
+                    float TimePerc = Mathf.Clamp01((CurrentActivationTime - MinTime) / (MaxTime - MinTime));
+                    TimeAfterRelease = TimeAfterRelease * Mathf.Lerp(MinModifier, MaxModifier, TimePerc);
+                }
+
+                SourceItemSkill.SetEffectFloat(CurrentActivationTime + TimeAfterRelease);
+                SourceItemSkill.GetCurrentOwner().StartAnimation(ReleaseAnimation, TimeAfterRelease, SourceItemSkill.GetParentItemEquipmentSlot());
+                SourceItemSkill.StartSkillCurrentlyUsingItemHitBox(HitEachCharacterOnlyOnce);
+
+                for (int i = 0; i < EffectsSelfOnRelease.Length; i++)
+                {
+                    EffectsSelfOnRelease[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+                }
+            }
+
+            SourceItemSkill.SetEffectOnlyOnceBool(true);
+        }
+
+        if (SourceItemSkill.GetEffectOnlyOnceBool() && CurrentActivationTime >= SourceItemSkill.GetEffectFloat())
+        {
+            for (int i = 0; i < EffectsSelfOnEnd.Length; i++)
+            {
+                EffectsSelfOnEnd[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+            }
+
+            // Stop Skill Activation:
+            SourceItemSkill.EndSkillCurrentlyUsingItemHitBox();
+            RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+            SourceItemSkill.FinishedSkillActivation();
+        }
+
+
+        /*
         if (!SourceItemSkill.GetEffectOnlyOnceBool())
         {
             SourceItemSkill.SetEffectOnlyOnceBool(true);
@@ -27,7 +83,7 @@ public class SkillTypeMeleeCharge : SkillType {
                 EffectsStart[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
             }
         }
-
+        // Maybe not:
         if (ActivationIntervallReached)
         {
             ApplyEffects(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
@@ -42,6 +98,12 @@ public class SkillTypeMeleeCharge : SkillType {
 
             // Stop Skill Activation:
             SourceItemSkill.FinishedSkillActivation();
-        }
+    SourceItemSkill.EndSkillCurrentlyUsingItemHitBox();
+        }*/
+    }
+
+    public override float GetOverwriteAnimationSpeedScaling()
+    {
+        return EffectiveChargeUpTimeMax;
     }
 }

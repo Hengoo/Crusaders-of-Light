@@ -20,28 +20,37 @@ public class Condition : ScriptableObject {
     public int InstanceMaximum = 1;
 
 
-    public void ApplyCondition(Character Owner, ItemSkill SourceItemSkill, Character Target)
+    public void ApplyCondition(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
     {
         for (int i = 0; i < OnApply.Length; i++)
         {
-            OnApply[i].ApplyEffect(Owner, SourceItemSkill, Target);
+            OnApply[i].ApplyEffect(Owner, SourceItemSkill, Target, FixedLevel);
         }
     }
 
-    public void ApplyEffectsOnTick(Character Owner, ItemSkill SourceItemSkill, Character Target)
+    public void ApplyEffectsOnTick(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
     {
         for (int i = 0; i < OnTick.Length; i++)
         {
-            OnTick[i].ApplyEffect(Owner, SourceItemSkill, Target);
+            OnTick[i].ApplyEffect(Owner, SourceItemSkill, Target, FixedLevel);
         }
     }
 
-    public void EndCondition(Character Owner, ItemSkill SourceItemSkill, Character Target)
+    public void EndCondition(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
     {
         for (int i = 0; i < OnEnd.Length; i++)
         {
-            OnEnd[i].ApplyEffect(Owner, SourceItemSkill, Target);
+            OnEnd[i].ApplyEffect(Owner, SourceItemSkill, Target, FixedLevel);
         }
+    }
+
+    public bool HasTicks()
+    {
+        if (TickTime >= 0)
+        {
+            return true;
+        }
+        return false;
     }
 
     public bool ReachedTick (float TickCounter)
@@ -55,7 +64,7 @@ public class Condition : ScriptableObject {
 
     public bool ReachedEnd (float TimeCounter)
     {
-        if (TimeCounter >= Duration)
+        if (Duration >= 0 && TimeCounter >= Duration)
         {
             return true;
         }

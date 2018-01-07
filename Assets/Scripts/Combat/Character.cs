@@ -44,6 +44,8 @@ public class Character : MonoBehaviour
     public float[] Resistances = new float[6]; // Resistances[Enum Resistance], Check for Resistance.NONE!
     public float[] Defenses = new float[3];     // Defenses[Enum Defense], Check for Defense.NONE!
 
+    public int SkillLevelModifier = 0;
+
     [Header("Equipment:")]
     public Transform[] CharacterHands = new Transform[2]; // Note: 0 : Left Hand, 1 : Right Hand
     public Item[] StartingWeapons = new Item[0];    // Note: Slot in Array corresponds to Hand it is holding. Up to 2 Starting Weapons!
@@ -64,11 +66,14 @@ public class Character : MonoBehaviour
     public int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
     //public float SkillActivationTimer = 0.0f;
 
+    public int HindranceLevel = 0;
+
     [Header("Active Conditions:")]
     public List<ActiveCondition> ActiveConditions = new List<ActiveCondition>();
 
     [Header("Physics Controller:")]
     protected PhysicsController PhysCont;
+    protected float MovementRateModfier = 1.0f;
 
     [Header("Animation:")]
     public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand
@@ -76,13 +81,18 @@ public class Character : MonoBehaviour
     //[Header("GUI (for Testing Purposes):")]
     private GUICharacterFollow GUIChar;
 
+    // Attention:
+    [Header("Attention:")]
+    public CharacterAttention CharAttention;
+
+    protected virtual void Start()
     private UnityAction _onCharacterDeathAction; // Event system for character death
 
     protected void Start()
     {
         PhysCont = new PhysicsController(gameObject);
         CreateCharacterFollowGUI();     // Could be changed to when entering camera view or close to players, etc... as optimization.
-        SpawnAndEquipStartingWeapons();
+        // SpawnAndEquipStartingWeapons();
     }
 
     protected virtual void Update()
@@ -133,7 +143,7 @@ public class Character : MonoBehaviour
         return false;
     }
 
-    protected void CharacterDied()
+    protected virtual void CharacterDied()
     {
         CharacterIsDead = true;
 
@@ -145,6 +155,9 @@ public class Character : MonoBehaviour
                 UnEquipWeapon(i);
             }
         }
+
+        // Update Attention:
+        AttentionThisCharacterDied();
 
         // Remove GUI:
         RemoveCharacterFollowGUI();
@@ -220,6 +233,26 @@ public class Character : MonoBehaviour
     public int GetEnergyMax()
     {
         return EnergyMax;
+    }
+
+    public int GetSkillLevelModifier()
+    {
+        return SkillLevelModifier;
+    }
+
+    public void ChangeSkillLevelModifier(int change)
+    {
+        SkillLevelModifier += change;
+    }
+
+    public float GetMovementRateModifier()
+    {
+        return Mathf.Max(0, MovementRateModfier);
+    }
+
+    public void ChangeMovementRateModifier(float Change)
+    {
+        MovementRateModfier += Change;
     }
     // ===================================== /ATTRIBUTES ======================================
 
@@ -336,7 +369,7 @@ public class Character : MonoBehaviour
         WeaponSlots[HandSlotID].gameObject.transform.parent = null;
     }
 
-    private void SpawnAndEquipStartingWeapons()
+    protected void SpawnAndEquipStartingWeapons()
     {
         Item CurrentItem = null;
         for (int i = 0; i < StartingWeapons.Length; i++)
@@ -401,12 +434,13 @@ public class Character : MonoBehaviour
        }
    */
 
-    public virtual void FinishedCurrentSkillActivation(int WeaponSlotID)
+    public virtual void FinishedCurrentSkillActivation(int WeaponSlotID, int Hindrance)
     {
         /*if (SkillCurrentlyActivating < 0) // Shouldn't be needed?
         {
             return;
         }*/
+        ChangeHindranceLevel(Hindrance);
         SkillCurrentlyActivating[WeaponSlotID] = -1;
         // SkillActivationTimer = 0.0f; // Now handled in ItemSkill/Item
     }
@@ -415,7 +449,7 @@ public class Character : MonoBehaviour
     {
         for (int i = 0; i < ItemSkillSlots.Length; i++)
         {
-            if (ItemSkillSlots[i])
+            if (ItemSkillSlots[i] && SkillCurrentlyActivating[0] != i && SkillCurrentlyActivating[1] != i)
             {
                 ItemSkillSlots[i].UpdateCooldown(Time.deltaTime);
             }
@@ -435,6 +469,33 @@ public class Character : MonoBehaviour
         WeaponSlots[WeaponSlotID].SetSkillActivationTimer(0.0f);
     }
 
+    public void ChangeHindranceLevel(int Change)
+    {
+        HindranceLevel += Change;
+    }
+
+    public void ChangeHindranceLevel(SkillType.Hindrance Change)
+    {
+        HindranceLevel += (int)(Change);
+    }
+
+    public bool CheckHindrance(SkillType.Hindrance Hindrance)
+    {
+        if (Hindrance == SkillType.Hindrance.NO_OTHER_SKILLS)
+        {
+            if (HindranceLevel > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        if ((int)(Hindrance) + HindranceLevel > 3)
+        {
+            return false;
+        }
+        return true;
+    }
 
     // =================================== /SKILL ACTIVATION ====================================
 
@@ -462,7 +523,10 @@ public class Character : MonoBehaviour
             return Amount;
         }
 
-        return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Resistances[DamageTypeID]));
+        // return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Resistances[DamageTypeID])); // Resistance as Percentage Reduction.
+
+        // Damage: At 0: Damage Value / At 10: 0.5 Value / At 20: 0.25 Value / At 30: 0.125 Value / ... At -10: 2 Value / At -20: 4 Value / ...
+        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Resistances[DamageTypeID]) / 10.0f)));
     }
 
     private int DamageCalculationDefense(Defense DefenseType, int Amount)
@@ -474,12 +538,44 @@ public class Character : MonoBehaviour
             return Amount;
         }
 
-        return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Defenses[DamageTypeID]));
+        // return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Defenses[DamageTypeID])); // Defense as Percentage Reduction.
+
+        // Damage: At 0: Damage Value / At 10: 0.5 Value / At 20: 0.25 Value / At 30: 0.125 Value / ... At -10: 2 Value / At -20: 4 Value / ...
+        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Defenses[DamageTypeID]) / 10.0f)));
     }
 
     public void ChangeResistance(Resistance ResistanceType, float Amount)
     {
         Resistances[(int)ResistanceType] += Amount;
+    }
+
+    public float GetResistance(Resistance ResistanceType)
+    {
+        int ResistanceTypeID = (int)(ResistanceType);
+
+        if (ResistanceTypeID < 0)
+        {
+            return 0;
+        }
+
+        return Resistances[ResistanceTypeID];
+    }
+
+    public void ChangeDefense(Defense DefenseType, float Amount)
+    {
+        Defenses[(int)DefenseType] += Amount;
+    }
+
+    public float GetDefense(Defense DefenseType)
+    {
+        int DefenseTypeID = (int)(DefenseType);
+
+        if (DefenseTypeID < 0)
+        {
+            return 0;
+        }
+
+        return Defenses[DefenseTypeID];
     }
 
     // =================================== /EFFECT INTERACTION ===================================
@@ -502,6 +598,8 @@ public class Character : MonoBehaviour
         float TimeCounter;
         [SerializeField]
         float TickCounter;
+        [SerializeField]
+        int FixedLevel;
 
         public ActiveCondition(Character _TargetCharacter, Character _SourceCharacter, ItemSkill _SourceItemSkill, Condition _Condition)
         {
@@ -511,31 +609,36 @@ public class Character : MonoBehaviour
             Cond = _Condition;
             TimeCounter = 0f;
             TickCounter = 0f;
+            FixedLevel = SourceItemSkill.GetSkillLevel();
 
             ApplyCondition();
         }
 
         void ApplyCondition()
         {
-            Cond.ApplyCondition(SourceCharacter, SourceItemSkill, TargetCharacter);
+            Cond.ApplyCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
         }
 
         // Return : True: Condition Ended, False: Condition did not end.
         public bool UpdateCondition()
         {
             float UpdateTime = Time.deltaTime;
-            TimeCounter += UpdateTime;
-            TickCounter += UpdateTime;
 
-            if (Cond.ReachedTick(TickCounter))
+            if (Cond.HasTicks())
             {
-                TickCounter -= Cond.GetTickTime();
-                Cond.ApplyEffectsOnTick(SourceCharacter, SourceItemSkill, TargetCharacter);
+                TickCounter += UpdateTime;
+
+                if (Cond.ReachedTick(TickCounter))
+                {
+                    TickCounter -= Cond.GetTickTime();
+                    Cond.ApplyEffectsOnTick(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
+                }
             }
 
+            TimeCounter += UpdateTime;
             if (Cond.ReachedEnd(TimeCounter))
             {
-                Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter);
+                Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
                 return true;
             }
             return false;
@@ -548,6 +651,11 @@ public class Character : MonoBehaviour
                 return true;
             }
             return false;
+        }
+
+        public void RemoveThisCondition()
+        {
+            Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
         }
     }
 
@@ -602,7 +710,45 @@ public class Character : MonoBehaviour
         return false;
     }
 
+    public void RemoveCondition(Condition ConditionToRemove)
+    {
+        ActiveCondition ActCondToRemove = null;
+
+        for (int i = 0; i < ActiveConditions.Count; i++)
+        {
+            if (ActiveConditions[i].RepresentsThisCondition(ConditionToRemove))
+            {
+                ActCondToRemove = ActiveConditions[i];
+            }
+        }
+
+        if (ActCondToRemove != null)
+        {
+            ActCondToRemove.RemoveThisCondition();
+            ActiveConditions.Remove(ActCondToRemove);
+        }
+    }
+
     // =================================== /ACTIVE CONDITIONS ===================================
+
+    // =========================================== ATTENTION ==========================================
+
+    public CharacterAttention GetAttention()
+    {
+        return CharAttention;
+    }
+
+    public void AttentionThisCharacterDied()
+    {
+        CharAttention.OwnerDied();
+    }
+
+    public void AttentionCharacterDied(Character CharDied)
+    {
+        CharAttention.CharacterDied(CharDied);
+    }
+
+    // ========================================== /ATTENTION ==========================================
 
     // =========================================== ANIMATION ==========================================
 

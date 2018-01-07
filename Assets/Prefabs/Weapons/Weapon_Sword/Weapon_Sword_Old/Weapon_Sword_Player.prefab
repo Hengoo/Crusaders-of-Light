@@ -174,7 +174,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114085459239855412}
-  SkillObject: {fileID: 11400000, guid: 5476fe060aac8594fb25d9b7b15f84fc, type: 2}
+  SkillObject: {fileID: 11400000, guid: 3a6b9bca2200f0b4c9d211f88057c55f, type: 2}
+  Level: 1
   CurrentCooldown: 0
-  Level: 5
-  AnimationName: Melee_Swing
+  ActivationIntervallTimer: 0
+  EffectOnlyOnceBool: 0
+  EffectFloat: 0
