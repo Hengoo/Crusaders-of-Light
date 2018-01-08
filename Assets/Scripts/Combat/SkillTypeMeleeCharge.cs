@@ -77,6 +77,10 @@ public class SkillTypeMeleeCharge : SkillType {
             }
 
             // Stop Skill Activation:
+            if (Cooldown > 0)
+            {
+                SourceItemSkill.SetCurrentCooldown(Cooldown);
+            }
             SourceItemSkill.EndSkillCurrentlyUsingItemHitBox();
             RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
             SourceItemSkill.FinishedSkillActivation();

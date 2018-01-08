@@ -231,4 +231,7 @@ MonoBehaviour:
   CurrentItemHitBoxAlignment: 0
   EquippedSlotID: -1
   ItemPowerLevel: 0
+  ItemMovePatterns:
+  - {fileID: 11400000, guid: 4a766847dfa918540a8be5d332acd903, type: 2}
+  - {fileID: 11400000, guid: 7cfe2d763838b2d47a013f0ba20e72d6, type: 2}
   TwoHanded: 0

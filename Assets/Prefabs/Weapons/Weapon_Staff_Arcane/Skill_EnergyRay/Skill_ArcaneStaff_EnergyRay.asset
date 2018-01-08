@@ -15,7 +15,7 @@ MonoBehaviour:
   ActivationTime: 0.3
   ActivationIntervall: -1
   Cooldown: 1
-  ActivationMovementModifier: 0
+  ActivationMovementModifier: -0.8
   AllowTargetFriendly: 0
   AllowTargetEnemy: 1
   Effects:
@@ -26,6 +26,10 @@ MonoBehaviour:
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 4cc9ba42263db36448e9057edd48ed3b, type: 2}
   PowerLevel: 0
+  Threat:
+  - 3
+  - 0
+  - 0
   ActivationTimeMax: -1
   EffectsStart: []
   EffectsEnd: []

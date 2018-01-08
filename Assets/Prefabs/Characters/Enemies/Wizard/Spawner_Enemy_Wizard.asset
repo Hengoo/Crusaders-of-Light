@@ -15,7 +15,7 @@ MonoBehaviour:
     type: 2}
   ListWeaponsLeft: []
   ListWeaponsRight:
-  - SpawnWeapon: {fileID: 114262640344697314, guid: 3150fd57347ee5f488a27884513d66df,
+  - SpawnWeapon: {fileID: 114638103525019752, guid: f66007c64d8d4964cb44ce562b237e8e,
       type: 2}
     SpawnWeight: 10000
   - SpawnWeapon: {fileID: 114399201202335494, guid: b44050923c04f3a4c87fc792e61f42ea,

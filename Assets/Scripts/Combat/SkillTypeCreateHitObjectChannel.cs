@@ -82,6 +82,10 @@ public class SkillTypeCreateHitObjectChannel : SkillType {
             SourceItemSkill.GetCurrentOwner().StartAnimation(ReleaseAnimation, 1, SourceItemSkill.GetParentItemEquipmentSlot());
 
             // Stop Skill Activation:
+            if (Cooldown > 0)
+            {
+                SourceItemSkill.SetCurrentCooldown(Cooldown);
+            }
             RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
             SourceItemSkill.StoppedActivatingSkillWithHitObjects(this);
             SourceItemSkill.FinishedSkillActivation();

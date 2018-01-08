@@ -104,10 +104,10 @@ public class SkillType : ScriptableObject {
         Owner.ChangeMovementRateModifier(ActivationMovementModifier);
 
         // Start Cooldown:      (Note: The current Cooldown is saved in the SourceWeapon)
-        if (Cooldown > 0)
+  /*      if (Cooldown > 0)
         {
             SourceItemSkill.SetCurrentCooldown(Cooldown);
-        }
+        }*/
 
         return true;
     }

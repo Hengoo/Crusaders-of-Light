@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a358bdf9369a6de42843121de4896289, type: 3}
   m_Name: Skill_Sword_Strike_AI_DecisionMaker
   m_EditorClassIdentifier: 
-  Weight: 1.2
+  Weight: 1.5
   ConsiderationsTargeted:
   - {fileID: 11400000, guid: b213d4836f11e0945bd5c591ad900991, type: 2}
   - {fileID: 11400000, guid: ffd781ee9ffbfc741883f089ef689fca, type: 2}

@@ -23,10 +23,15 @@ public class SkillHitObject : MonoBehaviour {
     public SkillType SourceSkill;
     public ItemSkill SourceItemSkill;
     public int FixedLevel;
+
+    public float[] Threat = new float[0];
+
     public Character.TeamAlignment HitObjectAlignment = Character.TeamAlignment.NONE;
     public List<Character> HitCharacters = new List<Character>();
 
     public List<Character> AlreadyHitCharacters = new List<Character>();
+
+    public List<CharacterAttention> InCharactersAttentions = new List<CharacterAttention>();
 
     public void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
     {
@@ -80,6 +85,9 @@ public class SkillHitObject : MonoBehaviour {
         {
             HitTarget(Owner);
         }
+
+        // Threat:
+        Threat = SourceSkill.GetThreat();
     }
 
     public void Update()
@@ -138,11 +146,13 @@ public class SkillHitObject : MonoBehaviour {
 
     public void HitObjectTimeOut()
     {
+        RemoveFromAllAttentionsWhenDestroyed();
         Destroy(this.gameObject);
     }
 
     public void HitObjectSkillActivationEnd()
     {
+        RemoveFromAllAttentionsWhenDestroyed();
         Destroy(this.gameObject);
     }
 
@@ -216,5 +226,33 @@ public class SkillHitObject : MonoBehaviour {
     public Character.TeamAlignment GetAlignment()
     {
         return HitObjectAlignment;
+    }
+
+    public Character.TeamAlignment GetOwnerAlignment()
+    {
+        return Owner.GetAlignment();
+    }
+
+    public void AddInCharactersAttention(CharacterAttention InAttention)
+    {
+        InCharactersAttentions.Add(InAttention);
+    }
+
+    public void RemoveInCharactersAttention(CharacterAttention InAttention)
+    {
+        InCharactersAttentions.Remove(InAttention);
+    }
+
+    public void RemoveFromAllAttentionsWhenDestroyed()
+    {
+        for (int i = 0; i < InCharactersAttentions.Count; i++)
+        {
+            InCharactersAttentions[i].RemoveHitObjectAfterDestroy(this);
+        }
+    }
+
+    public float GetCurrentThreat() // Includes Melee, not Far currently!
+    {
+        return Threat[0] + Threat[1];
     }
 }

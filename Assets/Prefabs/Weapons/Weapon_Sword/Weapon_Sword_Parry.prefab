@@ -152,6 +152,7 @@ MonoBehaviour:
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0000
   EffectFloat: 0
+  EffectSkillHitObjects: []
 --- !u!114 &114066496244682900
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -182,6 +183,8 @@ MonoBehaviour:
   CurrentItemHitBoxAlignment: 0
   EquippedSlotID: -1
   ItemPowerLevel: 0
+  ItemMovePatterns:
+  - {fileID: 11400000, guid: b4443c8c6f44e5842aa22f8f45bdce47, type: 2}
   TwoHanded: 0
 --- !u!114 &114636584848807780
 MonoBehaviour:
@@ -201,3 +204,4 @@ MonoBehaviour:
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0000
   EffectFloat: 0
+  EffectSkillHitObjects: []

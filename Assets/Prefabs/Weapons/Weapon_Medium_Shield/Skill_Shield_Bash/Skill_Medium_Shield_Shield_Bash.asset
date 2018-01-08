@@ -26,6 +26,10 @@ MonoBehaviour:
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 2a7ff5cca3ee0a0428854274772615b3, type: 2}
   PowerLevel: 0
+  Threat:
+  - 0
+  - 3
+  - 0
   ChargeUpTimeMax: 0.15
   EffectiveChargeUpTimeMax: 1
   HitEachCharacterOnlyOnce: 1

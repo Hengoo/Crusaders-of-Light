@@ -14,7 +14,7 @@ MonoBehaviour:
   Cost: 0
   ActivationTime: 0.1
   ActivationIntervall: -1
-  Cooldown: 1
+  Cooldown: 2
   ActivationMovementModifier: -0.9
   AllowTargetFriendly: 0
   AllowTargetEnemy: 0
@@ -24,6 +24,10 @@ MonoBehaviour:
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 9905792ba00c45d42bc8788f1c9799fe, type: 2}
   PowerLevel: 0
+  Threat:
+  - 0
+  - 0
+  - 0
   ChargeUpTimeMax: 0.1
   EffectiveChargeUpTimeMax: 1
   HitEachCharacterOnlyOnce: 1

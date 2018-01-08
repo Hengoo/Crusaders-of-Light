@@ -16,6 +16,8 @@ public class ConsNumberAlliesWithinRadius : Consideration {
     {
         float InputValue = SkillContext.User.GetAttention().GetEnemiesInAttentionRange(MinDistance, MaxDistance).Count;
 
+        Debug.Log("ALLIES IN RANGE: " + InputValue);
+
         InputValue = ClampInputValue(InputValue, MinNumber, MaxNumber);
 
         float score = CalculateConsideration(TypeOfCurve, InputValue, Steepness, yShift, xShift);

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: AI_BaseCons_TargetDistance_Melee
   m_EditorClassIdentifier: 
   TypeOfCurve: 3
-  Steepness: 4
+  Steepness: 6
   yShift: -1
   xShift: 0
   MinDistance: 1
-  MaxDistance: 4
+  MaxDistance: 3

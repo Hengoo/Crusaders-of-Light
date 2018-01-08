@@ -3630,8 +3630,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 404881676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 643, y: 312.5, z: 0}
-  m_LocalScale: {x: 0.66979164, y: 0.66979164, z: 0.66979164}
+  m_LocalPosition: {x: 506.5, y: 319, z: 0}
+  m_LocalScale: {x: 0.52760416, y: 0.52760416, z: 0.52760416}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -4571,6 +4571,7 @@ MonoBehaviour:
   CurrentItemHitBoxAlignment: 0
   EquippedSlotID: -1
   ItemPowerLevel: 0
+  ItemMovePatterns: []
   TwoHanded: 0
 --- !u!95 &496379259
 Animator:
@@ -16825,7 +16826,7 @@ MonoBehaviour:
   SpawnerToTest: {fileID: 1829204997}
   LevelMin: 1
   LevelMax: 3
-  TestSeed: 0
+  TestSeed: 2
   TestOrders: []
   PowerlevelAllowance: 20
   Positions:

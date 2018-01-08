@@ -9,23 +9,36 @@ public class ConsOwnThreatLevel : Consideration {
     public float MinDistance = 0.0f;
     public float MaxDistance = 30.0f;
 
-    public float MinHealth = 0.0f;
-    public float MaxHealth = 0.0f;
+    public float MaxDistanceMelee = 5.0f;
+
+    public float MinThreat = 0.0f;
+    public float MaxThreat = 20.0f;
 
     public override float CalculateScore(Context SkillContext)
     {
-        List<Character> AlliesInRange = SkillContext.User.GetAttention().GetEnemiesInAttentionRange(MinDistance, MaxDistance);
+        List<Character> PlayersInRange = SkillContext.User.GetAttention().GetPlayersInAttentionRange(MinDistance, MaxDistance);
+        List<SkillHitObject> PlayerSkillHitObjectsInRange = SkillContext.User.GetAttention().GetPlayerHitObjectsInAttentionRange(MinDistance, MaxDistanceMelee);
 
         float InputValue = 0;
 
-        for (int i = 0; i < AlliesInRange.Count; i++)
+        for (int i = 0; i < PlayersInRange.Count; i++)
         {
-            InputValue += AlliesInRange[i].GetHealthCurrentPercentage();
+            if (Vector3.Distance(PlayersInRange[i].transform.position, SkillContext.User.transform.position) <= MaxDistanceMelee)
+            {
+                InputValue += PlayersInRange[i].GetCurrentThreatLevel(true, false);
+            }
+            else
+            {
+                InputValue += PlayersInRange[i].GetCurrentThreatLevel(false, false);
+            }
         }
 
-        InputValue = InputValue / AlliesInRange.Count;
+        for (int i = 0; i < PlayerSkillHitObjectsInRange.Count; i++)
+        {
+            InputValue += PlayerSkillHitObjectsInRange[i].GetCurrentThreat();
+        }
 
-        InputValue = ClampInputValue(InputValue, MinHealth, MaxHealth);
+        InputValue = ClampInputValue(InputValue, MinThreat, MaxThreat);
 
         float score = CalculateConsideration(TypeOfCurve, InputValue, Steepness, yShift, xShift);
 

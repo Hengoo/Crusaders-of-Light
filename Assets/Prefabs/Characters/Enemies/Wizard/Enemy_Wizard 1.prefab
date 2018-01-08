@@ -603,8 +603,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Owner: {fileID: 114301975722172286}
   Tag: Attention
+  TagHitObjects: Skills
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
+  PlayerHitObjectsInRange: []
 --- !u!114 &114301975722172286
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -659,9 +661,8 @@ MonoBehaviour:
   IdleDuration: 0.2
   ActiveMovePattern: {fileID: 11400000, guid: 76fb1f41306999c47a678806d919f6c8, type: 2}
   MovePatterns:
-  - {fileID: 11400000, guid: 7cfe2d763838b2d47a013f0ba20e72d6, type: 2}
   - {fileID: 11400000, guid: 76fb1f41306999c47a678806d919f6c8, type: 2}
-  - {fileID: 11400000, guid: 0eacb2c1041eaae42827504d44aad415, type: 2}
+  - {fileID: 11400000, guid: 2a3733612bc84334f82118f9b32c6787, type: 2}
   MovePatternEvaluationCycle: 0.5
   MovePatternEvaluationCycleTimer: 0
   IdleMoveScore: 0.2

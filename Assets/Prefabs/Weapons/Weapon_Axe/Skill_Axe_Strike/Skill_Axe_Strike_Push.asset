@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Name: Skill_Axe_Strike_Push
   m_EditorClassIdentifier: 
   PushDirection: 1
-  ForceMagnitude: 5
+  ForceMagnitude: 3
   ForceValueModifiers:
   - {fileID: 11400000, guid: 0f869d7fade2d354cac400594155a077, type: 2}
