@@ -190,6 +190,7 @@ MonoBehaviour:
   AlreadyHitCharacters: []
   CurrentItemHitBoxAlignment: 0
   EquippedSlotID: -1
+  ItemPowerLevel: 0
   TwoHanded: 0
 --- !u!114 &114497439134799598
 MonoBehaviour:
@@ -204,6 +205,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114262640344697314}
   SkillObject: {fileID: 11400000, guid: 1e2fe83b838ecf3489d2d84c3830e32a, type: 2}
-  CurrentCooldown: 0
   Level: 3
-  AnimationName: Magic_Staff_Cast
+  CurrentCooldown: 0
+  ActivationIntervallTimer: 0
+  EffectOnlyOnceBool: 0000
+  EffectFloat: 0

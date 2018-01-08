@@ -19,7 +19,7 @@ public class SkillEffectDamageLifeSteal : SkillEffect {
 
         FinalDamageValue += DamageValuePerLevel * SourceItemSkill.GetSkillLevel();
 
-        int LifeStealValue = Target.InflictDamage(DefenseType, DamageType, FinalDamageValue);
+        int LifeStealValue = Target.InflictDamage(DefenseType, DamageType, FinalDamageValue, 0, 0);
 
         LifeStealValue = Mathf.RoundToInt(LifeStealValue * LifeStealPercentage);
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -19,29 +18,44 @@ public class MapGenerator : MonoBehaviour
     public BiomeGlobalConfiguration BiomeGlobalConfiguration;
     public List<BiomeSettings> AvailableBiomes;
     
-    public int NumberOfAreas = 3;
+    public AreaBase[] NormalAreas;
+    public AreaBase BossArea;
+
+
     public int ExtraEdges = 20;
     public bool FillTerrain = true;
     public float RoadHalfWidth = 10;
+    public bool GenerateOnPlay = false;
     public int Seed = 0;
 
-    /* Debug variables */
     private TerrainStructure _terrainStructure;
     private WorldStructure _worldStructure;
     private SceneryStructure _sceneryStructure;
+    private Terrain _terrain;
+
+    void Start()
+    {
+        DrawMode = DrawModeEnum.GameMap;
+        Seed = GameController.Instance.Seed;
+        LevelController.Instance.InitializeLevel();
+        GeneratePreview();
+    }
 
     /* Redraws preview in the scene editor */
     public void GeneratePreview()
     {
-        if (Application.isPlaying)
+#if UNITY_EDITOR
+        if (!GenerateOnPlay && Application.isPlaying)
             return;
+#endif
 
         ClearDisplay();
         Random.InitState(Seed);
 
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeGlobalConfiguration);
-        _worldStructure = new WorldStructure(_terrainStructure, NumberOfAreas, ExtraEdges);
-        _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, RoadHalfWidth);
+        _worldStructure = new WorldStructure(_terrainStructure, NormalAreas.Length + 1, ExtraEdges);
+        if(DrawMode == DrawModeEnum.GameMap)
+            _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, NormalAreas, BossArea, RoadHalfWidth);
 
         switch (DrawMode)
         {
@@ -57,6 +71,9 @@ public class MapGenerator : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
+        if(Application.isPlaying)
+            LevelController.Instance.StartGame(_sceneryStructure, _terrain);
     }
 
     void DrawGameMap()
@@ -104,25 +121,25 @@ public class MapGenerator : MonoBehaviour
         terrainData.SetAlphamaps(0, 0, alphamap);
 
         /* Create Terrain GameObject */
-        var terrain = Terrain.CreateTerrainGameObject(terrainData);
-        terrain.name = "Terrain";
-        terrain.transform.parent = transform;
-        terrain.transform.position = Vector3.zero;
-        terrain.GetComponent<Terrain>().terrainData.SetHeights(0, 0, heightMap);
+        _terrain = Terrain.CreateTerrainGameObject(terrainData).GetComponent<Terrain>();
+        _terrain.name = "Terrain";
+        _terrain.transform.parent = transform;
+        _terrain.transform.position = Vector3.zero;
+        _terrain.GetComponent<Terrain>().terrainData.SetHeights(0, 0, heightMap);
         //terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
         //terrain.GetComponent<Terrain>().materialTemplate = BiomeGlobalConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
 
         /* Add fences to coast */
-        var fences = MapDataGenerator.GenerateCoastBlockers(terrain.GetComponent<Terrain>(), _worldStructure,
+        var fences = MapDataGenerator.GenerateCoastBlockers(_terrain, _worldStructure,
             BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerPole, BiomeGlobalConfiguration.CoastBlockerLength);
-        fences.transform.parent = terrain.transform;
+        fences.transform.parent = _terrain.transform;
 
         /* Fill terrain with scenery */
         if (FillTerrain)
         {
-            var sceneryObjects = _sceneryStructure.FillAllSceneryAreas(terrain.GetComponent<Terrain>());
+            var sceneryObjects = _sceneryStructure.FillAllSceneryAreas(_terrain.GetComponent<Terrain>());
             var scenery = new GameObject("Scenery");
-            scenery.transform.parent = terrain.transform;
+            scenery.transform.parent = _terrain.transform;
             foreach (var obj in sceneryObjects)
             {
                 obj.transform.parent = scenery.transform;
@@ -133,7 +150,7 @@ public class MapGenerator : MonoBehaviour
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
         water.GetComponent<Renderer>().material = BiomeGlobalConfiguration.WaterMaterial;
         water.transform.localScale = new Vector3(terrainData.size.x / 5f, 1, terrainData.size.z / 5f);
-        water.transform.parent = terrain.transform;
+        water.transform.parent = _terrain.transform;
         water.transform.localPosition = new Vector3(terrainData.size.x / 2f, (BiomeGlobalConfiguration.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2f);
     }
 

@@ -161,6 +161,7 @@ MonoBehaviour:
   AlreadyHitCharacters: []
   CurrentItemHitBoxAlignment: 0
   EquippedSlotID: -1
+  ItemPowerLevel: 0
   TwoHanded: 0
 --- !u!114 &114600478435366940
 MonoBehaviour:
@@ -178,5 +179,5 @@ MonoBehaviour:
   Level: 1
   CurrentCooldown: 0
   ActivationIntervallTimer: 0
-  EffectOnlyOnceBool: 0
+  EffectOnlyOnceBool: 0000
   EffectFloat: 0

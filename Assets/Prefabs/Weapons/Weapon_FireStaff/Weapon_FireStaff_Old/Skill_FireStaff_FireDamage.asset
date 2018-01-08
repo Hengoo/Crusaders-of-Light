@@ -11,6 +11,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cebab813fce92f40b989e69718a2f6f, type: 3}
   m_Name: Skill_FireStaff_FireDamage
   m_EditorClassIdentifier: 
-  DamageValueBase: 8
-  DamageValuePerLevel: 4
+  DamageValueBase: 80
+  DamageValuePerLevel: 40
+  DefenseType: -1
   DamageType: 2
+  DamageValueModifiers: []
+  IgnoreDefenseValueBase: 0
+  IgnoreDefenseValuePerLevel: 0
+  IgnoreResistanceValueBase: 0
+  IgnoreResistanceValuePerLevel: 0
+  IgnoreValueModifiers: []

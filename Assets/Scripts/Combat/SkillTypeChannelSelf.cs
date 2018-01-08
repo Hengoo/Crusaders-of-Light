@@ -22,9 +22,9 @@ public class SkillTypeChannelSelf : SkillType
             return;
         }
 
-        if (!SourceItemSkill.GetEffectOnlyOnceBool())
+        if (!SourceItemSkill.GetEffectOnlyOnceBool(0))
         {
-            SourceItemSkill.SetEffectOnlyOnceBool(true);
+            SourceItemSkill.SetEffectOnlyOnceBool(0, true);
             
             for (int i = 0; i < EffectsStart.Length; i++)
             {
@@ -49,6 +49,10 @@ public class SkillTypeChannelSelf : SkillType
             SourceItemSkill.GetCurrentOwner().StartAnimation(ReleaseAnimation, 1, SourceItemSkill.GetParentItemEquipmentSlot());
 
             // Stop Skill Activation:
+            if (Cooldown > 0)
+            {
+                SourceItemSkill.SetCurrentCooldown(Cooldown);
+            }
             RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
             SourceItemSkill.FinishedSkillActivation();
         }

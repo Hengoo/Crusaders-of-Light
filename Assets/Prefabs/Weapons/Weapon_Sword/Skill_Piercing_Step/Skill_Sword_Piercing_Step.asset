@@ -14,7 +14,7 @@ MonoBehaviour:
   Cost: 0
   ActivationTime: 0.3
   ActivationIntervall: -1
-  Cooldown: -1
+  Cooldown: 0.2
   ActivationMovementModifier: -0.4
   AllowTargetFriendly: 0
   AllowTargetEnemy: 1
@@ -24,6 +24,11 @@ MonoBehaviour:
   AnimationName: Melee_Stab
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 205ab0d7253293f4ba05f4b07ee6a7dd, type: 2}
+  PowerLevel: 0
+  Threat:
+  - 1
+  - 2
+  - 0
   ChargeUpTimeMax: -1
   EffectiveChargeUpTimeMax: 1
   HitEachCharacterOnlyOnce: 1
@@ -33,6 +38,7 @@ MonoBehaviour:
   MaxTime: 1
   MinModifier: 1
   MaxModifier: 1
+  EffectsSelfOnMinimumActivationTimeEnd: []
   EffectsSelfOnRelease:
   - {fileID: 11400000, guid: fc280c335140bd444ba95ae8b63b6d60, type: 2}
   EffectsSelfOnEnd: []

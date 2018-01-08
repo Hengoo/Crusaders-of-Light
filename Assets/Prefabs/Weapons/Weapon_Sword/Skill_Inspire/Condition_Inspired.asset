@@ -17,7 +17,7 @@ MonoBehaviour:
   OnTick: []
   OnEnd:
   - {fileID: 11400000, guid: 9ee472ceb8adbde4db2b8fe5976f958c, type: 2}
-  Duration: 5
   TickTime: -1
-  StackMaximum: 1
   InstanceMaximum: 1
+  VisualEffectObject: {fileID: 1612890680317766, guid: 66ac954956bb9854aad544d4e9444077,
+    type: 2}

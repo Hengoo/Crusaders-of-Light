@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Character : MonoBehaviour
 {
@@ -83,6 +84,8 @@ public class Character : MonoBehaviour
     // Attention:
     [Header("Attention:")]
     public CharacterAttention CharAttention;
+    
+    private UnityAction _onCharacterDeathAction; // Event system for character death
 
     protected virtual void Start()
     {
@@ -157,6 +160,10 @@ public class Character : MonoBehaviour
 
         // Remove GUI:
         RemoveCharacterFollowGUI();
+
+        // Invoke death actions (e.g. Quest System)
+        if(_onCharacterDeathAction != null)
+            _onCharacterDeathAction.Invoke();
 
         // Destroy this Character:
         Destroy(this.gameObject);
@@ -328,7 +335,7 @@ public class Character : MonoBehaviour
             WeaponSlots[WeaponSlotID] = null;
         }
 
-        UnEquipSkills(WeaponSlotID, MaxNumberOfSkills);
+        UnEquipSkills(WeaponSlotID * SkillsPerWeapon, MaxNumberOfSkills);
     }
 
 
@@ -361,7 +368,8 @@ public class Character : MonoBehaviour
         WeaponSlots[HandSlotID].gameObject.transform.parent = null;
     }
 
-    protected void SpawnAndEquipStartingWeapons()
+    //Need this for quest fire wizard spawning - Jean
+    public void SpawnAndEquipStartingWeapons()
     {
         Item CurrentItem = null;
         for (int i = 0; i < StartingWeapons.Length; i++)
@@ -494,11 +502,11 @@ public class Character : MonoBehaviour
     // =================================== EFFECT INTERACTION ===================================
 
     // Note: DamageAmount is assumed to be positive!
-    public int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount)
+    public int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount, int DefenseIgnore, int ResistanceIgnore)
     {
-        int FinalAmount = DamageCalculationDefense(DefenseType, Amount);
+        int FinalAmount = DamageCalculationDefense(DefenseType, Amount, DefenseIgnore);
 
-        FinalAmount = DamageCalculationResistance(DamageType, FinalAmount);
+        FinalAmount = DamageCalculationResistance(DamageType, FinalAmount, ResistanceIgnore);
 
 
         ChangeHealthCurrent(-1 * FinalAmount);
@@ -506,7 +514,7 @@ public class Character : MonoBehaviour
         return FinalAmount; // Note: Currently returns the amount of Damage that would theoretically be inflicted, not the actual amount of health lost.
     }
 
-    private int DamageCalculationResistance(Resistance DamageType, int Amount)
+    private int DamageCalculationResistance(Resistance DamageType, int Amount, int ResistanceIgnore)
     {
         int DamageTypeID = (int)(DamageType);
 
@@ -518,10 +526,10 @@ public class Character : MonoBehaviour
         // return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Resistances[DamageTypeID])); // Resistance as Percentage Reduction.
 
         // Damage: At 0: Damage Value / At 10: 0.5 Value / At 20: 0.25 Value / At 30: 0.125 Value / ... At -10: 2 Value / At -20: 4 Value / ...
-        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Resistances[DamageTypeID]) / 10.0f)));
+        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Mathf.Max(0, Resistances[DamageTypeID] - ResistanceIgnore)) / 10.0f)));
     }
 
-    private int DamageCalculationDefense(Defense DefenseType, int Amount)
+    private int DamageCalculationDefense(Defense DefenseType, int Amount, int DefenseIgnore)
     {
         int DamageTypeID = (int)(DefenseType);
 
@@ -533,7 +541,7 @@ public class Character : MonoBehaviour
         // return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Defenses[DamageTypeID])); // Defense as Percentage Reduction.
 
         // Damage: At 0: Damage Value / At 10: 0.5 Value / At 20: 0.25 Value / At 30: 0.125 Value / ... At -10: 2 Value / At -20: 4 Value / ...
-        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Defenses[DamageTypeID]) / 10.0f)));
+        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Mathf.Max(Defenses[DamageTypeID] - DefenseIgnore)) / 10.0f)));
     }
 
     public void ChangeResistance(Resistance ResistanceType, float Amount)
@@ -592,8 +600,13 @@ public class Character : MonoBehaviour
         float TickCounter;
         [SerializeField]
         int FixedLevel;
+        [SerializeField]
+        float MaxDuration;
 
-        public ActiveCondition(Character _TargetCharacter, Character _SourceCharacter, ItemSkill _SourceItemSkill, Condition _Condition)
+        [SerializeField]
+        GameObject VisualEffectObject;
+
+        public ActiveCondition(Character _TargetCharacter, Character _SourceCharacter, ItemSkill _SourceItemSkill, Condition _Condition, float Duration)
         {
             TargetCharacter = _TargetCharacter;
             SourceCharacter = _SourceCharacter;
@@ -602,6 +615,14 @@ public class Character : MonoBehaviour
             TimeCounter = 0f;
             TickCounter = 0f;
             FixedLevel = SourceItemSkill.GetSkillLevel();
+
+            MaxDuration = Duration;
+
+            if (Cond.GetVisualEffectObject())
+            {
+                VisualEffectObject = Instantiate(Cond.GetVisualEffectObject(), TargetCharacter.transform.position, TargetCharacter.transform.rotation);
+                VisualEffectObject.transform.SetParent(TargetCharacter.transform, true);
+            }
 
             ApplyCondition();
         }
@@ -628,9 +649,9 @@ public class Character : MonoBehaviour
             }
 
             TimeCounter += UpdateTime;
-            if (Cond.ReachedEnd(TimeCounter))
+            if (ReachedEnd(TimeCounter))
             {
-                Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
+                EndCondition();
                 return true;
             }
             return false;
@@ -647,14 +668,37 @@ public class Character : MonoBehaviour
 
         public void RemoveThisCondition()
         {
+            EndCondition();
+        }
+
+        private void EndCondition()
+        {
+            if (VisualEffectObject)
+            {
+                Destroy(VisualEffectObject.gameObject);
+            }
             Cond.EndCondition(SourceCharacter, SourceItemSkill, TargetCharacter, FixedLevel);
+        }
+
+        public bool ReachedEnd(float TimeCounter)
+        {
+            if (MaxDuration >= 0 && TimeCounter >= MaxDuration)
+            {
+                return true;
+            }
+            return false;
         }
     }
 
-    public void ApplyNewCondition(Condition NewCondition, Character SourceCharacter, ItemSkill SourceItemSkill)
+    public void ApplyNewCondition(Condition NewCondition, Character SourceCharacter, ItemSkill SourceItemSkill, float Duration)
     {
-        // TODO : Check first if Condition already exists / Logic for Stacking Conditions!
-        ActiveCondition NewActiveCondition = new ActiveCondition(this, SourceCharacter, SourceItemSkill, NewCondition);
+        // If the maximum Instances of this Condition is reached, one is removed and the new one applied:
+        if (CheckIfConditionExists(NewCondition) >= NewCondition.GetInstanceMaximum())
+        {
+            RemoveCondition(NewCondition);
+        }
+
+        ActiveCondition NewActiveCondition = new ActiveCondition(this, SourceCharacter, SourceItemSkill, NewCondition, Duration);
         ActiveConditions.Add(NewActiveCondition);
     }
 
@@ -690,16 +734,22 @@ public class Character : MonoBehaviour
         ConditionsEnded.Clear();
     }
 
-    public bool CheckIfConditionExists(Condition ConditionToCheck)
+    public int CheckIfConditionExists(Condition ConditionToCheck)
     {
+        int NumberConditions = 0;
+
         for (int i = 0; i < ActiveConditions.Count; i++)
         {
             if (ActiveConditions[i].RepresentsThisCondition(ConditionToCheck))
             {
-                return true;
+                NumberConditions++;
+                if (ConditionToCheck.GetInstanceMaximum() >= NumberConditions)
+                {
+                    return NumberConditions;
+                }
             }
         }
-        return false;
+        return NumberConditions;
     }
 
     public void RemoveCondition(Condition ConditionToRemove)
@@ -752,6 +802,38 @@ public class Character : MonoBehaviour
 
     // ========================================== /ANIMATION ==========================================
 
+    // ========================================= AI =========================================
+
+    public float GetCurrentThreatLevel(bool IncludeMeleeRange, bool IncludeFarRange)
+    {
+        float TotalThreat = 0.0f;
+        float[] CurrentThreat = new float[3];
+
+        for (int i = 0; i < SkillCurrentlyActivating.Length; i++)
+        {
+            if(SkillCurrentlyActivating[i] >= 0)
+            {
+                CurrentThreat = ItemSkillSlots[SkillCurrentlyActivating[i]].AIGetThreat();
+
+                TotalThreat += CurrentThreat[0];
+
+                if (IncludeMeleeRange)
+                {
+                    TotalThreat += CurrentThreat[1];
+                }
+
+                if (IncludeFarRange)
+                {
+                    TotalThreat += CurrentThreat[2];
+                }
+            }
+        }
+
+        return TotalThreat;
+    }
+
+    // ========================================= /AI =========================================
+
     // =========================================== GUI ==========================================
 
     private void CreateCharacterFollowGUI()
@@ -777,4 +859,13 @@ public class Character : MonoBehaviour
     // ========================================== /GUI ==========================================
 
 
+    // =========================================== EVENTS ==========================================
+
+    public void SubscribeDeathAction(UnityAction action)
+    {
+        if(action != null)
+            _onCharacterDeathAction += action;
+    }
+
+    // ========================================== /EVENTS ==========================================
 }

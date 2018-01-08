@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46bb924257699d240846c00a1f0a2b9c, type: 3}
+  m_Name: Condition_Bleeding
+  m_EditorClassIdentifier: 
+  Name: Bleeding
+  OnApply: []
+  OnTick:
+  - {fileID: 11400000, guid: b34b2c3f05bcf5143b2eaf0207a01c25, type: 2}
+  OnEnd: []
+  TickTime: 0.5
+  InstanceMaximum: 5
+  VisualEffectObject: {fileID: 1533183204227754, guid: a935169cab8b4b14c92fb66c5207499e,
+    type: 2}

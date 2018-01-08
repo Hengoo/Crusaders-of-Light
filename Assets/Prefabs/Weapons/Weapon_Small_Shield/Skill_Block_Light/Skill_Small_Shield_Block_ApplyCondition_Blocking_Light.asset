@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Name: Skill_Small_Shield_Block_ApplyCondition_Blocking_Light
   m_EditorClassIdentifier: 
   ConditionToApply: {fileID: 11400000, guid: 541208a54ffc596499e47dc6491ebd49, type: 2}
+  DurationBase: -1
+  DurationPerLevel: 0
+  DurationModifiers: []

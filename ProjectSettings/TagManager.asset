@@ -8,6 +8,7 @@ TagManager:
   - Weapon
   - Attention
   - Spawner
+  - Skills
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Character
   - Attention
   - Spawner
-  - 
+  - Skills
   - 
   - 
   - 

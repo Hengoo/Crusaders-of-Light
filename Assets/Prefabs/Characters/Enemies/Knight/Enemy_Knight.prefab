@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 136888056597231372}
   - component: {fileID: 114587697657262122}
   - component: {fileID: 54181852882735692}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy_Knight
   m_TagString: Character
   m_Icon: {fileID: 0}
@@ -672,8 +672,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 100
-  HealthMax: 100
+  HealthCurrent: 1000
+  HealthMax: 1000
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
@@ -721,6 +721,9 @@ MonoBehaviour:
   MovePatternEvaluationCycleTimer: 0
   IdleMoveScore: 0.2
   IdleMoveDuration: 0.2
+  BasePowerLevel: 0
+  SpawnedBy: {fileID: 0}
+  SpawnStartingWeaponsOnStart: 0
 --- !u!114 &114599877543414204
 MonoBehaviour:
   m_ObjectHideFlags: 1

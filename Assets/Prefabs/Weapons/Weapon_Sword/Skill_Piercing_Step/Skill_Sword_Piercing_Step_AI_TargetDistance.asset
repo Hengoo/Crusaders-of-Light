@@ -16,4 +16,4 @@ MonoBehaviour:
   yShift: -1
   xShift: 0
   MinDistance: 1
-  MaxDistance: 4
+  MaxDistance: 7

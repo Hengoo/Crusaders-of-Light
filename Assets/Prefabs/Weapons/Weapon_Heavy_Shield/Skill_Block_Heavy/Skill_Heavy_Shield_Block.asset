@@ -14,7 +14,7 @@ MonoBehaviour:
   Cost: 0
   ActivationTime: 0.3
   ActivationIntervall: -1
-  Cooldown: -1
+  Cooldown: 0.3
   ActivationMovementModifier: -0.8
   AllowTargetFriendly: 0
   AllowTargetEnemy: 0
@@ -23,6 +23,11 @@ MonoBehaviour:
   AnimationName: Melee_Block
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 5eeb1c4016ab8154998c4d5063577765, type: 2}
+  PowerLevel: 0
+  Threat:
+  - 0
+  - 0
+  - 0
   ActivationTimeMax: -1
   EffectsStart:
   - {fileID: 11400000, guid: 5dc1d11b815bada419d02d38179b7c57, type: 2}

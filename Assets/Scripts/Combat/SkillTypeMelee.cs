@@ -28,6 +28,10 @@ public class SkillTypeMelee : SkillType {
         if (CurrentActivationTime >= ActivationTime)
         {
             // Stop Skill Activation:
+            if (Cooldown > 0)
+            {
+                SourceItemSkill.SetCurrentCooldown(Cooldown);
+            }
             RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
             SourceItemSkill.FinishedSkillActivation();
         }

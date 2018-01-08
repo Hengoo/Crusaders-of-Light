@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CharacterPlayer : Character {
 
@@ -18,6 +19,8 @@ public class CharacterPlayer : Character {
         base.Start();
         SpawnAndEquipStartingWeapons();
     }
+
+    private UnityAction _itemPickupAction;
 
     protected override void Update()
     {
@@ -68,11 +71,13 @@ public class CharacterPlayer : Character {
 
         int EquipSlotID = -1;
 
-        if (SkillActivationButtonsPressed[0] || SkillActivationButtonsPressed[1])
+        if ((SkillActivationButtonsPressed[0] || SkillActivationButtonsPressed[1])
+            && SkillCurrentlyActivating[0] < 0)
         {
             EquipSlotID = 0;
         }
-        else if (SkillActivationButtonsPressed[2] || SkillActivationButtonsPressed[3])
+        else if ((SkillActivationButtonsPressed[2] || SkillActivationButtonsPressed[3])
+            && SkillCurrentlyActivating[1] < 0)
         {
             EquipSlotID = 1;
         }
@@ -97,6 +102,10 @@ public class CharacterPlayer : Character {
 
         ClosestItem.EquipItem(this, EquipSlotID);
         ItemsInRange.Remove(ClosestItem);
+
+
+        if (_itemPickupAction != null)
+            _itemPickupAction.Invoke();
 
         return true;
     }
@@ -163,7 +172,7 @@ public class CharacterPlayer : Character {
         }
 
         // Weapon PickUp:
-        if (Input.GetButtonDown("IPickUp"))
+        if (Input.GetButton("IPickUp"))
         {
             if (PickUpClosestItem())
             {
@@ -207,4 +216,18 @@ public class CharacterPlayer : Character {
     }
 
     // ======================================== /INPUT =========================================
+
+    // ======================================== EVENT =========================================
+
+    public void SubscribeItemPickupAction(UnityAction action)
+    {
+        _itemPickupAction += action;
+    }
+
+    public void ClearItemPickupActions()
+    {
+        _itemPickupAction = null;
+    }
+
+    // ======================================== /EVENT =========================================
 }

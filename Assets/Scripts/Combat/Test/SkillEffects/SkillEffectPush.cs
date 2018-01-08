@@ -9,11 +9,12 @@ public class SkillEffectPush : SkillEffect {
     {
         NONE = -1,
         OWNER_DIRECTION = 0,
-        FROM_OWNER_TO_TARGET = 1
+        FROM_OWNER_TO_TARGET = 1,
     }
 
     [Header("Skill Effect Push:")]
     public Direction PushDirection = Direction.NONE;
+    
     public float ForceMagnitude = 1.0f;
 
     [Header("Skill Effect Push Value Modifier:")]
