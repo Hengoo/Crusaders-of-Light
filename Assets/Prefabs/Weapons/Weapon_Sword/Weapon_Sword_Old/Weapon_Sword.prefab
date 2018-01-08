@@ -161,6 +161,7 @@ MonoBehaviour:
   AlreadyHitCharacters: []
   CurrentItemHitBoxAlignment: 0
   EquippedSlotID: -1
+  ItemPowerLevel: 0
   TwoHanded: 0
 --- !u!114 &114893412725718792
 MonoBehaviour:
@@ -175,6 +176,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114399201202335494}
   SkillObject: {fileID: 11400000, guid: 5476fe060aac8594fb25d9b7b15f84fc, type: 2}
-  CurrentCooldown: 0
   Level: 3
-  AnimationName: Melee_Swing
+  CurrentCooldown: 0
+  ActivationIntervallTimer: 0
+  EffectOnlyOnceBool: 0000
+  EffectFloat: 0

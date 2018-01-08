@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Name: Skill_Sword_Inspire_ApplyCondition_Inspired
   m_EditorClassIdentifier: 
   ConditionToApply: {fileID: 11400000, guid: dd14ca4268c567c468acb8c0686e95f2, type: 2}
+  DurationBase: 5
+  DurationPerLevel: 1
+  DurationModifiers: []

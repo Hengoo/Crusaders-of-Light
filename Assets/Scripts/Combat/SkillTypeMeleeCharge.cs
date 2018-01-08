@@ -21,6 +21,7 @@ public class SkillTypeMeleeCharge : SkillType {
 
 
     [Header("Skill Charge Up Melee Additional Effects:")]
+    public SkillEffect[] EffectsSelfOnMinimumActivationTimeEnd = new SkillEffect[0];
     public SkillEffect[] EffectsSelfOnRelease = new SkillEffect[0];
     public SkillEffect[] EffectsSelfOnEnd = new SkillEffect[0];
 
@@ -34,9 +35,18 @@ public class SkillTypeMeleeCharge : SkillType {
             return;
         }
 
+        if (!SourceItemSkill.GetEffectOnlyOnceBool(0))
+        {
+            SourceItemSkill.SetEffectOnlyOnceBool(0, true);
+            for (int i = 0; i < EffectsSelfOnMinimumActivationTimeEnd.Length; i++)
+            {
+                EffectsSelfOnMinimumActivationTimeEnd[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+            }
+        }
+
         if (!StillActivating || (ChargeUpTimeMax > 0 && CurrentActivationTime >= ChargeUpTimeMax))
         {
-            if (!SourceItemSkill.GetEffectOnlyOnceBool())
+            if (!SourceItemSkill.GetEffectOnlyOnceBool(1))
             {
                 float TimeAfterRelease = AfterReleaseActivationTime;
 
@@ -56,10 +66,10 @@ public class SkillTypeMeleeCharge : SkillType {
                 }
             }
 
-            SourceItemSkill.SetEffectOnlyOnceBool(true);
+            SourceItemSkill.SetEffectOnlyOnceBool(1, true);
         }
 
-        if (SourceItemSkill.GetEffectOnlyOnceBool() && CurrentActivationTime >= SourceItemSkill.GetEffectFloat())
+        if (SourceItemSkill.GetEffectOnlyOnceBool(1) && CurrentActivationTime >= SourceItemSkill.GetEffectFloat())
         {
             for (int i = 0; i < EffectsSelfOnEnd.Length; i++)
             {
@@ -67,6 +77,10 @@ public class SkillTypeMeleeCharge : SkillType {
             }
 
             // Stop Skill Activation:
+            if (Cooldown > 0)
+            {
+                SourceItemSkill.SetCurrentCooldown(Cooldown);
+            }
             SourceItemSkill.EndSkillCurrentlyUsingItemHitBox();
             RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
             SourceItemSkill.FinishedSkillActivation();

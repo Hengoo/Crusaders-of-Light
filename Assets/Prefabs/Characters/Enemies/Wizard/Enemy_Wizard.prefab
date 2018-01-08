@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 136407235697152850}
   - component: {fileID: 114301975722172286}
   - component: {fileID: 54499927805860204}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy_Wizard
   m_TagString: Character
   m_Icon: {fileID: 0}
@@ -616,8 +616,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 100
-  HealthMax: 100
+  HealthCurrent: 1000
+  HealthMax: 1000
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
@@ -666,6 +666,9 @@ MonoBehaviour:
   MovePatternEvaluationCycleTimer: 0
   IdleMoveScore: 0.2
   IdleMoveDuration: 0.2
+  BasePowerLevel: 0
+  SpawnedBy: {fileID: 0}
+  SpawnStartingWeaponsOnStart: 0
 --- !u!135 &135014108467417602
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 136888056597231372}
   - component: {fileID: 114587697657262122}
   - component: {fileID: 54181852882735692}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy_Knight 1
   m_TagString: Character
   m_Icon: {fileID: 0}
@@ -672,8 +672,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 100
-  HealthMax: 100
+  HealthCurrent: 1000
+  HealthMax: 1000
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
@@ -715,13 +715,15 @@ MonoBehaviour:
   IdleDuration: 0.2
   ActiveMovePattern: {fileID: 11400000, guid: 76fb1f41306999c47a678806d919f6c8, type: 2}
   MovePatterns:
-  - {fileID: 11400000, guid: b1a40c0055ba0764aa3c1480d8255800, type: 2}
   - {fileID: 11400000, guid: 76fb1f41306999c47a678806d919f6c8, type: 2}
+  - {fileID: 11400000, guid: 2a3733612bc84334f82118f9b32c6787, type: 2}
   MovePatternEvaluationCycle: 0.5
   MovePatternEvaluationCycleTimer: 0
   IdleMoveScore: 0.2
   IdleMoveDuration: 0.2
   BasePowerLevel: 0
+  SpawnedBy: {fileID: 0}
+  SpawnStartingWeaponsOnStart: 0
 --- !u!114 &114599877543414204
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -735,8 +737,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Owner: {fileID: 114587697657262122}
   Tag: Attention
+  TagHitObjects: Skills
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
+  PlayerHitObjectsInRange: []
 --- !u!135 &135146889492806764
 SphereCollider:
   m_ObjectHideFlags: 1

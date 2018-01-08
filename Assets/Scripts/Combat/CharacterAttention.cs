@@ -7,10 +7,12 @@ public class CharacterAttention : MonoBehaviour {
     [Header("Character Attention:")]
     public Character Owner;
     public string Tag = "Attention";
+    public string TagHitObjects = "Skills";
 
     public List<Character> PlayersInAttentionRange = new List<Character>();
     public List<Character> EnemiesInAttentionRange = new List<Character>();
 
+    public List<SkillHitObject> PlayerHitObjectsInRange = new List<SkillHitObject>();
 
     public Character GetOwner()
     {
@@ -58,6 +60,18 @@ public class CharacterAttention : MonoBehaviour {
                 EnemyEntersAttentionRange(OtherAttention.GetOwner());
             }
         }
+        else if (other.tag == TagHitObjects)
+        {
+            SkillHitObject OtherHitObject = other.gameObject.GetComponent<SkillHitObject>();
+
+            if ((OtherHitObject.GetAlignment() == Character.TeamAlignment.ALL
+                || OtherHitObject.GetAlignment() == Character.TeamAlignment.ENEMIES)
+                && OtherHitObject.GetOwnerAlignment() == Character.TeamAlignment.PLAYERS)
+            {
+                PlayerHitObjectsInRange.Add(OtherHitObject);
+                OtherHitObject.AddInCharactersAttention(this);
+            }
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -73,6 +87,18 @@ public class CharacterAttention : MonoBehaviour {
             else
             {
                 EnemyLeavesAttentionRange(OtherAttention.GetOwner());
+            }
+        }
+        else if (other.tag == TagHitObjects)
+        {
+            SkillHitObject OtherHitObject = other.gameObject.GetComponent<SkillHitObject>();
+
+            if ((OtherHitObject.GetAlignment() == Character.TeamAlignment.ALL
+                || OtherHitObject.GetAlignment() == Character.TeamAlignment.ENEMIES)
+                && OtherHitObject.GetOwnerAlignment() == Character.TeamAlignment.PLAYERS)
+            {
+                PlayerHitObjectsInRange.Remove(OtherHitObject);
+                OtherHitObject.RemoveInCharactersAttention(this);
             }
         }
     }
@@ -104,7 +130,7 @@ public class CharacterAttention : MonoBehaviour {
 
         for (int i = 0; i < PlayersInAttentionRange.Count; i++)
         {
-            if (CharactersInRange[i])
+            if (PlayersInAttentionRange[i])
             {
                 DistanceToOwner = Vector3.Distance(Owner.transform.position, PlayersInAttentionRange[i].transform.position);
                 if (DistanceToOwner >= MinDistance && DistanceToOwner <= MaxDistance)
@@ -144,7 +170,7 @@ public class CharacterAttention : MonoBehaviour {
 
         for (int i = 0; i < EnemiesInAttentionRange.Count; i++)
         {
-            if (CharactersInRange[i])
+            if (EnemiesInAttentionRange[i])
             {
                 DistanceToOwner = Vector3.Distance(Owner.transform.position, EnemiesInAttentionRange[i].transform.position);
                 if (DistanceToOwner >= MinDistance && DistanceToOwner <= MaxDistance)
@@ -155,5 +181,35 @@ public class CharacterAttention : MonoBehaviour {
         }
 
         return CharactersInRange;
+    }
+
+    public List<SkillHitObject> GetPlayerHitObjectsInAttentionRange(float MinDistance, float MaxDistance)
+    {
+        List<SkillHitObject> PlayerHitObjectsInAttentionRange = new List<SkillHitObject>();
+        float DistanceToOwner = 0.0f;
+
+        for (int i = 0; i < PlayerHitObjectsInRange.Count; i++)
+        {
+            if (PlayerHitObjectsInRange[i])
+            {
+                DistanceToOwner = Vector3.Distance(Owner.transform.position, PlayerHitObjectsInRange[i].transform.position);
+                if (DistanceToOwner >= MinDistance && DistanceToOwner <= MaxDistance)
+                {
+                    PlayerHitObjectsInAttentionRange.Add(PlayerHitObjectsInRange[i]);
+                }
+            }
+        }
+
+        return PlayerHitObjectsInAttentionRange;
+    }
+
+    public void RemoveHitObjectAfterDestroy(SkillHitObject DestroyedHitObject)
+    {
+        if ((DestroyedHitObject.GetAlignment() == Character.TeamAlignment.ALL
+                || DestroyedHitObject.GetAlignment() == Character.TeamAlignment.ENEMIES)
+                && DestroyedHitObject.GetOwnerAlignment() == Character.TeamAlignment.PLAYERS)
+        {
+            PlayerHitObjectsInRange.Remove(DestroyedHitObject);
+        }
     }
 }

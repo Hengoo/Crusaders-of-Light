@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class CharacterEnemy : Character {
 
+    public struct BestSkill
+    {
+        public int SkillID;
+        public float Score;
+    }
+
     [Header("Team Alignment:")]
     public TeamAlignment Alignment = TeamAlignment.ENEMIES;
 
@@ -32,16 +38,30 @@ public class CharacterEnemy : Character {
 
     public Spawner SpawnedBy;
 
+    [Header("Enemy Testing:")]
+    public bool SpawnStartingWeaponsOnStart = false;
+
+    protected override void Start()
+    {
+        base.Start();
+        if (SpawnStartingWeaponsOnStart)
+        {
+            SpawnAndEquipStartingWeapons();
+        }
+    }
+
     protected override void Update()
     {
         base.Update();
-        DecideSkillUse(0);
+
+        DecideSkillUse();
         if (!TwoHandedWeaponEquipped)
         {
-            DecideSkillUse(1);
+            DecideSkillUse();
         }
         UpdateMovePattern();
     }
+
 
     private void FixedUpdate()
     {
@@ -85,8 +105,84 @@ public class CharacterEnemy : Character {
 
     // ========================================= AI =========================================
 
+    public void DecideSkillUse()
+    {
+        if (SkillCurrentlyActivating[0] >= 0 || !WeaponSlots[0])
+        {
+            if (SkillCurrentlyActivating[1] < 0)
+            {
+                DecideSkillUse(1);
+                return;
+            }
+            return;
+        }
+        else if (SkillCurrentlyActivating[1] >= 0 || !WeaponSlots[1])
+        {
+            if (SkillCurrentlyActivating[0] < 0)
+            {
+                DecideSkillUse(0);
+                return;
+            }
+            return;
+        }
+
+        if (IdleTimer[0] > 0)
+        {
+            IdleTimer[0] -= Time.deltaTime;
+        }
+        if (IdleTimer[1] > 0)
+        {
+            IdleTimer[1] -= Time.deltaTime;
+        }
+        if (IdleTimer[0] > 0 || IdleTimer[1] > 0)
+        {
+            return;
+        }
+
+        BestSkill[] BestSkills = new BestSkill[2];
+        BestSkill CurrentBestSkill = new BestSkill
+        {
+            Score = -1
+        };
+
+        int WeaponSlotID = -1;
+
+        for (int i = 0; i < BestSkills.Length; i++)
+        {
+            BestSkills[i] = EvaluateBestSkillToUse(i);
+        }
+
+        for (int i = 0; i < BestSkills.Length; i++)
+        {
+            if (BestSkills[i].Score > CurrentBestSkill.Score)
+            {
+                CurrentBestSkill = BestSkills[i];
+                WeaponSlotID = i;
+            }
+        }
+
+        if (CurrentBestSkill.SkillID >= 0)
+        {
+            SkillEvaluationCycleTimers[WeaponSlotID] = ItemSkillSlots[CurrentBestSkill.SkillID].AIGetSkillEvaluationCycle();
+            SkillContinueActivation[WeaponSlotID] = true;
+
+            SensibleSkillActivationTimes[WeaponSlotID] = ItemSkillSlots[CurrentBestSkill.SkillID].AIGetSensibleActivationTime();
+            StartSkillActivation(CurrentBestSkill.SkillID);
+        }
+        else
+        {
+            IdleTimer[0] = IdleDuration;
+            IdleTimer[1] = IdleDuration;
+        }
+    }
+
     public void DecideSkillUse(int WeaponSlotID)
     {
+        if (!WeaponSlots[WeaponSlotID])
+        {
+            return;
+        }
+
         if (SkillCurrentlyActivating[WeaponSlotID] >= 0)
         {
             return;
@@ -98,7 +194,7 @@ public class CharacterEnemy : Character {
             return;
         }
 
-        int BestSkillID = EvaluateBestSkillToUse(WeaponSlotID);
+        int BestSkillID = EvaluateBestSkillToUse(WeaponSlotID).SkillID;
 
         if (BestSkillID >= 0)
         {
@@ -114,7 +210,7 @@ public class CharacterEnemy : Character {
         }
     }
 
-    private int EvaluateBestSkillToUse(int WeaponSlotID)
+    private BestSkill EvaluateBestSkillToUse(int WeaponSlotID)
     {
         DecisionMaker.AIDecision BestSkillDecision = new DecisionMaker.AIDecision
         {
@@ -123,7 +219,8 @@ public class CharacterEnemy : Character {
 
         DecisionMaker.AIDecision TempSkillDecision = new DecisionMaker.AIDecision();
 
-        int BestSkillID = -1;
+        BestSkill BestSkillID = new BestSkill();
+        BestSkillID.SkillID = -1;
 
         int TwoHandedModifier = 0;
 
@@ -141,27 +238,14 @@ public class CharacterEnemy : Character {
                 if (TempSkillDecision.Score > BestSkillDecision.Score)
                 {
                     BestSkillDecision = TempSkillDecision;
-                    BestSkillID = sk;
+                    BestSkillID.SkillID = sk;
+                    BestSkillID.Score = BestSkillDecision.Score;
                 }
             }
         }
 
         return BestSkillID;
     }
-    /*
-        protected override void StartSkillActivation(int WeaponSkillSlotID)
-        {
-            base.StartSkillActivation(WeaponSkillSlotID);
-
-            SkillActivationButtonsPressed[WeaponSkillSlotID] = true;
-        }
-
-        public override void FinishedCurrentSkillActivation()
-        {
-            base.FinishedCurrentSkillActivation();
-
-
-        }*/
 
     public void DecideMovePattern()
     {
@@ -184,6 +268,7 @@ public class CharacterEnemy : Character {
 
         DecisionMaker.AIDecision TempMovePatternDecision = new DecisionMaker.AIDecision();
 
+        // Go through basic move patterns:
         for (int mp = 0; mp < MovePatterns.Length; mp++)
         {
             TempMovePatternDecision = MovePatterns[mp].AICalculateMovePatternScore(this);
@@ -196,27 +281,51 @@ public class CharacterEnemy : Character {
             }
         }
 
+        // Go through weapon move patterns:
         MovePattern[] WeaponMovePatterns;
+
+        for (int i = 0; i < WeaponSlots.Length; i++)
+        {
+            if (WeaponSlots[i])
+            {
+                WeaponMovePatterns = WeaponSlots[i].GetMovePatterns();
+
+                for (int j = 0; j < WeaponMovePatterns.Length; j++)
+                {
+                    TempMovePatternDecision = WeaponMovePatterns[j].AICalculateMovePatternScore(this);
+
+                    if (TempMovePatternDecision.Score > BestMovePatternDecision.Score)
+                    {
+                        BestMovePatternDecision = TempMovePatternDecision;
+                        ActiveMovePattern = WeaponMovePatterns[j];
+                        TargetCharacter = BestMovePatternDecision.TargetCharacter;
+                    }
+                }
+            }
+        }
+
+        // Go through skill move patterns:
+        MovePattern[] SkillMovePatterns;
 
         for (int i = 0; i < SkillCurrentlyActivating.Length; i++)
         {
             if (SkillCurrentlyActivating[i] >= 0)
             {
-                WeaponMovePatterns = ItemSkillSlots[SkillCurrentlyActivating[i]].AIGetSkillMovePatterns();
+                SkillMovePatterns = ItemSkillSlots[SkillCurrentlyActivating[i]].AIGetSkillMovePatterns();
 
-                for (int mp = 0; mp < WeaponMovePatterns.Length; mp++)
+                for (int mp = 0; mp < SkillMovePatterns.Length; mp++)
                 {
-                    TempMovePatternDecision = WeaponMovePatterns[mp].AICalculateMovePatternScore(this);
+                    TempMovePatternDecision = SkillMovePatterns[mp].AICalculateMovePatternScore(this);
 
                     if (TempMovePatternDecision.Score > BestMovePatternDecision.Score)
                     {
                         BestMovePatternDecision = TempMovePatternDecision;
-                        ActiveMovePattern = WeaponMovePatterns[mp];
+                        ActiveMovePattern = SkillMovePatterns[mp];
                         TargetCharacter = BestMovePatternDecision.TargetCharacter;
                     }
                 }
             }
-        }   
+        }
     }
 
     private void UpdateMovePattern()
@@ -278,12 +387,13 @@ public class CharacterEnemy : Character {
 
         if (SkillEvaluationCycleTimers[WeaponSlotID] <= 0)
         {
-            if (SkillCurrentlyActivating[WeaponSlotID] != EvaluateBestSkillToUse(WeaponSlotID))
+            if ((SkillCurrentlyActivating[WeaponSlotID] != EvaluateBestSkillToUse(0).SkillID)
+                && (SkillCurrentlyActivating[WeaponSlotID] != EvaluateBestSkillToUse(1).SkillID))
             {
                 return false;
             }
 
-            SkillEvaluationCycleTimers[WeaponSlotID] = ItemSkillSlots[WeaponSlotID].AIGetSkillEvaluationCycle();
+            SkillEvaluationCycleTimers[WeaponSlotID] = ItemSkillSlots[SkillCurrentlyActivating[WeaponSlotID]].AIGetSkillEvaluationCycle();
         }
 
         return true;

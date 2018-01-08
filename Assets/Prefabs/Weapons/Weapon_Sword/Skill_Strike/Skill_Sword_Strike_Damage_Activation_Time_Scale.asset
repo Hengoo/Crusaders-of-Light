@@ -13,5 +13,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MinTime: 0
   MaxTime: 1
-  MinModifier: 0.2
+  MinModifier: 0.6
   MaxModifier: 2.5

@@ -11,9 +11,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a358bdf9369a6de42843121de4896289, type: 3}
   m_Name: Skill_Heavy_Shield_Demolish_AI_DecisionMaker
   m_EditorClassIdentifier: 
-  Weight: 1
-  ConsiderationsTargeted: []
+  Weight: 2.5
+  ConsiderationsTargeted:
+  - {fileID: 11400000, guid: ffd781ee9ffbfc741883f089ef689fca, type: 2}
+  - {fileID: 11400000, guid: d905683ee29cc224281987afe498f84e, type: 2}
+  - {fileID: 11400000, guid: 60fc003a7428a79458e927f39d17ddac, type: 2}
+  - {fileID: 11400000, guid: 981c203fa4597eb40be6df9e02b0fc06, type: 2}
   ConsiderationsSelf: []
-  SensibleActivationTime: -1
-  SkillEvaluationCycle: -1
+  SensibleActivationTime: 2
+  SkillEvaluationCycle: 0.5
   AISkillMovePatterns: []

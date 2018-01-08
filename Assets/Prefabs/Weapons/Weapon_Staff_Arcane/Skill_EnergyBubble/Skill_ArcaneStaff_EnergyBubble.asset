@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc8ac6d6aa73e8f4e9906ea71de04c7b, type: 3}
+  m_Name: Skill_ArcaneStaff_EnergyBubble
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.3
+  ActivationIntervall: -1
+  Cooldown: 1
+  ActivationMovementModifier: -0.1
+  AllowTargetFriendly: 1
+  AllowTargetEnemy: 0
+  Effects:
+  - {fileID: 11400000, guid: 6297e8b09822f5b46a961eddebd8c0cc, type: 2}
+  HindranceLevel: 1
+  AnimationName: Melee_Block
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: 3b7221b758556d44ca933a57e3e00012, type: 2}
+  PowerLevel: 0
+  Threat:
+  - 0
+  - 0
+  - 0
+  ActivationTimeMax: -1
+  EffectsStart: []
+  EffectsEnd: []
+  AtStartHitObjectPrefabs:
+  - {fileID: 114466471543455814, guid: 4fb90db3f6f4e30438fb49a90ecaf7d9, type: 2}
+  IntervallHitObjectPrefabs: []
+  AtEndHitObjectPrefabs: []
+  UseSkillLevelAtActivationMoment: 1
+  IdleAnimation: Channel_Idle
+  ReleaseAnimation: Channel_Released

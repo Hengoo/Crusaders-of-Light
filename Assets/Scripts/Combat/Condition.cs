@@ -13,11 +13,14 @@ public class Condition : ScriptableObject {
     public SkillEffect[] OnEnd = new SkillEffect[0];
 
     [Header("Condition Duration:")]
-    public float Duration = 0.0f;
+    private float Duration = 0.0f; // Currently unsused!
     public float TickTime = 0.5f;
 
-    public int StackMaximum = 1;
+    //public int StackMaximum = 1;
     public int InstanceMaximum = 1;
+
+    [Header("Condition Visual:")]
+    public GameObject VisualEffectObject;
 
 
     public void ApplyCondition(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
@@ -86,8 +89,13 @@ public class Condition : ScriptableObject {
         return InstanceMaximum;
     }
 
+    public GameObject GetVisualEffectObject()
+    {
+        return VisualEffectObject;
+    }
+/*
     public int GetStackMaximum()
     {
         return StackMaximum;
-    }
+    }*/
 }

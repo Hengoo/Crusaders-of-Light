@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Name: Skill_Heavy_Shield_Demolish_ApplyCondition_Blocking_Heavy
   m_EditorClassIdentifier: 
   ConditionToApply: {fileID: 11400000, guid: 74031b7bde6129e4da08a45215151011, type: 2}
+  DurationBase: -1
+  DurationPerLevel: 0
+  DurationModifiers: []

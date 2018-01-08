@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Name: Skill_Heavy_Shield_Demolish_Damage_ActivationTimeScale
   m_EditorClassIdentifier: 
   MinTime: 0
-  MaxTime: 1
+  MaxTime: 2
   MinModifier: 0.2
   MaxModifier: 2.5

@@ -16,8 +16,9 @@ public class ItemSkill : MonoBehaviour {
 
     public float ActivationIntervallTimer = 0.0f;
 
-    public bool EffectOnlyOnceBool = false;
+    public bool[] EffectOnlyOnceBool = { false, false };
     public float EffectFloat = 0.0f;
+    public List<SkillHitObject> EffectSkillHitObjects = new List<SkillHitObject>();
 
     //[Header("Animation:")]
     //public string AnimationName = "no_animation";
@@ -29,7 +30,11 @@ public class ItemSkill : MonoBehaviour {
         if (CurrentCooldown > 0.0f) { return false; }
 
         ActivationIntervallTimer = 0.0f;
-        EffectOnlyOnceBool = false;
+        for (int i = 0; i < EffectOnlyOnceBool.Length; i++)
+        {
+            EffectOnlyOnceBool[i] = false;
+        }
+
         EffectFloat = 0.0f;
 
         bool ActivationSuccessful = SkillObject.StartSkillActivation(this, GetCurrentOwner());
@@ -165,7 +170,11 @@ public class ItemSkill : MonoBehaviour {
     // Note: If a Character can have buffs/changes to Skill Levels, then this function has to include those changes.
     public int GetSkillLevel()
     {
-        return Level + GetCurrentOwner().GetSkillLevelModifier();
+        if (GetCurrentOwner())
+        {
+            return Level + GetCurrentOwner().GetSkillLevelModifier();
+        }
+        return Level;
     }
 
     public void SetSkillLevel(int Value)
@@ -188,14 +197,14 @@ public class ItemSkill : MonoBehaviour {
         return SkillObject.GetPowerLevel();
     }
 
-    public bool GetEffectOnlyOnceBool()
+    public bool GetEffectOnlyOnceBool(int ID)
     {
-        return EffectOnlyOnceBool;
+        return EffectOnlyOnceBool[ID];
     }
 
-    public void SetEffectOnlyOnceBool(bool state)
+    public void SetEffectOnlyOnceBool(int ID, bool state)
     {
-        EffectOnlyOnceBool = state;
+        EffectOnlyOnceBool[ID] = state;
     }
 
     public float GetEffectFloat()
@@ -213,6 +222,35 @@ public class ItemSkill : MonoBehaviour {
         EffectFloat += change;
     }
        
+    public void AddEffectSkillHitObject(SkillHitObject HitObject)
+    {
+        EffectSkillHitObjects.Add(HitObject);
+    }
+
+    public bool RemoveEffectSkillHitObject(SkillHitObject HitObject)
+    {
+        return EffectSkillHitObjects.Remove(HitObject);
+    }
+
+    public void StoppedActivatingSkillWithHitObjects(SkillType SkillStopped)
+    {
+        List<SkillHitObject> EndHitObjects = new List<SkillHitObject>();
+
+        for (int i = 0; i < EffectSkillHitObjects.Count; i++)
+        {
+            if (EffectSkillHitObjects[i].IsParentSkill(SkillStopped))
+            {
+                EndHitObjects.Add(EffectSkillHitObjects[i]);
+                EffectSkillHitObjects[i].HitObjectSkillActivationEnd();
+            }
+        }
+
+        for (int i = 0; i < EndHitObjects.Count; i++)
+        {
+            EffectSkillHitObjects.Remove(EndHitObjects[i]);
+        }
+    }
+
 
     public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()
     {
@@ -232,5 +270,10 @@ public class ItemSkill : MonoBehaviour {
     public float AIGetSkillEvaluationCycle()
     {
         return SkillObject.GetDecisionMaker().SkillEvaluationCycle;
+    }
+
+    public float[] AIGetThreat()
+    {
+        return SkillObject.GetThreat();
     }
 }
