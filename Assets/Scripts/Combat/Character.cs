@@ -335,7 +335,7 @@ public class Character : MonoBehaviour
             WeaponSlots[WeaponSlotID] = null;
         }
 
-        UnEquipSkills(WeaponSlotID, MaxNumberOfSkills);
+        UnEquipSkills(WeaponSlotID * SkillsPerWeapon, MaxNumberOfSkills);
     }
 
 

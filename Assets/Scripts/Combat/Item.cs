@@ -37,6 +37,7 @@ public class Item : MonoBehaviour {
 
     [Header("Item AI:")]
     public int ItemPowerLevel = 0; // Only for the Item itself, the Skills it grants is already calculated through it's skills.
+    public MovePattern[] ItemMovePatterns = new MovePattern[0];
 
     public virtual void EquipItem(Character CharacterToEquipTo, int SlotID)
     {
@@ -268,5 +269,10 @@ public class Item : MonoBehaviour {
         }
 
         return TempPowerLevel;
+    }
+
+    public MovePattern[] GetMovePatterns()
+    {
+        return ItemMovePatterns;
     }
 }
