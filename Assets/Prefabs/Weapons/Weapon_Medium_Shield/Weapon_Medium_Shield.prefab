@@ -54,7 +54,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1250646196979016}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 2
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -152,6 +152,7 @@ MonoBehaviour:
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0000
   EffectFloat: 0
+  EffectSkillHitObjects: []
 --- !u!114 &114777665945185374
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -182,6 +183,7 @@ MonoBehaviour:
   CurrentItemHitBoxAlignment: 0
   EquippedSlotID: -1
   ItemPowerLevel: 0
+  ItemMovePatterns: []
   TwoHanded: 0
 --- !u!114 &114981599995666734
 MonoBehaviour:
@@ -201,3 +203,4 @@ MonoBehaviour:
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0000
   EffectFloat: 0
+  EffectSkillHitObjects: []

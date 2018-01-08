@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 4104062699304126}
   - component: {fileID: 95456004345485002}
   m_Layer: 0
-  m_Name: Tree5
+  m_Name: Tree6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -145,7 +145,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1317763736010550}
   m_Enabled: 1
-  m_CastShadows: 2
+  m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
