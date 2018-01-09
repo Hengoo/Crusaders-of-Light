@@ -5503,6 +5503,12 @@ Prefab:
       value: 
       objectReference: {fileID: 114702944568196636, guid: cf80acd19f59fc4438cb433637cf4a24,
         type: 2}
+    - target: {fileID: 114453238512497482, guid: 03ca168d4c080a24a874f4cadafeb222,
+        type: 2}
+      propertyPath: StartingWeapons.Array.data[0]
+      value: 
+      objectReference: {fileID: 114638103525019752, guid: f66007c64d8d4964cb44ce562b237e8e,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 03ca168d4c080a24a874f4cadafeb222, type: 2}
   m_IsPrefabParent: 0
