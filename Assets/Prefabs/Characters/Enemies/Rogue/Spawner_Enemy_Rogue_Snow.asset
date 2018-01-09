@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcc78f04908579b4894a018ee2202713, type: 3}
+  m_Name: Spawner_Enemy_Rogue_Snow
+  m_EditorClassIdentifier: 
+  EnemyPrefab: {fileID: 114296180629802020, guid: 25ce05cf5aefbff48b21f84f88bc9d8a,
+    type: 2}
+  ListWeaponsLeft:
+  - SpawnWeapon: {fileID: 114272828251335038, guid: 3b0a85519c157f84eb61f76934f7032b,
+      type: 2}
+    SpawnWeight: 2
+  - SpawnWeapon: {fileID: 114066496244682900, guid: 952b46205acefd34b8895b11db3a6556,
+      type: 2}
+    SpawnWeight: 1
+  - SpawnWeapon: {fileID: 114066496244682900, guid: aa94daf626a371f4ea7bcb6b4e1637cb,
+      type: 2}
+    SpawnWeight: 2
+  - SpawnWeapon: {fileID: 114870586629721368, guid: 1e41762af0711d7458823ea78ec1d811,
+      type: 2}
+    SpawnWeight: 2
+  ListWeaponsRight:
+  - SpawnWeapon: {fileID: 0}
+    SpawnWeight: 2
+  - SpawnWeapon: {fileID: 114272828251335038, guid: 3b0a85519c157f84eb61f76934f7032b,
+      type: 2}
+    SpawnWeight: 2
+  - SpawnWeapon: {fileID: 114870586629721368, guid: 1e41762af0711d7458823ea78ec1d811,
+      type: 2}
+    SpawnWeight: 2
+  - SpawnWeapon: {fileID: 114514537758392172, guid: f164b18be3100ee4493a0a11aa4359ee,
+      type: 2}
+    SpawnWeight: 2
+  - SpawnWeapon: {fileID: 114650507562312746, guid: 6e1bda12203c3f941bdaf1ed89e557f1,
+      type: 2}
+    SpawnWeight: 2

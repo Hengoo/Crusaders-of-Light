@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkillType : ScriptableObject {
+public class SkillType : ScriptableObject
+{
 
     public enum Hindrance
     {
@@ -104,10 +105,10 @@ public class SkillType : ScriptableObject {
         Owner.ChangeMovementRateModifier(ActivationMovementModifier);
 
         // Start Cooldown:      (Note: The current Cooldown is saved in the SourceWeapon)
-  /*      if (Cooldown > 0)
-        {
-            SourceItemSkill.SetCurrentCooldown(Cooldown);
-        }*/
+        /*      if (Cooldown > 0)
+              {
+                  SourceItemSkill.SetCurrentCooldown(Cooldown);
+              }*/
 
         return true;
     }

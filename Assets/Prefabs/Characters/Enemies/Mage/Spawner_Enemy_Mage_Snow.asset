@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcc78f04908579b4894a018ee2202713, type: 3}
+  m_Name: Spawner_Enemy_Mage_Snow
+  m_EditorClassIdentifier: 
+  EnemyPrefab: {fileID: 114085777005992444, guid: 9fe66adec62a8aa4684349403e03b300,
+    type: 2}
+  ListWeaponsLeft:
+  - SpawnWeapon: {fileID: 114638103525019752, guid: f66007c64d8d4964cb44ce562b237e8e,
+      type: 2}
+    SpawnWeight: 1
+  ListWeaponsRight:
+  - SpawnWeapon: {fileID: 114514537758392172, guid: f164b18be3100ee4493a0a11aa4359ee,
+      type: 2}
+    SpawnWeight: 3
+  - SpawnWeapon: {fileID: 114010287845431416, guid: cfc1480de4ad6fa4f8fed6b1343800d0,
+      type: 2}
+    SpawnWeight: 2
+  - SpawnWeapon: {fileID: 114870586629721368, guid: 1e41762af0711d7458823ea78ec1d811,
+      type: 2}
+    SpawnWeight: 2
+  - SpawnWeapon: {fileID: 114650507562312746, guid: 6e1bda12203c3f941bdaf1ed89e557f1,
+      type: 2}
+    SpawnWeight: 1
