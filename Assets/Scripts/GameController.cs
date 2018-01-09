@@ -33,7 +33,7 @@ public class GameController : Singleton<GameController>
     public void InitializeGameSession()
     {
         //TODO: create real game map
-        SceneManager.LoadScene("HandMadeMap");
+        SceneManager.LoadScene("TerrainGenerationTest");
         GameState = GameStateEnum.Play;
     }
 
