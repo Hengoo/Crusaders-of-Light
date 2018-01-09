@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a452ff160399d84db0b84b75fe9deb9, type: 3}
+  m_Name: Skill_Staff_Frost_Storm
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 1.5
+  ActivationIntervall: -1
+  Cooldown: 7
+  ActivationMovementModifier: -0.7
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: 5e4ad52a6ad87c94b9849704a87033e1, type: 2}
+  - {fileID: 11400000, guid: d19f2a0d7a9486b46bbb3753f89b9cb2, type: 2}
+  - {fileID: 11400000, guid: 90a97281668525441bb4a9dba0d48a99, type: 2}
+  HindranceLevel: 1
+  AnimationName: Magic_Staff_Cast
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: 86fd8c5b80f92f844a7cf32734d64157, type: 2}
+  PowerLevel: 0
+  Threat:
+  - 0
+  - 0
+  - 0
+  HitObjectPrefab: {fileID: 114498326846323124, guid: 9d1761280bfc27145b3837f0c93a1897,
+    type: 2}
+  UseSkillLevelAtActivationMoment: 1
