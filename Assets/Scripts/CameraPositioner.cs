@@ -18,6 +18,10 @@ public class CameraPositioner : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+        if (cameraTargets.Length <= 0)
+        {
+            return;
+        }
 		float distance = 0;
 		Vector3 averagePos = Vector3.zero;
 		foreach (GameObject target in cameraTargets)
@@ -34,4 +38,22 @@ public class CameraPositioner : MonoBehaviour
 		distance = Mathf.Max(distanceMin, distance);
 		this.transform.position = Vector3.Slerp(this.transform.position, averagePos + Vector3.up * distance, 0.1f);
 	}
+
+    public void UpdateCameraTargetsOnPlayerDeath(GameObject DeadPlayer)
+    {
+        GameObject[] NewCameraTargets = new GameObject[cameraTargets.Length - 1];
+
+        int counter = 0;
+
+        for (int i = 0; i < cameraTargets.Length; i++)
+        {
+            if (cameraTargets[i] != DeadPlayer)
+            {
+                NewCameraTargets[counter] = cameraTargets[i];
+                counter++;
+            }
+        }
+
+        cameraTargets = NewCameraTargets;
+    }
 }

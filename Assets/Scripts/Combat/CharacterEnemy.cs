@@ -19,6 +19,7 @@ public class CharacterEnemy : Character {
     private float[] IdleTimer = { 0.0f, 0.0f };
 
     public MovePattern ActiveMovePattern;
+    private MovePattern BaseMovePattern;
     private Character TargetCharacter;
     public MovePattern[] MovePatterns = new MovePattern[0];
 
@@ -48,6 +49,8 @@ public class CharacterEnemy : Character {
         {
             SpawnAndEquipStartingWeapons();
         }
+
+        BaseMovePattern = ActiveMovePattern;
     }
 
     protected override void Update()
@@ -249,11 +252,11 @@ public class CharacterEnemy : Character {
 
     public void DecideMovePattern()
     {
-        if (MovePatternEvaluationCycleTimer > 0)
+ /*       if (MovePatternEvaluationCycleTimer > 0)
         {
             MovePatternEvaluationCycleTimer -= Time.deltaTime;
             return;
-        }
+        }*/
 /*
         if (IdleMoveTimer > 0)
         {
@@ -326,6 +329,8 @@ public class CharacterEnemy : Character {
                 }
             }
         }
+
+        MovePatternEvaluationCycleTimer = MovePatternEvaluationCycle;
     }
 
     private void UpdateMovePattern()
@@ -338,12 +343,25 @@ public class CharacterEnemy : Character {
         if (MovePatternEvaluationCycleTimer <= 0)
         {
             DecideMovePattern();
-            MovePatternEvaluationCycleTimer = MovePatternEvaluationCycle;
+          //  MovePatternEvaluationCycleTimer = MovePatternEvaluationCycle;
         }
         else
         {
             MovePatternEvaluationCycleTimer -= Time.deltaTime;
         }
+    }
+
+    public void UpdateMovePatternForMissingTarget()
+    {
+        if (CharAttention.GetPlayersInAttentionRange().Count <= 0)
+        {
+            ActiveMovePattern = BaseMovePattern;
+        }
+        else
+        {
+            DecideMovePattern();
+        }
+
     }
 
     public int GetBasePowerLevel()

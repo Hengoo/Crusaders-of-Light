@@ -14,6 +14,9 @@ public class CharacterPlayer : Character {
     [Header("Close Items List:")]
     public List<Item> ItemsInRange = new List<Item>();
 
+    [Header("Input:")]
+    public int PlayerID = -1; // Set from 1 to 4!
+
     protected override void Start()
     {
         base.Start();
@@ -32,10 +35,10 @@ public class CharacterPlayer : Character {
     {
         float speedfaktor = 10 * GetMovementRateModifier();
         //left stick
-        Vector3 targetVel = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")) * speedfaktor;
+        Vector3 targetVel = new Vector3(Input.GetAxisRaw("Horizontal_" + PlayerID), 0, Input.GetAxisRaw("Vertical_" + PlayerID)) * speedfaktor;
 
         //right stick
-        Vector3 targetDir = new Vector3(Input.GetAxisRaw("Horizontal2"), 0, -Input.GetAxisRaw("Vertical2"));
+        Vector3 targetDir = new Vector3(Input.GetAxisRaw("Horizontal2_" + PlayerID), 0, -Input.GetAxisRaw("Vertical2_" + PlayerID));
 
         PhysCont.SetVelRot(targetVel, targetDir);
     }
@@ -43,6 +46,12 @@ public class CharacterPlayer : Character {
     public override TeamAlignment GetAlignment()
     {
         return Alignment;
+    }
+
+    protected override void CharacterDied()
+    {
+        CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerDeath(this.gameObject);
+        base.CharacterDied();
     }
 
     // =================================== SKILL ACTIVATION ====================================
@@ -135,44 +144,44 @@ public class CharacterPlayer : Character {
     public void PlayerInput()
     {
         // Skill Activation Buttons:
-        if (Input.GetButtonDown("W1Skill1"))
+        if (Input.GetButtonDown("W1Skill1_" + PlayerID))
         {
             SkillActivationButtonsPressed[0] = true;
         }
-        else if (Input.GetButtonUp("W1Skill1"))
+        else if (Input.GetButtonUp("W1Skill1_" + PlayerID))
         {
             SkillActivationButtonsPressed[0] = false;
         }
 
-        if (Input.GetAxis("W1Skill2") >= 0.3f)
+        if (Input.GetAxis("W1Skill2_" + PlayerID) >= 0.3f)
         {
             SkillActivationButtonsPressed[1] = true;
         }
-        else if (Input.GetAxis("W1Skill2") < 0.3f)
+        else if (Input.GetAxis("W1Skill2_" + PlayerID) < 0.3f)
         {
             SkillActivationButtonsPressed[1] = false;
         }
 
-        if (Input.GetButtonDown("W2Skill1"))
+        if (Input.GetButtonDown("W2Skill1_" + PlayerID))
         {
             SkillActivationButtonsPressed[2] = true;
         }
-        else if (Input.GetButtonUp("W2Skill1"))
+        else if (Input.GetButtonUp("W2Skill1_" + PlayerID))
         {
             SkillActivationButtonsPressed[2] = false;
         }
 
-        if (Input.GetAxis("W2Skill2") >= 0.3f)
+        if (Input.GetAxis("W2Skill2_" + PlayerID) >= 0.3f)
         {
             SkillActivationButtonsPressed[3] = true;
         }
-        else if (Input.GetAxis("W2Skill2") < 0.3f)
+        else if (Input.GetAxis("W2Skill2_" + PlayerID) < 0.3f)
         {
             SkillActivationButtonsPressed[3] = false;
         }
 
         // Weapon PickUp:
-        if (Input.GetButton("IPickUp"))
+        if (Input.GetButton("IPickUp_" + PlayerID))
         {
             if (PickUpClosestItem())
             {
@@ -213,6 +222,16 @@ public class CharacterPlayer : Character {
                 StartSkillActivation(3);
             }
         }   
+    }
+
+    public void SetPlayerID(int ID)
+    {
+        PlayerID = ID;
+    }
+
+    public int GetPlayerID()
+    {
+        return PlayerID;
     }
 
     // ======================================== /INPUT =========================================

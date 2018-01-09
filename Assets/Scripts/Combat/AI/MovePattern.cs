@@ -11,7 +11,7 @@ public class MovePattern : ScriptableObject {
         return AIDecisionMaker.CalculateTotalScore(Self);
     }
 
-    public virtual void UpdateMovePattern(PhysicsController PhysCont, Character Self, Character TargetCharacter)
+    public virtual void UpdateMovePattern(PhysicsController PhysCont, CharacterEnemy Self, Character TargetCharacter)
     {
 
     }

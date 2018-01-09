@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: Wep_MovPat_GoMelee_Cons_TargetDistance_Close
   m_EditorClassIdentifier: 
   TypeOfCurve: 3
-  Steepness: 2
-  yShift: -1
+  Steepness: 4
+  yShift: 0.9
   xShift: -1
   MinDistance: 0
-  MaxDistance: 10
+  MaxDistance: 15

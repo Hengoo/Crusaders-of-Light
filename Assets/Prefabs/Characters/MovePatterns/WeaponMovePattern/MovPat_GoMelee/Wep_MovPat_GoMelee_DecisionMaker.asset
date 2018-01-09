@@ -11,8 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ce3e478a8bddd84a9fe9446d8d9c93a, type: 3}
   m_Name: Wep_MovPat_GoMelee_DecisionMaker
   m_EditorClassIdentifier: 
-  Weight: 1
+  Weight: 1.5
   ConsiderationsTargeted:
   - {fileID: 11400000, guid: 364dfeeabf1bb8e429635bcfae27664e, type: 2}
   - {fileID: 11400000, guid: 1c6bfe4f26434934694ffd575498b83b, type: 2}
+  - {fileID: 11400000, guid: d0824cc53a182ed4981b071af5c01580, type: 2}
   ConsiderationsSelf: []
