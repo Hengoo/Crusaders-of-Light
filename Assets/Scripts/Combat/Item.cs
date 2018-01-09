@@ -275,4 +275,12 @@ public class Item : MonoBehaviour {
     {
         return ItemMovePatterns;
     }
+
+    public void DestroyAllHitObjects()
+    {
+        for (int i = 0; i < ItemSkills.Length; i++)
+        {
+            ItemSkills[i].DestroyAllHitObjects();
+        }
+    }
 }

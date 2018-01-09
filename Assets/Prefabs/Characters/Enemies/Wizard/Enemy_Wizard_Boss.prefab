@@ -501,32 +501,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 1800
-  HealthMax: 1800
+  HealthCurrent: 1300
+  HealthMax: 1300
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
   - 0
-  - 10
-  - 10
-  - 10
-  - 10
+  - 8
+  - 8
+  - 8
+  - 8
   - 0
   Defenses:
-  - 5
-  - 10
-  - 20
+  - 6
+  - 8
+  - 15
   SkillLevelModifier: 3
   CharacterHands:
   - {fileID: 4265476470015536}
   - {fileID: 4628835558343902}
   StartingWeapons:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 114066496244682900, guid: 952b46205acefd34b8895b11db3a6556, type: 2}
+  - {fileID: 114702944568196636, guid: cf80acd19f59fc4438cb433637cf4a24, type: 2}
   SkillsPerWeapon: 2
   WeaponSlots:
-  - {fileID: 114638103525019752, guid: f66007c64d8d4964cb44ce562b237e8e, type: 2}
-  - {fileID: 114262640344697314, guid: 3150fd57347ee5f488a27884513d66df, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
   ItemSkillSlots:
   - {fileID: 0}
   - {fileID: 0}

@@ -113,7 +113,7 @@ public class TerrainStructure
 
         /* MSP */
         MinimumSpanningTree = new Graph<Biome>(BiomeGraph);
-        foreach (var edge in GeneratePaths())
+        foreach (var edge in GeneratePaths()) //TODO: handle islands -> connect via bridge or something else
         {
             MinimumSpanningTree.AddEdge(edge.Value, edge.Key, 1);
         }

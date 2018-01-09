@@ -17,7 +17,7 @@ public class MapGenerator : MonoBehaviour
     public DrawModeEnum DrawMode = DrawModeEnum.BiomeGraph;
     public BiomeGlobalConfiguration BiomeGlobalConfiguration;
     public List<BiomeSettings> AvailableBiomes;
-    
+
     public AreaBase[] NormalAreas;
     public AreaBase BossArea;
     
@@ -54,9 +54,12 @@ public class MapGenerator : MonoBehaviour
         Random.InitState(Seed);
 
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeGlobalConfiguration);
-        _worldStructure = new WorldStructure(_terrainStructure, NormalAreas.Length + 1, ExtraEdges);
-        if(DrawMode == DrawModeEnum.GameMap)
-            _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, NormalAreas, BossArea, RoadHalfWidth);
+        if (DrawMode == DrawModeEnum.AreaGraph || DrawMode == DrawModeEnum.GameMap)
+        {
+            _worldStructure = new WorldStructure(_terrainStructure, NormalAreas.Length + 1, ExtraEdges);
+            if (DrawMode == DrawModeEnum.GameMap)
+                _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, NormalAreas, BossArea, RoadHalfWidth);
+        }
 
         switch (DrawMode)
         {
@@ -73,7 +76,7 @@ public class MapGenerator : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
 
-        if(Application.isPlaying)
+        if (Application.isPlaying)
             LevelController.Instance.StartGame(_sceneryStructure, _terrain);
     }
 
@@ -81,12 +84,12 @@ public class MapGenerator : MonoBehaviour
     {
         /* Create heightmap */
         var heightMap = MapDataGenerator.GenerateHeightMap(_terrainStructure);
-        
+
         /* Create splat textures alphamap */
         var alphamap = MapDataGenerator.GenerateAlphaMap(_terrainStructure);
 
         /* Draw borders */
-        MapDataGenerator.EncloseAreas(_terrainStructure,  heightMap, _worldStructure.AreaBorders, 3);
+        MapDataGenerator.EncloseAreas(_terrainStructure, heightMap, _worldStructure.AreaBorders, 3);
 
         /* Draw roads onto alphamap */
         MapDataGenerator.DrawLineRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadLines, 1);

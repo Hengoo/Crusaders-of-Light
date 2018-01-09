@@ -18,6 +18,10 @@ public class SkillHitObject : MonoBehaviour {
 
     public bool AlwaysHitOwner = false;
 
+    [Header("Hit Object Movement Attributes:")]
+    public bool UseForceImpulse = false;
+    public float ForceImpulseMagnitude = 0.0f;
+
     [Header("Hit Object - Does not need to be set in Editor!:")]
     public Character Owner;
     public SkillType SourceSkill;
@@ -88,6 +92,12 @@ public class SkillHitObject : MonoBehaviour {
 
         // Threat:
         Threat = SourceSkill.GetThreat();
+
+        // Force Impulse:
+        if (UseForceImpulse)
+        {
+            ApplyForceImpulse();
+        }
     }
 
     public void Update()
@@ -254,5 +264,16 @@ public class SkillHitObject : MonoBehaviour {
     public float GetCurrentThreat() // Includes Melee, not Far currently!
     {
         return Threat[0] + Threat[1];
+    }
+
+    public void ApplyForceImpulse()
+    {
+        Vector3 ForceDirection = Vector3.zero;
+
+        ForceDirection = Owner.transform.rotation * Vector3.forward;
+
+        float FinalMagnitude = ForceImpulseMagnitude;
+
+        GetComponent<Rigidbody>().AddForce(ForceDirection * FinalMagnitude, ForceMode.Impulse);
     }
 }

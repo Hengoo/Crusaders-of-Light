@@ -13,4 +13,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IceWallPrefab: {fileID: 1112604446496860, guid: f63dd13ec69b72f4581b2bd9669e2a49,
     type: 2}
-  FireMage: {fileID: 1437983783161170, guid: b80b3f739485d1d4497e7340d67e1e02, type: 2}
+  FireMage: {fileID: 1374581952122060, guid: 27cb20c6de960b24690e63a2b32d1566, type: 2}
