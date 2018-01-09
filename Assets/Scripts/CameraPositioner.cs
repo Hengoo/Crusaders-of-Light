@@ -16,7 +16,7 @@ public class CameraPositioner : MonoBehaviour
 	}
 
 	// Update is called once per frame
-	void Update()
+	void FixedUpdate()
 	{
         if (cameraTargets.Length <= 0)
         {
