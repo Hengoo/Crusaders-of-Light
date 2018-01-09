@@ -42,12 +42,12 @@ MonoBehaviour:
   ambientOcclusion:
     m_Enabled: 1
     m_Settings:
-      intensity: 1.72
-      radius: 0.3
+      intensity: 1.95
+      radius: 1.13
       sampleCount: 16
       downsampling: 0
       forceForwardCompatibility: 0
-      ambientOnly: 1
+      ambientOnly: 0
       highPrecision: 0
   screenSpaceReflection:
     m_Enabled: 0
@@ -120,7 +120,7 @@ MonoBehaviour:
         neutralWhiteLevel: 5.3
         neutralWhiteClip: 10
       basic:
-        postExposure: 0.4
+        postExposure: 0
         temperature: 0
         tint: 0
         hueShift: 0
