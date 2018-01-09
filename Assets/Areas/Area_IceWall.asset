@@ -11,6 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74a601ddcb2606541a06fb9085b3b861, type: 3}
   m_Name: Area_IceWall
   m_EditorClassIdentifier: 
-  IceWallPrefab: {fileID: 1044869818957656, guid: e81bef891dfaaea438a7e10bd9cd7102,
+  IceWallPrefab: {fileID: 1112604446496860, guid: f63dd13ec69b72f4581b2bd9669e2a49,
     type: 2}
   FireMage: {fileID: 1437983783161170, guid: b80b3f739485d1d4497e7340d67e1e02, type: 2}

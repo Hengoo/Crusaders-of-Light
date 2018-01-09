@@ -44,7 +44,6 @@ public class AreaIceWall : AreaBase
                 node = temp[Random.Range(0, temp.Count)];
                 temp.Remove(node);
                 var neighborhood = worldStructure.NavigationGraph.GetNeighbours(node);
-                var center = worldStructure.NavigationGraph.GetNodeData(node).Center;
 
                 found = !(neighborhood.Length > desiredNeighbors ||
                           !neighborhood.All(a => availableBiomes.Contains(a)) ||
@@ -68,7 +67,7 @@ public class AreaIceWall : AreaBase
         var iceWallOrientationLine = iceWallCrossingLine[1] - iceWallCrossingLine[0];
         var iceWall = Instantiate(IceWallPrefab);
         iceWall.transform.position = new Vector3(iceWallPosition2D.x, 0, iceWallPosition2D.y);
-        iceWall.transform.localScale = new Vector3(iceWallOrientationLine.magnitude * 1.2f, terrainStructure.BiomeGlobalConfiguration.MapHeight, 15);
+        iceWall.transform.localScale = new Vector3(iceWallOrientationLine.magnitude * 1.2f / 4f, terrainStructure.BiomeGlobalConfiguration.MapHeight /3f, 15 / 1.5f);
         iceWall.transform.rotation = Quaternion.LookRotation(iceWall.transform.position + Vector3.Cross(new Vector3(iceWallOrientationLine.x, 0, iceWallOrientationLine.y), Vector3.up) * 10);
 
         //Add GameObjects to the scenery objects list (for height adjustment)

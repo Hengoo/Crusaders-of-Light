@@ -86,6 +86,7 @@ public class Biome
     public readonly BiomeSettings BiomeSettings;
     public readonly Vector2[] BiomePolygon;
     public readonly bool IsBorderBiome;
+    public int BiomeLevel = -1;
 
     public Biome(Vector2 center, BiomeSettings biomeSettings, bool isBorderBiome, Vector2[] biomePolygon)
     {

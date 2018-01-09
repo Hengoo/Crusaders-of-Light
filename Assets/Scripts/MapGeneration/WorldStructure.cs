@@ -38,7 +38,7 @@ public class WorldStructure
         //Find largest path
         var greatestPath = GetLargestPathInMST(new Graph<Biome>(_terrainStructure.MinimumSpanningTree));
         _terrainStructure.EndBiomeNode = new KeyValuePair<Vector2f, int>(new Vector2f(_terrainStructure.BiomeGraph.GetNodeData(greatestPath.Last()).Center), greatestPath.Last());
-
+        
         //Divide path in NumberOfAreas Areas
         var areaStartingNodes = new List<int>();
         var areaSize = greatestPath.Count / NumberOfAreas;
@@ -62,6 +62,7 @@ public class WorldStructure
         foreach (var edge in NavigationGraph.GetAllEdges())
             tempGraph.RemoveEdge(edge.x, edge.y);
 
+        //Add random edges back
         var tries = extraEdges * 10;
         while (extraEdges > 0 && tries > 0)
         {
