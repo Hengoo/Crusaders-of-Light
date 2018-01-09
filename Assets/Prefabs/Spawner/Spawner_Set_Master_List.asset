@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: Spawner_Set_Master_List
   m_EditorClassIdentifier: 
   SpawnSets:
-  - {fileID: 11400000, guid: d2b601ada17e6114081e6eea198d68a0, type: 2}
-  - {fileID: 11400000, guid: 2362bce396e52014fad590f577e4b9b6, type: 2}
-  - {fileID: 11400000, guid: 11d67ec496e8fb244ae1136faec6541d, type: 2}
+  - {fileID: 11400000, guid: 6019aa360636555468d3342303cc1e1d, type: 2}
+  - {fileID: 11400000, guid: 799a4fda449634148b93bfd32eb63ce7, type: 2}
+  - {fileID: 11400000, guid: 21ff78eb59850624ab3f77278bdfb879, type: 2}
+  - {fileID: 11400000, guid: 81600b6c0fc63ea4ca55efd47e4d491d, type: 2}
