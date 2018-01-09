@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraPositioner: MonoBehaviour
+public class CameraPositioner : MonoBehaviour
 {
 	public GameObject[] cameraTargets;
 	public float distanceMin;
@@ -32,6 +32,6 @@ public class CameraPositioner: MonoBehaviour
 		distance = distance * distanceMultiplier;
 		distance = Mathf.Min(distanceMax, distance);
 		distance = Mathf.Max(distanceMin, distance);
-		this.transform.position = averagePos + Vector3.up * distance;
+		this.transform.position = Vector3.Slerp(this.transform.position, averagePos + Vector3.up * distance, 0.1f);
 	}
 }
