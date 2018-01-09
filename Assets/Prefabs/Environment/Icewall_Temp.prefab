@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 23899244252879792}
   - component: {fileID: 114908810881589058}
   - component: {fileID: 54969927013422056}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Icewall_Temp
   m_TagString: Character
   m_Icon: {fileID: 0}

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a452ff160399d84db0b84b75fe9deb9, type: 3}
+  m_Name: Skill_Staff_Flames_Flameorb
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 1
+  ActivationIntervall: -1
+  Cooldown: 0.5
+  ActivationMovementModifier: -0.3
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: f11f4817cb5788346b718c77ab739a20, type: 2}
+  HindranceLevel: 1
+  AnimationName: Magic_Staff_Cast
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: e6fc052ff98b9e24ba6c925651430fc0, type: 2}
+  PowerLevel: 0
+  Threat:
+  - 0
+  - 0
+  - 0
+  HitObjectPrefab: {fileID: 114498326846323124, guid: 7fb8618de3daba04e9497904591a7840,
+    type: 2}
+  UseSkillLevelAtActivationMoment: 1

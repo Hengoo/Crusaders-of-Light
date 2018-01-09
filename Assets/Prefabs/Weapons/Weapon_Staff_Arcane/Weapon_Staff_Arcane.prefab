@@ -176,7 +176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114638103525019752}
   SkillObject: {fileID: 11400000, guid: 1e7a1c507ea7ac8459eecc0b82086e33, type: 2}
-  Level: 3
+  Level: 1
   CurrentCooldown: 0
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0000
@@ -195,7 +195,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114638103525019752}
   SkillObject: {fileID: 11400000, guid: 9de3d1dc5d7442745a187aa6738d6bb7, type: 2}
-  Level: 3
+  Level: 1
   CurrentCooldown: 0
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0000
