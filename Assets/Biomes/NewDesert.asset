@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 554611769d52c3f4c856776b08c8bae1, type: 3}
+  m_Name: NewDesert
+  m_EditorClassIdentifier: 
+  UniqueName: Desert
+  Height:
+    Persistence: 0.525
+    LocalMax: 0.251
+    LocalMin: 0.2
+    Lacunarity: 0
+    Scale: 20
+  Conditions:
+    Humidity: 0
+    Temperature: 0
+  FillPrefabs:
+  - {fileID: 1786026918264288, guid: 02a12aa15a8189140b9b7976bc72a4eb, type: 2}
+  PrefabMinDistance: 14.52
+  NotNavigable: 0
+  Splat:
+    texture: {fileID: 2800000, guid: 85fcf9e8f4e6ae248bd961873f85ba36, type: 3}
+    normalMap: {fileID: 2800000, guid: c2964a6d8ecafdd4fae2aa29a17c92a0, type: 3}
+    metallic: 0
+    smoothness: 0
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 10, y: 10}
+  DontBlendWith:
+  - {fileID: 11400000, guid: 0b96cb55724ac1f46bdaf4207bd32742, type: 2}
+  - {fileID: 11400000, guid: 861766d1f31f00c4ba9601f551715601, type: 2}

@@ -16,7 +16,7 @@ MonoBehaviour:
     Persistence: 0.525
     LocalMax: 0.212
     LocalMin: 0.144
-    Lacunarity: 0
+    Lacunarity: 13.69
     Scale: 20
   Conditions:
     Humidity: 0
