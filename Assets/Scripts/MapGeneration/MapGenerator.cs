@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
 public class MapGenerator : MonoBehaviour
@@ -154,7 +155,9 @@ public class MapGenerator : MonoBehaviour
 
         /* Water Plane Placement */
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        water.GetComponent<Collider>().enabled = false;
         water.GetComponent<Renderer>().material = BiomeGlobalConfiguration.WaterMaterial;
+        water.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
         water.transform.localScale = new Vector3(terrainData.size.x / 5f, 1, terrainData.size.z / 5f);
         water.transform.parent = _terrain.transform;
         water.transform.localPosition = new Vector3(terrainData.size.x / 2f, (BiomeGlobalConfiguration.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2f);

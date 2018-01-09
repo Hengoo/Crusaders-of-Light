@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraPositioner : MonoBehaviour
 {
-	public GameObject[] cameraTargets;
+    private GameObject[] cameraTargets;
 	public float distanceMin;
 	public float distanceMultiplier;
 	public float distanceMax;
@@ -12,7 +12,7 @@ public class CameraPositioner : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-
+	    cameraTargets = LevelController.Instance.GetActivePlayers();
 	}
 
 	// Update is called once per frame

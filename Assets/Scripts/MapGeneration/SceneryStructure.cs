@@ -184,6 +184,7 @@ public class SceneryStructure
 
             var go = Object.Instantiate(sceneryAreaFill.Prefabs[Random.Range(0, sceneryAreaFill.Prefabs.Length)]);
             go.transform.position = new Vector3(point.x, height, point.y) + terrain.transform.position;
+            go.transform.rotation = Quaternion.Euler(go.transform.rotation.eulerAngles.x, Random.Range(0,360f), go.transform.rotation.eulerAngles.z); 
             go.transform.parent = result.transform;
         }
 

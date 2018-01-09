@@ -9,6 +9,7 @@ public class GameController : Singleton<GameController>
     public int Seed { get; private set; }
     public float Brightness { get; private set; }
     public GameStateEnum GameState = GameStateEnum.Menu;
+    public int ActivePlayers = 4;
 
 	// Use this for initialization
     protected override void Awake () {
