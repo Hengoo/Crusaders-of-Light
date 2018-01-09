@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking.Types;
+using Debug = UnityEngine.Debug;
 
 public class SceneryStructure
 {
@@ -27,10 +30,10 @@ public class SceneryStructure
         NormalAreas = normalAreas;
         BossArea = bossArea;
 
-        CreateFill(roadWidth);
+        CreateScenery(roadWidth);
     }
 
-    private void CreateFill(float roadWidth)
+    private void CreateScenery(float roadWidth)
     {
         //Get the biome edges from the terrain structure and create areas to fill with prefabs and quests
         List<GameObject[]> prefabs;
@@ -43,16 +46,16 @@ public class SceneryStructure
 
         //Fill areas 
         QuestBase[] quests = new QuestBase[0];
-        for(int i = 0; i < NormalAreas.Length; i++)
+        for (int i = 0; i < NormalAreas.Length; i++)
             quests = quests.Union(NormalAreas[i].GenerateQuests(this, i)).ToArray();
-        
+
         var levelController = LevelController.Instance;
         if (!levelController)
             levelController = GameObject.Find("LevelController").GetComponent<LevelController>();
 
         //Clear previously generated quests in editor when not playing
         if (!Application.isPlaying)
-            levelController.QuestController.ClearQuests(); 
+            levelController.QuestController.ClearQuests();
 
         //Add all quests
         foreach (var quest in quests)
@@ -64,7 +67,7 @@ public class SceneryStructure
             var start = TerrainStructure.BiomeGraph.GetNodeData(edge.x).Center;
             var end = TerrainStructure.BiomeGraph.GetNodeData(edge.y).Center;
 
-            RoadLines.Add(new []{start, end});
+            RoadLines.Add(new[] { start, end });
 
             var line = (end - start).normalized;
             var normal = (Vector2)Vector3.Cross(line, Vector3.forward).normalized;
@@ -75,7 +78,7 @@ public class SceneryStructure
             var p3 = end + line * roadWidth - normal * roadWidth;
             var origin = (p0 + p1 + p2 + p3) / 4;
 
-            var poly = new List<Vector2>{p0, p1, p2, p3};
+            var poly = new List<Vector2> { p0, p1, p2, p3 };
             poly.SortVertices(origin);
             RoadPolygons.Add(poly.ToArray());
         }
@@ -87,15 +90,56 @@ public class SceneryStructure
             {
                 foreach (var sceneryArea in SceneryAreas)
                 {
-                    if(vertex.IsInsidePolygon(sceneryArea.Polygon))
+                    if (vertex.IsInsidePolygon(sceneryArea.Polygon))
                         sceneryArea.AddClearPolygon(polygon);
                 }
             }
         }
     }
 
+    /* Generate Spawners through the map */
+    public GameObject GenerateSpawners(Terrain terrain, GameObject spawnerPrefab)
+    {
+        var result = new GameObject("Spawners");
+
+        if (spawnerPrefab.GetComponent<Spawner>() == null)
+            Debug.LogError("No Spawner script attached to SpawnerPrefab");
+
+        foreach (var area in WorldStructure.AreaBiomes)
+        {
+            foreach (var nodeID in area)
+            {
+                if(nodeID == TerrainStructure.StartBiomeNode.Value || nodeID == TerrainStructure.EndBiomeNode.Value) continue;
+
+                var biome = WorldStructure.NavigationGraph.GetNodeData(nodeID);
+                var spawnerObj = Object.Instantiate(spawnerPrefab);
+                var spawner = spawnerObj.GetComponent<Spawner>();
+                spawnerObj.transform.position = new Vector3(biome.Center.x, 0, biome.Center.y);
+                spawnerObj.transform.position += new Vector3(0, terrain.SampleHeight(spawner.transform.position) + 0.5f, 0);
+                spawnerObj.transform.parent = result.transform;
+
+                var center = spawnerObj.transform.position;
+                spawner.Initialize(true, biome.BiomeLevel * 20, biome.BiomeLevel, biome.BiomeLevel, new[]
+                {
+                    center + Vector3.forward * 3,
+                    center + Vector3.back * 3,
+                    center + Vector3.left * 3,
+                    center + Vector3.right * 3
+                }, new []
+                {
+                    Quaternion.identity.eulerAngles,
+                    Quaternion.identity.eulerAngles,
+                    Quaternion.identity.eulerAngles,
+                    Quaternion.identity.eulerAngles
+                }, biome.BiomeSettings.BiomeTags);
+            }
+        }
+
+        return result;
+    }
+
     /* Fill all areas with prefabs */
-    public IEnumerable<GameObject> FillAllSceneryAreas(Terrain terrain)
+    public IEnumerable<GameObject> GenerateScenery(Terrain terrain)
     {
         var result = new List<GameObject>();
 
@@ -140,6 +184,7 @@ public class SceneryStructure
 
             var go = Object.Instantiate(sceneryAreaFill.Prefabs[Random.Range(0, sceneryAreaFill.Prefabs.Length)]);
             go.transform.position = new Vector3(point.x, height, point.y) + terrain.transform.position;
+            go.transform.rotation = Quaternion.Euler(go.transform.rotation.eulerAngles.x, Random.Range(0,360f), go.transform.rotation.eulerAngles.z); 
             go.transform.parent = result.transform;
         }
 

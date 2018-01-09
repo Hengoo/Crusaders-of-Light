@@ -10,10 +10,17 @@ public class LevelController : Singleton<LevelController>
 
     public QuestController QuestController;
 
-    public CharacterPlayer[] Players;
+    public CharacterPlayer[] PlayerCharacters;
 
     public SceneryStructure SceneryStructure;
     public Terrain Terrain;
+
+    public void Start()
+    {
+        //Deactivate inactive players
+        for (int i = GameController.Instance.ActivePlayers; i < PlayerCharacters.Length; i++)
+            Destroy(PlayerCharacters[i].gameObject);
+    }
     
     public void InitializeLevel()
     {
@@ -27,7 +34,7 @@ public class LevelController : Singleton<LevelController>
         
         var terrainStructure = SceneryStructure.TerrainStructure;
         var startPosition2D = terrainStructure.BiomeGraph.GetNodeData(terrainStructure.StartBiomeNode.Value).Center;
-        for (var i = 0; i < Players.Length; i++)
+        for (var i = 0; i < PlayerCharacters.Length; i++)
         {
             Vector3 spawnPosition = new Vector3(startPosition2D.x, 0, startPosition2D.y);
             switch (i)
@@ -46,8 +53,18 @@ public class LevelController : Singleton<LevelController>
                     break;
             }
             spawnPosition = new Vector3(spawnPosition.x, Terrain.SampleHeight(spawnPosition) + 0.05f, spawnPosition.z);
-            Players[i].transform.position = spawnPosition;
+            PlayerCharacters[i].transform.position = spawnPosition;
         }
+    }
+
+    public GameObject[] GetActivePlayers()
+    {
+        var result = new GameObject[GameController.Instance.ActivePlayers];
+        //var result = new GameObject[PlayerCharacters.Length];
+        for (int i = 0; i < result.Length; i++)
+            result[i] = PlayerCharacters[i].gameObject;
+
+        return result;
     }
 
     public void EndGame()

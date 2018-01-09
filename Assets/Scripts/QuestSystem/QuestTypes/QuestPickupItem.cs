@@ -24,7 +24,7 @@ public class QuestPickupItem : QuestBase
 
     protected override void QuestStarted()
     {
-        foreach (var player in LevelController.Instance.Players)
+        foreach (var player in LevelController.Instance.PlayerCharacters)
         {
             var player1 = player;
             player.SubscribeItemPickupAction(() =>
@@ -37,7 +37,7 @@ public class QuestPickupItem : QuestBase
                     if (this.CheckIfSameItem(weapon.name) && !_isAchieved) 
                     {
                         _isAchieved = true;
-                        foreach (var others in LevelController.Instance.Players)
+                        foreach (var others in LevelController.Instance.PlayerCharacters)
                             others.ClearItemPickupActions();
                         OnQuestCompleted();
                     }
