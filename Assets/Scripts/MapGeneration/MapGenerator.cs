@@ -20,7 +20,8 @@ public class MapGenerator : MonoBehaviour
     
     public AreaBase[] NormalAreas;
     public AreaBase BossArea;
-
+    
+    public GameObject SpawnerPrefab;
 
     public int ExtraEdges = 20;
     public bool FillTerrain = true;
@@ -137,7 +138,9 @@ public class MapGenerator : MonoBehaviour
         /* Fill terrain with scenery */
         if (FillTerrain)
         {
-            var sceneryObjects = _sceneryStructure.FillAllSceneryAreas(_terrain.GetComponent<Terrain>());
+            var spawnPoints = _sceneryStructure.GenerateSpawners(_terrain, SpawnerPrefab);
+            spawnPoints.transform.parent = _terrain.transform;
+            var sceneryObjects = _sceneryStructure.GenerateScenery(_terrain.GetComponent<Terrain>());
             var scenery = new GameObject("Scenery");
             scenery.transform.parent = _terrain.transform;
             foreach (var obj in sceneryObjects)

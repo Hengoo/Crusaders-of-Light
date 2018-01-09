@@ -57,6 +57,11 @@ public class WorldStructure
             AreaBiomes[i] = GetConnectedNodes(areaStartingNodes[i], NavigationGraph, new HashSet<int>());
         }
 
+        //Set Biome Level (for enemy spawner) at each biome accourding to its area
+        for(var areaNumber = 0; areaNumber < AreaBiomes.Length; areaNumber++)
+            foreach (var biome in AreaBiomes[areaNumber])
+                NavigationGraph.GetNodeData(biome).BiomeLevel = areaNumber;
+
         //Create navigation graph for each area
         var tempGraph = new Graph<Biome>(_terrainStructure.BiomeGraph);
         foreach (var edge in NavigationGraph.GetAllEdges())

@@ -13,6 +13,8 @@ public class BiomeSettings : ScriptableObject
     public bool NotNavigable = false;
     public SplatPrototypeSerializable Splat;
     public List<BiomeSettings> DontBlendWith = new List<BiomeSettings>();
+    public TagBiome[] BiomeTags;
+    public SpawnerSetMasterList SpawnerList;
     public BiomeSettings(BiomeConditions conditions, BiomeHeight height, bool notNavigable)
     {
         Conditions = conditions;
@@ -86,7 +88,7 @@ public class Biome
     public readonly BiomeSettings BiomeSettings;
     public readonly Vector2[] BiomePolygon;
     public readonly bool IsBorderBiome;
-    public int BiomeLevel = -1;
+    [HideInInspector]public int BiomeLevel = -1;
 
     public Biome(Vector2 center, BiomeSettings biomeSettings, bool isBorderBiome, Vector2[] biomePolygon)
     {

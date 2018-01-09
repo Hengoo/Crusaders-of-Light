@@ -32,3 +32,5 @@ MonoBehaviour:
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 10, y: 10}
   DontBlendWith: []
+  BiomeTags: []
+  SpawnerList: {fileID: 11400000, guid: 7852940b79999774fa45365813727be0, type: 2}
