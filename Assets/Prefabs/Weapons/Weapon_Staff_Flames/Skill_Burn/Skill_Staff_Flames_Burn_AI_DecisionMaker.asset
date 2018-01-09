@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a358bdf9369a6de42843121de4896289, type: 3}
+  m_Name: Skill_Staff_Flames_Burn_AI_DecisionMaker
+  m_EditorClassIdentifier: 
+  Weight: 2.2
+  ConsiderationsTargeted:
+  - {fileID: 11400000, guid: 72b1924e95fa3d041a9dfb17a5c8ab09, type: 2}
+  - {fileID: 11400000, guid: dd83f8091f4c189498f730c2772f2220, type: 2}
+  - {fileID: 11400000, guid: ffd781ee9ffbfc741883f089ef689fca, type: 2}
+  - {fileID: 11400000, guid: 9d211fb4e408e8649a39609226d9b6de, type: 2}
+  - {fileID: 11400000, guid: 96b46f6e5634bdb45b7ba76b8439910e, type: 2}
+  ConsiderationsSelf: []
+  SensibleActivationTime: -1
+  SkillEvaluationCycle: 0.25
+  AISkillMovePatterns: []

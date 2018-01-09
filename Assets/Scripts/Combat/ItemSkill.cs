@@ -251,6 +251,25 @@ public class ItemSkill : MonoBehaviour {
         }
     }
 
+    public void DestroyAllHitObjects()
+    {
+        List<SkillHitObject> EndHitObjects = new List<SkillHitObject>();
+
+        for (int i = 0; i < EffectSkillHitObjects.Count; i++)
+        {
+            if (EffectSkillHitObjects[i])
+            {
+                EndHitObjects.Add(EffectSkillHitObjects[i]);
+                EffectSkillHitObjects[i].HitObjectSkillActivationEnd();
+            }
+        }
+
+        for (int i = 0; i < EndHitObjects.Count; i++)
+        {
+            EffectSkillHitObjects.Remove(EndHitObjects[i]);
+        }
+    }
+
 
     public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()
     {

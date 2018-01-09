@@ -17,6 +17,13 @@ public class Weapon : Item {
             CurrentOwner = CharacterToEquipTo;
             EquippedSlotID = SlotID;
         }
+
+        DestroyAllHitObjects();
+
+        for (int i = 0; i < ItemSkills.Length; i++)
+        {
+            ItemSkills[i].SetCurrentCooldown(0.25f);
+        }
     }
 
     public override void UnEquipItem()
@@ -24,6 +31,7 @@ public class Weapon : Item {
         CurrentEquipSlot = -1;
         CurrentOwner = null;
         EquippedSlotID = -1;
+        DestroyAllHitObjects();
     }
 
     public bool IsTwoHanded()
