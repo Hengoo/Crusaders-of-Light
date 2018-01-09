@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking.Types;
 using Debug = UnityEngine.Debug;
 
 public class SceneryStructure
@@ -108,6 +109,8 @@ public class SceneryStructure
         {
             foreach (var nodeID in area)
             {
+                if(nodeID == TerrainStructure.StartBiomeNode.Value || nodeID == TerrainStructure.EndBiomeNode.Value) continue;
+
                 var biome = WorldStructure.NavigationGraph.GetNodeData(nodeID);
                 var spawnerObj = Object.Instantiate(spawnerPrefab);
                 var spawner = spawnerObj.GetComponent<Spawner>();
@@ -116,15 +119,19 @@ public class SceneryStructure
                 spawnerObj.transform.parent = result.transform;
 
                 var center = spawnerObj.transform.position;
-                spawner.LevelMax = spawner.LevelMin = biome.BiomeLevel;
-                spawner.TagsBiome = biome.BiomeSettings.BiomeTags;
-                spawner.Positions = new[]
+                spawner.Initialize(true, biome.BiomeLevel * 20, biome.BiomeLevel, biome.BiomeLevel, new[]
                 {
-                    center + Vector3.forward * 2,
-                    center + Vector3.back * 2,
-                    center + Vector3.left * 2,
-                    center + Vector3.right * 2
-                };
+                    center + Vector3.forward * 3,
+                    center + Vector3.back * 3,
+                    center + Vector3.left * 3,
+                    center + Vector3.right * 3
+                }, new []
+                {
+                    Quaternion.identity.eulerAngles,
+                    Quaternion.identity.eulerAngles,
+                    Quaternion.identity.eulerAngles,
+                    Quaternion.identity.eulerAngles
+                }, biome.BiomeSettings.BiomeTags);
             }
         }
 
