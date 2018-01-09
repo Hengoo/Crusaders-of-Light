@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Skill_Staff_Flames_Flameorb
   m_EditorClassIdentifier: 
   Cost: 0
-  ActivationTime: 1
+  ActivationTime: 0.5
   ActivationIntervall: -1
   Cooldown: 0.5
   ActivationMovementModifier: -0.3
