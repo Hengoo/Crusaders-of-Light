@@ -20,6 +20,7 @@ public class CharacterPlayer : Character {
     protected override void Start()
     {
         base.Start();
+        PlayerID = LevelController.Instance.Players.Length;
         SpawnAndEquipStartingWeapons();
     }
 
