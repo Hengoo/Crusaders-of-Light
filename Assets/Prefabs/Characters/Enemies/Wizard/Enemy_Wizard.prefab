@@ -182,9 +182,9 @@ GameObject:
   - component: {fileID: 114624430876088172}
   - component: {fileID: 54965657551317680}
   - component: {fileID: 136085364251208034}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy_Wizard
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

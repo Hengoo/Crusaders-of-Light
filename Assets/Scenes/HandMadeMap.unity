@@ -3121,6 +3121,52 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 61c5572780389b448854ec10b9a60678, type: 2}
   m_IsPrefabParent: 0
+--- !u!1001 &384745917
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4109165178690536, guid: 6e1bda12203c3f941bdaf1ed89e557f1, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4109165178690536, guid: 6e1bda12203c3f941bdaf1ed89e557f1, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4109165178690536, guid: 6e1bda12203c3f941bdaf1ed89e557f1, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4109165178690536, guid: 6e1bda12203c3f941bdaf1ed89e557f1, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4109165178690536, guid: 6e1bda12203c3f941bdaf1ed89e557f1, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4109165178690536, guid: 6e1bda12203c3f941bdaf1ed89e557f1, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4109165178690536, guid: 6e1bda12203c3f941bdaf1ed89e557f1, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4109165178690536, guid: 6e1bda12203c3f941bdaf1ed89e557f1, type: 2}
+      propertyPath: m_RootOrder
+      value: 41
+      objectReference: {fileID: 0}
+    - target: {fileID: 1497076305838758, guid: 6e1bda12203c3f941bdaf1ed89e557f1, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 6e1bda12203c3f941bdaf1ed89e557f1, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &394808374
 Prefab:
   m_ObjectHideFlags: 0
@@ -16044,7 +16090,7 @@ MonoBehaviour:
   - {fileID: 462797219}
   - {fileID: 668570203}
   StartingWeapons:
-  - {fileID: 114066496244682900, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+  - {fileID: 114650507562312746, guid: 6e1bda12203c3f941bdaf1ed89e557f1, type: 2}
   - {fileID: 114638103525019752, guid: f66007c64d8d4964cb44ce562b237e8e, type: 2}
   SkillsPerWeapon: 2
   WeaponSlots:
@@ -16386,7 +16432,7 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   FixSpawns: []
   TagsBiome:
-  - {fileID: 11400000, guid: f47b5710436593b4fad8da2199fe175c, type: 2}
+  - {fileID: 11400000, guid: 2d28a3845e00d044c984f296a8b4222f, type: 2}
 --- !u!1001 &1829767531
 Prefab:
   m_ObjectHideFlags: 0

@@ -38,9 +38,9 @@ GameObject:
   - component: {fileID: 114163919782836492}
   - component: {fileID: 54318752615102480}
   - component: {fileID: 136587746835622824}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy_Knight
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

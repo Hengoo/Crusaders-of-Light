@@ -25,6 +25,9 @@ MonoBehaviour:
   - SpawnWeapon: {fileID: 114638103525019752, guid: f66007c64d8d4964cb44ce562b237e8e,
       type: 2}
     SpawnWeight: 1
+  - SpawnWeapon: {fileID: 114650507562312746, guid: 6e1bda12203c3f941bdaf1ed89e557f1,
+      type: 2}
+    SpawnWeight: 1
   ListWeaponsRight:
   - SpawnWeapon: {fileID: 114638103525019752, guid: f66007c64d8d4964cb44ce562b237e8e,
       type: 2}

@@ -23,9 +23,9 @@ GameObject:
   - component: {fileID: 114085777005992444}
   - component: {fileID: 54458636508245720}
   - component: {fileID: 136990833058624760}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy_Mage
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
