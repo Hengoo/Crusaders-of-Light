@@ -35,7 +35,7 @@ public class GUICharacterFollow : MonoBehaviour {
         RectTransform CanvasRectTrans = GUIController.Instance.GetCanvasRectTrans();
 
         Vector3 WorldObjectScreenPos = new Vector3((ViewPortPos.x * CanvasRectTrans.sizeDelta.x) - (CanvasRectTrans.sizeDelta.x * 0.5f),
-                                                    (ViewPortPos.y * CanvasRectTrans.sizeDelta.y) - (CanvasRectTrans.sizeDelta.y * 0.5f),
+                                                    (ViewPortPos.y * CanvasRectTrans.sizeDelta.y) - (CanvasRectTrans.sizeDelta.y * 0.45f),
                                                     (ViewPortPos.z));
         RectTrans.localPosition = WorldObjectScreenPos;
     }

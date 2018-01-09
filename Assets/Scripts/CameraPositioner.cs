@@ -36,7 +36,7 @@ public class CameraPositioner : MonoBehaviour
 		distance = distance * distanceMultiplier;
 		distance = Mathf.Min(distanceMax, distance);
 		distance = Mathf.Max(distanceMin, distance);
-		this.transform.position = Vector3.Slerp(this.transform.position, averagePos + Vector3.up * distance, 0.1f);
+		this.transform.position = Vector3.Slerp(this.transform.position, averagePos + new Vector3(0, 1, -.8f).normalized * distance, 0.1f);
 	}
 
     public void UpdateCameraTargetsOnPlayerDeath(GameObject DeadPlayer)
