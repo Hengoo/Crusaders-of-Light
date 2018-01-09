@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114908810881589058}
   - component: {fileID: 54969927013422056}
   m_Layer: 0
-  m_Name: Icewall
+  m_Name: Icewall_Temp
   m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,8 +168,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Owner: {fileID: 114908810881589058}
   Tag: Attention
+  TagHitObjects: Skills
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
+  PlayerHitObjectsInRange: []
 --- !u!114 &114908810881589058
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -229,3 +231,4 @@ MonoBehaviour:
   IdleMoveDuration: 0.2
   BasePowerLevel: 0
   SpawnedBy: {fileID: 0}
+  SpawnStartingWeaponsOnStart: 0

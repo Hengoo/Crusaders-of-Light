@@ -9,9 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fcc78f04908579b4894a018ee2202713, type: 3}
-  m_Name: Spawner_Enemy_Knight
+  m_Name: Spawner_Enemy_Knight_Hills
   m_EditorClassIdentifier: 
-  EnemyPrefab: {fileID: 114587697657262122, guid: cc07cdd6a76a10d4cb34f6f1cf9d20f9,
+  EnemyPrefab: {fileID: 114163919782836492, guid: 79c1cc71a0aec3f419af5852ce69b89e,
     type: 2}
   ListWeaponsLeft:
   - SpawnWeapon: {fileID: 114066496244682900, guid: 952b46205acefd34b8895b11db3a6556,
@@ -30,17 +30,9 @@ MonoBehaviour:
       type: 2}
     SpawnWeight: 3
   ListWeaponsRight:
-  - SpawnWeapon: {fileID: 0}
-    SpawnWeight: 3
-  - SpawnWeapon: {fileID: 114066496244682900, guid: aa94daf626a371f4ea7bcb6b4e1637cb,
-      type: 2}
-    SpawnWeight: 1
-  - SpawnWeapon: {fileID: 114514537758392172, guid: f164b18be3100ee4493a0a11aa4359ee,
-      type: 2}
-    SpawnWeight: 1
   - SpawnWeapon: {fileID: 114777665945185374, guid: 1bc3c9e830757684c9a98e762a0bf7d6,
       type: 2}
-    SpawnWeight: 2
+    SpawnWeight: 3
   - SpawnWeapon: {fileID: 114011286401193298, guid: 3c86a442800f24e44b48672fba6e63e1,
       type: 2}
-    SpawnWeight: 1
+    SpawnWeight: 2

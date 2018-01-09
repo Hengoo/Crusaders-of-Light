@@ -9,15 +9,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fcc78f04908579b4894a018ee2202713, type: 3}
-  m_Name: Spawner_Enemy_Wizard
+  m_Name: Spawner_Enemy_Mage_Desert
   m_EditorClassIdentifier: 
-  EnemyPrefab: {fileID: 114301975722172286, guid: 4962a91bcae304d4eb7fa32b0e757e8f,
+  EnemyPrefab: {fileID: 114085777005992444, guid: 9fe66adec62a8aa4684349403e03b300,
     type: 2}
-  ListWeaponsLeft: []
-  ListWeaponsRight:
+  ListWeaponsLeft:
   - SpawnWeapon: {fileID: 114638103525019752, guid: f66007c64d8d4964cb44ce562b237e8e,
       type: 2}
-    SpawnWeight: 10000
-  - SpawnWeapon: {fileID: 114399201202335494, guid: b44050923c04f3a4c87fc792e61f42ea,
-      type: 2}
     SpawnWeight: 1
+  ListWeaponsRight:
+  - SpawnWeapon: {fileID: 114777665945185374, guid: 1bc3c9e830757684c9a98e762a0bf7d6,
+      type: 2}
+    SpawnWeight: 3
+  - SpawnWeapon: {fileID: 114010287845431416, guid: cfc1480de4ad6fa4f8fed6b1343800d0,
+      type: 2}
+    SpawnWeight: 2
