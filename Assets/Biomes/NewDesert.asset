@@ -23,7 +23,8 @@ MonoBehaviour:
     Temperature: 0
   FillPrefabs:
   - {fileID: 1786026918264288, guid: 02a12aa15a8189140b9b7976bc72a4eb, type: 2}
-  PrefabMinDistance: 14.52
+  - {fileID: 1568657534058824, guid: 1ac612fa9f9cd3d419cc6d7457bdc674, type: 2}
+  PrefabMinDistance: 9.8
   NotNavigable: 0
   Splat:
     texture: {fileID: 2800000, guid: 85fcf9e8f4e6ae248bd961873f85ba36, type: 3}
@@ -35,3 +36,5 @@ MonoBehaviour:
   DontBlendWith:
   - {fileID: 11400000, guid: 0b96cb55724ac1f46bdaf4207bd32742, type: 2}
   - {fileID: 11400000, guid: 861766d1f31f00c4ba9601f551715601, type: 2}
+  BiomeTags: []
+  SpawnerList: {fileID: 0}
