@@ -30,6 +30,11 @@ public class GameController : Singleton<GameController>
         Brightness = value;
     }
 
+    public void SetActivePlayers(int value)
+    {
+        ActivePlayers = Mathf.Clamp(value, 1, 4);
+    }
+
     public void InitializeGameSession()
     {
         //TODO: create real game map
