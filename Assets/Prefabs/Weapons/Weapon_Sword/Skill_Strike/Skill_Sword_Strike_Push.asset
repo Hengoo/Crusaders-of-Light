@@ -9,9 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bab39e11d71c1d84e85730a24e4c83ce, type: 3}
-  m_Name: Skill_Mace_Strike_Push
+  m_Name: Skill_Sword_Strike_Push
   m_EditorClassIdentifier: 
   PushDirection: 1
-  ForceMagnitude: 5
+  ForceMagnitude: 2
   ForceValueModifiers:
-  - {fileID: 11400000, guid: d24b22c902fa13744947179063ecda90, type: 2}
+  - {fileID: 11400000, guid: faa28a693202a5b4a933c6456ee07721, type: 2}

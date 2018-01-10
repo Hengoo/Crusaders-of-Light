@@ -22,7 +22,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e1438ef2357019e4189830f2faa5e88e, type: 2}
   - {fileID: 11400000, guid: 8cdaa347b28bc82478249dcb3b359f35, type: 2}
   - {fileID: 11400000, guid: 9092273d37a0fd4489f95eadb2307a36, type: 2}
-  HindranceLevel: 2
+  HindranceLevel: 1
   AnimationName: Melee_ChargeUp_Overhead
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 9d326f7ec735d7742a271a1a5755d6f2, type: 2}
