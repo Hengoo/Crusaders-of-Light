@@ -28,7 +28,7 @@ public class BrightnessChange : MonoBehaviour
 		behaviour.profile = m_Profile;
 
 		var colorGrading = m_Profile.colorGrading.settings;
-		colorGrading.basic.postExposure = bright;
+		colorGrading.basic.postExposure = bright*3;
 		m_Profile.colorGrading.settings = colorGrading;
 
 	}
