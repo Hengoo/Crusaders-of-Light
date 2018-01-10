@@ -37,5 +37,6 @@ MonoBehaviour:
   DontBlendWith:
   - {fileID: 11400000, guid: 0b96cb55724ac1f46bdaf4207bd32742, type: 2}
   - {fileID: 11400000, guid: 861766d1f31f00c4ba9601f551715601, type: 2}
-  BiomeTags: []
+  BiomeTags:
+  - {fileID: 11400000, guid: 002dee42b0633484b91fdd57ccd8c25c, type: 2}
   SpawnerList: {fileID: 0}
