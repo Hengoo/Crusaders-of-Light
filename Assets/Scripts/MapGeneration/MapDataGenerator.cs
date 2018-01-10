@@ -248,7 +248,7 @@ public static class MapDataGenerator
                     var orientation = lastTransform.position - position;
                     go = Object.Instantiate(blocker);
                     go.transform.rotation = Quaternion.LookRotation(orientation.normalized, Vector3.up);
-                    go.transform.localScale = new Vector3(1, 1, 1 + (orientation.magnitude - blockerLength) / blockerLength);
+                    go.transform.localScale = new Vector3(1, 2, 1 + (orientation.magnitude - blockerLength) / blockerLength);
                 }
                 go.transform.position = position;
                 go.transform.parent = lineGO.transform;
