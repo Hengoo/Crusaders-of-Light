@@ -5,6 +5,9 @@
 /[Bb]uilds/
 /AssetStoreTools*
 
+#PleaseDontIgnoreDlls?
+!*.dll
+
 # Build project files
 /*_Data
 /*.exe

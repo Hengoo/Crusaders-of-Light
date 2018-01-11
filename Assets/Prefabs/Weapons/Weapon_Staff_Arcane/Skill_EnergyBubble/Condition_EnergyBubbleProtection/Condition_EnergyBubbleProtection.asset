@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46bb924257699d240846c00a1f0a2b9c, type: 3}
+  m_Name: Condition_EnergyBubbleProtection
+  m_EditorClassIdentifier: 
+  Name: Energy Bubble Protection
+  OnApply:
+  - {fileID: 11400000, guid: df4802d815654bc4d97698efc108d723, type: 2}
+  - {fileID: 11400000, guid: c1b88d5b51d1a7a45bcb8ea3ce5e78b9, type: 2}
+  - {fileID: 11400000, guid: 4594ea776c167c14eaf10f56d385aa0c, type: 2}
+  - {fileID: 11400000, guid: cfbf7dadc2719bf4cad3bd42ac5720b0, type: 2}
+  - {fileID: 11400000, guid: 8acae583d074b9b4c99239a9c658b749, type: 2}
+  OnTick: []
+  OnEnd:
+  - {fileID: 11400000, guid: 6b3db1fe5ee6bb84aa5e26902c73452c, type: 2}
+  - {fileID: 11400000, guid: d59aa0c2ea81a4548b6a258ade84a0f7, type: 2}
+  - {fileID: 11400000, guid: e2ae7ff0fa3ebc64fb7dd2a9ff41a8e5, type: 2}
+  - {fileID: 11400000, guid: cb03a2c3b0579164ba18bc8b17769506, type: 2}
+  - {fileID: 11400000, guid: f4b926d5d4ea2b640930526e2e64f5ab, type: 2}
+  TickTime: -1
+  InstanceMaximum: 1

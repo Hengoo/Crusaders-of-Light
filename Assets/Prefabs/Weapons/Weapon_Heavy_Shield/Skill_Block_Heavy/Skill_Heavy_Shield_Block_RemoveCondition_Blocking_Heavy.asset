@@ -1,0 +1,14 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aab864b4bdfce14ba81094a971ce7ee, type: 3}
+  m_Name: Skill_Heavy_Shield_Block_RemoveCondition_Blocking_Heavy
+  m_EditorClassIdentifier: 
+  ConditionToRemove: {fileID: 11400000, guid: 74031b7bde6129e4da08a45215151011, type: 2}

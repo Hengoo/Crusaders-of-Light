@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcc78f04908579b4894a018ee2202713, type: 3}
+  m_Name: Spawner_Enemy_Wizard_Hills
+  m_EditorClassIdentifier: 
+  EnemyPrefab: {fileID: 114624430876088172, guid: 41d93d3783f14fb49b106bd2dfee6aa1,
+    type: 2}
+  ListWeaponsLeft:
+  - SpawnWeapon: {fileID: 0}
+    SpawnWeight: 2
+  - SpawnWeapon: {fileID: 114066496244682900, guid: 952b46205acefd34b8895b11db3a6556,
+      type: 2}
+    SpawnWeight: 1
+  - SpawnWeapon: {fileID: 114066496244682900, guid: 65f91d096e61fc3408c246068afda0c1,
+      type: 2}
+    SpawnWeight: 2
+  - SpawnWeapon: {fileID: 114638103525019752, guid: f66007c64d8d4964cb44ce562b237e8e,
+      type: 2}
+    SpawnWeight: 1
+  - SpawnWeapon: {fileID: 114650507562312746, guid: 6e1bda12203c3f941bdaf1ed89e557f1,
+      type: 2}
+    SpawnWeight: 1
+  ListWeaponsRight:
+  - SpawnWeapon: {fileID: 114702944568196636, guid: 00c064b806f0ade439292e2d71a6f6e5,
+      type: 2}
+    SpawnWeight: 1

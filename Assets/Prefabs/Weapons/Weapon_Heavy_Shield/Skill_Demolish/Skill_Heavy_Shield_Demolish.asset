@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 459ba0e85ac88e64381693d37b49b7ee, type: 3}
+  m_Name: Skill_Heavy_Shield_Demolish
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.3
+  ActivationIntervall: -1
+  Cooldown: 5
+  ActivationMovementModifier: -0.9
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: 9c3b327c41e43444fb1b8643e92d2495, type: 2}
+  - {fileID: 11400000, guid: 0db74f74d5ae55840a6cd3f92efdfc46, type: 2}
+  HindranceLevel: 4
+  AnimationName: Melee_Block
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: 94b3501167d7c334a9d92121d7404958, type: 2}
+  PowerLevel: 0
+  Threat:
+  - 3
+  - 0
+  - 0
+  ChargeUpTimeMax: -1
+  EffectiveChargeUpTimeMax: 2
+  HitEachCharacterOnlyOnce: 1
+  AfterReleaseActivationTime: 1
+  ScaleAfterReleaseTimeWithChannelTime: 1
+  MinTime: 0
+  MaxTime: 1
+  MinModifier: 0.2
+  MaxModifier: 1.2
+  EffectsSelfOnMinimumActivationTimeEnd:
+  - {fileID: 11400000, guid: 5220b1ec859a0cf4a9d053618399de7e, type: 2}
+  EffectsSelfOnRelease:
+  - {fileID: 11400000, guid: 1110239c1ea33454bbcb195c33837679, type: 2}
+  EffectsSelfOnEnd:
+  - {fileID: 11400000, guid: 5fc35173be144a342afbccfa1a504280, type: 2}
+  ReleaseAnimation: Charge_Released

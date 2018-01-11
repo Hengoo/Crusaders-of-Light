@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Scripts/Combat.meta
+guid: 711b988bda8ba64428905476e0df71be
+folderAsset: yes
+timeCreated: 1511173046
+=======
+guid: ce0959924ff8f6148a7075ae2b615e5d
+folderAsset: yes
+timeCreated: 1509714976
+>>>>>>> origin/feature/physicsController:Assets/PostProcessing.meta
+licenseType: Free
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

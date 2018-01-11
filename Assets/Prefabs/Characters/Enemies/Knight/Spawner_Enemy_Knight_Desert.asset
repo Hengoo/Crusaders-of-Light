@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcc78f04908579b4894a018ee2202713, type: 3}
+  m_Name: Spawner_Enemy_Knight_Desert
+  m_EditorClassIdentifier: 
+  EnemyPrefab: {fileID: 114163919782836492, guid: 79c1cc71a0aec3f419af5852ce69b89e,
+    type: 2}
+  ListWeaponsLeft:
+  - SpawnWeapon: {fileID: 114011286401193298, guid: 3c86a442800f24e44b48672fba6e63e1,
+      type: 2}
+    SpawnWeight: 2
+  - SpawnWeapon: {fileID: 114010287845431416, guid: cfc1480de4ad6fa4f8fed6b1343800d0,
+      type: 2}
+    SpawnWeight: 1
+  ListWeaponsRight:
+  - SpawnWeapon: {fileID: 114010287845431416, guid: cfc1480de4ad6fa4f8fed6b1343800d0,
+      type: 2}
+    SpawnWeight: 1
+  - SpawnWeapon: {fileID: 114066496244682900, guid: 65f91d096e61fc3408c246068afda0c1,
+      type: 2}
+    SpawnWeight: 1
+  - SpawnWeapon: {fileID: 114066496244682900, guid: aa94daf626a371f4ea7bcb6b4e1637cb,
+      type: 2}
+    SpawnWeight: 1

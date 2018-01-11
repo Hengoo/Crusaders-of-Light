@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b646cdd733c544ea65c7ce4a2ec9a8, type: 3}
+  m_Name: Skill_Sword_Strike
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 1
+  ActivationIntervall: -1
+  Cooldown: -1
+  ActivationMovementModifier: 0
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: d14c4a5e4a527bf4b867385a747c0e06, type: 2}
+  HindranceLevel: 0
+  AnimationName: Melee_Swing
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: 19dd716f5fa130c4b8fb98cd398d9eca, type: 2}
+  PowerLevel: 0
+  HitTimeStart: 0.5
+  HitTimeStop: 0.87
+  HitEachCharacterOnlyOnce: 1

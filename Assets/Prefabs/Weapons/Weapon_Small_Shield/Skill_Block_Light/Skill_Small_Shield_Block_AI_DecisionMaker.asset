@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a358bdf9369a6de42843121de4896289, type: 3}
+  m_Name: Skill_Small_Shield_Block_AI_DecisionMaker
+  m_EditorClassIdentifier: 
+  Weight: 2
+  ConsiderationsTargeted:
+  - {fileID: 11400000, guid: d905683ee29cc224281987afe498f84e, type: 2}
+  ConsiderationsSelf:
+  - {fileID: 11400000, guid: 60d9ced5f3a5b634aa1939d29aac948c, type: 2}
+  - {fileID: 11400000, guid: ffd781ee9ffbfc741883f089ef689fca, type: 2}
+  SensibleActivationTime: -1
+  SkillEvaluationCycle: 0.5
+  AISkillMovePatterns: []

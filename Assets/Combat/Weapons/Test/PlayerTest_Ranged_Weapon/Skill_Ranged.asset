@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b4bbe9bd59db014bbec37a7db033325, type: 3}
+  m_Name: Skill_Ranged
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.5
+  Cooldown: 1
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: b75b533991696a14fb453ba7309d56f0, type: 2}
+  AIDecisionMaker: {fileID: 0}
+  ProjectilePrefab: {fileID: 114117875302061924, guid: b85e9eb6a1f9d7746b283978d9ab42d5,
+    type: 2}

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59d79877a8124d044a0f750df1b14d1c, type: 3}
+  m_Name: Skill_Staff_Frost_FrostRay_AI_TargetDistance_OutOfRange
+  m_EditorClassIdentifier: 
+  TypeOfCurve: 3
+  Steepness: 4
+  yShift: -1
+  xShift: 0
+  MinDistance: 10
+  MaxDistance: 12
