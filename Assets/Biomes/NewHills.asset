@@ -24,6 +24,7 @@ MonoBehaviour:
   FillPrefabs:
   - {fileID: 1158360484994764, guid: 3ed64c2e85fe7c343a3218ab0a5e4ccf, type: 2}
   - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
+  - {fileID: 1568657534058824, guid: 1ac612fa9f9cd3d419cc6d7457bdc674, type: 2}
   PrefabMinDistance: 3.5
   NotNavigable: 0
   Splat:
@@ -36,3 +37,6 @@ MonoBehaviour:
   DontBlendWith:
   - {fileID: 11400000, guid: 0b96cb55724ac1f46bdaf4207bd32742, type: 2}
   - {fileID: 11400000, guid: 861766d1f31f00c4ba9601f551715601, type: 2}
+  BiomeTags:
+  - {fileID: 11400000, guid: a9de5121419c2c24f940a6c287073ed7, type: 2}
+  SpawnerList: {fileID: 0}

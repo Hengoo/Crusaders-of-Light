@@ -90,7 +90,7 @@ public class MapGenerator : MonoBehaviour
         var alphamap = MapDataGenerator.GenerateAlphaMap(_terrainStructure);
 
         /* Draw borders */
-        MapDataGenerator.EncloseAreas(_terrainStructure, heightMap, _worldStructure.AreaBorders, 3);
+        //MapDataGenerator.EncloseAreas(_terrainStructure, heightMap, _worldStructure.AreaBorders, 3);
 
         /* Draw roads onto alphamap */
         MapDataGenerator.DrawLineRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadLines, 1);
@@ -135,9 +135,13 @@ public class MapGenerator : MonoBehaviour
         //terrain.GetComponent<Terrain>().materialTemplate = BiomeGlobalConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
 
         /* Add fences to coast */
-        var fences = MapDataGenerator.GenerateCoastBlockers(_terrain, _worldStructure,
+        var fences = MapDataGenerator.GenerateCoastFences(_terrain, _worldStructure,
             BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerPole, BiomeGlobalConfiguration.CoastBlockerLength);
         fences.transform.parent = _terrain.transform;
+
+        var walls = MapDataGenerator.GenerateAreaWalls(_terrain, _worldStructure, BiomeGlobalConfiguration.AreaBlocker,
+            BiomeGlobalConfiguration.AreaBlockerLength);
+        walls.transform.parent = _terrain.transform;
 
         /* Fill terrain with scenery */
         if (FillTerrain)

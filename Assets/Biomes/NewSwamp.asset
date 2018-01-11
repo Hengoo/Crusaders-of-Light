@@ -25,6 +25,8 @@ MonoBehaviour:
   - {fileID: 1017392505389366, guid: 61c5572780389b448854ec10b9a60678, type: 2}
   - {fileID: 1347386096552574, guid: 2808b16ebff0774489868eeb866254b2, type: 2}
   - {fileID: 1055274414618670, guid: 1355bd09a5830c443838e1c0568d3d54, type: 2}
+  - {fileID: 1568657534058824, guid: 1ac612fa9f9cd3d419cc6d7457bdc674, type: 2}
+  - {fileID: 1568657534058824, guid: 1ac612fa9f9cd3d419cc6d7457bdc674, type: 2}
   PrefabMinDistance: 4.68
   NotNavigable: 0
   Splat:
@@ -37,3 +39,6 @@ MonoBehaviour:
   DontBlendWith:
   - {fileID: 11400000, guid: 0b96cb55724ac1f46bdaf4207bd32742, type: 2}
   - {fileID: 11400000, guid: 861766d1f31f00c4ba9601f551715601, type: 2}
+  BiomeTags:
+  - {fileID: 11400000, guid: 8bcfb3f707dabe14899a53e96c516a92, type: 2}
+  SpawnerList: {fileID: 0}

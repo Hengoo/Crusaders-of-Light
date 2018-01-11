@@ -501,8 +501,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 1200
-  HealthMax: 1200
+  HealthCurrent: 600
+  HealthMax: 600
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
