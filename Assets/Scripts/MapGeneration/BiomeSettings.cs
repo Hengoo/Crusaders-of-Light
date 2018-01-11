@@ -13,6 +13,8 @@ public class BiomeSettings : ScriptableObject
     public bool NotNavigable = false;
     public SplatPrototypeSerializable Splat;
     public List<BiomeSettings> DontBlendWith = new List<BiomeSettings>();
+    public TagBiome[] BiomeTags;
+    public SpawnerSetMasterList SpawnerList;
     public BiomeSettings(BiomeConditions conditions, BiomeHeight height, bool notNavigable)
     {
         Conditions = conditions;
@@ -57,9 +59,9 @@ public class BiomeHeight
 public class BiomeGlobalConfiguration
 {
     [Range(16, 1024)] public int HeightMapResolution = 512;
-    [Range(16, 1024)] public float MapSize = 1024;
+    [Range(16, 1024)] public float MapSize = 512;
     [Range(1, 1024)] public float MapHeight = 80;
-    [Range(10, 1000)] public int BiomeSamples = 45;
+    [Range(10, 1000)] public int BiomeSamples = 30;
     [Range(0, 1f)] public float MaxHeight = 1;
     [Range(0, 1f)] public float SeaHeight = 0.15f;
     [Range(0, 50f)] public float BorderNoise = 8f;
@@ -71,8 +73,10 @@ public class BiomeGlobalConfiguration
     public Material TerrainMaterial;
     public GameObject CoastBlocker;
     public GameObject CoastBlockerPole;
-    [Range(0.01f, 20)] public float CoastBlockerLength = 1;
-    [Range(0f, 50f)] public float CoastInlandOffset = 5f;
+    [Range(0.01f, 20)] public float CoastBlockerLength = 3.5f;
+    [Range(0f, 50f)] public float CoastInlandOffset = 20f;
+    public GameObject AreaBlocker;
+    [Range(0.01f, 20f)] public float AreaBlockerLength = 2.1f;
     public SplatPrototypeSerializable RoadSplatPrototype;
     [Range(0, 5)] public int OverallSmoothing = 2;
     public bool SmoothEdges = true;
@@ -86,6 +90,7 @@ public class Biome
     public readonly BiomeSettings BiomeSettings;
     public readonly Vector2[] BiomePolygon;
     public readonly bool IsBorderBiome;
+    [HideInInspector]public int BiomeLevel = -1;
 
     public Biome(Vector2 center, BiomeSettings biomeSettings, bool isBorderBiome, Vector2[] biomePolygon)
     {

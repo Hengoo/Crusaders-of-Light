@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33385721090232856}
   - component: {fileID: 23801641363144206}
   - component: {fileID: 95937154249728322}
+  - component: {fileID: 64809083253020646}
   m_Layer: 0
   m_Name: DeadBush
   m_TagString: Untagged
@@ -82,6 +83,20 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1786026918264288}
+  m_Mesh: {fileID: 4300000, guid: fe8f8e5e980b699478acd6162aa29d80, type: 3}
+--- !u!64 &64809083253020646
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1786026918264288}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 1
+  m_InflateMesh: 0
+  m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300000, guid: fe8f8e5e980b699478acd6162aa29d80, type: 3}
 --- !u!95 &95937154249728322
 Animator:

@@ -8,6 +8,7 @@ public class MenuController : MonoBehaviour
     public Canvas MainMenu;
 
 
+    public InputField ActivePlayers;
     public InputField Seed;
     public Slider Brightness;
 
@@ -21,6 +22,7 @@ public class MenuController : MonoBehaviour
             GameController.Instance.SetSeed(Random.Range(0, int.MaxValue));
         }
 
+        GameController.Instance.SetActivePlayers(int.Parse(ActivePlayers.textComponent.text));
         GameController.Instance.SetBrightness(Brightness.normalizedValue);
         GameController.Instance.InitializeGameSession();
     }

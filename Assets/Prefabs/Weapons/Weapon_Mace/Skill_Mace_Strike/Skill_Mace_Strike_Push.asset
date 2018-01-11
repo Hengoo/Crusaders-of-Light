@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Name: Skill_Mace_Strike_Push
   m_EditorClassIdentifier: 
   PushDirection: 1
-  ForceMagnitude: 7
+  ForceMagnitude: 5
   ForceValueModifiers:
   - {fileID: 11400000, guid: d24b22c902fa13744947179063ecda90, type: 2}

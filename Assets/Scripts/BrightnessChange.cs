@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using UnityEngine.PostProcessing;
 
-//copied from here https://github.com/Unity-Technologies/PostProcessing/wiki/(v1)-Runtime-post-processing-modification
+//copied and modified from here https://github.com/Unity-Technologies/PostProcessing/wiki/(v1)-Runtime-post-processing-modification
 
 [RequireComponent(typeof(PostProcessingBehaviour))]
 public class BrightnessChange : MonoBehaviour
@@ -17,19 +18,18 @@ public class BrightnessChange : MonoBehaviour
 			enabled = false;
 			return;
 		}
+		float bright = 0;
+		if (Application.isPlaying)
+		{
+			bright = GameController.Instance.Brightness;
+		}
 
 		m_Profile = Instantiate(behaviour.profile);
 		behaviour.profile = m_Profile;
-	}
-
-	void Update()
-	{
-		//var vignette = m_Profile.vignette.settings;
-		//vignette.smoothness = Mathf.Abs(Mathf.Sin(Time.realtimeSinceStartup) * 0.99f) + 0.01f;
-		//m_Profile.vignette.settings = vignette;
 
 		var colorGrading = m_Profile.colorGrading.settings;
-		colorGrading.basic.postExposure = 0.4f;
+		colorGrading.basic.postExposure = bright*3;
 		m_Profile.colorGrading.settings = colorGrading;
+
 	}
 }

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d95bc55ac5118e041884ecc2ba01c620, type: 3}
+  m_Name: Spawner_Set_Desert
+  m_EditorClassIdentifier: 
+  RequiredBiomeTags:
+  - {fileID: 11400000, guid: f47b5710436593b4fad8da2199fe175c, type: 2}
+  SpawnEnemies:
+  - Enemy: {fileID: 11400000, guid: fc16b693ee6213247a50a566230e1e84, type: 2}
+    Weight: 2
+  - Enemy: {fileID: 11400000, guid: c25470b24212c9a47861a1397ad11f52, type: 2}
+    Weight: 2
+  - Enemy: {fileID: 11400000, guid: 6027666df2060ac4586573db8fc2c2b9, type: 2}
+    Weight: 1
+  - Enemy: {fileID: 11400000, guid: 211193c4ac5f15b42b6a3357808f8f6d, type: 2}
+    Weight: 1

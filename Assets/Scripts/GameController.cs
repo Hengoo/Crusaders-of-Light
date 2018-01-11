@@ -9,6 +9,7 @@ public class GameController : Singleton<GameController>
     public int Seed { get; private set; }
     public float Brightness { get; private set; }
     public GameStateEnum GameState = GameStateEnum.Menu;
+    public int ActivePlayers = 4;
 
 	// Use this for initialization
     protected override void Awake () {
@@ -29,10 +30,15 @@ public class GameController : Singleton<GameController>
         Brightness = value;
     }
 
+    public void SetActivePlayers(int value)
+    {
+        ActivePlayers = Mathf.Clamp(value, 1, 4);
+    }
+
     public void InitializeGameSession()
     {
         //TODO: create real game map
-        SceneManager.LoadScene("HandMadeMap");
+        SceneManager.LoadScene("TerrainGenerationTest");
         GameState = GameStateEnum.Play;
     }
 

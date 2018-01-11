@@ -158,15 +158,18 @@ public class Character : MonoBehaviour
         // Update Attention:
         AttentionThisCharacterDied();
 
-        // Remove GUI:
-        RemoveCharacterFollowGUI();
-
         // Invoke death actions (e.g. Quest System)
         if(_onCharacterDeathAction != null)
             _onCharacterDeathAction.Invoke();
 
         // Destroy this Character:
         Destroy(this.gameObject);
+    }
+
+    void OnDestroy()
+    {
+        //Remove GUI
+        RemoveCharacterFollowGUI();
     }
 
     public int GetHealthCurrent()
@@ -852,7 +855,8 @@ public class Character : MonoBehaviour
 
     private void RemoveCharacterFollowGUI()
     {
-        GUIChar.DestroyGUICharacterFollow();
+        if(GUIChar)
+            GUIChar.DestroyGUICharacterFollow();
         GUIChar = null;
     }
 

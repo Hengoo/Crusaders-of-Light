@@ -10,6 +10,7 @@ public class SkillEffectPush : SkillEffect {
         NONE = -1,
         OWNER_DIRECTION = 0,
         FROM_OWNER_TO_TARGET = 1,
+        RANDOM = 2
     }
 
     [Header("Skill Effect Push:")]
@@ -31,6 +32,12 @@ public class SkillEffectPush : SkillEffect {
         else if (PushDirection == Direction.FROM_OWNER_TO_TARGET)
         {
             ForceDirection = (Target.transform.position - Owner.transform.position).normalized;
+        }
+        else if (PushDirection == Direction.RANDOM)
+        {
+            int RandomDegrees = Random.Range(0, 360);
+
+            ForceDirection = Quaternion.Euler(0, RandomDegrees, 0) * Vector3.forward;
         }
 
         float FinalMagnitude =  ForceMagnitude;

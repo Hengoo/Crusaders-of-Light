@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
 public class MapGenerator : MonoBehaviour
@@ -17,10 +18,11 @@ public class MapGenerator : MonoBehaviour
     public DrawModeEnum DrawMode = DrawModeEnum.BiomeGraph;
     public BiomeGlobalConfiguration BiomeGlobalConfiguration;
     public List<BiomeSettings> AvailableBiomes;
-    
+
     public AreaBase[] NormalAreas;
     public AreaBase BossArea;
-
+    
+    public GameObject SpawnerPrefab;
 
     public int ExtraEdges = 20;
     public bool FillTerrain = true;
@@ -53,9 +55,12 @@ public class MapGenerator : MonoBehaviour
         Random.InitState(Seed);
 
         _terrainStructure = new TerrainStructure(AvailableBiomes, BiomeGlobalConfiguration);
-        _worldStructure = new WorldStructure(_terrainStructure, NormalAreas.Length + 1, ExtraEdges);
-        if(DrawMode == DrawModeEnum.GameMap)
-            _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, NormalAreas, BossArea, RoadHalfWidth);
+        if (DrawMode == DrawModeEnum.AreaGraph || DrawMode == DrawModeEnum.GameMap)
+        {
+            _worldStructure = new WorldStructure(_terrainStructure, NormalAreas.Length + 1, ExtraEdges);
+            if (DrawMode == DrawModeEnum.GameMap)
+                _sceneryStructure = new SceneryStructure(_terrainStructure, _worldStructure, NormalAreas, BossArea, RoadHalfWidth);
+        }
 
         switch (DrawMode)
         {
@@ -72,7 +77,7 @@ public class MapGenerator : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
 
-        if(Application.isPlaying)
+        if (Application.isPlaying)
             LevelController.Instance.StartGame(_sceneryStructure, _terrain);
     }
 
@@ -80,12 +85,12 @@ public class MapGenerator : MonoBehaviour
     {
         /* Create heightmap */
         var heightMap = MapDataGenerator.GenerateHeightMap(_terrainStructure);
-        
+
         /* Create splat textures alphamap */
         var alphamap = MapDataGenerator.GenerateAlphaMap(_terrainStructure);
 
         /* Draw borders */
-        MapDataGenerator.EncloseAreas(_terrainStructure,  heightMap, _worldStructure.AreaBorders, 3);
+        //MapDataGenerator.EncloseAreas(_terrainStructure, heightMap, _worldStructure.AreaBorders, 3);
 
         /* Draw roads onto alphamap */
         MapDataGenerator.DrawLineRoads(_terrainStructure, heightMap, alphamap, _sceneryStructure.RoadLines, 1);
@@ -130,14 +135,20 @@ public class MapGenerator : MonoBehaviour
         //terrain.GetComponent<Terrain>().materialTemplate = BiomeGlobalConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
 
         /* Add fences to coast */
-        var fences = MapDataGenerator.GenerateCoastBlockers(_terrain, _worldStructure,
+        var fences = MapDataGenerator.GenerateCoastFences(_terrain, _worldStructure,
             BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerPole, BiomeGlobalConfiguration.CoastBlockerLength);
         fences.transform.parent = _terrain.transform;
+
+        var walls = MapDataGenerator.GenerateAreaWalls(_terrain, _worldStructure, BiomeGlobalConfiguration.AreaBlocker,
+            BiomeGlobalConfiguration.AreaBlockerLength);
+        walls.transform.parent = _terrain.transform;
 
         /* Fill terrain with scenery */
         if (FillTerrain)
         {
-            var sceneryObjects = _sceneryStructure.FillAllSceneryAreas(_terrain.GetComponent<Terrain>());
+            var spawnPoints = _sceneryStructure.GenerateSpawners(_terrain, SpawnerPrefab);
+            spawnPoints.transform.parent = _terrain.transform;
+            var sceneryObjects = _sceneryStructure.GenerateScenery(_terrain.GetComponent<Terrain>());
             var scenery = new GameObject("Scenery");
             scenery.transform.parent = _terrain.transform;
             foreach (var obj in sceneryObjects)
@@ -148,7 +159,9 @@ public class MapGenerator : MonoBehaviour
 
         /* Water Plane Placement */
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        water.GetComponent<Collider>().enabled = false;
         water.GetComponent<Renderer>().material = BiomeGlobalConfiguration.WaterMaterial;
+        water.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
         water.transform.localScale = new Vector3(terrainData.size.x / 5f, 1, terrainData.size.z / 5f);
         water.transform.parent = _terrain.transform;
         water.transform.localPosition = new Vector3(terrainData.size.x / 2f, (BiomeGlobalConfiguration.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2f);
