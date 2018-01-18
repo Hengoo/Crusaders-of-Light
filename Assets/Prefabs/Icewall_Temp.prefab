@@ -26,7 +26,7 @@ GameObject:
   - component: {fileID: 33507805255816766}
   - component: {fileID: 135203177367133118}
   - component: {fileID: 114237701065745106}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Icewall_Temp
   m_TagString: Character
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 4863216687602674}
   - component: {fileID: 65691868959714596}
   - component: {fileID: 114176520460717010}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Sphere
   m_TagString: Attention
   m_Icon: {fileID: 0}
@@ -168,8 +168,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 2000
-  HealthMax: 2000
+  HealthCurrent: 1000
+  HealthMax: 1000
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
