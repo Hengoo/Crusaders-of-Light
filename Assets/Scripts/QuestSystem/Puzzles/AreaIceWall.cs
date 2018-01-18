@@ -67,7 +67,7 @@ public class AreaIceWall : AreaBase
         var iceWall = Instantiate(IceWallPrefab);
         iceWall.transform.position = new Vector3(iceWallPosition2D.x, 0, iceWallPosition2D.y);
         iceWall.transform.localScale = new Vector3(iceWallOrientationLine.magnitude * 1.2f / 4f, terrainStructure.BiomeGlobalConfiguration.MapHeight /9f, 15 / 3f);
-        iceWall.transform.rotation = Quaternion.LookRotation(iceWall.transform.position + Vector3.Cross(new Vector3(iceWallOrientationLine.x, 0, iceWallOrientationLine.y), Vector3.up) * 10);
+        iceWall.transform.rotation = Quaternion.LookRotation(Vector3.Cross(new Vector3(iceWallOrientationLine.x, 0, iceWallOrientationLine.y), Vector3.up) * 10);
 
         //Add GameObjects to the scenery objects list (for height adjustment)
         sceneryStructure.AddSceneryQuestObject(fireMageSpawn);
