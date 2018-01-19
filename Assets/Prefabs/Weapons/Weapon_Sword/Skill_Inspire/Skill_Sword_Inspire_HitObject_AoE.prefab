@@ -134,13 +134,21 @@ MonoBehaviour:
   MaxNumberOfTargets: -1
   HitObjectIsChildOfOwner: 0
   AlwaysHitOwner: 1
+  UseForceImpulse: 0
+  ForceImpulseMagnitude: 0
+  UseSizeOverTime: 0
+  SizeOverTimeStart: 1
+  SizeOverTimeEnd: 1
+  SizeOverTimeDuration: 0
   Owner: {fileID: 0}
   SourceSkill: {fileID: 0}
   SourceItemSkill: {fileID: 0}
   FixedLevel: 0
+  Threat: []
   HitObjectAlignment: 0
   HitCharacters: []
   AlreadyHitCharacters: []
+  InCharactersAttentions: []
 --- !u!135 &135658221788836598
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -213,7 +221,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -2099942049
+  randomSeed: -616244554
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -1136,7 +1144,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.6544118, g: 0.60927993, b: 0, a: 1}
+        key0: {r: 0, g: 1, b: 0.2965517, a: 1}
         key1: {r: 0.9976673, g: 1, b: 0.8308824, a: 1}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
