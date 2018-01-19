@@ -10,6 +10,7 @@ public class GUICharacterFollow : MonoBehaviour {
     Character Character;
 
     public Image HealthBarCurrent;
+    public Image HealthHealingBarCurrent;
 
     public void Initialize(Character Char)
     {
@@ -19,6 +20,11 @@ public class GUICharacterFollow : MonoBehaviour {
     public void UpdateHealthBar(float NormalizedHealthValue)
     {
         HealthBarCurrent.fillAmount = NormalizedHealthValue;
+    }
+
+    public void UpdateHealthHealingBar(float NormalizedHealthHealingValue)
+    {
+        HealthHealingBarCurrent.fillAmount = NormalizedHealthHealingValue;
     }
 
     public void UpdateGUIPosition()

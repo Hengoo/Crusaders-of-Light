@@ -170,15 +170,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthCurrent: 2000
   HealthMax: 2000
+  HealthHealingMin: 0
+  HealthHealingMax: 100
+  HealthHealingLostPerCount: 10
+  HealthHealingCounter: 0
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
-  - 200
-  - 200
+  - 400
+  - 400
   - 0
-  - 200
-  - 200
-  - 200
+  - 400
+  - 400
+  - 400
   Defenses:
   - 0
   - 0
@@ -200,6 +204,7 @@ MonoBehaviour:
   SkillCurrentlyActivating: ffffffffffffffff
   HindranceLevel: 0
   ActiveConditions: []
+  MovementRateModfier: 1
   HandAnimators:
   - {fileID: 0}
   - {fileID: 0}

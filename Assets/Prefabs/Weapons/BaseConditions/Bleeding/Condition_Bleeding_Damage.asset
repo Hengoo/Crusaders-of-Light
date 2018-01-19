@@ -13,11 +13,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DamageValueBase: 0
   DamageValuePerLevel: 10
-  DefenseType: -1
-  DamageType: -1
+  DefenseType: 0
+  DamageType: 0
   DamageValueModifiers: []
-  IgnoreDefenseValueBase: 0
+  IgnoreDefenseValueBase: 100
   IgnoreDefenseValuePerLevel: 0
-  IgnoreResistanceValueBase: 0
+  IgnoreResistanceValueBase: 100
   IgnoreResistanceValuePerLevel: 0
   IgnoreValueModifiers: []
