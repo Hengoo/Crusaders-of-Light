@@ -23,6 +23,8 @@ public class SkillEffectDamage : SkillEffect
     [Header("Skill Effect Damage Ignore Armor Value Modifier:")]
     public SkillEffectValueModifier[] IgnoreValueModifiers = new SkillEffectValueModifier[0];
 
+    public AudioClip HitSound;
+    public AudioClip BlockedSound;
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
@@ -38,7 +40,13 @@ public class SkillEffectDamage : SkillEffect
         int FinalIgnoreDefenseValue = CalculateIgnoreDefense(Owner, SourceItemSkill, Target, SourceItemSkill.GetSkillLevel());
         int FinalIgnoreResistanceValue = CalculateIgnoreResistance(Owner, SourceItemSkill, Target, SourceItemSkill.GetSkillLevel());
 
-        Target.InflictDamage(DefenseType, DamageType, FinalDamageValue, FinalIgnoreDefenseValue, FinalIgnoreResistanceValue);
+        var damageAmount = Target.InflictDamage(DefenseType, DamageType, FinalDamageValue, FinalIgnoreDefenseValue,
+            FinalIgnoreResistanceValue);
+
+        var audioSource = Target.GetComponent<AudioSource>();
+        audioSource.clip = damageAmount > 100 ? HitSound : BlockedSound;
+        audioSource.Play();
+
     }
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
