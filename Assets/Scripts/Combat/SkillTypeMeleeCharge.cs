@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "skill_melee_charge", menuName = "Combat/SkillArchetypes/SkillMeleeCharge", order = 4)]
-public class SkillTypeMeleeCharge : SkillType {
+public class SkillTypeMeleeCharge : SkillType
+{
 
     [Header("Skill Charge Up Melee:")]
     public float ChargeUpTimeMax = -1; // If > 0 : Hard limit, after that time Skill automatically activates as if releasing the button.
@@ -27,7 +28,11 @@ public class SkillTypeMeleeCharge : SkillType {
 
     [Header("Skill Charge Up Melee Animation: (Only set to something else if fully intended)")]
     public string ReleaseAnimation = "Charge_Released";
- 
+
+    public AudioClip ChargeLoop;
+    public AudioClip ChargeRelease;
+    
+
     public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime < ActivationTime)
@@ -64,8 +69,16 @@ public class SkillTypeMeleeCharge : SkillType {
                 {
                     EffectsSelfOnRelease[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
                 }
-            }
 
+                if (ChargeRelease)
+                {
+                    var weaponAudioSource = SourceItemSkill.GetComponent<AudioSource>();
+                    weaponAudioSource.Stop();
+                    weaponAudioSource.clip = ChargeRelease;
+                    weaponAudioSource.loop = false;
+                    weaponAudioSource.Play();
+                }
+            }
             SourceItemSkill.SetEffectOnlyOnceBool(1, true);
         }
 
@@ -119,5 +132,18 @@ public class SkillTypeMeleeCharge : SkillType {
     public override float GetOverwriteAnimationSpeedScaling()
     {
         return EffectiveChargeUpTimeMax;
+    }
+
+    public override bool StartSkillActivation(ItemSkill SourceItemSkill, Character Owner)
+    {
+        var result = base.StartSkillActivation(SourceItemSkill, Owner);
+        if (result && ChargeLoop)
+        {
+            var weaponAudioSource = SourceItemSkill.GetComponent<AudioSource>();
+            weaponAudioSource.clip = ChargeLoop;
+            weaponAudioSource.loop = true;
+            weaponAudioSource.Play();
+        }
+        return result;
     }
 }

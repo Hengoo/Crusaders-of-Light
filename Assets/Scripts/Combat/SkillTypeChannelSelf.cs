@@ -15,6 +15,8 @@ public class SkillTypeChannelSelf : SkillType
     public string IdleAnimation = "Channel_Idle";
     public string ReleaseAnimation = "Channel_Released";
 
+    public AudioClip ChanellingSound;
+
     public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime < ActivationTime)
