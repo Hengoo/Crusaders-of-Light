@@ -26,6 +26,8 @@ public class SkillTypeProjectile : SkillType
         {
             var audioSource = SourceItemSkill.GetComponent<AudioSource>();
             audioSource.clip = ThrowSound;
+            audioSource.volume = 1;
+            audioSource.loop = false;
             audioSource.Play();
         }
 

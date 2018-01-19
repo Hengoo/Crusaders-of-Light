@@ -43,10 +43,7 @@ public class SkillEffectDamage : SkillEffect
         var damageAmount = Target.InflictDamage(DefenseType, DamageType, FinalDamageValue, FinalIgnoreDefenseValue,
             FinalIgnoreResistanceValue);
 
-        var audioSource = Target.GetComponent<AudioSource>();
-        audioSource.clip = damageAmount > 100 ? HitSound : BlockedSound;
-        audioSource.Play();
-
+        playSound(Target.GetComponent<AudioSource>(), damageAmount);
     }
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
@@ -63,7 +60,14 @@ public class SkillEffectDamage : SkillEffect
         int FinalIgnoreDefenseValue = CalculateIgnoreDefense(Owner, SourceItemSkill, Target, FixedLevel);
         int FinalIgnoreResistanceValue = CalculateIgnoreResistance(Owner, SourceItemSkill, Target, FixedLevel);
 
-        Target.InflictDamage(DefenseType, DamageType, FinalDamageValue, FinalIgnoreDefenseValue, FinalIgnoreResistanceValue);
+        
+        playSound(Target.GetComponent<AudioSource>(), Target.InflictDamage(DefenseType, DamageType, FinalDamageValue, FinalIgnoreDefenseValue, FinalIgnoreResistanceValue));
+    }
+
+    private void playSound(AudioSource source, int damageAmount)
+    {
+        source.clip = damageAmount > 60 ? HitSound : BlockedSound;
+        source.Play();
     }
 
     private int CalculateIgnoreDefense(Character Owner, ItemSkill SourceItemSkill, Character Target, int Level)

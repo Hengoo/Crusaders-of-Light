@@ -26,6 +26,8 @@ public class SkillTypeCreateHitObject : SkillType {
         {
             var audioSource = SourceItemSkill.GetComponent<AudioSource>();
             audioSource.clip = SpawnSound;
+            audioSource.volume = 1;
+            audioSource.loop = false;
             audioSource.Play();
         }
 
