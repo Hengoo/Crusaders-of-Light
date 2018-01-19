@@ -227,7 +227,7 @@ public static class MapDataGenerator
 
             //Discretize line and get direction normalized
             var direction = (p1 - p0).normalized;
-            var numberOfBlockers = Mathf.CeilToInt((p1 - p0).magnitude / blockerLength);
+            var numberOfBlockers = Mathf.CeilToInt((p1 - p0).magnitude / blockerLength) + 1;
             var lineGO = new GameObject("Area Blocker Line");
             lineGO.transform.parent = result.transform;
 

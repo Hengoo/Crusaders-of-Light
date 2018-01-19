@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelController : Singleton<LevelController>
 {
@@ -69,6 +70,12 @@ public class LevelController : Singleton<LevelController>
 
     public void EndGame()
     {
-        //TODO: implement
+        StartCoroutine(WaitAndLoadMainMenu(5));
+    }
+
+    private IEnumerator WaitAndLoadMainMenu(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        SceneManager.LoadScene(0);
     }
 }

@@ -21,7 +21,6 @@ public class AreaIceWall : AreaBase
     public GameObject IceWallPrefab;
     public GameObject FireMage; //Must have enemy character script attached to it
 
-    [HideInInspector] private readonly List<QuestBase> _questSteps = new List<QuestBase>();
 
     //Generate the quests to be given to the quest controller
     public override QuestBase[] GenerateQuests(SceneryStructure sceneryStructure, int assignedArea)
@@ -53,7 +52,7 @@ public class AreaIceWall : AreaBase
             desiredNeighbors++;
 
         } while (desiredNeighbors <= 4 && !found);
-        
+
 
         var spawnPosition2D = terrainStructure.BiomeGraph.GetNodeData(node).Center;
         var fireMageSpawn = new GameObject("Fire Mage Spawn Point");
@@ -66,28 +65,32 @@ public class AreaIceWall : AreaBase
         var iceWallOrientationLine = iceWallCrossingLine[1] - iceWallCrossingLine[0];
         var iceWall = Instantiate(IceWallPrefab);
         iceWall.transform.position = new Vector3(iceWallPosition2D.x, 0, iceWallPosition2D.y);
-        iceWall.transform.localScale = new Vector3(iceWallOrientationLine.magnitude * 1.2f / 4f, terrainStructure.BiomeGlobalConfiguration.MapHeight /9f, 15 / 3f);
-        iceWall.transform.rotation = Quaternion.LookRotation(iceWall.transform.position + Vector3.Cross(new Vector3(iceWallOrientationLine.x, 0, iceWallOrientationLine.y), Vector3.up) * 10);
+        iceWall.transform.localScale = new Vector3(iceWallOrientationLine.magnitude * 1.2f / 4f, terrainStructure.BiomeGlobalConfiguration.MapHeight / 9f, 15 / 3f);
+        iceWall.transform.rotation = Quaternion.LookRotation(Vector3.Cross(new Vector3(iceWallOrientationLine.x, 0, iceWallOrientationLine.y), Vector3.up) * 10);
 
         //Add GameObjects to the scenery objects list (for height adjustment)
         sceneryStructure.AddSceneryQuestObject(fireMageSpawn);
         sceneryStructure.AddSceneryQuestObject(iceWall);
-        
+
+        //Quest steps variable
+        // ReSharper disable once UseObjectOrCollectionInitializer
+        var questSteps = new List<QuestBase>();
+
         //Find ice wall
-        _questSteps.Add(new QuestReachPlace(iceWall, .3f, "The Wall", "Explore the area and find the ice wall location"));
+        questSteps.Add(new QuestReachPlace(iceWall, .3f, "The Wall", "Explore the area and find the ice wall location"));
 
         //Find fire mage camp
-        _questSteps.Add(new QuestReachPlace(fireMageSpawn, 30, "The Wall", "Find the fire wizard"));
+        questSteps.Add(new QuestReachPlace(fireMageSpawn, 30, "The Wall", "Find the fire wizard"));
 
         //Kill fire mage
-        _questSteps.Add(new QuestKillEnemy(fireMageSpawn.transform, FireMage, "The Wall", "Kill the fire wizard"));
+        questSteps.Add(new QuestKillEnemy(fireMageSpawn.transform, FireMage, "The Wall", "Kill the fire wizard"));
 
         //Pickup fire mage staff
-        _questSteps.Add(new QuestPickupItem(FireMage.GetComponent<Character>().StartingWeapons[1], "The Wall", "Pickup the fire mage staff"));
+        questSteps.Add(new QuestPickupItem(FireMage.GetComponent<Character>().StartingWeapons[1], "The Wall", "Pickup the fire mage staff"));
 
         //Destroy the ice wall
-        _questSteps.Add(new QuestDestroyBuilding(iceWall.GetComponent<CharacterEnemy>(), "The Wall", "Destroy the wall with the fire staff"));
+        questSteps.Add(new QuestDestroyBuilding(iceWall.GetComponent<CharacterEnemy>(), "The Wall", "Destroy the wall with the fire staff"));
 
-        return _questSteps.ToArray();
+        return questSteps.ToArray();
     }
 }

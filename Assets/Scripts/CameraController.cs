@@ -16,11 +16,4 @@ public class CameraController : Singleton<CameraController> {
     {
         return Positioner;
     }
-
-    // Use this for initialization
-    protected override void Awake()
-    {
-        base.Awake();
-        DontDestroyOnLoad(gameObject);
-    }
 }
