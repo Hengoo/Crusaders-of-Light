@@ -25,5 +25,10 @@ MonoBehaviour:
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 625d954546192ec4a9176f0a4a43bb43, type: 2}
   PowerLevel: 0
+  Threat:
+  - 0
+  - 0
+  - 0
   ProjectilePrefab: {fileID: 114435675793627354, guid: 14fa1c87f90d81447afa6606560da9fb,
     type: 2}
+  ThrowSound: {fileID: 8300000, guid: 2c05f713c5ffa9d44a6bdf10eb985370, type: 3}

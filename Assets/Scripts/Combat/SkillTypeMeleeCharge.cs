@@ -29,7 +29,7 @@ public class SkillTypeMeleeCharge : SkillType
     [Header("Skill Charge Up Melee Animation: (Only set to something else if fully intended)")]
     public string ReleaseAnimation = "Charge_Released";
 
-    public AudioClip ChargeLoop;
+    public AudioClip ChargeUp;
     public AudioClip ChargeRelease;
     
 
@@ -75,7 +75,6 @@ public class SkillTypeMeleeCharge : SkillType
                     var weaponAudioSource = SourceItemSkill.GetComponent<AudioSource>();
                     weaponAudioSource.Stop();
                     weaponAudioSource.clip = ChargeRelease;
-                    weaponAudioSource.loop = false;
                     weaponAudioSource.Play();
                 }
             }
@@ -137,11 +136,10 @@ public class SkillTypeMeleeCharge : SkillType
     public override bool StartSkillActivation(ItemSkill SourceItemSkill, Character Owner)
     {
         var result = base.StartSkillActivation(SourceItemSkill, Owner);
-        if (result && ChargeLoop)
+        if (result && ChargeUp)
         {
             var weaponAudioSource = SourceItemSkill.GetComponent<AudioSource>();
-            weaponAudioSource.clip = ChargeLoop;
-            weaponAudioSource.loop = true;
+            weaponAudioSource.clip = ChargeUp;
             weaponAudioSource.Play();
         }
         return result;

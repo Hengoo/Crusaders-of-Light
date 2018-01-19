@@ -43,3 +43,5 @@ MonoBehaviour:
   EffectsSelfOnRelease: []
   EffectsSelfOnEnd: []
   ReleaseAnimation: Melee_ShieldBash
+  ChargeLoop: {fileID: 8300000, guid: 38df0b93ec4a01d47802b1fb9f3fe3d7, type: 3}
+  ChargeRelease: {fileID: 8300000, guid: bba10404074522b44818af4335801766, type: 3}

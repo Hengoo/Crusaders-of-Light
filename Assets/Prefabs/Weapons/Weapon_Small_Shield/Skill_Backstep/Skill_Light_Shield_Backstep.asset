@@ -44,3 +44,5 @@ MonoBehaviour:
   EffectsSelfOnEnd:
   - {fileID: 11400000, guid: 3b9d0710afac6234f81e811e73f40a23, type: 2}
   ReleaseAnimation: Charge_Released
+  ChargeLoop: {fileID: 0}
+  ChargeRelease: {fileID: 8300000, guid: ca48c75c2bed48446b5e054c8de001d9, type: 3}

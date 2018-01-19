@@ -40,3 +40,5 @@ MonoBehaviour:
   UseSkillLevelAtActivationMoment: 1
   IdleAnimation: Channel_Idle
   ReleaseAnimation: Channel_Released
+  ChanellingLoop: {fileID: 8300000, guid: cab1d349ee45f854083aae78b6b81af3, type: 3}
+  ChanellingRelease: {fileID: 0}

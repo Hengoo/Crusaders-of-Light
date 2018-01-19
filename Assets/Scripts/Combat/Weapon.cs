@@ -31,6 +31,7 @@ public class Weapon : Item {
         CurrentEquipSlot = -1;
         CurrentOwner = null;
         EquippedSlotID = -1;
+        GetComponent<AudioSource>().Stop();
         DestroyAllHitObjects();
     }
 

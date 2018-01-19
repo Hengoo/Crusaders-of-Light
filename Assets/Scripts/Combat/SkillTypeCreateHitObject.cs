@@ -9,6 +9,8 @@ public class SkillTypeCreateHitObject : SkillType {
     public SkillHitObject HitObjectPrefab;
     public bool UseSkillLevelAtActivationMoment = true;
 
+    public AudioClip SpawnSound;
+
     public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime < ActivationTime)
@@ -19,6 +21,13 @@ public class SkillTypeCreateHitObject : SkillType {
         // Spawn and Initialize Projectile:
         SkillHitObject SpawnedHitObject = Instantiate(HitObjectPrefab, SourceItemSkill.transform.position, SourceItemSkill.GetCurrentOwner().transform.rotation);
         SpawnedHitObject.InitializeHitObject(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, this, UseSkillLevelAtActivationMoment);
+
+        if (SpawnSound)
+        {
+            var audioSource = SourceItemSkill.GetComponent<AudioSource>();
+            audioSource.clip = SpawnSound;
+            audioSource.Play();
+        }
 
         // Stop Skill Activation:
         if (Cooldown > 0)
