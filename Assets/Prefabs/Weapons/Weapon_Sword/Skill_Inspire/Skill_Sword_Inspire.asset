@@ -24,6 +24,12 @@ MonoBehaviour:
   AnimationName: Weapon_Upwards
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 11400000, guid: 595510a9a7649e442b79d065f950f541, type: 2}
+  PowerLevel: 0
+  Threat:
+  - 0
+  - 0
+  - 0
   HitObjectPrefab: {fileID: 114498326846323124, guid: 02539586c454fae43805884ae043f854,
     type: 2}
   UseSkillLevelAtActivationMoment: 1
+  SpawnSound: {fileID: 8300000, guid: 8539544294033bb4e8a6a4e2792d8663, type: 3}

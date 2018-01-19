@@ -83,7 +83,7 @@ public class SkillType : ScriptableObject
         return (int)(HindranceLevel);
     }
 
-    public bool StartSkillActivation(ItemSkill SourceItemSkill, Character Owner)
+    public virtual bool StartSkillActivation(ItemSkill SourceItemSkill, Character Owner)
     {
         if (!Owner.CheckHindrance(HindranceLevel))
         {

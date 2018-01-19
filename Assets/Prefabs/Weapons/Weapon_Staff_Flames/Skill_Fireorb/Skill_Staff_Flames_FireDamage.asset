@@ -21,3 +21,5 @@ MonoBehaviour:
   IgnoreResistanceValueBase: 0
   IgnoreResistanceValuePerLevel: 0
   IgnoreValueModifiers: []
+  HitSound: {fileID: 8300000, guid: 403c8465527a4264aad5ebce12cd698f, type: 3}
+  BlockedSound: {fileID: 8300000, guid: 403c8465527a4264aad5ebce12cd698f, type: 3}
