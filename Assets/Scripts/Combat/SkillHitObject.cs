@@ -22,6 +22,15 @@ public class SkillHitObject : MonoBehaviour {
     public bool UseForceImpulse = false;
     public float ForceImpulseMagnitude = 0.0f;
 
+    [Header("Hit Object Particle Systems:")]
+    public ParticleSystem[] ParticleSystems = new ParticleSystem[0];
+
+    [Header("Size Over Time:")]
+    public bool UseSizeOverTime = false;
+    public float SizeOverTimeStart = 1f;
+    public float SizeOverTimeEnd = 1f;
+    public float SizeOverTimeDuration = 0f;
+
     [Header("Hit Object - Does not need to be set in Editor!:")]
     public Character Owner;
     public SkillType SourceSkill;
@@ -102,16 +111,25 @@ public class SkillHitObject : MonoBehaviour {
 
     public void Update()
     {
-        if (MaxTimeAlive > 0)
-        {
-            TimeAliveCounter += Time.deltaTime;
+        TimeAliveCounter += Time.deltaTime;
 
-            if (TimeAliveCounter >= MaxTimeAlive)
-            {
-                HitObjectTimeOut();
-                return;
-            }
+        if (MaxTimeAlive > 0
+            && TimeAliveCounter >= MaxTimeAlive)
+        {
+            HitObjectTimeOut();
+            return;
         }    
+
+        if (UseSizeOverTime)
+        {
+            Vector3 Size = Vector3.one * Mathf.Lerp(SizeOverTimeStart, SizeOverTimeEnd, (Mathf.Clamp01(TimeAliveCounter / SizeOverTimeDuration)));
+            transform.localScale = Size;
+
+            for (int i = 0; i < ParticleSystems.Length; i++)
+            {
+                ParticleSystems[i].transform.localScale = Size;
+            }
+        }
 
         if (TickTime > 0)
         {

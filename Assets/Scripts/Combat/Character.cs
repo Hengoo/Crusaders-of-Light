@@ -22,7 +22,7 @@ public class Character : MonoBehaviour
         FIRE = 2,
         COLD = 3,
         SHOCK = 4,
-        POISON = 5
+        POISON = 5                  
     }
 
     public enum Defense
@@ -33,10 +33,20 @@ public class Character : MonoBehaviour
         MAGIC = 2
     }
 
+    [Header("Static:")]
+    public static float HealthHealingMinimumPerc = 0.4f;
+    public static float HealthHealingLostPerCountMaxPerc = 0.01f;
+
     [Header("Character Attributes:")]
     public int HealthCurrent = 100;
     public int HealthMax = 100;
     private bool CharacterIsDead = false;     // To Check if the Character already died, but was not removed yet. (Happened with GUI).
+
+    public int HealthHealingMin = 0;
+    public int HealthHealingMax = 100;
+    public int HealthHealingLostPerCount = 10;
+    public float HealthHealingCounter = 0f;
+    private float HealthHealingCounterTimer = 1f;
 
     public int EnergyCurrent = 100;
     public int EnergyMax = 100;
@@ -73,7 +83,7 @@ public class Character : MonoBehaviour
 
     [Header("Physics Controller:")]
     protected PhysicsController PhysCont;
-    protected float MovementRateModfier = 1.0f;
+    public float MovementRateModfier = 1.0f;
 
     [Header("Animation:")]
     public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand
@@ -89,6 +99,8 @@ public class Character : MonoBehaviour
 
     protected virtual void Start()
     {
+        HealthHealingMax = HealthCurrent;
+        CalculateHealthHealingMin();
         PhysCont = new PhysicsController(gameObject);
         CreateCharacterFollowGUI();     // Could be changed to when entering camera view or close to players, etc... as optimization.
         // SpawnAndEquipStartingWeapons();
@@ -99,6 +111,7 @@ public class Character : MonoBehaviour
         UpdateAllConditions();
         UpdateCurrentSkillActivation();
         UpdateAllCooldowns();
+        UpdateHealthHealingMax();
 
     }
 
@@ -188,17 +201,48 @@ public class Character : MonoBehaviour
     {
         int change = NewValue - HealthMax;
         ChangeHealthMax(change);
+        CalculateHealthHealingMin();
     }
 
     public void ChangeHealthMax(int Value)
     {
         HealthMax += Value;
         ChangeHealthCurrent(Value);
+        CalculateHealthHealingMin();
     }
 
     public int GetHealthMax()
     {
         return HealthMax;
+    }
+
+    public void CalculateHealthHealingMin()
+    {
+        HealthHealingMin = Mathf.RoundToInt(HealthHealingMinimumPerc * GetHealthMax());
+        HealthHealingLostPerCount = Mathf.RoundToInt(HealthHealingLostPerCountMaxPerc * GetHealthMax());
+    }
+
+    public float GetHealthHealingPercentage()
+    {
+        return (float)HealthHealingMax / (float)GetHealthMax();
+    }
+
+    public void UpdateHealthHealingMax()
+    {
+        if (HealthHealingMax <= HealthCurrent || HealthHealingMax <= HealthHealingMin || CharacterIsDead)
+        {
+            return;
+        }
+
+        HealthHealingCounter += Time.deltaTime;
+
+        if (HealthHealingCounter >= HealthHealingCounterTimer)
+        {
+            HealthHealingCounter -= HealthHealingCounterTimer;
+
+            HealthHealingMax = Mathf.Max(HealthHealingMin, HealthHealingMax - HealthHealingLostPerCount, HealthCurrent);
+            GUIChar.UpdateHealthHealingBar(GetHealthHealingPercentage());
+        }
     }
 
     // Energy:
@@ -504,6 +548,23 @@ public class Character : MonoBehaviour
 
     // =================================== EFFECT INTERACTION ===================================
 
+    public void Heal(int Amount)
+    {
+        if (Amount + GetHealthCurrent() > HealthHealingMax)
+        {
+            SetHealthCurrent(HealthHealingMax);
+        }
+        else
+        {
+            ChangeHealthCurrent(Amount);
+        }
+    }
+
+    public int GetHealthPercentageAbsoluteValue(float HealthPercentage)
+    {
+        return Mathf.RoundToInt(HealthPercentage * GetHealthMax());
+    }
+
     // Note: DamageAmount is assumed to be positive!
     public int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount, int DefenseIgnore, int ResistanceIgnore)
     {
@@ -544,7 +605,7 @@ public class Character : MonoBehaviour
         // return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Defenses[DamageTypeID])); // Defense as Percentage Reduction.
 
         // Damage: At 0: Damage Value / At 10: 0.5 Value / At 20: 0.25 Value / At 30: 0.125 Value / ... At -10: 2 Value / At -20: 4 Value / ...
-        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Mathf.Max(Defenses[DamageTypeID] - DefenseIgnore)) / 10.0f)));
+        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Mathf.Max(0, Defenses[DamageTypeID] - DefenseIgnore)) / 10.0f)));
     }
 
     public void ChangeResistance(Resistance ResistanceType, float Amount)
@@ -662,7 +723,7 @@ public class Character : MonoBehaviour
 
         public bool RepresentsThisCondition(Condition ConditionToCheck)
         {
-            if (Cond = ConditionToCheck)
+            if (Cond == ConditionToCheck)
             {
                 return true;
             }
