@@ -28,7 +28,7 @@ GameObject:
   - component: {fileID: 54593179614049994}
   - component: {fileID: 64467078109480576}
   - component: {fileID: 82007355227693110}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Weapon_Heavy_Shield
   m_TagString: Weapon
   m_Icon: {fileID: 0}

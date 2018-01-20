@@ -40,7 +40,7 @@ public class Character : MonoBehaviour
     [Header("Character Attributes:")]
     public int HealthCurrent = 100;
     public int HealthMax = 100;
-    private bool CharacterIsDead = false;     // To Check if the Character already died, but was not removed yet. (Happened with GUI).
+    protected bool CharacterIsDead = false;     // To Check if the Character already died, but was not removed yet. (Happened with GUI).
 
     public int HealthHealingMin = 0;
     public int HealthHealingMax = 100;
@@ -89,13 +89,13 @@ public class Character : MonoBehaviour
     public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand
 
     //[Header("GUI (for Testing Purposes):")]
-    private GUICharacterFollow GUIChar;
+    protected GUICharacterFollow GUIChar;
 
     // Attention:
     [Header("Attention:")]
     public CharacterAttention CharAttention;
     
-    private UnityAction _onCharacterDeathAction; // Event system for character death
+    protected UnityAction _onCharacterDeathAction; // Event system for character death
 
     protected virtual void Start()
     {
@@ -177,6 +177,11 @@ public class Character : MonoBehaviour
 
         // Destroy this Character:
         Destroy(this.gameObject);
+    }
+
+    public bool GetCharacterIsDead()
+    {
+        return CharacterIsDead;
     }
 
     void OnDestroy()
@@ -798,6 +803,16 @@ public class Character : MonoBehaviour
         ConditionsEnded.Clear();
     }
 
+    protected void EndAllConditions()
+    {
+        for (int i = 0; i < ActiveConditions.Count; i++)
+        {
+            ActiveConditions[i].RemoveThisCondition();    
+        }
+
+        ActiveConditions = new List<ActiveCondition>();
+    }
+
     public int CheckIfConditionExists(Condition ConditionToCheck)
     {
         int NumberConditions = 0;
@@ -852,6 +867,11 @@ public class Character : MonoBehaviour
     public void AttentionCharacterDied(Character CharDied)
     {
         CharAttention.CharacterDied(CharDied);
+    }
+
+    public void AttentionPlayerRespawned(Character CharRespawned)
+    {
+        CharAttention.PlayerEntersAttentionRange(CharRespawned);
     }
 
     // ========================================== /ATTENTION ==========================================
@@ -919,6 +939,14 @@ public class Character : MonoBehaviour
         if(GUIChar)
             GUIChar.DestroyGUICharacterFollow();
         GUIChar = null;
+    }
+
+    protected void SwitchActiveStateCharacterFollowGUI(bool state)
+    {
+        if(GUIChar)
+        {
+            GUIChar.SwitchGUIActive(state);
+        }
     }
 
     // ========================================== /GUI ==========================================

@@ -16,6 +16,11 @@ public class SkillEffectInflictCondition : SkillEffect {
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
+        if (Target.GetCharacterIsDead())
+        {
+            return;
+        }
+
         float FinalDuration = DurationBase;
 
         FinalDuration += DurationPerLevel * SourceItemSkill.GetSkillLevel();
@@ -30,6 +35,11 @@ public class SkillEffectInflictCondition : SkillEffect {
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
     {
+        if (Target.GetCharacterIsDead())
+        {
+            return;
+        }
+
         float FinalDuration = DurationBase;
 
         FinalDuration += DurationPerLevel * FixedLevel;

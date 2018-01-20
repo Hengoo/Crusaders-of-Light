@@ -17,6 +17,20 @@ public class CharacterPlayer : Character {
     [Header("Input:")]
     public int PlayerID = -1; // Set from 1 to 4!
 
+    [Header("Respawning:")]
+    public int CharacterLayerID = 8;
+    public int DeadCharacterLayerID = 12;
+
+    public float RespawnMinRange = 2f;
+    public float RespawnMaxRange = 5f;
+    
+    public float RespawnHealthCostPerc = 0.2f;
+    public float RespawnHealthGainPerc = 0.15f;
+
+ //   public float DyingPhysicsDuration = 0.8f;
+ //   public bool DyingPhysicsTimerRunning = false;
+ //   public float DyingPhysicsTimer = 0f;
+
     protected override void Start()
     {
         base.Start();
@@ -51,8 +65,64 @@ public class CharacterPlayer : Character {
     protected override void CharacterDied()
     {
         CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerDeath(this.gameObject);
-        base.CharacterDied();
+        //base.CharacterDied();
+
+        // End Conditions:
+        EndAllConditions();
+
+        // Character is Dead:
+        CharacterIsDead = true;
+
+        // Unequip Weapons (so they drop on the gound):
+        for (int i = 0; i < WeaponSlots.Length; i++)
+        {
+            if (WeaponSlots[i])
+            {
+                UnEquipWeapon(i);
+            }
+        }
+
+        for (int i = 0; i < SkillCurrentlyActivating.Length; i++)
+        {
+            SkillCurrentlyActivating[i] = -1;
+        }
+
+        // Update Heal:
+        HealthHealingMax = HealthHealingMin;
+
+        // Update Attention:
+        AttentionThisCharacterDied();
+
+        // Invoke death actions (e.g. Quest System)
+        if (_onCharacterDeathAction != null)
+            _onCharacterDeathAction.Invoke();
+
+        // Deactivate Character:
+        SwitchActiveStateCharacterFollowGUI(false);
+        //gameObject.SetActive(false);
+        //DyingPhysicsTimer = 0f;
+        // DyingPhysicsTimerRunning = true;
+        GetComponent<Rigidbody>().isKinematic = true;
+        gameObject.layer = DeadCharacterLayerID;
+
+        this.enabled = false;
     }
+
+    /*public void UpdateDyingPhysics()
+    {
+        if (!DyingPhysicsTimerRunning)
+        {
+            return;
+        }
+
+        DyingPhysicsTimer += Time.deltaTime;
+
+        if (DyingPhysicsTimer >= DyingPhysicsDuration)
+        {
+            GetComponent<Rigidbody>().isKinematic = true;
+            DyingPhysicsTimerRunning = false;
+        }
+    }*/
 
     // =================================== SKILL ACTIVATION ====================================
 
@@ -69,6 +139,60 @@ public class CharacterPlayer : Character {
 
     // =================================== /SKILL ACTIVATION ====================================
 
+    // =================================== RESPAWNING ====================================
+
+    public void RespawnNearestCharacter()
+    {
+        List<Character> PlayersInAttentionRange = CharAttention.GetPlayersInAttentionRange();
+
+        Character ClosestDeadPlayer = null;
+        float ClosestDeadPlayerDistance = RespawnMaxRange + 10;
+        float CurrentDistance = 0;
+
+        for (int i = 0; i < PlayersInAttentionRange.Count; i++)
+        {
+            if (PlayersInAttentionRange[i] && PlayersInAttentionRange[i].gameObject.layer == DeadCharacterLayerID)
+            {
+                CurrentDistance = Vector3.Distance(transform.position, PlayersInAttentionRange[i].transform.position);
+
+                if (CurrentDistance < ClosestDeadPlayerDistance 
+                    && CurrentDistance >= RespawnMinRange 
+                    && CurrentDistance <= RespawnMaxRange)
+                {
+                    ClosestDeadPlayerDistance = CurrentDistance;
+                    ClosestDeadPlayer = PlayersInAttentionRange[i];
+                }
+                
+            }
+        }
+
+        if (!ClosestDeadPlayer)
+        {
+            return;
+        }
+
+        ChangeHealthCurrent(Mathf.Max(- 1* (HealthCurrent - 1), -1 * Mathf.RoundToInt(GetHealthMax() * RespawnHealthCostPerc)));
+        ClosestDeadPlayer.enabled = true;
+        ((CharacterPlayer)(ClosestDeadPlayer)).RespawnThisCharacter(RespawnHealthGainPerc);
+    }
+
+    public void RespawnThisCharacter(float SpawnHealthPercentage)
+    {
+        transform.rotation = Quaternion.Euler(Vector3.forward);
+       // DyingPhysicsTimerRunning = false;
+        SetHealthCurrent(Mathf.RoundToInt(GetHealthMax() * SpawnHealthPercentage));
+        gameObject.layer = CharacterLayerID;
+        CharAttention.OwnerPlayerRespawned();
+        SwitchActiveStateCharacterFollowGUI(true);
+        GUIChar.UpdateHealthHealingBar(GetHealthHealingPercentage());
+        GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
+        CharacterIsDead = false;
+        CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerRespawn(this.gameObject);
+        GetComponent<Rigidbody>().isKinematic = false;
+    }
+
+    // =================================== !RESPAWNING ====================================
+
     // =================================== ITEM PICKUP ====================================
 
     private bool PickUpClosestItem()
@@ -80,12 +204,12 @@ public class CharacterPlayer : Character {
 
         int EquipSlotID = -1;
 
-        if ((SkillActivationButtonsPressed[0] || SkillActivationButtonsPressed[1])
+        if (Input.GetButtonDown("W1Skill1_" + PlayerID)
             && SkillCurrentlyActivating[0] < 0)
         {
             EquipSlotID = 0;
         }
-        else if ((SkillActivationButtonsPressed[2] || SkillActivationButtonsPressed[3])
+        else if (Input.GetButtonDown("W2Skill1_" + PlayerID)
             && SkillCurrentlyActivating[1] < 0)
         {
             EquipSlotID = 1;
@@ -179,6 +303,13 @@ public class CharacterPlayer : Character {
         {
             SkillActivationButtonsPressed[3] = false;
         }
+
+        // Respawning Players:
+        if (Input.GetButtonDown("RevivePlayer_" + PlayerID))
+        {
+            RespawnNearestCharacter();
+        }
+
 
         // Weapon PickUp:
         if (Input.GetButton("IPickUp_" + PlayerID))

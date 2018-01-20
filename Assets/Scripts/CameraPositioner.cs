@@ -56,4 +56,18 @@ public class CameraPositioner : MonoBehaviour
 
         cameraTargets = NewCameraTargets;
     }
+
+    public void UpdateCameraTargetsOnPlayerRespawn(GameObject RespawnedPlayer)
+    {
+        GameObject[] NewCameraTargets = new GameObject[cameraTargets.Length + 1];
+
+        for (int i = 0; i < NewCameraTargets.Length - 1; i++)
+        {
+            NewCameraTargets[i] = cameraTargets[i];
+        }
+
+        NewCameraTargets[NewCameraTargets.Length - 1] = RespawnedPlayer;
+
+        cameraTargets = NewCameraTargets;
+    }
 }

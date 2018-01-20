@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 23065449255136090}
   - component: {fileID: 64577723166724240}
   - component: {fileID: 82219478417469198}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Weapon_Staff_Flames
   m_TagString: Weapon
   m_Icon: {fileID: 0}
