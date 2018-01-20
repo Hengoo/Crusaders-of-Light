@@ -80,12 +80,12 @@ public class CharacterPlayer : Character {
 
         int EquipSlotID = -1;
 
-        if ((SkillActivationButtonsPressed[0] || SkillActivationButtonsPressed[1])
+        if (Input.GetButtonDown("W1Skill1_" + PlayerID)
             && SkillCurrentlyActivating[0] < 0)
         {
             EquipSlotID = 0;
         }
-        else if ((SkillActivationButtonsPressed[2] || SkillActivationButtonsPressed[3])
+        else if (Input.GetButtonDown("W2Skill1_" + PlayerID)
             && SkillCurrentlyActivating[1] < 0)
         {
             EquipSlotID = 1;
