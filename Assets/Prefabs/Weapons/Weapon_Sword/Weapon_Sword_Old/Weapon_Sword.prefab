@@ -26,7 +26,7 @@ GameObject:
   - component: {fileID: 114893412725718792}
   - component: {fileID: 54160645753429738}
   - component: {fileID: 64707004584335446}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Weapon_Sword
   m_TagString: Weapon
   m_Icon: {fileID: 0}
@@ -162,6 +162,7 @@ MonoBehaviour:
   CurrentItemHitBoxAlignment: 0
   EquippedSlotID: -1
   ItemPowerLevel: 0
+  ItemMovePatterns: []
   TwoHanded: 0
 --- !u!114 &114893412725718792
 MonoBehaviour:
@@ -181,3 +182,4 @@ MonoBehaviour:
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0000
   EffectFloat: 0
+  EffectSkillHitObjects: []

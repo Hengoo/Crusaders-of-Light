@@ -61,7 +61,7 @@ GameObject:
   - component: {fileID: 54025815675771576}
   - component: {fileID: 64921015227188026}
   - component: {fileID: 82745500666191104}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Weapon_Torch
   m_TagString: Weapon
   m_Icon: {fileID: 0}

@@ -28,7 +28,7 @@ GameObject:
   - component: {fileID: 23410385618356964}
   - component: {fileID: 64779261416943698}
   - component: {fileID: 82206874272068178}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Weapon_Staff_Arcane
   m_TagString: Weapon
   m_Icon: {fileID: 0}

@@ -28,7 +28,7 @@ GameObject:
   - component: {fileID: 54885270056617590}
   - component: {fileID: 64535883156299380}
   - component: {fileID: 82453828770742924}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Weapon_Small_Shield
   m_TagString: Weapon
   m_Icon: {fileID: 0}

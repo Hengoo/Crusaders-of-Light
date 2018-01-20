@@ -28,7 +28,7 @@ GameObject:
   - component: {fileID: 54605769073419004}
   - component: {fileID: 64088764270323392}
   - component: {fileID: 82212898568681838}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Weapon_Sword_Inspire
   m_TagString: Weapon
   m_Icon: {fileID: 0}

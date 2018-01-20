@@ -14,6 +14,8 @@ public class CharacterAttention : MonoBehaviour {
 
     public List<SkillHitObject> PlayerHitObjectsInRange = new List<SkillHitObject>();
 
+    public int CharacterDeadLayerID = 12;
+
     public Character GetOwner()
     {
         return Owner;
@@ -21,9 +23,12 @@ public class CharacterAttention : MonoBehaviour {
 
     public void OwnerDied()
     {
-        for (int i = 0; i < PlayersInAttentionRange.Count; i++)
+        if (Owner.GetAlignment() == Character.TeamAlignment.ENEMIES)
         {
-            PlayersInAttentionRange[i].AttentionCharacterDied(Owner);
+            for (int i = 0; i < PlayersInAttentionRange.Count; i++)
+            {
+                PlayersInAttentionRange[i].AttentionCharacterDied(Owner);
+            }
         }
 
         for (int i = 0; i < EnemiesInAttentionRange.Count; i++)
@@ -31,6 +36,14 @@ public class CharacterAttention : MonoBehaviour {
             EnemiesInAttentionRange[i].AttentionCharacterDied(Owner);
         }
 
+    }
+
+    public void OwnerPlayerRespawned()
+    {
+        for (int i = 0; i < EnemiesInAttentionRange.Count; i++)
+        {
+            EnemiesInAttentionRange[i].AttentionPlayerRespawned(Owner);
+        }
     }
 
     public void CharacterDied(Character CharDied)
@@ -82,7 +95,11 @@ public class CharacterAttention : MonoBehaviour {
 
             if (OtherAttention.GetOwner().GetAlignment() == Character.TeamAlignment.PLAYERS)
             {
-                PlayerLeavesAttentionRange(OtherAttention.GetOwner());
+                if (other.gameObject.layer != CharacterDeadLayerID
+                    || Owner.GetAlignment() == Character.TeamAlignment.PLAYERS)
+                {
+                    PlayerLeavesAttentionRange(OtherAttention.GetOwner());
+                }
             }
             else
             {

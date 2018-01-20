@@ -46,6 +46,11 @@ public class GUICharacterFollow : MonoBehaviour {
         RectTrans.localPosition = WorldObjectScreenPos;
     }
 
+    public void SwitchGUIActive(bool state)
+    {
+        gameObject.SetActive(state);
+    }
+
     // Only Destroys the GUI, Character might still have a reference:
     public void DestroyGUICharacterFollow()
     {
