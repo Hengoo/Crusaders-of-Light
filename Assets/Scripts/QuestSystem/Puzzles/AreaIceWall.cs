@@ -20,6 +20,7 @@ public class AreaIceWall : AreaBase
 
     public GameObject IceWallPrefab;
     public GameObject FireMage; //Must have enemy character script attached to it
+    public GameObject FireMageSpawn;
 
 
     //Generate the quests to be given to the quest controller
@@ -53,11 +54,10 @@ public class AreaIceWall : AreaBase
 
         } while (desiredNeighbors <= 4 && !found);
 
-
+        //FireMageSpawn
         var spawnPosition2D = terrainStructure.BiomeGraph.GetNodeData(node).Center;
-        var fireMageSpawn = new GameObject("Fire Mage Spawn Point");
-
-        fireMageSpawn.transform.position = new Vector3(spawnPosition2D.x, 0, spawnPosition2D.y);
+        var fireMageSpawn = Instantiate(FireMageSpawn);
+        fireMageSpawn.transform.position = new Vector3(spawnPosition2D.x, .75f, spawnPosition2D.y);
 
         //Create ice wall in the game world
         var iceWallCrossingLine = worldStructure.AreaCrossingBorders[assignedArea];
