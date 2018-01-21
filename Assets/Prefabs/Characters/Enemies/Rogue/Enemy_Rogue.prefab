@@ -582,8 +582,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 500
-  HealthMax: 500
+  HealthCurrent: 1000
+  HealthMax: 1000
+  HealthHealingMin: 0
+  HealthHealingMax: 100
+  HealthHealingLostPerCount: 10
+  HealthHealingCounter: 0
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
@@ -616,12 +620,11 @@ MonoBehaviour:
   SkillCurrentlyActivating: ffffffffffffffff
   HindranceLevel: 0
   ActiveConditions: []
+  MovementRateModfier: 1
   HandAnimators:
   - {fileID: 95105151174693656}
   - {fileID: 95238192225860284}
   CharAttention: {fileID: 114761588347776518}
-  SlashDamageSound: {fileID: 8300000, guid: e48e53d959f385943a83adcace60ba67, type: 3}
-  BurnDamageSound: {fileID: 8300000, guid: 403c8465527a4264aad5ebce12cd698f, type: 3}
   Alignment: 2
   IdleSkillScore: 0.2
   IdleDuration: 0.2
@@ -654,6 +657,7 @@ MonoBehaviour:
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
   PlayerHitObjectsInRange: []
+  CharacterDeadLayerID: 12
 --- !u!135 &135996301442257614
 SphereCollider:
   m_ObjectHideFlags: 1

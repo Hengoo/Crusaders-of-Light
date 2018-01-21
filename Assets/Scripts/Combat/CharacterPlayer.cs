@@ -187,6 +187,8 @@ public class CharacterPlayer : Character {
         GUIChar.UpdateHealthHealingBar(GetHealthHealingPercentage());
         GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
         CharacterIsDead = false;
+        MovementRateModfier = 1f;
+        HindranceLevel = 0;
         CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerRespawn(this.gameObject);
         GetComponent<Rigidbody>().isKinematic = false;
     }
