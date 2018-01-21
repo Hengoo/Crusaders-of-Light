@@ -371,7 +371,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 3
+    axis: 8
     joyNum: 1
   - serializedVersion: 3
     m_Name: W1Skill2_2
@@ -499,7 +499,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 4
+    axis: 9
     joyNum: 1
   - serializedVersion: 3
     m_Name: W2Skill2_2
@@ -618,7 +618,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: joystick 1 button 0
+    positiveButton: joystick 1 button 2
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
@@ -739,7 +739,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 2
+    axis: 3
     joyNum: 1
   - serializedVersion: 3
     m_Name: Horizontal2_2
@@ -803,7 +803,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 5
+    axis: 4
     joyNum: 1
   - serializedVersion: 3
     m_Name: Vertical2_2
