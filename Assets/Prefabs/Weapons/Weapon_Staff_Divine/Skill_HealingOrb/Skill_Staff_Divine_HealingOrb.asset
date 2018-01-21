@@ -32,3 +32,4 @@ MonoBehaviour:
   HitObjectPrefab: {fileID: 114498326846323124, guid: 5e57cca439c458a4281f2ba64087314a,
     type: 2}
   UseSkillLevelAtActivationMoment: 1
+  SpawnSound: {fileID: 8300000, guid: 8539544294033bb4e8a6a4e2792d8663, type: 3}
