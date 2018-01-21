@@ -66,6 +66,8 @@ public class SkillEffectDamage : SkillEffect
 
     private void playSound(AudioSource source, int damageAmount)
     {
+        if(!(HitSound && BlockedSound)) return;
+
         source.clip = damageAmount > 60 ? HitSound : BlockedSound;
         source.Play();
     }

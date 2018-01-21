@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Experimental.UIElements;
 using UnityEngine.SceneManagement;
 
 public class LevelController : Singleton<LevelController>
@@ -15,12 +16,22 @@ public class LevelController : Singleton<LevelController>
 
     public SceneryStructure SceneryStructure;
     public Terrain Terrain;
+    public Canvas Instructions;
 
-    public void Start()
+    void Start()
     {
         //Deactivate inactive players
         for (int i = GameController.Instance.ActivePlayers; i < PlayerCharacters.Length; i++)
             Destroy(PlayerCharacters[i].gameObject);
+    }
+
+    void Update()
+    {
+        //Intructions show/hide
+        if(Input.GetButtonDown("Back"))
+            Instructions.enabled = true;
+        if(Input.GetButtonUp("Back"))
+            Instructions.enabled = false;
     }
     
     public void InitializeLevel()

@@ -37,14 +37,19 @@ public class GameController : Singleton<GameController>
 
     public void InitializeGameSession()
     {
-        //TODO: create real game map
-        SceneManager.LoadScene("TerrainGenerationTest");
         GameState = GameStateEnum.Play;
+        StartCoroutine(LoadMapScene());
     }
 
     public void FinalizeGameSession()
     {
         GameState = GameStateEnum.Menu;
+    }
+
+    private IEnumerator LoadMapScene()
+    {
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene("TerrainGenerationTest");
     }
 }
 
