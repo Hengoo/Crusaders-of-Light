@@ -16,7 +16,7 @@ public class LevelController : Singleton<LevelController>
 
     public SceneryStructure SceneryStructure;
     public Terrain Terrain;
-    public GameObject Instructions;
+    public Canvas Instructions;
 
     void Start()
     {
@@ -29,9 +29,9 @@ public class LevelController : Singleton<LevelController>
     {
         //Intructions show/hide
         if(Input.GetButtonDown("Back"))
-            Instructions.SetActive(true);
+            Instructions.enabled = true;
         if(Input.GetButtonUp("Back"))
-            Instructions.SetActive(false);
+            Instructions.enabled = false;
     }
     
     public void InitializeLevel()
