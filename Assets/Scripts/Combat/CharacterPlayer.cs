@@ -18,6 +18,8 @@ public class CharacterPlayer : Character {
     public int PlayerID = -1; // Set from 1 to 4!
 
     [Header("Respawning:")]
+    public CharacterDeathTimer DeathTimer;
+
     public int CharacterLayerID = 8;
     public int DeadCharacterLayerID = 12;
 
@@ -26,6 +28,8 @@ public class CharacterPlayer : Character {
     
     public float RespawnHealthCostPerc = 0.2f;
     public float RespawnHealthGainPerc = 0.15f;
+
+    public string DeathAnimationResetTrigger = "Trigger_DeathReset";
 
  //   public float DyingPhysicsDuration = 0.8f;
  //   public bool DyingPhysicsTimerRunning = false;
@@ -55,6 +59,30 @@ public class CharacterPlayer : Character {
         Vector3 targetDir = new Vector3(Input.GetAxisRaw("Horizontal2_" + PlayerID), 0, -Input.GetAxisRaw("Vertical2_" + PlayerID));
 
         PhysCont.SetVelRot(targetVel, targetDir);
+
+        if (!IsWalking && (Input.GetAxisRaw("Horizontal_" + PlayerID) >= 0.3f 
+            || Input.GetAxisRaw("Vertical_" + PlayerID) >= 0.3f 
+            || Input.GetAxisRaw("Horizontal_" + PlayerID) <= -0.3f 
+            || Input.GetAxisRaw("Vertical_" + PlayerID) <= -0.3f))
+        {
+            IsWalking = true;
+            StartBodyAnimation(Anim_StartWalking);
+        }
+        else if (IsWalking)
+        {
+            if (Input.GetAxisRaw("Horizontal_" + PlayerID) < 0.3f
+            && Input.GetAxisRaw("Vertical_" + PlayerID) < 0.3f
+            && Input.GetAxisRaw("Horizontal_" + PlayerID) > -0.3f
+            && Input.GetAxisRaw("Vertical_" + PlayerID) > -0.3f)
+            {
+                IsWalking = false;
+                StartBodyAnimation(Anim_EndWalking);
+            }
+            else
+            {
+                StartBodyAnimation(speedfaktor / 10);
+            }
+        }
     }
 
     public override TeamAlignment GetAlignment()
@@ -102,7 +130,8 @@ public class CharacterPlayer : Character {
         //gameObject.SetActive(false);
         //DyingPhysicsTimer = 0f;
         // DyingPhysicsTimerRunning = true;
-        GetComponent<Rigidbody>().isKinematic = true;
+        //GetComponent<Rigidbody>().isKinematic = true;
+        DeathTimer.StartDeathTimer();
         gameObject.layer = DeadCharacterLayerID;
 
         this.enabled = false;
@@ -172,7 +201,6 @@ public class CharacterPlayer : Character {
         }
 
         ChangeHealthCurrent(Mathf.Max(- 1* (HealthCurrent - 1), -1 * Mathf.RoundToInt(GetHealthMax() * RespawnHealthCostPerc)));
-        ClosestDeadPlayer.enabled = true;
         ((CharacterPlayer)(ClosestDeadPlayer)).RespawnThisCharacter(RespawnHealthGainPerc);
     }
 
@@ -186,9 +214,35 @@ public class CharacterPlayer : Character {
         SwitchActiveStateCharacterFollowGUI(true);
         GUIChar.UpdateHealthHealingBar(GetHealthHealingPercentage());
         GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
+        MovementRateModfier = 1f;
+        HindranceLevel = 0;
         CharacterIsDead = false;
+        ResetAnimations();
+        DeathTimer.enabled = false;
+        IsWalking = false;
         CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerRespawn(this.gameObject);
         GetComponent<Rigidbody>().isKinematic = false;
+        this.enabled = true;
+    }
+
+    private void ResetAnimations()
+    {
+        for (int i = 0; i < HandAnimators.Length; i++)
+        {
+            for (int j = 0; j < HandAnimators[i].parameters.Length; j++)
+            {
+                HandAnimators[i].ResetTrigger(HandAnimators[i].parameters[j].name);
+            }
+
+            HandAnimators[i].SetTrigger(DeathAnimationResetTrigger);
+        }
+
+        for (int j = 0; j < BodyAnimator.parameters.Length; j++)
+        {
+            BodyAnimator.ResetTrigger(BodyAnimator.parameters[j].name);
+        }
+
+        BodyAnimator.SetTrigger(DeathAnimationResetTrigger);
     }
 
     // =================================== !RESPAWNING ====================================

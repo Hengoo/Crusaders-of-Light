@@ -8,6 +8,8 @@ public class MovPatIdle : MovePattern {
     public override void UpdateMovePattern(PhysicsController PhysCont, CharacterEnemy Self, Character TargetCharacter)
     {
         PhysCont.SetVelRot(Vector3.zero, Vector3.zero);
+
+        Self.SwitchWalkingAnimation(false);
     }
 
 }

@@ -11,8 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cebab813fce92f40b989e69718a2f6f, type: 3}
   m_Name: Skill_Staff_Frost_FrostRay_Damage
   m_EditorClassIdentifier: 
-  DamageValueBase: 12
-  DamageValuePerLevel: 6
+  DamageValueBase: 13
+  DamageValuePerLevel: 7
   DefenseType: 2
   DamageType: 3
   DamageValueModifiers: []

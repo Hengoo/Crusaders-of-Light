@@ -546,7 +546,7 @@ Animator:
   m_GameObject: {fileID: 1005032990127116}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: ae72bc7d6b23ebf43baac319f93469e5, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1f2090a24cc87ee439c878d8f1069f1c, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -582,8 +582,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 500
-  HealthMax: 500
+  HealthCurrent: 1000
+  HealthMax: 1000
+  HealthHealingMin: 0
+  HealthHealingMax: 100
+  HealthHealingLostPerCount: 10
+  HealthHealingCounter: 0
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
@@ -616,12 +620,14 @@ MonoBehaviour:
   SkillCurrentlyActivating: ffffffffffffffff
   HindranceLevel: 0
   ActiveConditions: []
+  MovementRateModfier: 1
   HandAnimators:
   - {fileID: 95097257672953992}
   - {fileID: 95275350018846236}
+  BodyAnimator: {fileID: 95108812614967220}
+  Anim_StartWalking: StartWalking
+  Anim_EndWalking: EndWalking
   CharAttention: {fileID: 114723149817615994}
-  SlashDamageSound: {fileID: 8300000, guid: e48e53d959f385943a83adcace60ba67, type: 3}
-  BurnDamageSound: {fileID: 8300000, guid: 403c8465527a4264aad5ebce12cd698f, type: 3}
   Alignment: 2
   IdleSkillScore: 0.2
   IdleDuration: 0.2
@@ -654,6 +660,7 @@ MonoBehaviour:
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
   PlayerHitObjectsInRange: []
+  CharacterDeadLayerID: 12
 --- !u!135 &135594971337392306
 SphereCollider:
   m_ObjectHideFlags: 1
