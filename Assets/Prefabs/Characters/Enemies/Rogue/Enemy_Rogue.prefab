@@ -563,7 +563,7 @@ Animator:
   m_GameObject: {fileID: 1798622737056966}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: ae72bc7d6b23ebf43baac319f93469e5, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1f2090a24cc87ee439c878d8f1069f1c, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -624,6 +624,9 @@ MonoBehaviour:
   HandAnimators:
   - {fileID: 95105151174693656}
   - {fileID: 95238192225860284}
+  BodyAnimator: {fileID: 95902491987765652}
+  Anim_StartWalking: StartWalking
+  Anim_EndWalking: EndWalking
   CharAttention: {fileID: 114761588347776518}
   Alignment: 2
   IdleSkillScore: 0.2

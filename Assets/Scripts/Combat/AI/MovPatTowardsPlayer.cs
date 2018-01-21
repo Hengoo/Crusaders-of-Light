@@ -26,5 +26,8 @@ public class MovPatTowardsPlayer : MovePattern {
         Vector3 targetVel = targetDir * MovementSpeedFactor * Self.GetMovementRateModifier();
 
         PhysCont.SetVelRot(targetVel, targetDir);
+
+        Self.SwitchWalkingAnimation(true);
+        Self.StartBodyAnimation(Self.GetMovementRateModifier());
     }
 }

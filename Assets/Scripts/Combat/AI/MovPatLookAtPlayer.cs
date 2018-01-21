@@ -21,5 +21,7 @@ public class MovPatLookAtPlayer : MovePattern {
             - new Vector3(Self.transform.position.x, 0, Self.transform.position.z) * ViewDirection);
 
         PhysCont.SetVelRot(Vector3.zero, targetDir);
+
+        Self.SwitchWalkingAnimation(false);
     }
 }

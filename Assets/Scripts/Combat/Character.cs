@@ -87,9 +87,14 @@ public class Character : MonoBehaviour
 
     [Header("Animation:")]
     public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand
+    public Animator BodyAnimator;
 
     //[Header("GUI (for Testing Purposes):")]
     protected GUICharacterFollow GUIChar;
+
+    protected bool IsWalking = false;
+    public string Anim_StartWalking = "StartWalking";
+    public string Anim_EndWalking = "EndWalking";
 
     // Attention:
     [Header("Attention:")]
@@ -882,6 +887,52 @@ public class Character : MonoBehaviour
     {
         HandAnimators[HandID].SetTrigger("Trigger_" + AnimationName);
         HandAnimators[HandID].speed = 1 / AnimationSpeed;
+    }
+
+    public void StartBodyAnimation(string AnimationName, float AnimationSpeed)
+    {
+        BodyAnimator.SetTrigger("Trigger_" + AnimationName);
+        BodyAnimator.speed = 1 / AnimationSpeed;
+    }
+
+    public void StartBodyAnimation(string AnimationName)
+    {
+        BodyAnimator.SetTrigger("Trigger_" + AnimationName);
+    }
+
+    public void StartBodyAnimation(float AnimationSpeed)
+    {
+        BodyAnimator.speed = AnimationSpeed;
+    }
+
+    public void SetIsWalking(bool state)
+    {
+        IsWalking = state;
+    }
+
+    public bool GetIsWalking()
+    {
+        return IsWalking;
+    }
+
+    public void SwitchWalkingAnimation(bool state)
+    {
+        if (state)
+        {
+            if (!IsWalking)
+            {
+                IsWalking = true;
+                StartBodyAnimation(Anim_StartWalking);
+            }
+        }
+        else
+        {
+            if (IsWalking)
+            {
+                IsWalking = false;
+                StartBodyAnimation(Anim_EndWalking);
+            }
+        }
     }
 
     // ========================================== /ANIMATION ==========================================

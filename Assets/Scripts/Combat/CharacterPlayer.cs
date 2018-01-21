@@ -59,6 +59,30 @@ public class CharacterPlayer : Character {
         Vector3 targetDir = new Vector3(Input.GetAxisRaw("Horizontal2_" + PlayerID), 0, -Input.GetAxisRaw("Vertical2_" + PlayerID));
 
         PhysCont.SetVelRot(targetVel, targetDir);
+
+        if (!IsWalking && (Input.GetAxisRaw("Horizontal_" + PlayerID) >= 0.3f 
+            || Input.GetAxisRaw("Vertical_" + PlayerID) >= 0.3f 
+            || Input.GetAxisRaw("Horizontal_" + PlayerID) <= -0.3f 
+            || Input.GetAxisRaw("Vertical_" + PlayerID) <= -0.3f))
+        {
+            IsWalking = true;
+            StartBodyAnimation(Anim_StartWalking);
+        }
+        else if (IsWalking)
+        {
+            if (Input.GetAxisRaw("Horizontal_" + PlayerID) < 0.3f
+            && Input.GetAxisRaw("Vertical_" + PlayerID) < 0.3f
+            && Input.GetAxisRaw("Horizontal_" + PlayerID) > -0.3f
+            && Input.GetAxisRaw("Vertical_" + PlayerID) > -0.3f)
+            {
+                IsWalking = false;
+                StartBodyAnimation(Anim_EndWalking);
+            }
+            else
+            {
+                StartBodyAnimation(speedfaktor / 10);
+            }
+        }
     }
 
     public override TeamAlignment GetAlignment()
@@ -195,6 +219,7 @@ public class CharacterPlayer : Character {
         CharacterIsDead = false;
         ResetAnimations();
         DeathTimer.enabled = false;
+        IsWalking = false;
         CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerRespawn(this.gameObject);
         GetComponent<Rigidbody>().isKinematic = false;
         this.enabled = true;
@@ -211,6 +236,13 @@ public class CharacterPlayer : Character {
 
             HandAnimators[i].SetTrigger(DeathAnimationResetTrigger);
         }
+
+        for (int j = 0; j < BodyAnimator.parameters.Length; j++)
+        {
+            BodyAnimator.ResetTrigger(BodyAnimator.parameters[j].name);
+        }
+
+        BodyAnimator.SetTrigger(DeathAnimationResetTrigger);
     }
 
     // =================================== !RESPAWNING ====================================
