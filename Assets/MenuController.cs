@@ -43,7 +43,7 @@ public class MenuController : MonoBehaviour
     {
         while (Music.volume > 0)
         {
-            Music.volume -= 1/3f * Time.deltaTime;
+            Music.volume -= 1/5f * Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
     }

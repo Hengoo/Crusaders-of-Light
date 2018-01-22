@@ -24,7 +24,6 @@ GameObject:
   - component: {fileID: 114034952165855884}
   - component: {fileID: 54566567658670166}
   - component: {fileID: 33507805255816766}
-  - component: {fileID: 135203177367133118}
   - component: {fileID: 114237701065745106}
   - component: {fileID: 82634796233841272}
   m_Layer: 8
@@ -289,6 +288,9 @@ MonoBehaviour:
   HandAnimators:
   - {fileID: 0}
   - {fileID: 0}
+  BodyAnimator: {fileID: 0}
+  Anim_StartWalking: StartWalking
+  Anim_EndWalking: EndWalking
   CharAttention: {fileID: 114176520460717010}
   Alignment: 2
   IdleSkillScore: 1
@@ -320,6 +322,7 @@ MonoBehaviour:
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
   PlayerHitObjectsInRange: []
+  CharacterDeadLayerID: 12
 --- !u!114 &114237701065745106
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -331,15 +334,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 802bec7caa0dc7048883f6b8f49ef165, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!135 &135203177367133118
-SphereCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1112604446496860}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1.2
-  m_Center: {x: 0, y: 0, z: 0.27486098}

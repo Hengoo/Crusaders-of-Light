@@ -77,7 +77,7 @@ public class AreaIceWall : AreaBase
         var questSteps = new List<QuestBase>();
 
         //Find ice wall
-        questSteps.Add(new QuestReachPlace(iceWall, .3f, "The Wall", "Explore the area and find the ice wall location"));
+        questSteps.Add(new QuestReachPlace(iceWall, 25, "The Wall", "Explore the area and find the ice wall location"));
 
         //Find fire mage camp
         questSteps.Add(new QuestReachPlace(fireMageSpawn, 30, "The Wall", "Find the fire wizard"));

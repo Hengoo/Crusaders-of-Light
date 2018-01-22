@@ -48,7 +48,7 @@ public class GameController : Singleton<GameController>
 
     private IEnumerator LoadMapScene()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(10);
         SceneManager.LoadScene("TerrainGenerationTest");
     }
 }

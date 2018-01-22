@@ -18,9 +18,13 @@ public class QuestReachPlace : QuestBase
     protected override void QuestStarted()
     {
         if (!_place) return;
-
-        var collider = _place.AddComponent<SphereCollider>();
-        var trigger = _place.AddComponent<QuestReachPlaceTrigger>();
+        var go = new GameObject("ReachPlaceTrigger");
+        var collider = go.AddComponent<SphereCollider>();
+        var trigger = go.AddComponent<QuestReachPlaceTrigger>();
+        go.transform.parent = _place.transform;
+        go.transform.localPosition = Vector3.zero;
+        go.tag = "Spawner";
+        go.layer = 10;
 
         collider.radius = _radius;
         collider.isTrigger = true;
@@ -28,8 +32,7 @@ public class QuestReachPlace : QuestBase
         trigger.AddTriggerAction(() =>
         {
             OnQuestCompleted();
-            Object.Destroy(collider);
-            Object.Destroy(trigger);
+            Object.Destroy(go);
         });
     }
 
