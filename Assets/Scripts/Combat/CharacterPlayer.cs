@@ -92,7 +92,6 @@ public class CharacterPlayer : Character {
 
     protected override void CharacterDied()
     {
-        CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerDeath(this.gameObject);
         //base.CharacterDied();
 
         // End Conditions:
@@ -133,6 +132,9 @@ public class CharacterPlayer : Character {
         //GetComponent<Rigidbody>().isKinematic = true;
         DeathTimer.StartDeathTimer();
         gameObject.layer = DeadCharacterLayerID;
+
+        CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerDeath(this.gameObject);
+        LevelController.Instance.CheckIfAllDead();
 
         this.enabled = false;
     }

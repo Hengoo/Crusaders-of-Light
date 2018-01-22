@@ -39,6 +39,20 @@ public class LevelController : Singleton<LevelController>
         QuestController.ClearQuests();
     }
 
+    public void FinalizeLevel()
+    {
+        GameController.Instance.FinalizeGameSession();
+    }
+
+    public void CheckIfAllDead()
+    {
+        for(var i = 0; i < GameController.Instance.ActivePlayers; i++)
+            if (!PlayerCharacters[i].GetCharacterIsDead())
+                return;
+
+        FinalizeLevel();
+    }
+
     public void StartGame(SceneryStructure sceneryStructure, Terrain terrain)
     {
         SceneryStructure = sceneryStructure;
@@ -77,16 +91,5 @@ public class LevelController : Singleton<LevelController>
             result[i] = PlayerCharacters[i].gameObject;
 
         return result;
-    }
-
-    public void EndGame()
-    {
-        StartCoroutine(WaitAndLoadMainMenu(5));
-    }
-
-    private IEnumerator WaitAndLoadMainMenu(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        SceneManager.LoadScene(0);
     }
 }

@@ -25,7 +25,7 @@ public class QuestController : Singleton<QuestController>
         {
             QuestTitleHUDText.text = "YOU WIN!";
             QuestDescriptionHUDText.text = "Congratulations";
-            LevelController.Instance.EndGame();
+            LevelController.Instance.FinalizeLevel();
         }
         else
         {

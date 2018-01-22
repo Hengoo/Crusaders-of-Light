@@ -44,12 +44,18 @@ public class GameController : Singleton<GameController>
     public void FinalizeGameSession()
     {
         GameState = GameStateEnum.Menu;
+        StartCoroutine(LoadMenuScene());
     }
 
     private IEnumerator LoadMapScene()
     {
         yield return new WaitForSeconds(10);
         SceneManager.LoadScene("TerrainGenerationTest");
+    }
+    private IEnumerator LoadMenuScene()
+    {
+        yield return new WaitForSeconds(10);
+        SceneManager.LoadScene("Menu");
     }
 }
 
