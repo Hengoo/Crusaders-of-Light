@@ -18,6 +18,8 @@ public class LevelController : Singleton<LevelController>
     public Terrain Terrain;
     public Canvas Instructions;
 
+    public Camera MainCamera;
+
     private float _quitTimer = 0;
     private bool _loadingLevel = false;
 
@@ -105,6 +107,8 @@ public class LevelController : Singleton<LevelController>
             spawnPosition = new Vector3(spawnPosition.x, Terrain.SampleHeight(spawnPosition) + 0.05f, spawnPosition.z);
             PlayerCharacters[i].transform.position = spawnPosition;
         }
+        var cameraPosition = new Vector3(startPosition2D.x, 0, startPosition2D.y);
+        MainCamera.gameObject.transform.position = cameraPosition + new Vector3(0, Terrain.SampleHeight(cameraPosition) + 20, 0);
     }
 
     public GameObject[] GetActivePlayers()

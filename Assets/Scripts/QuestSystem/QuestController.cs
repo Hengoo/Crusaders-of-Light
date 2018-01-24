@@ -15,13 +15,16 @@ public class QuestController : Singleton<QuestController>
 
     private AudioSource _cameraNextQuestAudioSource;
 
+    void Awake()
+    {
+        _cameraNextQuestAudioSource = MainCamera.GetComponents<AudioSource>()[1];
+    }
+
     public void AddQuest(QuestBase quest)
     {
         QuestsQueue.Enqueue(quest);
         if(CurrentQuest == null)
             NextQuest();
-
-        _cameraNextQuestAudioSource = MainCamera.GetComponents<AudioSource>()[1];
     }
 
     //Starts next quest in the queue. If there is none, end the game
