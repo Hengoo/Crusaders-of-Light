@@ -18,6 +18,9 @@ public class LevelController : Singleton<LevelController>
     public Terrain Terrain;
     public Canvas Instructions;
 
+    private float _quitTimer = 0;
+    private bool _loadingLevel = false;
+
     void Start()
     {
         //Deactivate inactive players
@@ -32,6 +35,15 @@ public class LevelController : Singleton<LevelController>
             Instructions.enabled = true;
         if(Input.GetButtonUp("Back"))
             Instructions.enabled = false;
+
+        if (Input.GetKey(KeyCode.Q))
+            _quitTimer += Time.deltaTime;
+
+        if (Input.GetKeyUp(KeyCode.Q))
+            _quitTimer = 0;
+
+        if(_quitTimer > 2 && !_loadingLevel)
+            FinalizeLevel();
     }
     
     public void InitializeLevel()
@@ -41,6 +53,7 @@ public class LevelController : Singleton<LevelController>
 
     public void FinalizeLevel()
     {
+        _loadingLevel = true;
         GameController.Instance.FinalizeGameSession();
     }
 
