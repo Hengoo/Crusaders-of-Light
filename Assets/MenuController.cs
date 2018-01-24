@@ -14,6 +14,18 @@ public class MenuController : MonoBehaviour
     public Slider Brightness;
 
     public AudioSource Music;
+    public MenuLivePreview MenuPreview;
+
+    void Start()
+    {
+        var players = GameController.Instance.ActivePlayers;
+        var brightness = GameController.Instance.Brightness;
+
+        Brightness.value = brightness;
+        ActivePlayers.text = players.ToString();
+        MenuPreview.UpdateBrightness(Brightness.value);
+        MenuPreview.UpdatePlayerCount(players.ToString());
+    }
 
     public void OnStartButton()
     {
