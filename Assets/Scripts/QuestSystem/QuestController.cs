@@ -11,18 +11,23 @@ public class QuestController : Singleton<QuestController>
     public Text QuestTitleHUDText;
     public Text QuestDescriptionHUDText;
 
-    public AudioClip QuestCompletedSound;
+    public Camera MainCamera;
+
+    private AudioSource _cameraNextQuestAudioSource;
 
     public void AddQuest(QuestBase quest)
     {
         QuestsQueue.Enqueue(quest);
         if(CurrentQuest == null)
             NextQuest();
+
+        _cameraNextQuestAudioSource = MainCamera.GetComponents<AudioSource>()[1];
     }
 
     //Starts next quest in the queue. If there is none, end the game
     private void NextQuest()
     {
+        _cameraNextQuestAudioSource.Play();
         if (QuestsQueue.Count <= 0)
         {
             QuestTitleHUDText.text = "YOU WIN!";

@@ -36,12 +36,11 @@ public class LevelController : Singleton<LevelController>
         if(Input.GetButtonUp("Back"))
             Instructions.enabled = false;
 
+        //Quit button
         if (Input.GetKey(KeyCode.Q))
             _quitTimer += Time.deltaTime;
-
         if (Input.GetKeyUp(KeyCode.Q))
             _quitTimer = 0;
-
         if(_quitTimer > 2 && !_loadingLevel)
             FinalizeLevel();
     }
