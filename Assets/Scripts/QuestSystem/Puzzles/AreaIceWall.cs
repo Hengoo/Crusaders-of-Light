@@ -76,8 +76,6 @@ public class AreaIceWall : AreaBase
         // ReSharper disable once UseObjectOrCollectionInitializer
         var questSteps = new List<QuestBase>();
 
-        //Find ice wall
-        questSteps.Add(new QuestReachPlace(iceWall, 25, "The Wall", "Explore the area and find the ice wall location"));
 
         //Find fire mage camp
         questSteps.Add(new QuestReachPlace(fireMageSpawn, 30, "The Wall", "Find the fire wizard"));
@@ -87,6 +85,9 @@ public class AreaIceWall : AreaBase
 
         //Pickup fire mage staff
         questSteps.Add(new QuestPickupItem(FireMage.GetComponent<Character>().StartingWeapons[1], "The Wall", "Pickup the fire mage staff"));
+
+        //Find ice wall
+        questSteps.Add(new QuestReachPlace(iceWall, 25, "The Wall", "Explore the area and find the ice wall location"));
 
         //Destroy the ice wall
         questSteps.Add(new QuestDestroyBuilding(iceWall.GetComponent<CharacterEnemy>(), "The Wall", "Destroy the wall with the fire staff"));
