@@ -15,14 +15,19 @@ public class QuestController : Singleton<QuestController>
 
     private AudioSource _cameraNextQuestAudioSource;
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         _cameraNextQuestAudioSource = MainCamera.GetComponents<AudioSource>()[1];
     }
 
     public void AddQuest(QuestBase quest)
     {
         QuestsQueue.Enqueue(quest);
+    }
+
+    public void StartQuests()
+    {
         if(CurrentQuest == null)
             NextQuest();
     }

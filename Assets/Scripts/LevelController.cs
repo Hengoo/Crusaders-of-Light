@@ -109,6 +109,7 @@ public class LevelController : Singleton<LevelController>
         }
         var cameraPosition = new Vector3(startPosition2D.x, 0, startPosition2D.y);
         MainCamera.gameObject.transform.position = cameraPosition + new Vector3(0, Terrain.SampleHeight(cameraPosition) + 20, 0);
+        QuestController.Instance.StartQuests();
     }
 
     public GameObject[] GetActivePlayers()
