@@ -57,13 +57,25 @@ public class LevelController : Singleton<LevelController>
         GameController.Instance.FinalizeGameSession();
     }
 
+
+    public void FinalizeLevelWithWait(float seconds)
+    {
+        StartCoroutine(WaitAndFinalize(seconds));
+    }
+
+    private IEnumerator WaitAndFinalize(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        GameController.Instance.FinalizeGameSession();
+    }
+
     public void CheckIfAllDead()
     {
         for(var i = 0; i < GameController.Instance.ActivePlayers; i++)
             if (!PlayerCharacters[i].GetCharacterIsDead())
                 return;
 
-        FinalizeLevel();
+        StartCoroutine(WaitAndFinalize(5));
     }
 
     public void StartGame(SceneryStructure sceneryStructure, Terrain terrain)

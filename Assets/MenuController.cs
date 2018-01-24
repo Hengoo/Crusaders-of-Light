@@ -39,11 +39,11 @@ public class MenuController : MonoBehaviour
 
         MainMenu.enabled = false;
         Instructions.enabled = true;
-        StartCoroutine(FadeMusicOut());
 
         GameController.Instance.SetActivePlayers(int.Parse(ActivePlayers.textComponent.text));
         GameController.Instance.SetBrightness(Brightness.normalizedValue);
-        GameController.Instance.InitializeGameSession();
+
+        StartCoroutine(FadeMusicOutAndLoad(5, 5));
     }
 
     public void OnExitButton()
@@ -51,12 +51,15 @@ public class MenuController : MonoBehaviour
         Application.Quit();
     }
 
-    private IEnumerator FadeMusicOut()
+    private IEnumerator FadeMusicOutAndLoad(float musicFadeTime, float additionalTime)
     {
         while (Music.volume > 0)
         {
-            Music.volume -= 1/5f * Time.deltaTime;
+            Music.volume -= 1/musicFadeTime * Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+
+        yield return new WaitForSeconds(additionalTime);
+        GameController.Instance.InitializeGameSession();
     }
 }

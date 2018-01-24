@@ -11,6 +11,8 @@ public class QuestController : Singleton<QuestController>
     public Text QuestTitleHUDText;
     public Text QuestDescriptionHUDText;
 
+    public AudioClip QuestCompletedSound;
+
     public void AddQuest(QuestBase quest)
     {
         QuestsQueue.Enqueue(quest);
@@ -25,7 +27,7 @@ public class QuestController : Singleton<QuestController>
         {
             QuestTitleHUDText.text = "YOU WIN!";
             QuestDescriptionHUDText.text = "Congratulations";
-            LevelController.Instance.FinalizeLevel();
+            LevelController.Instance.FinalizeLevelWithWait(10);
         }
         else
         {

@@ -76,7 +76,6 @@ public class AreaIceWall : AreaBase
         // ReSharper disable once UseObjectOrCollectionInitializer
         var questSteps = new List<QuestBase>();
 
-
         //Find fire mage camp
         questSteps.Add(new QuestReachPlace(fireMageSpawn, 30, "The Wall", "Find the fire wizard"));
 
