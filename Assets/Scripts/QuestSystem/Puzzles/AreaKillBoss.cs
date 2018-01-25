@@ -16,6 +16,7 @@ public class AreaKillBoss : AreaBase
 {
     public GameObject BossPrefab1;
     public GameObject BossPrefab2;
+    public AudioClip BossFightAudioClip;
 
     public override QuestBase[] GenerateQuests(SceneryStructure sceneryStructure, int assignedArea)
     {
@@ -34,7 +35,7 @@ public class AreaKillBoss : AreaBase
         result.Add(findBoss);
 
         //Kill the boss quest
-        var killBoss = new QuestKillEnemy(spawn.transform, new[] { BossPrefab1, BossPrefab2 }, "The Evil", "Cleanse the land from the evil!");
+        var killBoss = new QuestKillEnemy(spawn.transform, new[] { BossPrefab1, BossPrefab2 }, "The Evil", "Cleanse the land from the evil!", BossFightAudioClip);
         result.Add(killBoss);
 
         return result.ToArray();

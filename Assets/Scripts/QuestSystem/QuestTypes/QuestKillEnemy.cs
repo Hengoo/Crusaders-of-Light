@@ -10,6 +10,7 @@ public class QuestKillEnemy : QuestBase
     private readonly GameObject[] _enemyPrefabs;
 
     private int _killsRemaining;
+    private AudioClip _fightAudioClip;
 
     public QuestKillEnemy(Transform spawnPoint, GameObject[] enemyPrefabs, string title, string description) : base(title, description)
     {
@@ -18,8 +19,19 @@ public class QuestKillEnemy : QuestBase
         _killsRemaining = enemyPrefabs.Length;
     }
 
+    public QuestKillEnemy(Transform spawnPoint, GameObject[] enemyPrefabs, string title, string description, AudioClip fightAudioClip) : base(title, description)
+    {
+        _spawnPoint = spawnPoint;
+        _enemyPrefabs = enemyPrefabs;
+        _killsRemaining = enemyPrefabs.Length;
+        _fightAudioClip = fightAudioClip;
+    }
+
     protected override void QuestStarted()
     {
+        if(_fightAudioClip)
+            QuestController.Instance.FadeAudioToSpecial(3, _fightAudioClip);
+
         var circleAngle = 360f / _enemyPrefabs.Length;
         for (var i = 0; i < _enemyPrefabs.Length; i++)
         {
@@ -41,7 +53,10 @@ public class QuestKillEnemy : QuestBase
     private void CheckCompletion()
     {
         _killsRemaining--;
-        if(_killsRemaining <= 0)
+        if (_killsRemaining <= 0)
+        {
             OnQuestCompleted();
+            QuestController.Instance.FadeAudioToAmbience(3);
+        }
     }
 }

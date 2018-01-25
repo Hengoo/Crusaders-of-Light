@@ -16,3 +16,5 @@ MonoBehaviour:
   FireMage: {fileID: 1374581952122060, guid: 27cb20c6de960b24690e63a2b32d1566, type: 2}
   FireMageSpawn: {fileID: 1654491390178148, guid: f879c71505a39bb48b00e85b79e40c7e,
     type: 2}
+  FireMageBattleAudioClip: {fileID: 8300000, guid: d8b1a3400ebb8c94fb8608a0e6599f5d,
+    type: 3}

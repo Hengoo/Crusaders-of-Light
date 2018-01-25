@@ -14,10 +14,14 @@ public class QuestController : Singleton<QuestController>
     public Camera MainCamera;
 
     private AudioSource _cameraNextQuestAudioSource;
+    private AudioSource _cameraAmbienceAudioSource;
+    private AudioSource _cameraSpecialAudioSource;
 
     protected override void Awake()
     {
         base.Awake();
+        _cameraAmbienceAudioSource = MainCamera.GetComponents<AudioSource>()[0];
+        _cameraSpecialAudioSource = MainCamera.GetComponents<AudioSource>()[1];
         _cameraNextQuestAudioSource = MainCamera.GetComponents<AudioSource>()[2];
     }
 
@@ -63,4 +67,45 @@ public class QuestController : Singleton<QuestController>
         QuestDescriptionHUDText.text = "DESCRIPTION";
     }
 
+    public void FadeAudioToSpecial(float seconds, AudioClip audioClip)
+    {
+        if (audioClip)
+            StartCoroutine(FadeAudioToSpecialCoroutine(seconds, audioClip));
+    }
+
+    private IEnumerator FadeAudioToSpecialCoroutine(float seconds, AudioClip audioClip)
+    {
+        var step = 1 / seconds;
+        _cameraSpecialAudioSource.clip = audioClip;
+        while (_cameraSpecialAudioSource.volume < 1f)
+        {
+            var amount = step * Time.deltaTime;
+            _cameraSpecialAudioSource.volume += amount;
+            _cameraAmbienceAudioSource.volume -= amount;
+            yield return new WaitForEndOfFrame();
+        }
+
+        _cameraSpecialAudioSource.volume = 1;
+        _cameraAmbienceAudioSource.volume = 0;
+    }
+
+    public void FadeAudioToAmbience(float seconds)
+    {
+        StartCoroutine(FadeAudioToAmbienceCoroutine(seconds));
+    }
+
+    private IEnumerator FadeAudioToAmbienceCoroutine(float seconds)
+    {
+        var step = 1 / seconds;
+        while (_cameraAmbienceAudioSource.volume < 1f)
+        {
+            var amount = step * Time.deltaTime;
+            _cameraAmbienceAudioSource.volume += amount;
+            _cameraSpecialAudioSource.volume -= amount;
+            yield return new WaitForEndOfFrame();
+        }
+
+        _cameraAmbienceAudioSource.volume = 1;
+        _cameraSpecialAudioSource.volume = 0;
+    }
 }
