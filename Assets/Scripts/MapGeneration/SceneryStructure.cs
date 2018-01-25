@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking.Types;
 using Debug = UnityEngine.Debug;
 
-public class SceneryStructure
+public class sceneryStructure
 {
     public List<SceneryAreaFill> SceneryAreas { get; private set; }
     public TerrainStructure TerrainStructure { get; private set; }
@@ -18,7 +18,7 @@ public class SceneryStructure
 
     private List<GameObject> _sceneryQuestObjects = new List<GameObject>();
 
-    public SceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, AreaBase[] normalAreas, AreaBase bossArea, float roadWidth)
+    public sceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, AreaBase[] normalAreas, AreaBase bossArea, float roadWidth)
     {
         SceneryAreas = new List<SceneryAreaFill>();
         RoadPolygons = new List<Vector2[]>();

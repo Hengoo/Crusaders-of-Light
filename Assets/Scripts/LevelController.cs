@@ -6,12 +6,10 @@ using Image = UnityEngine.UI.Image;
 
 public class LevelController : Singleton<LevelController>
 {
+    public MapGenerator MapGenerator;
     public QuestController QuestController;
 
     public CharacterPlayer[] PlayerCharacters;
-
-    public SceneryStructure SceneryStructure;
-    public Terrain Terrain;
 
     public Canvas Instructions;
 
@@ -33,14 +31,9 @@ public class LevelController : Singleton<LevelController>
 
     void Start()
     {
-        //Deactivate inactive players
-        for (int i = GameController.Instance.ActivePlayers; i < PlayerCharacters.Length; i++)
-            Destroy(PlayerCharacters[i].gameObject);
 
-#if UNITY_EDITOR
-        if (SkipIntro) return;
-#endif
-
+        InitializeLevel();
+        MapGenerator.CreateMap();
         StartCoroutine(DisplayIntro(10));
     }
 
@@ -63,6 +56,14 @@ public class LevelController : Singleton<LevelController>
 
     public void InitializeLevel()
     {
+        //Deactivate all controllers
+        foreach (var player in PlayerCharacters)
+            player.gameObject.SetActive(false);
+
+        //Destroy inactive players
+        for (int i = GameController.Instance.ActivePlayers; i < PlayerCharacters.Length; i++)
+            Destroy(PlayerCharacters[i].gameObject);
+        
         QuestController.ClearQuests();
     }
 
@@ -79,9 +80,22 @@ public class LevelController : Singleton<LevelController>
         var text = IntroImage.GetComponentInChildren<Text>();
         text.color = new Color(text.color.r, text.color.g, text.color.b, 0);
 
+
+
+#if UNITY_EDITOR
+        if (SkipIntro)
+        {
+            Intro.enabled = false;
+            StartGame();
+            yield break;
+        }
+#endif
+
         yield return new WaitForSeconds(3);
 
         const float step = 1 / 5f;
+
+        //Fade intro text in
         while (IntroImage.color.a < 1)
         {
             var currentColour = IntroImage.color;
@@ -96,6 +110,7 @@ public class LevelController : Singleton<LevelController>
 
         yield return new WaitForSeconds(seconds);
 
+        //Fade intro text out
         while (IntroImage.color.a > 0)
         {
             var currentColour = IntroImage.color;
@@ -108,10 +123,13 @@ public class LevelController : Singleton<LevelController>
             yield return new WaitForEndOfFrame();
         }
 
+        StartGame();
+
+        //Fade black out
         while (IntroBlackImage.color.a > 0)
         {
             var currentColour = IntroBlackImage.color;
-            currentColour -= new Color(0, 0, 0, step * Time.deltaTime);
+            currentColour -= new Color(0, 0, 0, step * 2 * Time.deltaTime);
             IntroBlackImage.color = currentColour;
             yield return new WaitForEndOfFrame();
         }
@@ -129,15 +147,16 @@ public class LevelController : Singleton<LevelController>
     {
         Outro.enabled = true;
         OutroDeadImage.color = new Color(OutroDeadImage.color.r, OutroDeadImage.color.g, OutroDeadImage.color.b, 0);
-        OutroVictoryImage.color = new Color(OutroDeadImage.color.r, OutroDeadImage.color.g, OutroDeadImage.color.b, 0);
+        OutroVictoryImage.color = new Color(OutroVictoryImage.color.r, OutroVictoryImage.color.g, OutroVictoryImage.color.b, 0);
         OutroDeadImage.GetComponentInChildren<Text>().color -= new Color(0, 0, 0, 1);
         OutroVictoryImage.GetComponentInChildren<Text>().color -= new Color(0, 0, 0, 1);
 
-        QuestController.Instance.FadeAudioToAmbience(3);
+        yield return new WaitForSeconds(3);
 
-        const float step = 1 / 5f;
+        const float step = 1 / 3f;
         if (_allDead)
         {
+            QuestController.Instance.FadeAudioToAmbience(3);
             var text = OutroDeadImage.GetComponentInChildren<Text>();
             text.color = new Color(text.color.r, text.color.g, text.color.b, 0);
             while (OutroDeadImage.color.a < 1f)
@@ -184,14 +203,14 @@ public class LevelController : Singleton<LevelController>
         StartCoroutine(WaitAndFinalize(10));
     }
 
-    public void StartGame(SceneryStructure sceneryStructure, Terrain terrain)
+    public void StartGame()
     {
-        SceneryStructure = sceneryStructure;
-        Terrain = terrain;
+        var sceneryStructure = MapGenerator.SceneryStructure;
+        var terrain = MapGenerator.Terrain;
 
-        var terrainStructure = SceneryStructure.TerrainStructure;
+        var terrainStructure = sceneryStructure.TerrainStructure;
         var startPosition2D = terrainStructure.BiomeGraph.GetNodeData(terrainStructure.StartBiomeNode.Value).Center;
-        for (var i = 0; i < PlayerCharacters.Length; i++)
+        for (var i = 0; i < GameController.Instance.ActivePlayers; i++)
         {
             Vector3 spawnPosition = new Vector3(startPosition2D.x, 0, startPosition2D.y);
             switch (i)
@@ -209,11 +228,16 @@ public class LevelController : Singleton<LevelController>
                     spawnPosition += new Vector3(0, 0, -3);
                     break;
             }
-            spawnPosition = new Vector3(spawnPosition.x, Terrain.SampleHeight(spawnPosition) + 0.05f, spawnPosition.z);
+            spawnPosition = new Vector3(spawnPosition.x, terrain.SampleHeight(spawnPosition) + 0.05f, spawnPosition.z);
             PlayerCharacters[i].transform.position = spawnPosition;
         }
         var cameraPosition = new Vector3(startPosition2D.x, 0, startPosition2D.y);
-        MainCamera.gameObject.transform.position = cameraPosition + new Vector3(0, Terrain.SampleHeight(cameraPosition) + 20, 0);
+        MainCamera.gameObject.transform.position = cameraPosition + new Vector3(0, terrain.SampleHeight(cameraPosition) + 20, 0);
+
+        //Reactivate all controllers
+        for (var i = 0; i < GameController.Instance.ActivePlayers; i++)
+            PlayerCharacters[i].gameObject.SetActive(true);
+
         QuestController.Instance.StartQuests();
     }
 

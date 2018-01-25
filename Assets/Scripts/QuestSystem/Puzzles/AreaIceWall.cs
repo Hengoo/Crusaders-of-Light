@@ -25,7 +25,7 @@ public class AreaIceWall : AreaBase
 
 
     //Generate the quests to be given to the quest controller
-    public override QuestBase[] GenerateQuests(SceneryStructure sceneryStructure, int assignedArea)
+    public override QuestBase[] GenerateQuests(sceneryStructure sceneryStructure, int assignedArea)
     {
         var worldStructure = sceneryStructure.WorldStructure;
         var terrainStructure = sceneryStructure.TerrainStructure;

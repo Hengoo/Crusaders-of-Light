@@ -18,7 +18,7 @@ public class AreaKillBoss : AreaBase
     public GameObject BossPrefab2;
     public AudioClip BossFightAudioClip;
 
-    public override QuestBase[] GenerateQuests(SceneryStructure sceneryStructure, int assignedArea)
+    public override QuestBase[] GenerateQuests(sceneryStructure sceneryStructure, int assignedArea)
     {
         var result = new List<QuestBase>();
 
