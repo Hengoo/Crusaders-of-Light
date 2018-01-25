@@ -18,7 +18,7 @@ public class QuestController : Singleton<QuestController>
     protected override void Awake()
     {
         base.Awake();
-        _cameraNextQuestAudioSource = MainCamera.GetComponents<AudioSource>()[1];
+        _cameraNextQuestAudioSource = MainCamera.GetComponents<AudioSource>()[2];
     }
 
     public void AddQuest(QuestBase quest)
