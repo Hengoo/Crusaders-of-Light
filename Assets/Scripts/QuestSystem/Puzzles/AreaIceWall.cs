@@ -21,10 +21,11 @@ public class AreaIceWall : AreaBase
     public GameObject IceWallPrefab;
     public GameObject FireMage; //Must have enemy character script attached to it
     public GameObject FireMageSpawn;
+    public AudioClip FireMageBattleAudioClip;
 
 
     //Generate the quests to be given to the quest controller
-    public override QuestBase[] GenerateQuests(SceneryStructure sceneryStructure, int assignedArea)
+    public override QuestBase[] GenerateQuests(sceneryStructure sceneryStructure, int assignedArea)
     {
         var worldStructure = sceneryStructure.WorldStructure;
         var terrainStructure = sceneryStructure.TerrainStructure;
@@ -76,12 +77,11 @@ public class AreaIceWall : AreaBase
         // ReSharper disable once UseObjectOrCollectionInitializer
         var questSteps = new List<QuestBase>();
 
-
         //Find fire mage camp
         questSteps.Add(new QuestReachPlace(fireMageSpawn, 30, "The Wall", "Find the fire wizard"));
 
         //Kill fire mage
-        questSteps.Add(new QuestKillEnemy(fireMageSpawn.transform, FireMage, "The Wall", "Kill the fire wizard"));
+        questSteps.Add(new QuestKillEnemy(fireMageSpawn.transform, new[] { FireMage }, "The Wall", "Kill the fire wizard", FireMageBattleAudioClip));
 
         //Pickup fire mage staff
         questSteps.Add(new QuestPickupItem(FireMage.GetComponent<Character>().StartingWeapons[1], "The Wall", "Pickup the fire mage staff"));

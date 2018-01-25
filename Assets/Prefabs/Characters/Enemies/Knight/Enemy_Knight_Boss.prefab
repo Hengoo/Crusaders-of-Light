@@ -319,7 +319,7 @@ Transform:
   m_GameObject: {fileID: 1351903218951948}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_Children:
   - {fileID: 4957787452012642}
   - {fileID: 4788258581194606}
@@ -582,8 +582,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 3000
-  HealthMax: 3000
+  HealthCurrent: 4000
+  HealthMax: 4000
   HealthHealingMin: 0
   HealthHealingMax: 100
   HealthHealingLostPerCount: 10
