@@ -8,6 +8,7 @@ public class QuestController : Singleton<QuestController>
     public readonly Queue<QuestBase> QuestsQueue = new Queue<QuestBase>();
     public QuestBase CurrentQuest { get; private set; }
 
+    public Image QuestImage;
     public Text QuestTitleHUDText;
     public Text QuestDescriptionHUDText;
 
@@ -18,6 +19,8 @@ public class QuestController : Singleton<QuestController>
     private AudioSource _cameraNextQuestAudioSource;
     private AudioSource _cameraAmbienceAudioSource;
     private AudioSource _cameraSpecialAudioSource;
+
+    private Coroutine _currentBlink;
 
     protected override void Awake()
     {
@@ -34,14 +37,18 @@ public class QuestController : Singleton<QuestController>
 
     public void StartQuests()
     {
-        if(CurrentQuest == null)
+        if (CurrentQuest == null)
             NextQuest();
     }
 
     //Starts next quest in the queue. If there is none, end the game
     private void NextQuest()
     {
+        if (_currentBlink != null)
+            StopCoroutine(_currentBlink);
         _cameraNextQuestAudioSource.Play();
+        _currentBlink = StartCoroutine(BlinkQuest());
+
         if (QuestsQueue.Count <= 0)
         {
             QuestTitleHUDText.text = "YOU WIN!";
@@ -128,5 +135,29 @@ public class QuestController : Singleton<QuestController>
         _cameraAmbienceAudioSource.volume = 1;
         _cameraSpecialAudioSource.volume = 0;
         _cameraSpecialAudioSource.Stop();
+    }
+
+    private IEnumerator BlinkQuest()
+    {
+        var baseColor = QuestImage.color;
+        var newColor = new Color(197/255f, 164/255f, 114/255f, 90/255f);
+        for (var i = 0; i < 4; i++)
+        {
+            var lerpValue = 0f;
+            var frequency = 1.5f;
+            while (lerpValue < 1)
+            {
+                QuestImage.color = Color.Lerp(baseColor, newColor, lerpValue);
+                lerpValue += Time.deltaTime * frequency;
+                yield return new WaitForEndOfFrame();
+            }
+            lerpValue = 1;
+            while (lerpValue > 0)
+            {
+                QuestImage.color = Color.Lerp(baseColor, newColor, lerpValue);
+                lerpValue -= Time.deltaTime * frequency;
+                yield return new WaitForEndOfFrame();
+            }
+        }
     }
 }
