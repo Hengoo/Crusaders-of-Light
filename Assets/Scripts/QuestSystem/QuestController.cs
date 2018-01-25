@@ -12,6 +12,8 @@ public class QuestController : Singleton<QuestController>
     public Text QuestDescriptionHUDText;
 
     public Camera MainCamera;
+    public AudioClip VictoryAudioClip;
+    public Light Sun;
 
     private AudioSource _cameraNextQuestAudioSource;
     private AudioSource _cameraAmbienceAudioSource;
@@ -44,7 +46,8 @@ public class QuestController : Singleton<QuestController>
         {
             QuestTitleHUDText.text = "YOU WIN!";
             QuestDescriptionHUDText.text = "Congratulations";
-            LevelController.Instance.FinalizeLevelWithWait(10);
+            FadeAudioToSpecial(2f, VictoryAudioClip);
+            StartCoroutine(VictoryEnding());
         }
         else
         {
@@ -58,13 +61,23 @@ public class QuestController : Singleton<QuestController>
         }
     }
 
-
     public void ClearQuests()
     {
         CurrentQuest = null;
         QuestsQueue.Clear();
         QuestTitleHUDText.text = "TITLE";
         QuestDescriptionHUDText.text = "DESCRIPTION";
+    }
+
+    private IEnumerator VictoryEnding()
+    {
+        const float step = 1 / 3f;
+        while (Sun.intensity < 20)
+        {
+            Sun.intensity += step * Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        LevelController.Instance.FinalizeLevelWithWait(10);
     }
 
     public void FadeAudioToSpecial(float seconds, AudioClip audioClip)
@@ -77,6 +90,9 @@ public class QuestController : Singleton<QuestController>
     {
         var step = 1 / seconds;
         _cameraSpecialAudioSource.clip = audioClip;
+        _cameraSpecialAudioSource.volume = 0;
+        _cameraSpecialAudioSource.Play();
+
         while (_cameraSpecialAudioSource.volume < 1f)
         {
             var amount = step * Time.deltaTime;
@@ -87,6 +103,7 @@ public class QuestController : Singleton<QuestController>
 
         _cameraSpecialAudioSource.volume = 1;
         _cameraAmbienceAudioSource.volume = 0;
+        _cameraAmbienceAudioSource.Stop();
     }
 
     public void FadeAudioToAmbience(float seconds)
@@ -97,6 +114,9 @@ public class QuestController : Singleton<QuestController>
     private IEnumerator FadeAudioToAmbienceCoroutine(float seconds)
     {
         var step = 1 / seconds;
+
+        _cameraAmbienceAudioSource.volume = 0;
+        _cameraAmbienceAudioSource.Play();
         while (_cameraAmbienceAudioSource.volume < 1f)
         {
             var amount = step * Time.deltaTime;
@@ -107,5 +127,6 @@ public class QuestController : Singleton<QuestController>
 
         _cameraAmbienceAudioSource.volume = 1;
         _cameraSpecialAudioSource.volume = 0;
+        _cameraSpecialAudioSource.Stop();
     }
 }
