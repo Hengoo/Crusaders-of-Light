@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 
@@ -63,7 +64,7 @@ public class LevelController : Singleton<LevelController>
         //Destroy inactive players
         for (int i = GameController.Instance.ActivePlayers; i < PlayerCharacters.Length; i++)
             Destroy(PlayerCharacters[i].gameObject);
-        
+
         QuestController.ClearQuests();
     }
 
@@ -151,9 +152,15 @@ public class LevelController : Singleton<LevelController>
         OutroDeadImage.GetComponentInChildren<Text>().color -= new Color(0, 0, 0, 1);
         OutroVictoryImage.GetComponentInChildren<Text>().color -= new Color(0, 0, 0, 1);
 
+        if (!_allDead)
+            foreach (var enemy in FindObjectsOfType<CharacterEnemy>())
+            {
+                Destroy(enemy.gameObject);
+            }
+
         yield return new WaitForSeconds(3);
 
-        const float step = 1 / 3f;
+        const float step = 0.7f;
         if (_allDead)
         {
             QuestController.Instance.FadeAudioToAmbience(3);
