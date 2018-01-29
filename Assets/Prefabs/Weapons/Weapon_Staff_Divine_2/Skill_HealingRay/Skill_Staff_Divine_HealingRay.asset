@@ -16,8 +16,8 @@ MonoBehaviour:
   ActivationIntervall: -1
   Cooldown: 1
   ActivationMovementModifier: -0.8
-  AllowTargetFriendly: 0
-  AllowTargetEnemy: 1
+  AllowTargetFriendly: 1
+  AllowTargetEnemy: 0
   Effects:
   - {fileID: 11400000, guid: 96d2e68994c31cf478722fdc08a86b4f, type: 2}
   HindranceLevel: 1

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealingValueBase: 0
   HealingValuePerLevel: 0
-  HealingValueBasePercMax: 0.013
-  HealingValuePerLevelPercMax: 0.0013
+  HealingValueBasePercMax: 0.02
+  HealingValuePerLevelPercMax: 0.002
   HealingValueModifiers: []
   HealingValuePercMaxModifiers: []

@@ -12,9 +12,20 @@ public class GUICharacterFollow : MonoBehaviour {
     public Image HealthBarCurrent;
     public Image HealthHealingBarCurrent;
 
+    public Sprite HealthBarPlayerSprite;
+
     public void Initialize(Character Char)
     {
         Character = Char;
+
+        if (Character.GetAlignment() == Character.TeamAlignment.PLAYERS)
+        {
+            HealthBarCurrent.sprite = HealthBarPlayerSprite;
+        }
+        else
+        {
+            HealthHealingBarCurrent.enabled = false;
+        }
     }
 
     public void UpdateHealthBar(float NormalizedHealthValue)
