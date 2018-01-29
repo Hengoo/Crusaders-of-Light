@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 23976411210256322}
   - component: {fileID: 114908530064051912}
   - component: {fileID: 65850550811851424}
+  - component: {fileID: 82444313797308196}
   m_Layer: 11
   m_Name: Skill_ArcaneStaff_EnergyRay_HitObject_AoE
   m_TagString: Skills
@@ -199,6 +200,92 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 10}
   m_Center: {x: 0, y: 0, z: 5}
+--- !u!82 &82444313797308196
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1298389026945084}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 0
+  MinDistance: 25
+  MaxDistance: 60
+  Pan2D: 0
+  rolloffMode: 2
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0.41666666
+      value: 1.0039062
+      inSlope: -4.7147455
+      outSlope: -4.7147455
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.8333333
+      value: 0.0748291
+      inSlope: -0.8747611
+      outSlope: -0.8747611
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: -0.41683316
+      outSlope: -0.41683316
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!114 &114908530064051912
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -218,13 +305,22 @@ MonoBehaviour:
   MaxNumberOfTargets: -1
   HitObjectIsChildOfOwner: 1
   AlwaysHitOwner: 0
+  UseForceImpulse: 0
+  ForceImpulseMagnitude: 0
+  ParticleSystems: []
+  UseSizeOverTime: 0
+  SizeOverTimeStart: 1
+  SizeOverTimeEnd: 1
+  SizeOverTimeDuration: 0
   Owner: {fileID: 0}
   SourceSkill: {fileID: 0}
   SourceItemSkill: {fileID: 0}
   FixedLevel: 0
+  Threat: []
   HitObjectAlignment: 0
   HitCharacters: []
   AlreadyHitCharacters: []
+  InCharactersAttentions: []
 --- !u!198 &198183875466347912
 ParticleSystem:
   m_ObjectHideFlags: 1

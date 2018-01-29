@@ -622,7 +622,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -630,11 +630,11 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  DopplerLevel: 0
+  MinDistance: 25
+  MaxDistance: 60
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -642,26 +642,32 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
+      time: 0.41666666
+      value: 1.0039062
+      inSlope: -4.7147455
+      outSlope: -4.7147455
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.8333333
+      value: 0.0748291
+      inSlope: -0.8747611
+      outSlope: -0.8747611
       tangentMode: 0
     - serializedVersion: 2
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.41683316
+      outSlope: -0.41683316
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   panLevelCustomCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -679,7 +685,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -760,6 +766,7 @@ MonoBehaviour:
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
   PlayerHitObjectsInRange: []
+  CharacterDeadLayerID: 12
 --- !u!114 &114357049156064192
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -773,6 +780,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthCurrent: 900
   HealthMax: 900
+  HealthHealingMin: 0
+  HealthHealingMax: 100
+  HealthHealingLostPerCount: 10
+  HealthHealingCounter: 0
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
@@ -805,12 +816,14 @@ MonoBehaviour:
   SkillCurrentlyActivating: ffffffffffffffff
   HindranceLevel: 0
   ActiveConditions: []
+  MovementRateModfier: 1
   HandAnimators:
   - {fileID: 95819371227743974}
   - {fileID: 95009129050692406}
+  BodyAnimator: {fileID: 0}
+  Anim_StartWalking: StartWalking
+  Anim_EndWalking: EndWalking
   CharAttention: {fileID: 114165269880304922}
-  SlashDamageSound: {fileID: 8300000, guid: e48e53d959f385943a83adcace60ba67, type: 3}
-  BurnDamageSound: {fileID: 8300000, guid: 403c8465527a4264aad5ebce12cd698f, type: 3}
   Alignment: 2
   IdleSkillScore: 0.2
   IdleDuration: 0.2

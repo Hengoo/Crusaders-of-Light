@@ -34,7 +34,7 @@ public class Character : MonoBehaviour
     }
 
     [Header("Static:")]
-    public static float HealthHealingMinimumPerc = 0.4f;
+    public static float HealthHealingMinimumPerc = 1.0f;
     public static float HealthHealingLostPerCountMaxPerc = 0.01f;
 
     [Header("Character Attributes:")]

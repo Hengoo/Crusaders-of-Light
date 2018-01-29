@@ -46,13 +46,19 @@ public class SkillHitObject : MonoBehaviour {
 
     public List<CharacterAttention> InCharactersAttentions = new List<CharacterAttention>();
 
+    [HideInInspector] public bool FadeSound;
+
+    private AudioSource _audioSource;
+
     public void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
     {
         // Link Skill User and Skill:
         Owner = _Owner;
         SourceSkill = _SourceSkill;
         SourceItemSkill = _SourceItemSkill;
-        
+        _audioSource = GetComponent<AudioSource>();
+
+
         if (UseLevelAtActivationMoment)
         {
             FixedLevel = SourceItemSkill.GetSkillLevel();
@@ -118,7 +124,13 @@ public class SkillHitObject : MonoBehaviour {
         {
             HitObjectTimeOut();
             return;
-        }    
+        }
+
+        var soundValue = MaxTimeAlive - TimeAliveCounter;
+        if (_audioSource && FadeSound && soundValue < 3f)
+        {
+            _audioSource.volume = soundValue / 3f;
+        }
 
         if (UseSizeOverTime)
         {
@@ -197,7 +209,8 @@ public class SkillHitObject : MonoBehaviour {
             return;
         }
 
-        AlreadyHitCharacters.Add(TargetCharacter);
+        if(!AlreadyHitCharacters.Contains(TargetCharacter))
+            AlreadyHitCharacters.Add(TargetCharacter);
 
         if (FixedLevel >= 0)
         {

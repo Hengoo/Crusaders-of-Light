@@ -14,7 +14,7 @@ MonoBehaviour:
   Cost: 0
   ActivationTime: 0.8
   ActivationIntervall: -1
-  Cooldown: 10
+  Cooldown: 30
   ActivationMovementModifier: -1
   AllowTargetFriendly: 1
   AllowTargetEnemy: 0
@@ -32,4 +32,5 @@ MonoBehaviour:
   HitObjectPrefab: {fileID: 114034650662217146, guid: 07503c44c96f0fe429359e8b500eb26d,
     type: 2}
   UseSkillLevelAtActivationMoment: 1
-  SpawnSound: {fileID: 8300000, guid: 8539544294033bb4e8a6a4e2792d8663, type: 3}
+  SpawnSound: {fileID: 8300000, guid: a01419e5cc900e042b52e72313c87a01, type: 3}
+  LoopSound: 1

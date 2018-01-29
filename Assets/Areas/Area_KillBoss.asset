@@ -13,6 +13,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BossPrefab1: {fileID: 1351903218951948, guid: 5319a1e427faf0445948227d5c027d56,
     type: 2}
-  BossPrefab2: {fileID: 1351903218951948, guid: 5319a1e427faf0445948227d5c027d56,
+  BossPrefab2: {fileID: 1340043220880192, guid: 37ef487205f5c974f8a2afe2ecc4d4df,
     type: 2}
   BossFightAudioClip: {fileID: 8300000, guid: d8b1a3400ebb8c94fb8608a0e6599f5d, type: 3}
