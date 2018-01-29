@@ -53,27 +53,36 @@ public class CharacterPlayer : Character {
     {
         float speedfaktor = 10 * GetMovementRateModifier();
         //left stick
-        Vector3 targetVel = new Vector3(Input.GetAxisRaw("Horizontal_" + PlayerID), 0, Input.GetAxisRaw("Vertical_" + PlayerID)) * speedfaktor;
+        Vector3 targetVel = new Vector3(Input.GetAxisRaw("Horizontal_" + PlayerID), 0, Input.GetAxisRaw("Vertical_" + PlayerID));
 
         //right stick
         Vector3 targetDir = new Vector3(Input.GetAxisRaw("Horizontal2_" + PlayerID), 0, -Input.GetAxisRaw("Vertical2_" + PlayerID));
 
+        Debug.Log("TARGET DIR : " + targetDir);
+
+        if (Vector3.Magnitude(targetDir) <= 0.3f)
+        {
+            targetDir = targetVel;
+        }
+
+        targetVel *= speedfaktor;
+
         PhysCont.SetVelRot(targetVel, targetDir);
 
-        if (!IsWalking && (Input.GetAxisRaw("Horizontal_" + PlayerID) >= 0.3f 
-            || Input.GetAxisRaw("Vertical_" + PlayerID) >= 0.3f 
-            || Input.GetAxisRaw("Horizontal_" + PlayerID) <= -0.3f 
-            || Input.GetAxisRaw("Vertical_" + PlayerID) <= -0.3f))
+        if (!IsWalking && (Input.GetAxisRaw("Horizontal_" + PlayerID) >= 0.05f 
+            || Input.GetAxisRaw("Vertical_" + PlayerID) >= 0.05f
+            || Input.GetAxisRaw("Horizontal_" + PlayerID) <= -0.05f
+            || Input.GetAxisRaw("Vertical_" + PlayerID) <= -0.05f))
         {
             IsWalking = true;
             StartBodyAnimation(Anim_StartWalking);
         }
         else if (IsWalking)
         {
-            if (Input.GetAxisRaw("Horizontal_" + PlayerID) < 0.3f
-            && Input.GetAxisRaw("Vertical_" + PlayerID) < 0.3f
-            && Input.GetAxisRaw("Horizontal_" + PlayerID) > -0.3f
-            && Input.GetAxisRaw("Vertical_" + PlayerID) > -0.3f)
+            if (Input.GetAxisRaw("Horizontal_" + PlayerID) < 0.05f
+            && Input.GetAxisRaw("Vertical_" + PlayerID) < 0.05f
+            && Input.GetAxisRaw("Horizontal_" + PlayerID) > -0.05f
+            && Input.GetAxisRaw("Vertical_" + PlayerID) > -0.05f)
             {
                 IsWalking = false;
                 StartBodyAnimation(Anim_EndWalking);
