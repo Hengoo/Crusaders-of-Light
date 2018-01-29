@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a452ff160399d84db0b84b75fe9deb9, type: 3}
+  m_Name: Skill_Staff_Divine_RingOfHealing
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.8
+  ActivationIntervall: -1
+  Cooldown: 10
+  ActivationMovementModifier: -1
+  AllowTargetFriendly: 1
+  AllowTargetEnemy: 0
+  Effects:
+  - {fileID: 11400000, guid: f41c62244bb2a5d4ca22d19858f4d5ea, type: 2}
+  HindranceLevel: 0
+  AnimationName: Weapon_Upwards
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: b6bc12d4a7abec146b34fa0674745a21, type: 2}
+  PowerLevel: 0
+  Threat:
+  - 0
+  - 0
+  - 0
+  HitObjectPrefab: {fileID: 114034650662217146, guid: 07503c44c96f0fe429359e8b500eb26d,
+    type: 2}
+  UseSkillLevelAtActivationMoment: 1
+  SpawnSound: {fileID: 8300000, guid: 8539544294033bb4e8a6a4e2792d8663, type: 3}
