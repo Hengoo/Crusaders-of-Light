@@ -58,8 +58,6 @@ public class CharacterPlayer : Character {
         //right stick
         Vector3 targetDir = new Vector3(Input.GetAxisRaw("Horizontal2_" + PlayerID), 0, -Input.GetAxisRaw("Vertical2_" + PlayerID));
 
-        Debug.Log("TARGET DIR : " + targetDir);
-
         if (Vector3.Magnitude(targetDir) <= 0.3f)
         {
             targetDir = targetVel;
