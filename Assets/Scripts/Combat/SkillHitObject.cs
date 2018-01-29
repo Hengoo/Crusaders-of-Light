@@ -151,7 +151,7 @@ public class SkillHitObject : MonoBehaviour {
             {
                 TickTimeReached = true;
 
-                if (AlwaysHitOwner)
+                if (AlwaysHitOwner && HitCharacters.Contains(Owner))
                 {
                     HitTarget(Owner);
                 }

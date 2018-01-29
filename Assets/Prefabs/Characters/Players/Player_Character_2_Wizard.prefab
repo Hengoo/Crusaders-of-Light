@@ -92,6 +92,40 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1438994845429904
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4472473596471210}
+  - component: {fileID: 33895198464740658}
+  - component: {fileID: 23466140161831738}
+  m_Layer: 0
+  m_Name: Plane (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1528616478489294
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4623029504721310}
+  - component: {fileID: 108035264720185110}
+  - component: {fileID: 114991049476602762}
+  m_Layer: 0
+  m_Name: Point light (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1615981520277446
 GameObject:
   m_ObjectHideFlags: 0
@@ -169,6 +203,7 @@ GameObject:
   - component: {fileID: 54251693269351350}
   - component: {fileID: 136008309699435868}
   - component: {fileID: 82430685851221064}
+  - component: {fileID: 114080762499631344}
   m_Layer: 8
   m_Name: Player_Character_2_Wizard
   m_TagString: Character
@@ -315,20 +350,35 @@ Transform:
   m_Father: {fileID: 4480166319060880}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4472473596471210
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1438994845429904}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.353, z: 0}
+  m_LocalScale: {x: 0.29999998, y: 0.29999998, z: 0.29999998}
+  m_Children: []
+  m_Father: {fileID: 4480166319060880}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4480166319060880
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1868738122125888}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 42.121895, y: 13.106754, z: 132.24}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4174084707455548}
   - {fileID: 4425431940138444}
   - {fileID: 4336092763338418}
   - {fileID: 4262736551895196}
+  - {fileID: 4472473596471210}
+  - {fileID: 4623029504721310}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -359,6 +409,19 @@ Transform:
   - {fileID: 4305854418443118}
   m_Father: {fileID: 4174084707455548}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4623029504721310
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1528616478489294}
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 2, z: 1.5}
+  m_LocalScale: {x: 1.44075, y: 1.440751, z: 1.440751}
+  m_Children: []
+  m_Father: {fileID: 4480166319060880}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4923586660018870
 Transform:
@@ -441,6 +504,40 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!23 &23466140161831738
+MeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1438994845429904}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 2100000, guid: cdb4857e92b97a04b8309203a3844746, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
 --- !u!33 &33055979987246964
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -455,6 +552,13 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1784289185425710}
   m_Mesh: {fileID: 4300000, guid: df5d2327d37fdd745862e92afd89145c, type: 3}
+--- !u!33 &33895198464740658
+MeshFilter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1438994845429904}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!54 &54251693269351350
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -582,7 +686,7 @@ Animator:
   m_GameObject: {fileID: 1868738122125888}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: ae72bc7d6b23ebf43baac319f93469e5, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1f2090a24cc87ee439c878d8f1069f1c, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -607,6 +711,54 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!108 &108035264720185110
+Light:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1528616478489294}
+  m_Enabled: 1
+  serializedVersion: 8
+  m_Type: 2
+  m_Color: {r: 1, g: 0.75554085, b: 0, a: 0}
+  m_Intensity: 2
+  m_Range: 20.91
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 2
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 4
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!114 &114080762499631344
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1868738122125888}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f9f79b4280b16340acc32189f6247c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DeathDuration: 1
 --- !u!114 &114156756381475232
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -636,9 +788,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab6778a9b3b095f4a9e6bf28617057e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 2000
-  HealthMax: 2000
-  HealthHealingMin: 0
+  HealthCurrent: 1800
+  HealthMax: 1800
+  HealthHealingMin: 100
   HealthHealingMax: 100
   HealthHealingLostPerCount: 10
   HealthHealingCounter: 0
@@ -678,7 +830,7 @@ MonoBehaviour:
   HandAnimators:
   - {fileID: 95010502859304748}
   - {fileID: 95980244184229516}
-  BodyAnimator: {fileID: 0}
+  BodyAnimator: {fileID: 95308543822489676}
   Anim_StartWalking: StartWalking
   Anim_EndWalking: EndWalking
   CharAttention: {fileID: 114156756381475232}
@@ -686,7 +838,7 @@ MonoBehaviour:
   Alignment: 1
   ItemsInRange: []
   PlayerID: 2
-  DeathTimer: {fileID: 0}
+  DeathTimer: {fileID: 114080762499631344}
   CharacterLayerID: 8
   DeadCharacterLayerID: 12
   RespawnMinRange: 2
@@ -694,6 +846,23 @@ MonoBehaviour:
   RespawnHealthCostPerc: 0.2
   RespawnHealthGainPerc: 0.15
   DeathAnimationResetTrigger: Trigger_DeathReset
+--- !u!114 &114991049476602762
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1528616478489294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 079ba379c10ff1941829f166488cbdf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minInten: 0.8
+  maxInten: 2
+  maxPosChange: 0.2
+  rate: 0.5
+  color1: {r: 1, g: 0.822, b: 0, a: 1}
+  color2: {r: 1, g: 0.591, b: 0, a: 1}
 --- !u!135 &135254709917871782
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -728,9 +897,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.6
-  m_Height: 2.61
+  m_Height: 4
   m_Direction: 1
-  m_Center: {x: 0, y: 1.18, z: 0}
+  m_Center: {x: 0, y: 1.9, z: 0}
 --- !u!137 &137937284821558422
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

@@ -304,7 +304,7 @@ MonoBehaviour:
   CanHitSameTargetMultipleTime: 1
   MaxNumberOfTargets: -1
   HitObjectIsChildOfOwner: 1
-  AlwaysHitOwner: 1
+  AlwaysHitOwner: 0
   UseForceImpulse: 0
   ForceImpulseMagnitude: 0
   ParticleSystems: []
@@ -321,6 +321,7 @@ MonoBehaviour:
   HitCharacters: []
   AlreadyHitCharacters: []
   InCharactersAttentions: []
+  FadeSound: 0
 --- !u!198 &198183875466347912
 ParticleSystem:
   m_ObjectHideFlags: 1
