@@ -45,6 +45,9 @@ public class Item : MonoBehaviour {
 
     public virtual void UnEquipItem()
     {
+        var audioSource = GetComponent<AudioSource>();
+        if(audioSource)
+            audioSource.Stop();
     }
 
     // Currently Unused, but might be useful later.

@@ -20,7 +20,6 @@ MonoBehaviour:
   AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: 19c3ba0107273c24faeda4f506e8b5b9, type: 2}
-  - {fileID: 11400000, guid: a040615aa39e9bd4ba41f728f1f7476a, type: 2}
   - {fileID: 11400000, guid: 336c2429ed4610e458db408622d082e8, type: 2}
   HindranceLevel: 2
   AnimationName: Melee_ChargeUp_Swing
@@ -44,5 +43,5 @@ MonoBehaviour:
   EffectsSelfOnRelease: []
   EffectsSelfOnEnd: []
   ReleaseAnimation: Charge_Released
-  ChargeLoop: {fileID: 8300000, guid: 38df0b93ec4a01d47802b1fb9f3fe3d7, type: 3}
+  ChargeUp: {fileID: 0}
   ChargeRelease: {fileID: 8300000, guid: bba10404074522b44818af4335801766, type: 3}

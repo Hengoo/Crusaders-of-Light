@@ -127,6 +127,10 @@ public class CharacterPlayer : Character {
         // Update Attention:
         AttentionThisCharacterDied();
 
+        //Stop Active Coroutines and Sound
+        StopAllCoroutines();
+        GetComponent<AudioSource>().Stop();
+
         // Invoke death actions (e.g. Quest System)
         if (_onCharacterDeathAction != null)
             _onCharacterDeathAction.Invoke();
