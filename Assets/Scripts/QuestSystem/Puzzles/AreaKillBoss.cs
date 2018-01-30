@@ -26,7 +26,7 @@ public class AreaKillBoss : AreaBase
         var spawn = new GameObject("Area Boss Spawn Point");
         var spawnPosition = sceneryStructure.TerrainStructure.EndBiomeNode.Key;
         spawn.transform.position = new Vector3(spawnPosition.x, 0, spawnPosition.y);
-
+        
         //Add objects to sceneryStructure for height adjustment
         sceneryStructure.AddSceneryQuestObject(spawn);
 
@@ -35,7 +35,7 @@ public class AreaKillBoss : AreaBase
         result.Add(findBoss);
 
         //Kill the boss quest
-        var killBoss = new QuestKillEnemy(spawn.transform, new[] { BossPrefab1, BossPrefab2 }, "The Evil", "Cleanse the land from the evil!", BossFightAudioClip);
+        var killBoss = new QuestKillEnemy(spawn.transform, new[] { BossPrefab1, BossPrefab2 }, "The Evil", "Cleanse the land from the evil!", BossFightAudioClip, assignedArea + 2);
         result.Add(killBoss);
 
         return result.ToArray();

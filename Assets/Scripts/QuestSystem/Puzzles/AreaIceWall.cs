@@ -81,7 +81,7 @@ public class AreaIceWall : AreaBase
         questSteps.Add(new QuestReachPlace(fireMageSpawn, 30, "The Wall", "Find the fire wizard"));
 
         //Kill fire mage
-        questSteps.Add(new QuestKillEnemy(fireMageSpawn.transform, new[] { FireMage }, "The Wall", "Kill the fire wizard", FireMageBattleAudioClip));
+        questSteps.Add(new QuestKillEnemy(fireMageSpawn.transform, new[] { FireMage }, "The Wall", "Kill the fire wizard", FireMageBattleAudioClip, assignedArea + 1));
 
         //Pickup fire mage staff
         questSteps.Add(new QuestPickupItem(FireMage.GetComponent<Character>().StartingWeapons[1], "The Wall", "Pickup the fire mage staff"));

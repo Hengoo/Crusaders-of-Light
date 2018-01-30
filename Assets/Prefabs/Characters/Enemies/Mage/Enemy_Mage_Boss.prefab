@@ -606,8 +606,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 2500
-  HealthMax: 2500
+  HealthCurrent: 3000
+  HealthMax: 3000
   HealthHealingMin: 0
   HealthHealingMax: 100
   HealthHealingLostPerCount: 10
@@ -631,7 +631,7 @@ MonoBehaviour:
   - {fileID: 4207344152061312}
   StartingWeapons:
   - {fileID: 114272828251335038, guid: 3b0a85519c157f84eb61f76934f7032b, type: 2}
-  - {fileID: 114638103525019752, guid: f66007c64d8d4964cb44ce562b237e8e, type: 2}
+  - {fileID: 114702944568196636, guid: 00c064b806f0ade439292e2d71a6f6e5, type: 2}
   SkillsPerWeapon: 2
   WeaponSlots:
   - {fileID: 0}

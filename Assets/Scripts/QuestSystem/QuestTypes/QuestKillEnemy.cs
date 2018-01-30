@@ -8,23 +8,26 @@ public class QuestKillEnemy : QuestBase
 {
     private readonly Transform _spawnPoint;
     private readonly GameObject[] _enemyPrefabs;
+    private readonly int _powerLevel;
 
     private int _killsRemaining;
     private AudioClip _fightAudioClip;
 
-    public QuestKillEnemy(Transform spawnPoint, GameObject[] enemyPrefabs, string title, string description) : base(title, description)
+    public QuestKillEnemy(Transform spawnPoint, GameObject[] enemyPrefabs, string title, string description, int powerLevel) : base(title, description)
     {
         _spawnPoint = spawnPoint;
         _enemyPrefabs = enemyPrefabs;
+        _powerLevel = powerLevel;
         _killsRemaining = enemyPrefabs.Length;
     }
 
-    public QuestKillEnemy(Transform spawnPoint, GameObject[] enemyPrefabs, string title, string description, AudioClip fightAudioClip) : base(title, description)
+    public QuestKillEnemy(Transform spawnPoint, GameObject[] enemyPrefabs, string title, string description, AudioClip fightAudioClip, int powerLevel) : base(title, description)
     {
         _spawnPoint = spawnPoint;
         _enemyPrefabs = enemyPrefabs;
         _killsRemaining = enemyPrefabs.Length;
         _fightAudioClip = fightAudioClip;
+        _powerLevel = powerLevel;
     }
 
     protected override void QuestStarted()
@@ -39,6 +42,10 @@ public class QuestKillEnemy : QuestBase
             enemy.SetActive(true);
             enemy.GetComponent<CharacterEnemy>().SpawnAndEquipStartingWeapons();
             enemy.GetComponent<CharacterEnemy>().SubscribeDeathAction(CheckCompletion);
+            foreach (var weapon in enemy.GetComponent<CharacterEnemy>().WeaponSlots)
+                if (weapon)
+                    weapon.ItemPowerLevel = 2;
+
 
             var circlePosition = Quaternion.AngleAxis(circleAngle * i, Vector3.up) * Vector3.forward * 2;
             enemy.transform.position = _spawnPoint.position + circlePosition + Vector3.up * 2;
