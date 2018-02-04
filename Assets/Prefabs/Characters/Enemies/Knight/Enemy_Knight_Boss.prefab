@@ -612,8 +612,8 @@ MonoBehaviour:
   - {fileID: 4818528430147368}
   - {fileID: 4262386609342480}
   StartingWeapons:
-  - {fileID: 114010287845431416, guid: cfc1480de4ad6fa4f8fed6b1343800d0, type: 2}
-  - {fileID: 114011286401193298, guid: 3c86a442800f24e44b48672fba6e63e1, type: 2}
+  - {fileID: 114066496244682900, guid: 65f91d096e61fc3408c246068afda0c1, type: 2}
+  - {fileID: 114777665945185374, guid: 1bc3c9e830757684c9a98e762a0bf7d6, type: 2}
   SkillsPerWeapon: 2
   WeaponSlots:
   - {fileID: 0}
