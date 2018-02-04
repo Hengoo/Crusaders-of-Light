@@ -289,15 +289,38 @@ public class CharacterPlayer : Character {
         Item ClosestItem = ItemsInRange[0];
         float ClosestDistance = Vector3.Distance(this.transform.position, ClosestItem.transform.position);
         float CurrentDistance = ClosestDistance;
+        List<Item> ItemsOfOtherPlayers = new List<Item>(); // Items that other players picked up.
+        bool LegitItem = false;
 
-        for (int i = 1; i < ItemsInRange.Count; i++)
+        for (int i = 0; i < ItemsInRange.Count; i++)
         {
-            CurrentDistance = Vector3.Distance(this.transform.position, ItemsInRange[i].transform.position);
-            if (CurrentDistance < ClosestDistance)
+            if (ItemsInRange[i].GetOwner() != null)
             {
-                ClosestDistance = CurrentDistance;
-                ClosestItem = ItemsInRange[i];
+                ItemsOfOtherPlayers.Add(ItemsInRange[i]);
             }
+            else
+            {
+                CurrentDistance = Vector3.Distance(this.transform.position, ItemsInRange[i].transform.position);
+                if (CurrentDistance <= ClosestDistance)
+                {
+                    ClosestDistance = CurrentDistance;
+                    ClosestItem = ItemsInRange[i];
+                    if (!LegitItem)
+                    {
+                        LegitItem = true;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < ItemsOfOtherPlayers.Count; i++)
+        {
+            ItemsInRange.Remove(ItemsOfOtherPlayers[i]);
+        }
+
+        if (!LegitItem)
+        {
+            return false;
         }
 
         ClosestItem.EquipItem(this, EquipSlotID);
