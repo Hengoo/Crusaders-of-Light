@@ -9,7 +9,7 @@ public class sceneryStructure
 {
     public List<SceneryAreaFill> SceneryAreas { get; private set; }
     public TerrainStructure TerrainStructure { get; private set; }
-    public WorldStructure WorldStructure { get; private set; }
+    public StoryStructure StoryStructure { get; private set; }
     public List<Vector2[]> RoadPolygons { get; private set; }
     public List<Vector2[]> RoadLines { get; private set; }
 
@@ -18,14 +18,14 @@ public class sceneryStructure
 
     private List<GameObject> _sceneryQuestObjects = new List<GameObject>();
 
-    public sceneryStructure(TerrainStructure terrainStructure, WorldStructure worldStructure, AreaBase[] normalAreas, AreaBase bossArea, float roadWidth)
+    public sceneryStructure(TerrainStructure terrainStructure, StoryStructure storyStructure, AreaBase[] normalAreas, AreaBase bossArea, float roadWidth)
     {
         SceneryAreas = new List<SceneryAreaFill>();
         RoadPolygons = new List<Vector2[]>();
         RoadLines = new List<Vector2[]>();
 
         TerrainStructure = terrainStructure;
-        WorldStructure = worldStructure;
+        StoryStructure = storyStructure;
 
         NormalAreas = normalAreas;
         BossArea = bossArea;
@@ -63,7 +63,7 @@ public class sceneryStructure
             levelController.QuestController.AddQuest(quest);
 
         //Create road polygons and road lines
-        foreach (var edge in WorldStructure.NavigationGraph.GetAllEdges().Union(WorldStructure.AreaCrossingNavigationEdges))
+        foreach (var edge in StoryStructure.NavigationGraph.GetAllEdges().Union(StoryStructure.AreaCrossingNavigationEdges))
         {
             var start = TerrainStructure.BiomeGraph.GetNodeData(edge.x).Center;
             var end = TerrainStructure.BiomeGraph.GetNodeData(edge.y).Center;
@@ -106,13 +106,13 @@ public class sceneryStructure
         if (spawnerPrefab.GetComponent<Spawner>() == null)
             Debug.LogError("No Spawner script attached to SpawnerPrefab");
 
-        foreach (var area in WorldStructure.AreaBiomes)
+        foreach (var area in StoryStructure.AreaBiomes)
         {
             foreach (var nodeID in area)
             {
                 if(nodeID == TerrainStructure.StartBiomeNode.Value || nodeID == TerrainStructure.EndBiomeNode.Value) continue;
 
-                var biome = WorldStructure.NavigationGraph.GetNodeData(nodeID);
+                var biome = StoryStructure.NavigationGraph.GetNodeData(nodeID);
                 var spawnerObj = Object.Instantiate(spawnerPrefab);
                 var spawner = spawnerObj.GetComponent<Spawner>();
                 spawnerObj.transform.position = new Vector3(biome.Center.x, 0, biome.Center.y);

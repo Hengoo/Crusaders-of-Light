@@ -31,7 +31,7 @@ public class MapGenerator : MonoBehaviour
     public int Seed = 0;
 
     public TerrainStructure TerrainStructure { get; private set; }
-    public WorldStructure WorldStructure { get; private set; }
+    public StoryStructure StoryStructure { get; private set; }
     public sceneryStructure SceneryStructure { get; private set; }
     public Terrain Terrain { get; private set; }
 
@@ -56,9 +56,9 @@ public class MapGenerator : MonoBehaviour
         TerrainStructure = new TerrainStructure(AvailableBiomes, BiomeGlobalConfiguration);
         if (DrawMode == DrawModeEnum.AreaGraph || DrawMode == DrawModeEnum.GameMap)
         {
-            WorldStructure = new WorldStructure(TerrainStructure, NormalAreas.Length + 1, ExtraEdges);
+            StoryStructure = new StoryStructure(TerrainStructure, NormalAreas.Length + 1, ExtraEdges);
             if (DrawMode == DrawModeEnum.GameMap)
-                SceneryStructure = new sceneryStructure(TerrainStructure, WorldStructure, NormalAreas, BossArea, RoadHalfWidth);
+                SceneryStructure = new sceneryStructure(TerrainStructure, StoryStructure, NormalAreas, BossArea, RoadHalfWidth);
         }
 
         switch (DrawMode)
@@ -131,11 +131,11 @@ public class MapGenerator : MonoBehaviour
         //terrain.GetComponent<Terrain>().materialTemplate = BiomeGlobalConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
 
         /* Add fences to coast */
-        var fences = MapDataGenerator.GenerateCoastFences(Terrain, WorldStructure,
+        var fences = MapDataGenerator.GenerateCoastFences(Terrain, StoryStructure,
             BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerPole, BiomeGlobalConfiguration.CoastBlockerLength);
         fences.transform.parent = Terrain.transform;
 
-        var walls = MapDataGenerator.GenerateAreaWalls(Terrain, WorldStructure, BiomeGlobalConfiguration.AreaBlocker,
+        var walls = MapDataGenerator.GenerateAreaWalls(Terrain, StoryStructure, BiomeGlobalConfiguration.AreaBlocker,
             BiomeGlobalConfiguration.AreaBlockerLength);
         walls.transform.parent = Terrain.transform;
 
@@ -172,7 +172,7 @@ public class MapGenerator : MonoBehaviour
 
     void DrawAreaGraph()
     {
-        var newAreaGraphInstance = WorldStructure.DrawAreaGraph(BiomeGlobalConfiguration.HeightMapResolution / 500f);
+        var newAreaGraphInstance = StoryStructure.DrawAreaGraph(BiomeGlobalConfiguration.HeightMapResolution / 500f);
         newAreaGraphInstance.name = "AreaGraph";
         newAreaGraphInstance.transform.parent = transform;
     }

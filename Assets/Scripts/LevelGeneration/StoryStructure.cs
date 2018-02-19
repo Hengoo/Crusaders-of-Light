@@ -6,7 +6,7 @@ using csDelaunay;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class WorldStructure
+public class StoryStructure
 {
     public Graph<Biome> NavigationGraph { get; private set; }
     public List<Vector2Int> AreaCrossingNavigationEdges { get; private set; }
@@ -18,7 +18,7 @@ public class WorldStructure
     public int NumberOfAreas { get; private set; }
     private readonly TerrainStructure _terrainStructure;
 
-    public WorldStructure(TerrainStructure terrainStructure, int numAreas, int extraEdges)
+    public StoryStructure(TerrainStructure terrainStructure, int numAreas, int extraEdges)
     {
         _terrainStructure = terrainStructure;
         NavigationGraph = new Graph<Biome>(_terrainStructure.MinimumSpanningTree);
@@ -36,7 +36,7 @@ public class WorldStructure
     private void GenerateAreas(int extraEdges)
     {
         //Find largest path
-        var greatestPath = GetLargestPathInMST(new Graph<Biome>(_terrainStructure.MinimumSpanningTree));
+        var greatestPath = _terrainStructure.MinimumSpanningTree.GetLargestPathInMST(_terrainStructure.StartBiomeNode.Value);
         _terrainStructure.EndBiomeNode = new KeyValuePair<Vector2f, int>(new Vector2f(_terrainStructure.BiomeGraph.GetNodeData(greatestPath.Last()).Center), greatestPath.Last());
         
         //Divide path in NumberOfAreas Areas
@@ -203,29 +203,6 @@ public class WorldStructure
             if (!CoastBlockerPolygon.Contains(right))
                 CoastBlockerPolygon.Add(right);
         }
-    }
-
-    private List<int> GetLargestPathInMST(Graph<Biome> mst)
-    {
-        return GetLargestPathRecursion(_terrainStructure.StartBiomeNode.Value, -1, mst);
-    }
-
-    private List<int> GetLargestPathRecursion(int currentNode, int parent, Graph<Biome> graph)
-    {
-        var path = new List<int> { currentNode };
-        var longest = new List<int>();
-        var neighborhood = graph.GetNeighbours(currentNode);
-        foreach (var neighbor in neighborhood)
-        {
-            if (neighbor == parent || neighbor == currentNode)
-                continue;
-
-            var newPath = GetLargestPathRecursion(neighbor, currentNode, graph);
-            if (newPath.Count > longest.Count)
-                longest = newPath;
-        }
-
-        return path.Concat(longest).ToList();
     }
 
     private HashSet<int> GetConnectedNodes(int currentNode, Graph<Biome> biomeGraph, HashSet<int> set)

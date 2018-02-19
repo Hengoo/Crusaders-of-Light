@@ -27,7 +27,7 @@ public class AreaIceWall : AreaBase
     //Generate the quests to be given to the quest controller
     public override QuestBase[] GenerateQuests(sceneryStructure sceneryStructure, int assignedArea)
     {
-        var worldStructure = sceneryStructure.WorldStructure;
+        var worldStructure = sceneryStructure.StoryStructure;
         var terrainStructure = sceneryStructure.TerrainStructure;
 
         //Get a random position for the fire mage TODO: improve this selection if needed

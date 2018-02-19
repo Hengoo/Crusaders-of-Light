@@ -215,12 +215,12 @@ public static class MapDataGenerator
     }
 
     // Generate blocking gameobjects along the coast to prevent players from going into the water
-    public static GameObject GenerateAreaWalls(Terrain terrain, WorldStructure worldStructure, GameObject blocker, float blockerLength)
+    public static GameObject GenerateAreaWalls(Terrain terrain, StoryStructure storyStructure, GameObject blocker, float blockerLength)
     {
         var result = new GameObject("Area Blockers");
 
         // Iterate over all coastal borders
-        foreach (var line in worldStructure.AreaBorders)
+        foreach (var line in storyStructure.AreaBorders)
         {
             var p0 = line[0];
             var p1 = line[1];
@@ -262,16 +262,16 @@ public static class MapDataGenerator
 
 
     // Generate blocking gameobjects along the coast to prevent players from going into the water
-    public static GameObject GenerateCoastFences(Terrain terrain, WorldStructure worldStructure, GameObject blocker, GameObject pole, float blockerLength)
+    public static GameObject GenerateCoastFences(Terrain terrain, StoryStructure storyStructure, GameObject blocker, GameObject pole, float blockerLength)
     {
         var result = new GameObject("Coast Blockers");
 
         // Iterate over all coastal borders
         Transform lastTransform = null;
-        for (var i = 0; i < worldStructure.CoastBlockerPolygon.Count; i++)
+        for (var i = 0; i < storyStructure.CoastBlockerPolygon.Count; i++)
         {
-            var p0 = worldStructure.CoastBlockerPolygon[i];
-            var p1 = i != worldStructure.CoastBlockerPolygon.Count - 1 ? worldStructure.CoastBlockerPolygon[i + 1] : worldStructure.CoastBlockerPolygon[0];
+            var p0 = storyStructure.CoastBlockerPolygon[i];
+            var p1 = i != storyStructure.CoastBlockerPolygon.Count - 1 ? storyStructure.CoastBlockerPolygon[i + 1] : storyStructure.CoastBlockerPolygon[0];
 
             //Discretize line and get direction normalized
             var direction = (p1 - p0).normalized;
