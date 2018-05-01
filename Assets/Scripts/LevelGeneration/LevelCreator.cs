@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
-public class MapGenerator : MonoBehaviour
+public class LevelCreator : MonoBehaviour
 {
 
     public enum DrawModeEnum
@@ -30,9 +30,9 @@ public class MapGenerator : MonoBehaviour
     public bool GenerateOnPlay = false;
     public int Seed = 0;
 
-    public TerrainStructure TerrainStructure { get; private set; }
-    public StoryStructure StoryStructure { get; private set; }
-    public sceneryStructure SceneryStructure { get; private set; }
+    public TerrainStructure MyTerrainStructure { get; private set; }
+    public StoryStructure MyStoryStructure { get; private set; }
+    public SceneryStructure MySceneryStructure { get; private set; }
     public Terrain Terrain { get; private set; }
 
    public void CreateMap()
@@ -53,12 +53,12 @@ public class MapGenerator : MonoBehaviour
         ClearDisplay();
         Random.InitState(Seed);
 
-        TerrainStructure = new TerrainStructure(AvailableBiomes, BiomeGlobalConfiguration);
+        MyTerrainStructure = new TerrainStructure(AvailableBiomes, BiomeGlobalConfiguration);
         if (DrawMode == DrawModeEnum.AreaGraph || DrawMode == DrawModeEnum.GameMap)
         {
-            StoryStructure = new StoryStructure(TerrainStructure, NormalAreas.Length + 1, ExtraEdges);
+            MyStoryStructure = new StoryStructure(AvailableBiomes, 0, 1, 20, BossArea, new CharacterEnemy[4]);
             if (DrawMode == DrawModeEnum.GameMap)
-                SceneryStructure = new sceneryStructure(TerrainStructure, StoryStructure, NormalAreas, BossArea, RoadHalfWidth);
+                MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, NormalAreas, BossArea, RoadHalfWidth);
         }
 
         switch (DrawMode)
@@ -80,32 +80,25 @@ public class MapGenerator : MonoBehaviour
     void DrawGameMap()
     {
         /* Create heightmap */
-        var heightMap = MapDataGenerator.GenerateHeightMap(TerrainStructure);
+        var heightMap = LevelDataGenerator.GenerateHeightMap(MyTerrainStructure);
 
         /* Create splat textures alphamap */
-        var alphamap = MapDataGenerator.GenerateAlphaMap(TerrainStructure);
-
-        /* Draw borders */
-        //MapDataGenerator.EncloseAreas(_terrainStructure, heightMap, _worldStructure.AreaBorders, 3);
+        var alphamap = LevelDataGenerator.GenerateAlphaMap(MyTerrainStructure);
 
         /* Draw roads onto alphamap */
-        MapDataGenerator.DrawLineRoads(TerrainStructure, heightMap, alphamap, SceneryStructure.RoadLines, 1);
+        LevelDataGenerator.DrawLineRoads(MyTerrainStructure, heightMap, alphamap, MyTerrainStructure.RoadLines, 1);
 
         /* Smoothing passes */
-        alphamap = MapDataGenerator.SmoothAlphaMap(alphamap, 1);
+        alphamap = LevelDataGenerator.SmoothAlphaMap(alphamap, 1);
         if (BiomeGlobalConfiguration.SmoothEdges)
         {
             //Smooth only navigable biome borders
-            MapDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeGlobalConfiguration.MapSize / BiomeGlobalConfiguration.HeightMapResolution, TerrainStructure.GetBiomeSmoothBorders(), BiomeGlobalConfiguration.EdgeWidth, BiomeGlobalConfiguration.SquareSize);
-
-            //Smooth all biome borders
-            //heightMap = MapDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeGlobalConfiguration.MapSize / BiomeGlobalConfiguration.HeightMapResolution, _terrainStructure.GetBiomeBorders(), 3, 2);
-
+            LevelDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeGlobalConfiguration.MapSize / BiomeGlobalConfiguration.HeightMapResolution, MyTerrainStructure.GetBiomeSmoothBorders(), BiomeGlobalConfiguration.EdgeWidth, BiomeGlobalConfiguration.SquareSize);
+            
             //Overall smoothing
             if (BiomeGlobalConfiguration.OverallSmoothing > 0)
             {
-                MapDataGenerator.SmoothHeightMap(heightMap, BiomeGlobalConfiguration.OverallSmoothing);
-                MapDataGenerator.SmoothHeightMap(heightMap, BiomeGlobalConfiguration.OverallSmoothing);
+                LevelDataGenerator.SmoothHeightMap(heightMap, BiomeGlobalConfiguration.OverallSmoothing, 2);
             }
         }
 
@@ -115,7 +108,7 @@ public class MapGenerator : MonoBehaviour
             baseMapResolution = BiomeGlobalConfiguration.HeightMapResolution,
             heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeGlobalConfiguration.HeightMapResolution) + 1,
             alphamapResolution = BiomeGlobalConfiguration.HeightMapResolution,
-            splatPrototypes = TerrainStructure.GetSplatPrototypes()
+            splatPrototypes = MyTerrainStructure.GetSplatPrototypes()
         };
         terrainData.SetDetailResolution(BiomeGlobalConfiguration.HeightMapResolution, 32);
         terrainData.size = new Vector3(BiomeGlobalConfiguration.MapSize, BiomeGlobalConfiguration.MapHeight, BiomeGlobalConfiguration.MapSize);
@@ -131,20 +124,16 @@ public class MapGenerator : MonoBehaviour
         //terrain.GetComponent<Terrain>().materialTemplate = BiomeGlobalConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
 
         /* Add fences to coast */
-        var fences = MapDataGenerator.GenerateCoastFences(Terrain, StoryStructure,
-            BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerPole, BiomeGlobalConfiguration.CoastBlockerLength);
+        var fences = LevelDataGenerator.GenerateOuterFences(Terrain, MyTerrainStructure, BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerPole, BiomeGlobalConfiguration.CoastBlockerLength);
         fences.transform.parent = Terrain.transform;
 
-        var walls = MapDataGenerator.GenerateAreaWalls(Terrain, StoryStructure, BiomeGlobalConfiguration.AreaBlocker,
-            BiomeGlobalConfiguration.AreaBlockerLength);
+        var walls = LevelDataGenerator.GenerateAreaWalls(Terrain, MyTerrainStructure, BiomeGlobalConfiguration.AreaBlocker, BiomeGlobalConfiguration.AreaBlockerLength);
         walls.transform.parent = Terrain.transform;
 
         /* Fill terrain with scenery */
         if (FillTerrain)
         {
-            var spawnPoints = SceneryStructure.GenerateSpawners(Terrain, SpawnerPrefab);
-            spawnPoints.transform.parent = Terrain.transform;
-            var sceneryObjects = SceneryStructure.GenerateScenery(Terrain.GetComponent<Terrain>());
+            var sceneryObjects = LevelDataGenerator.GenerateScenery(Terrain.GetComponent<Terrain>());
             var scenery = new GameObject("Scenery");
             scenery.transform.parent = Terrain.transform;
             foreach (var obj in sceneryObjects)
@@ -165,16 +154,12 @@ public class MapGenerator : MonoBehaviour
 
     void DrawGraph()
     {
-        var newGraphInstance = TerrainStructure.DrawBiomeGraph(BiomeGlobalConfiguration.HeightMapResolution / 500f);
-        newGraphInstance.name = "BiomeGraph";
-        newGraphInstance.transform.parent = transform;
+        //TODO: debug class
     }
 
     void DrawAreaGraph()
     {
-        var newAreaGraphInstance = StoryStructure.DrawAreaGraph(BiomeGlobalConfiguration.HeightMapResolution / 500f);
-        newAreaGraphInstance.name = "AreaGraph";
-        newAreaGraphInstance.transform.parent = transform;
+        //TODO: debug class
     }
 
     void ClearDisplay()

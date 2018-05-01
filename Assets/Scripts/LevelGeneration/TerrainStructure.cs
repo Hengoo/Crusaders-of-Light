@@ -7,7 +7,7 @@ using csDelaunay;
 
 public class TerrainStructure
 {
-    
+
     public Voronoi VoronoiDiagram { get; private set; }
     public Graph<Biome> BiomeGraph { get; private set; }
     public Graph<Biome> MinimumSpanningTree { get; private set; }
@@ -19,7 +19,12 @@ public class TerrainStructure
     private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap = new Dictionary<SplatPrototypeSerializable, int>(); //Mapping of biome SplatPrototypes and terrain texture IDs
 
     public int TextureCount { get { return _splatIDMap.Count; } }
+
     public readonly int RoadSplatIndex;
+
+    public List<Vector2[]> RoadLines;
+    public List<Vector2[]> AreaBorders;
+    public List<Vector2> OuterBorderPolygon { get; private set; }
 
     private Texture2D _blankSpec;
     private Texture2D _blankBump;
@@ -42,7 +47,7 @@ public class TerrainStructure
 
             Shader.SetGlobalTexture("_BumpMap" + count, biome.Splat.normalMap ? biome.Splat.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1/biome.Splat.tileSize.x);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / biome.Splat.tileSize.x);
             count++;
         }
 
@@ -50,9 +55,10 @@ public class TerrainStructure
         if (!_splatIDMap.ContainsKey(biomeGlobalConfiguration.BorderBiome.Splat))
         {
             _splatIDMap.Add(BiomeGlobalConfiguration.BorderBiome.Splat, count);
+
             Shader.SetGlobalTexture("_BumpMap" + count, BiomeGlobalConfiguration.BorderBiome.Splat.normalMap ? BiomeGlobalConfiguration.BorderBiome.Splat.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1/BiomeGlobalConfiguration.BorderBiome.Splat.tileSize.x);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / BiomeGlobalConfiguration.BorderBiome.Splat.tileSize.x);
             count++;
         }
 
@@ -60,6 +66,7 @@ public class TerrainStructure
         if (!_splatIDMap.ContainsKey(biomeGlobalConfiguration.RoadSplatPrototype))
         {
             _splatIDMap.Add(biomeGlobalConfiguration.RoadSplatPrototype, count);
+
             Shader.SetGlobalTexture("_BumpMap" + count, biomeGlobalConfiguration.RoadSplatPrototype.normalMap ? biomeGlobalConfiguration.RoadSplatPrototype.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
             Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / biomeGlobalConfiguration.RoadSplatPrototype.tileSize.x);
@@ -79,7 +86,7 @@ public class TerrainStructure
 
         VoronoiDiagram = new Voronoi(centers, new Rectf(0, 0, biomeGlobalConfiguration.MapSize, biomeGlobalConfiguration.MapSize));
         VoronoiDiagram.LloydRelaxation(biomeGlobalConfiguration.LloydRelaxation);
-        
+
 
         //Iterate over each site and add a random biome to it
         foreach (var site in VoronoiDiagram.SiteCoords())
@@ -234,7 +241,7 @@ public class TerrainStructure
 
             var p0 = edge.ClippedEnds[LR.LEFT].ToUnityVector2();
             var p1 = edge.ClippedEnds[LR.RIGHT].ToUnityVector2();
-            var segment = new []{p0, p1};
+            var segment = new[] { p0, p1 };
             result.Add(segment);
         }
 
@@ -304,79 +311,6 @@ public class TerrainStructure
         }
 
         return result;
-    }
-
-    public GameObject DrawBiomeGraph(float scale)
-    {
-        var result = new GameObject();
-
-        var biomes = new GameObject("Biomes");
-        biomes.transform.parent = result.transform;
-        var voronoi = new GameObject("Voronoi");
-        voronoi.transform.parent = result.transform;
-        var delaunay = new GameObject("Modified Delaunay");
-        delaunay.transform.parent = result.transform;
-
-        foreach (var biome in _siteBiomeMap)
-        {
-            var pos = new Vector2(biome.Key.x, biome.Key.y);
-            var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            go.name = "Biome id: " + biome.Value;
-            go.GetComponent<Collider>().enabled = false;
-            go.transform.parent = biomes.transform;
-            go.transform.position = new Vector3(pos.x, 0, pos.y);
-            go.transform.localScale = Vector3.one * 20 * scale;
-            if (biome.Value == StartBiomeNode.Value)
-            {
-                var renderer = go.GetComponent<Renderer>();
-                var tempMaterial = new Material(renderer.sharedMaterial) { color = Color.red };
-                renderer.sharedMaterial = tempMaterial;
-            }
-        }
-
-        DrawLineSegments(VoronoiDiagram.VoronoiDiagram(), scale, voronoi.transform);
-
-        foreach (var edge in BiomeGraph.GetAllEdges())
-        {
-            var biome1 = BiomeGraph.GetNodeData(edge.x);
-            var biome2 = BiomeGraph.GetNodeData(edge.y);
-
-            var start = new Vector3(biome1.Center.x, 0, biome1.Center.y);
-            var end = new Vector3(biome2.Center.x, 0, biome2.Center.y);
-            GameObject myLine = new GameObject("Line");
-            myLine.transform.position = start;
-            myLine.transform.parent = delaunay.transform;
-            LineRenderer lr = myLine.AddComponent<LineRenderer>();
-            lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
-            lr.startColor = Color.white;
-            lr.endColor = Color.white;
-            lr.startWidth = 2 * scale;
-            lr.endWidth = 2 * scale;
-            lr.SetPosition(0, start);
-            lr.SetPosition(1, end);
-        }
-
-        return result;
-    }
-
-    private void DrawLineSegments(IEnumerable<LineSegment> lines, float scale, Transform parent)
-    {
-        foreach (var line in lines)
-        {
-            var start = new Vector3(line.p0.x, 0, line.p0.y);
-            var end = new Vector3(line.p1.x, 0, line.p1.y);
-            GameObject myLine = new GameObject("Line");
-            myLine.transform.position = start;
-            myLine.transform.parent = parent;
-            LineRenderer lr = myLine.AddComponent<LineRenderer>();
-            lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
-            lr.startColor = Color.white;
-            lr.endColor = Color.white;
-            lr.startWidth = 2 * scale;
-            lr.endWidth = 2 * scale;
-            lr.SetPosition(0, start);
-            lr.SetPosition(1, end);
-        }
     }
 
     /* Generate paths between existing biomes */
@@ -476,6 +410,3 @@ public class TerrainStructure
         return texture;
     }
 }
-
-
-

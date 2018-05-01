@@ -7,7 +7,7 @@ using Image = UnityEngine.UI.Image;
 
 public class LevelController : Singleton<LevelController>
 {
-    public MapGenerator MapGenerator;
+    public LevelCreator LevelCreator;
     public QuestController QuestController;
 
     public CharacterPlayer[] PlayerCharacters;
@@ -34,7 +34,7 @@ public class LevelController : Singleton<LevelController>
     {
 
         InitializeLevel();
-        MapGenerator.CreateMap();
+        LevelCreator.CreateMap();
         StartCoroutine(DisplayIntro(10));
     }
 
@@ -212,10 +212,8 @@ public class LevelController : Singleton<LevelController>
 
     public void StartGame()
     {
-        var sceneryStructure = MapGenerator.SceneryStructure;
-        var terrain = MapGenerator.Terrain;
-
-        var terrainStructure = sceneryStructure.TerrainStructure;
+        var terrain = LevelCreator.Terrain;
+        var terrainStructure = LevelCreator.MyTerrainStructure;
         var startPosition2D = terrainStructure.BiomeGraph.GetNodeData(terrainStructure.StartBiomeNode.Value).Center;
         for (var i = 0; i < GameController.Instance.ActivePlayers; i++)
         {

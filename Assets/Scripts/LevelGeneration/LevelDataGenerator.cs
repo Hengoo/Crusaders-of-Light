@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public static class MapDataGenerator
+public static class LevelDataGenerator
 {
     // Generate a heightmap given terrain structure and biome configuration
     public static float[,] GenerateHeightMap(TerrainStructure terrainStructure)
@@ -27,8 +27,10 @@ public static class MapDataGenerator
 
                 for (int i = 0; i < octavesOffset.Length; i++)
                 {
-                    var sampleX = (x + octavesOffset[i].x) / biomeConfiguration.MapSize * frequency * (biomeHeight.Scale * cellSize);
-                    var sampleY = (y + octavesOffset[i].y) / biomeConfiguration.MapSize * frequency * (biomeHeight.Scale * cellSize);
+                    var sampleX = (x + octavesOffset[i].x) / biomeConfiguration.MapSize * frequency *
+                                  (biomeHeight.Scale * cellSize);
+                    var sampleY = (y + octavesOffset[i].y) / biomeConfiguration.MapSize * frequency *
+                                  (biomeHeight.Scale * cellSize);
 
                     /* Noise between -1 and 1 */
                     noiseHeight += (Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1) * amplitude;
@@ -37,7 +39,8 @@ public static class MapDataGenerator
                     frequency *= biomeHeight.Lacunarity;
                 }
                 float normalizedHeight = Mathf.InverseLerp(-1f, 1f, noiseHeight);
-                float globalHeight = (biomeHeight.LocalMax - biomeHeight.LocalMin) * normalizedHeight + biomeHeight.LocalMin;
+                float globalHeight = (biomeHeight.LocalMax - biomeHeight.LocalMin) * normalizedHeight +
+                                     biomeHeight.LocalMin;
                 result[y, x] = globalHeight;
             }
         }
@@ -49,7 +52,8 @@ public static class MapDataGenerator
     public static float[,,] GenerateAlphaMap(TerrainStructure terrainStructure)
     {
         var biomeConfiguration = terrainStructure.BiomeGlobalConfiguration;
-        var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution, terrainStructure.TextureCount];
+        var result = new float[biomeConfiguration.HeightMapResolution, biomeConfiguration.HeightMapResolution,
+            terrainStructure.TextureCount];
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
         for (int y = 0; y < biomeConfiguration.HeightMapResolution; y++)
@@ -69,7 +73,7 @@ public static class MapDataGenerator
     // Smooth every cell in the alphamap using squareSize neighbors in each direction
     public static float[,,] SmoothAlphaMap(float[,,] alphamap, int squareSize)
     {
-        var result = (float[,,])alphamap.Clone();
+        var result = (float[,,]) alphamap.Clone();
         var length = alphamap.GetLength(0);
 
         for (var y = 0; y < length; y++)
@@ -98,29 +102,16 @@ public static class MapDataGenerator
         return result;
     }
 
-    // Generate blocking heightmap elements in the specified area borders
-    public static void EncloseAreas(TerrainStructure terrainStructure, float[,] heightmap, List<Vector2[]> areaBorders,
-        int squareSize)
-    {
-        var biomeConfiguration = terrainStructure.BiomeGlobalConfiguration;
-        var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
-
-        // Find cells covered by the borders
-        var indexes = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, areaBorders, squareSize, true);
-        foreach (var index in indexes)
-        {
-            heightmap[index.x, index.y] = 1; //set to max height
-        }
-    }
-
     // Draw roads onto the alpha and height maps
-    public static void DrawLineRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, List<Vector2[]> roads, int squareSize)
+    public static void DrawLineRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap,
+        List<Vector2[]> roads, int squareSize)
     {
         var biomeConfiguration = terrainStructure.BiomeGlobalConfiguration;
         var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
 
         // Find cells covered by the road polygon
-        var cellsToSmooth = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, roads, squareSize, true).ToArray();
+        var cellsToSmooth = DiscretizeLines(biomeConfiguration.HeightMapResolution, cellSize, roads, squareSize, true)
+            .ToArray();
 
         // Set alphamap values to only road draw
         foreach (var index in cellsToSmooth)
@@ -136,65 +127,46 @@ public static class MapDataGenerator
         SmoothHeightMapCells(heightmap, cellsToSmooth, squareSize + 2);
     }
 
-
-    // Draw roads onto the alpha and height maps - TODO: future work
-    public static void DrawPolygonalRoads(TerrainStructure terrainStructure, float[,] heightMap, float[,,] alphamap, List<Vector2[]> roads)
-    {
-        var biomeConfiguration = terrainStructure.BiomeGlobalConfiguration;
-        var cellSize = biomeConfiguration.MapSize / biomeConfiguration.HeightMapResolution;
-        var indexes = new HashSet<Vector2Int>();
-
-        // Find cells covered by the road polygon
-        foreach (var road in roads)
-            indexes.UnionWith(DiscretizeConvexPolygon(biomeConfiguration.HeightMapResolution, cellSize, road));
-
-        // Set alphamap values to only road draw
-        foreach (var index in indexes)
-        {
-            // Other textures to 0
-            for (var i = 0; i < terrainStructure.TextureCount; i++)
-            {
-                alphamap[index.x, index.y, i] = 0.00001f;
-            }
-
-            // Road texture to 1
-            alphamap[index.x, index.y, terrainStructure.RoadSplatIndex] = 1;
-        }
-    }
-
     // Smooth every cell in the heightmap using squareSize neighbors in each direction
-    public static void SmoothHeightMap(float[,] heightMap, int squareSize)
+    public static void SmoothHeightMap(float[,] heightMap, int squareSize, int passes)
     {
-        var temp = (float[,])heightMap.Clone();
+        var temp = (float[,]) heightMap.Clone();
         var length = heightMap.GetLength(0);
 
-        for (var y = 0; y < length; y++)
+        while (passes > 0)
         {
-            for (var x = 0; x < length; x++)
-            {
-                var count = 0;
-                var sum = 0.0f;
-                for (var yN = y - squareSize; yN < y + squareSize; yN++)
-                {
-                    for (var xN = x - squareSize; xN <= x + squareSize; xN++)
-                    {
-                        if (xN < 0 || xN >= length || yN < 0 || yN >= length)
-                            continue;
+            passes--;
 
-                        sum += temp[xN, yN];
-                        count++;
+            for (var y = 0; y < length; y++)
+            {
+                for (var x = 0; x < length; x++)
+                {
+                    var count = 0;
+                    var sum = 0.0f;
+                    for (var yN = y - squareSize; yN < y + squareSize; yN++)
+                    {
+                        for (var xN = x - squareSize; xN <= x + squareSize; xN++)
+                        {
+                            if (xN < 0 || xN >= length || yN < 0 || yN >= length)
+                                continue;
+
+                            sum += temp[xN, yN];
+                            count++;
+                        }
                     }
+                    heightMap[x, y] = sum / count;
                 }
-                heightMap[x, y] = sum / count;
             }
         }
     }
 
     // Smooth a heightmap along given lines
-    public static void SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<Vector2[]> lines, int lineWidth, int squareSize)
+    public static void SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<Vector2[]> lines,
+        int lineWidth, int squareSize)
     {
         var length = heightMap.GetLength(0);
-        var cellsToSmooth = new HashSet<Vector2Int>(DiscretizeLines(heightMap.GetLength(0), cellSize, lines, lineWidth, false));
+        var cellsToSmooth =
+            new HashSet<Vector2Int>(DiscretizeLines(heightMap.GetLength(0), cellSize, lines, lineWidth, false));
 
         // Add extra cells to the line thickness
         var tempCopy = new HashSet<Vector2Int>(cellsToSmooth);
@@ -215,12 +187,12 @@ public static class MapDataGenerator
     }
 
     // Generate blocking gameobjects along the coast to prevent players from going into the water
-    public static GameObject GenerateAreaWalls(Terrain terrain, StoryStructure storyStructure, GameObject blocker, float blockerLength)
+    public static GameObject GenerateAreaWalls(Terrain terrain, TerrainStructure terrainStructure, GameObject blocker, float blockerLength)
     {
         var result = new GameObject("Area Blockers");
 
         // Iterate over all coastal borders
-        foreach (var line in storyStructure.AreaBorders)
+        foreach (var line in terrainStructure.AreaBorders)
         {
             var p0 = line[0];
             var p1 = line[1];
@@ -248,7 +220,8 @@ public static class MapDataGenerator
                     var orientation = lastTransform.position - position;
                     go = Object.Instantiate(blocker);
                     go.transform.rotation = Quaternion.LookRotation(orientation.normalized, Vector3.up);
-                    go.transform.localScale = new Vector3(1, 2, 1 + (orientation.magnitude - blockerLength) / blockerLength);
+                    go.transform.localScale =
+                        new Vector3(1, 2, 1 + (orientation.magnitude - blockerLength) / blockerLength);
                 }
                 go.transform.position = position;
                 go.transform.parent = lineGO.transform;
@@ -262,16 +235,18 @@ public static class MapDataGenerator
 
 
     // Generate blocking gameobjects along the coast to prevent players from going into the water
-    public static GameObject GenerateCoastFences(Terrain terrain, StoryStructure storyStructure, GameObject blocker, GameObject pole, float blockerLength)
+    public static GameObject GenerateOuterFences(Terrain terrain, TerrainStructure terrainStructure, GameObject blocker, GameObject pole, float blockerLength)
     {
         var result = new GameObject("Coast Blockers");
 
         // Iterate over all coastal borders
         Transform lastTransform = null;
-        for (var i = 0; i < storyStructure.CoastBlockerPolygon.Count; i++)
+        for (var i = 0; i < terrainStructure.OuterBorderPolygon.Count; i++)
         {
-            var p0 = storyStructure.CoastBlockerPolygon[i];
-            var p1 = i != storyStructure.CoastBlockerPolygon.Count - 1 ? storyStructure.CoastBlockerPolygon[i + 1] : storyStructure.CoastBlockerPolygon[0];
+            var p0 = terrainStructure.OuterBorderPolygon[i];
+            var p1 = i != terrainStructure.OuterBorderPolygon.Count - 1
+                ? terrainStructure.OuterBorderPolygon[i + 1]
+                : terrainStructure.OuterBorderPolygon[0];
 
             //Discretize line and get direction normalized
             var direction = (p1 - p0).normalized;
@@ -295,7 +270,8 @@ public static class MapDataGenerator
                     var orientation = lastTransform.position - position;
                     go = Object.Instantiate(blocker);
                     go.transform.rotation = Quaternion.LookRotation(orientation.normalized, Vector3.up);
-                    go.transform.localScale = new Vector3(1, 1, 1 + (orientation.magnitude - blockerLength) / blockerLength);
+                    go.transform.localScale =
+                        new Vector3(1, 1, 1 + (orientation.magnitude - blockerLength) / blockerLength);
                 }
                 go.transform.position = position;
                 go.transform.parent = line.transform;
@@ -307,16 +283,22 @@ public static class MapDataGenerator
         return result;
     }
 
-    /*
-     * 
-     * HELPER PRIVATE FUNCTIONS
-     * 
-     */
+    public static GameObject[] GenerateScenery(Terrain terrain)
+    {
+        //TODO: implement
+        return null;
+    }
+
+    //---------------------------------------------------------------------
+    // 
+    // HELPER PRIVATE FUNCTIONS
+    // 
+    //---------------------------------------------------------------------
 
     // Smooth cells using a 2*neighborcount + 1 square around each cell
     private static void SmoothHeightMapCells(float[,] heightMap, IEnumerable<Vector2Int> cellsToSmooth, int squareSize)
     {
-        var temp = (float[,])heightMap.Clone();
+        var temp = (float[,]) heightMap.Clone();
         var length = heightMap.GetLength(0);
 
         foreach (var cell in cellsToSmooth)
@@ -338,60 +320,9 @@ public static class MapDataGenerator
         }
     }
 
-    // Discretize a polygon onto a grid - Polygon Flooding - TODO: fix in future work
-    private static IEnumerable<Vector2Int> DiscretizeConvexPolygon(int resolution, float cellSize, IList<Vector2> vertices)
-    {
-        var lines = new List<Vector2[]>();
-        for (var i = 0; i < vertices.Count - 1; i++)
-        {
-            lines.Add(new[] { vertices[i], vertices[i + 1] });
-        }
-        lines.Add(new[] { vertices[vertices.Count - 1], vertices[0] });
-
-        var result = new HashSet<Vector2Int>();
-        var discretizedBorders = new HashSet<Vector2Int>[lines.Count];
-
-        // Get grid cell borders
-        for (var i = 0; i < lines.Count; i++)
-        {
-            discretizedBorders[i] = BresenhamLine(resolution, cellSize, lines[i], 1, false);
-            result.UnionWith(discretizedBorders[i]);
-        }
-
-        // Get geometry center as starting point
-        var startingPoint = new Vector2();
-        var count = 0;
-        foreach (var line in lines)
-        {
-            startingPoint += line[0];
-            count++;
-        }
-        startingPoint /= count;
-
-        // Flood the inside part of the polygon
-        //var floodQueue = new Queue<Vector2Int>(1024);
-        //floodQueue.Enqueue(new Vector2Int(Mathf.FloorToInt(startingPoint.x / cellSize), Mathf.FloorToInt(startingPoint.y / cellSize)));
-        //while (floodQueue.Count > 0)
-        //{
-        //    var currentCell = floodQueue.Dequeue();
-        //    result.Add(currentCell);
-
-        //    var right = currentCell + new Vector2Int(1, 0);
-        //    var left = currentCell + new Vector2Int(-1, 0);
-        //    var top = currentCell + new Vector2Int(0, 1);
-        //    var bottom = currentCell + new Vector2Int(0, -1);
-
-        //    if (!result.Contains(right) && !floodQueue.Contains(right) && right.x >= 0 && right.x < resolution) floodQueue.Enqueue(right);
-        //    if (!result.Contains(left) && !floodQueue.Contains(left) && left.x >= 0 && left.x < resolution) floodQueue.Enqueue(left);
-        //    if (!result.Contains(top) && !floodQueue.Contains(top) && top.y >= 0 && top.y < resolution) floodQueue.Enqueue(top);
-        //    if (!result.Contains(bottom) && !floodQueue.Contains(bottom) && bottom.y >= 0 && bottom.y < resolution) floodQueue.Enqueue(bottom);
-        //}
-
-        return result;
-    }
-
     // Match multiple lines to cells in a grid
-    private static IEnumerable<Vector2Int> DiscretizeLines(int resolution, float cellSize, IEnumerable<Vector2[]> lines, int lineWidth, bool addNoise)
+    private static IEnumerable<Vector2Int> DiscretizeLines(int resolution, float cellSize, IEnumerable<Vector2[]> lines,
+        int lineWidth, bool addNoise)
     {
         var result = new HashSet<Vector2Int>();
         foreach (var line in lines)
@@ -402,7 +333,8 @@ public static class MapDataGenerator
     }
 
     // Match a line to cells in a grid
-    private static HashSet<Vector2Int> BresenhamLine(int resolution, float cellSize, IList<Vector2> line, int lineWidth, bool addNoise)
+    private static HashSet<Vector2Int> BresenhamLine(int resolution, float cellSize, IList<Vector2> line, int lineWidth,
+        bool addNoise)
     {
         var result = new HashSet<Vector2Int>();
 
@@ -422,9 +354,12 @@ public static class MapDataGenerator
 
         int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
 
-        if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
-        if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
-        if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
+        if (w < 0) dx1 = -1;
+        else if (w > 0) dx1 = 1;
+        if (h < 0) dy1 = -1;
+        else if (h > 0) dy1 = 1;
+        if (w < 0) dx2 = -1;
+        else if (w > 0) dx2 = 1;
 
         int longest = Mathf.Abs(w);
         int shortest = Mathf.Abs(h);
@@ -432,7 +367,8 @@ public static class MapDataGenerator
         {
             longest = Mathf.Abs(h);
             shortest = Mathf.Abs(w);
-            if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
+            if (h < 0) dy2 = -1;
+            else if (h > 0) dy2 = 1;
             dx2 = 0;
         }
         int numerator = longest >> 1;
@@ -454,8 +390,6 @@ public static class MapDataGenerator
         var temp = new HashSet<Vector2Int>(result);
         foreach (var cell in temp)
         {
-
-
             int random = Random.Range(0, 5);
             int top = 0, bottom = 0, right = 0, left = 0;
             switch (random)

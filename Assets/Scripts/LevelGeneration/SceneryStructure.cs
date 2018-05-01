@@ -1,54 +1,49 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using csDelaunay;
 using UnityEngine;
 using UnityEngine.Networking.Types;
 using Debug = UnityEngine.Debug;
 
-public class sceneryStructure
+public class SceneryStructure
 {
-    public List<SceneryAreaFill> SceneryAreas { get; private set; }
-    public TerrainStructure TerrainStructure { get; private set; }
+    public List<PoissonDiskFill> SceneryAreas { get; private set; }
     public StoryStructure StoryStructure { get; private set; }
     public List<Vector2[]> RoadPolygons { get; private set; }
-    public List<Vector2[]> RoadLines { get; private set; }
 
     public AreaBase[] NormalAreas { get; private set; }
     public AreaBase BossArea { get; private set; }
 
-    private List<GameObject> _sceneryQuestObjects = new List<GameObject>();
-
-    public sceneryStructure(TerrainStructure terrainStructure, StoryStructure storyStructure, AreaBase[] normalAreas, AreaBase bossArea, float roadWidth)
+    public SceneryStructure(StoryStructure storyStructure, TerrainStructure terrainStructure, AreaBase[] normalAreas, AreaBase bossArea, float roadWidth)
     {
-        SceneryAreas = new List<SceneryAreaFill>();
+        SceneryAreas = new List<PoissonDiskFill>();
         RoadPolygons = new List<Vector2[]>();
-        RoadLines = new List<Vector2[]>();
 
-        TerrainStructure = terrainStructure;
         StoryStructure = storyStructure;
 
         NormalAreas = normalAreas;
         BossArea = bossArea;
 
-        CreateScenery(roadWidth);
+        CreateScenery(roadWidth, terrainStructure);
     }
 
-    private void CreateScenery(float roadWidth)
+    private void CreateScenery(float roadWidth, TerrainStructure terrainStructure)
     {
         //Get the biome edges from the terrain structure and create areas to fill with prefabs and quests
         List<GameObject[]> prefabs;
         List<float> minDistances;
-        var polygons = TerrainStructure.GetBiomePolygons(out prefabs, out minDistances);
+        var polygons = terrainStructure.GetBiomePolygons(out prefabs, out minDistances);
         for (var i = 0; i < polygons.Count; i++)
         {
-            SceneryAreas.Add(new SceneryAreaFill(prefabs[i], polygons[i], minDistances[i]));
+            SceneryAreas.Add(new PoissonDiskFill(prefabs[i], polygons[i], minDistances[i]));
         }
 
         //Fill areas 
         var quests = new List<QuestBase>();
         for (var i = 0; i < NormalAreas.Length; i++)
-            quests = quests.Concat(NormalAreas[i].GenerateQuests(this, i)).ToList();
-        quests = quests.Concat(BossArea.GenerateQuests(this, NormalAreas.Length + 1)).ToList();
+            quests = quests.Concat(NormalAreas[i].GenerateQuests(terrainStructure, this, i)).ToList();
+        quests = quests.Concat(BossArea.GenerateQuests(terrainStructure, this, NormalAreas.Length + 1)).ToList();
 
         var levelController = LevelController.Instance;
         if (!levelController)
@@ -62,27 +57,6 @@ public class sceneryStructure
         foreach (var quest in quests)
             levelController.QuestController.AddQuest(quest);
 
-        //Create road polygons and road lines
-        foreach (var edge in StoryStructure.NavigationGraph.GetAllEdges().Union(StoryStructure.AreaCrossingNavigationEdges))
-        {
-            var start = TerrainStructure.BiomeGraph.GetNodeData(edge.x).Center;
-            var end = TerrainStructure.BiomeGraph.GetNodeData(edge.y).Center;
-
-            RoadLines.Add(new[] { start, end });
-
-            var line = (end - start).normalized;
-            var normal = (Vector2)Vector3.Cross(line, Vector3.forward).normalized;
-
-            var p0 = start - line * roadWidth + normal * roadWidth;
-            var p1 = start - line * roadWidth - normal * roadWidth;
-            var p2 = end + line * roadWidth + normal * roadWidth;
-            var p3 = end + line * roadWidth - normal * roadWidth;
-            var origin = (p0 + p1 + p2 + p3) / 4;
-
-            var poly = new List<Vector2> { p0, p1, p2, p3 };
-            poly.SortVertices(origin);
-            RoadPolygons.Add(poly.ToArray());
-        }
 
         //Add removal polygon to affected area fill
         foreach (var polygon in RoadPolygons)
@@ -98,118 +72,209 @@ public class sceneryStructure
         }
     }
 
-    /* Generate Spawners through the map */
-    public GameObject GenerateSpawners(Terrain terrain, GameObject spawnerPrefab)
+    private static List<Vector2[]> GenerateRoadPolygons(TerrainStructure terrainStructure, float roadWidth)
     {
-        var result = new GameObject("Spawners");
-
-        if (spawnerPrefab.GetComponent<Spawner>() == null)
-            Debug.LogError("No Spawner script attached to SpawnerPrefab");
-
-        foreach (var area in StoryStructure.AreaBiomes)
+        var result = new List<Vector2[]>();
+        foreach (var line in terrainStructure.RoadLines)
         {
-            foreach (var nodeID in area)
-            {
-                if(nodeID == TerrainStructure.StartBiomeNode.Value || nodeID == TerrainStructure.EndBiomeNode.Value) continue;
+            var start = line[0];
+            var end = line[1];
 
-                var biome = StoryStructure.NavigationGraph.GetNodeData(nodeID);
-                var spawnerObj = Object.Instantiate(spawnerPrefab);
-                var spawner = spawnerObj.GetComponent<Spawner>();
-                spawnerObj.transform.position = new Vector3(biome.Center.x, 0, biome.Center.y);
-                spawnerObj.transform.position += new Vector3(0, terrain.SampleHeight(spawner.transform.position) + 0.5f, 0);
-                spawnerObj.transform.parent = result.transform;
+            var direction = (end - start).normalized;
+            var normal = (Vector2)Vector3.Cross(direction, Vector3.forward).normalized;
 
-                var center = spawnerObj.transform.position;
-                spawner.Initialize(true, biome.BiomeLevel * 20, biome.BiomeLevel, biome.BiomeLevel, new[]
-                {
-                    center + Vector3.forward * 3,
-                    center + Vector3.back * 3,
-                    center + Vector3.left * 3,
-                    center + Vector3.right * 3
-                }, new []
-                {
-                    Quaternion.identity.eulerAngles,
-                    Quaternion.identity.eulerAngles,
-                    Quaternion.identity.eulerAngles,
-                    Quaternion.identity.eulerAngles
-                }, biome.BiomeSettings.BiomeTags);
-            }
+            var p0 = start - direction * roadWidth + normal * roadWidth;
+            var p1 = start - direction * roadWidth - normal * roadWidth;
+            var p2 = end + direction * roadWidth + normal * roadWidth;
+            var p3 = end + direction * roadWidth - normal * roadWidth;
+            var origin = (p0 + p1 + p2 + p3) / 4;
+
+            var poly = new List<Vector2> { p0, p1, p2, p3 };
+            poly.SortVertices(origin);
+            result.Add(poly.ToArray());
         }
 
         return result;
     }
 
-    /* Fill all areas with prefabs */
-    public IEnumerable<GameObject> GenerateScenery(Terrain terrain)
+    private static HashSet<int> GetAllNodesInArea(int currentNode, Graph<Biome> biomeGraph, HashSet<int> set)
     {
-        var result = new List<GameObject>();
-
-        var questObjects = new GameObject("Quest Objects");
-        result.Add(questObjects);
-        foreach (var obj in _sceneryQuestObjects)
+        set.Add(currentNode);
+        foreach (var neighbor in biomeGraph.GetNeighbours(currentNode))
         {
-            obj.transform.position += new Vector3(0, terrain.SampleHeight(obj.transform.position), 0);
-            obj.transform.parent = questObjects.transform;
+            if (set.Contains(neighbor)) continue;
+            set.UnionWith(GetAllNodesInArea(neighbor, biomeGraph, set));
         }
 
-        foreach (var sceneryArea in SceneryAreas)
+        return set;
+    }
+
+    private void GenerateOuterBorderPolygon(TerrainStructure terrainStructure, List<KeyValuePair<Edge, Vector2>> outerBorderEdges)
+    {
+        var coastBlockerPolygon = new List<Vector2>();
+        var coastLines = outerBorderEdges.Select(pair => pair.Key).ToList().EdgesToSortedLines();
+        foreach (var line in coastLines)
         {
-            var fill = FillSceneryArea(sceneryArea, terrain);
-            result.Add(fill);
+
+            //Offset borders towards biome center
+            var left = line[0];
+            var right = line[1];
+            var center = Vector2.zero;
+            outerBorderEdges.ForEach(e =>
+            {
+                var l = e.Key.ClippedEnds[LR.LEFT].ToUnityVector2();
+                var r = e.Key.ClippedEnds[LR.RIGHT].ToUnityVector2();
+                if ((l == left || l == right) && (r == left || r == right))
+                    center = e.Value;
+            });
+
+            left += (center - left).normalized * terrainStructure.BiomeGlobalConfiguration.CoastInlandOffset;
+            right += (center - right).normalized * terrainStructure.BiomeGlobalConfiguration.CoastInlandOffset;
+
+            //Offsetting can give duplicated points
+            if (!coastBlockerPolygon.Contains(left))
+                coastBlockerPolygon.Add(left);
+            if (!coastBlockerPolygon.Contains(right))
+                coastBlockerPolygon.Add(right);
         }
-        return result;
+    }
+
+
+    private static void CreateAreaPolygon(TerrainStructure terrainStructure, int numberOfAreas, HashSet<int>[] AreaBiomes, Vector2[][] AreaPolygons)
+    {
+        //Create area polygon
+        for (var i = 0; i < numberOfAreas; i++)
+        {
+            var areaEdges = new List<Edge>();
+
+            //Get the edges of this area
+            foreach (var edge in terrainStructure.VoronoiDiagram.Edges)
+            {
+                var biomeRight = terrainStructure.GetNodeIDFromSite(edge.RightSite.Coord);
+                var biomeLeft = terrainStructure.GetNodeIDFromSite(edge.LeftSite.Coord);
+
+                //Discard nodes in the same area or not in this area
+                if (!AreaBiomes[i].Contains(biomeRight) && !AreaBiomes[i].Contains(biomeLeft) ||
+                    AreaBiomes[i].Contains(biomeRight) && AreaBiomes[i].Contains(biomeLeft))
+                    continue;
+
+                areaEdges.Add(edge);
+            }
+
+            // Area Polygon
+            AreaPolygons[i] = areaEdges.EdgesToPolygon().ToArray();
+        }
     }
 
     /* Fill an area with prefabs */
-    private GameObject FillSceneryArea(SceneryAreaFill sceneryAreaFill, Terrain terrain)
+    private static GameObject PoissonDiskFill(TerrainStructure terrainStructure, PoissonDiskFill poissonDiskFill, Terrain terrain)
     {
         var result = new GameObject("SceneryAreaFill");
         result.transform.position = Vector3.zero;
         result.transform.rotation = Quaternion.identity;
 
-        if (sceneryAreaFill.Prefabs == null || sceneryAreaFill.Prefabs.Length <= 0)
+        if (poissonDiskFill.Prefabs == null || poissonDiskFill.Prefabs.Length <= 0)
             return result;
 
-        var size = sceneryAreaFill.Size;
-        PoissonDiskGenerator.minDist = sceneryAreaFill.MinDist;
+        var size = poissonDiskFill.FrameSize;
+        PoissonDiskGenerator.minDist = poissonDiskFill.MinDist;
         PoissonDiskGenerator.sampleRange = (size.x > size.y ? size.x : size.y);
         PoissonDiskGenerator.Generate();
         foreach (var sample in PoissonDiskGenerator.ResultSet)
         {
-            var point = sample + sceneryAreaFill.BoundMin;
+            var point = sample + poissonDiskFill.FramePosition;
             var height = terrain.SampleHeight(new Vector3(point.x, 0, point.y) - terrain.transform.position);
-            if (height <= (TerrainStructure.BiomeGlobalConfiguration.SeaHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
-                !point.IsInsidePolygon(sceneryAreaFill.Polygon) || //not outside of the area
-                !sceneryAreaFill.ClearPolygons.TrueForAll(a => !point.IsInsidePolygon(a))) //not inside of any clear polygon
+            if (height <= (terrainStructure.BiomeGlobalConfiguration.SeaHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
+                !point.IsInsidePolygon(poissonDiskFill.Polygon) || //not outside of the area
+                !poissonDiskFill.ClearPolygons.TrueForAll(a => !point.IsInsidePolygon(a)) //not inside of any clear polygon
+            )
                 continue;
 
-            var go = Object.Instantiate(sceneryAreaFill.Prefabs[Random.Range(0, sceneryAreaFill.Prefabs.Length)]);
+            var go = Object.Instantiate(poissonDiskFill.Prefabs[Random.Range(0, poissonDiskFill.Prefabs.Length)]);
             go.transform.position = new Vector3(point.x, height, point.y) + terrain.transform.position;
-            go.transform.rotation = Quaternion.Euler(go.transform.rotation.eulerAngles.x, Random.Range(0,360f), go.transform.rotation.eulerAngles.z); 
+            go.transform.rotation = Quaternion.Euler(go.transform.rotation.eulerAngles.x, Random.Range(0, 360f),
+                go.transform.rotation.eulerAngles.z);
             go.transform.parent = result.transform;
         }
 
         return result;
     }
 
-    // Add a scenery object that needs height adjustment when the terrain is generated
-    public void AddSceneryQuestObject(GameObject questObject)
+    private static void GenerateBorderEdges(TerrainStructure terrainStructure, int NumberOfAreas, HashSet<int>[] AreaBiomes, List<Vector2Int> AreaCrossingNavigationEdges, List<Vector2[]> AreaBorders, Vector2[][] AreaCrossingBorders)
     {
-        _sceneryQuestObjects.Add(questObject);
+        var innerBorderEdges = new List<Edge>(128);
+        var crossableEdges = new Edge[NumberOfAreas - 1];
+        var outerBorderEdges = new List<KeyValuePair<Edge, Vector2>>();
+
+        foreach (var edge in terrainStructure.VoronoiDiagram.Edges)
+        {
+
+            //Check if this edge is visible before continuing
+            if (!edge.Visible()) continue;
+
+            var biomeRight = terrainStructure.GetNodeIDFromSite(edge.RightSite.Coord);
+            var biomeLeft = terrainStructure.GetNodeIDFromSite(edge.LeftSite.Coord);
+            var areaRight = -1;
+            var areaLeft = -1;
+
+            //Check in which area each biome is
+            for (var i = 0; i < NumberOfAreas; i++)
+            {
+                if (AreaBiomes[i].Contains(biomeRight))
+                    areaRight = i;
+                if (AreaBiomes[i].Contains(biomeLeft))
+                    areaLeft = i;
+            }
+
+            //Check if areas differ
+            if (areaLeft == areaRight) continue;
+
+            //Check if any areas is a coastal area
+            if (areaLeft != -1 && areaRight != -1)
+            {
+                //Check if edge is crossable between areas or not
+                if (AreaCrossingNavigationEdges.Contains(new Vector2Int(biomeLeft, biomeRight))
+                    || AreaCrossingNavigationEdges.Contains(new Vector2Int(biomeRight, biomeLeft)))
+                {
+                    //Find lowest area id
+                    crossableEdges[areaLeft < areaRight ? areaLeft : areaRight] = edge;
+                }
+                else
+                    innerBorderEdges.Add(edge);
+            }
+            else
+            {
+                // Add coast edge with the biome center to scale inwards later
+                outerBorderEdges.Add(new KeyValuePair<Edge, Vector2>(edge, areaRight != -1 ? edge.RightSite.Coord.ToUnityVector2() : edge.LeftSite.Coord.ToUnityVector2()));
+            }
+        }
+
+        //Add local variables to global variables
+        foreach (var edge in innerBorderEdges)
+        {
+            if (!edge.Visible()) continue;
+            AreaBorders.Add(new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
+        }
+
+        for (var i = 0; i < AreaCrossingBorders.Length; i++)
+        {
+            var edge = crossableEdges[i];
+            AreaCrossingBorders[i] = new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() };
+        }
     }
 }
 
-public class SceneryAreaFill
+/* Class for a standard poisson disk fill */
+public class PoissonDiskFill
 {
     public readonly Vector2[] Polygon;
     public readonly List<Vector2[]> ClearPolygons;
     public readonly GameObject[] Prefabs;
-    public readonly Vector2 Size;
-    public readonly Vector2 BoundMin;
-    public readonly Vector2 BoundMax;
+    public readonly Vector2 FrameSize;
+    public readonly Vector2 FramePosition;
     public readonly float MinDist;
 
-    public SceneryAreaFill(GameObject[] prefabs, Vector2[] polygon, float minDist)
+    public PoissonDiskFill(GameObject[] prefabs, Vector2[] polygon, float minDist)
     {
         ClearPolygons = new List<Vector2[]>();
 
@@ -230,9 +295,8 @@ public class SceneryAreaFill
             maxY = Mathf.Max(point.y, maxY);
         }
 
-        BoundMin = new Vector2(minX, minY);
-        BoundMax = new Vector2(maxX, maxY);
-        Size = new Vector2(maxX - minX, maxY - minY);
+        FramePosition = new Vector2(minX, minY);
+        FrameSize = new Vector2(maxX - minX, maxY - minY);
     }
 
     public void AddClearPolygon(Vector2[] polygon)
@@ -240,4 +304,3 @@ public class SceneryAreaFill
         ClearPolygons.Add(polygon);
     }
 }
-

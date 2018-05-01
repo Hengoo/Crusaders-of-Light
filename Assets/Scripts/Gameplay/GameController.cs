@@ -5,9 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class GameController : Singleton<GameController>
 {
-
     public int Seed { get; private set; }
     public float Brightness { get; private set; }
+    public BiomeGlobalConfiguration biomeGlobalConfiguration { get; private set; }
+
     public GameStateEnum GameState = GameStateEnum.Menu;
     public int ActivePlayers = 4;
 
