@@ -5,9 +5,8 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
-public class LevelCreator : MonoBehaviour
+public class LevelCreator : Singleton<LevelCreator>
 {
-
     public enum DrawModeEnum
     {
         BiomeGraph,
@@ -53,10 +52,10 @@ public class LevelCreator : MonoBehaviour
         ClearDisplay();
         Random.InitState(Seed);
 
-        MyTerrainStructure = new TerrainStructure(AvailableBiomes, BiomeGlobalConfiguration);
+        MyStoryStructure = new StoryStructure(AvailableBiomes, 0, 1, 20, BossArea, new CharacterEnemy[4]);
         if (DrawMode == DrawModeEnum.AreaGraph || DrawMode == DrawModeEnum.GameMap)
         {
-            MyStoryStructure = new StoryStructure(AvailableBiomes, 0, 1, 20, BossArea, new CharacterEnemy[4]);
+            MyTerrainStructure = new TerrainStructure(MyStoryStructure);
             if (DrawMode == DrawModeEnum.GameMap)
                 MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, NormalAreas, BossArea, RoadHalfWidth);
         }
@@ -93,7 +92,7 @@ public class LevelCreator : MonoBehaviour
         if (BiomeGlobalConfiguration.SmoothEdges)
         {
             //Smooth only navigable biome borders
-            LevelDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeGlobalConfiguration.MapSize / BiomeGlobalConfiguration.HeightMapResolution, MyTerrainStructure.GetBiomeSmoothBorders(), BiomeGlobalConfiguration.EdgeWidth, BiomeGlobalConfiguration.SquareSize);
+            LevelDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeGlobalConfiguration.MapSize / BiomeGlobalConfiguration.HeightMapResolution, MyTerrainStructure.GetNonBlendingBiomeBorders(), BiomeGlobalConfiguration.EdgeWidth, BiomeGlobalConfiguration.SquareSize);
             
             //Overall smoothing
             if (BiomeGlobalConfiguration.OverallSmoothing > 0)

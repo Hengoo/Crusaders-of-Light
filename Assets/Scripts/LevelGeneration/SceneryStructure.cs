@@ -111,6 +111,7 @@ public class SceneryStructure
 
     private void GenerateOuterBorderPolygon(TerrainStructure terrainStructure, List<KeyValuePair<Edge, Vector2>> outerBorderEdges)
     {
+        var globalConfiguration = LevelCreator.Instance.BiomeGlobalConfiguration;
         var coastBlockerPolygon = new List<Vector2>();
         var coastLines = outerBorderEdges.Select(pair => pair.Key).ToList().EdgesToSortedLines();
         foreach (var line in coastLines)
@@ -128,8 +129,8 @@ public class SceneryStructure
                     center = e.Value;
             });
 
-            left += (center - left).normalized * terrainStructure.BiomeGlobalConfiguration.CoastInlandOffset;
-            right += (center - right).normalized * terrainStructure.BiomeGlobalConfiguration.CoastInlandOffset;
+            left += (center - left).normalized * globalConfiguration.CoastInlandOffset;
+            right += (center - right).normalized * globalConfiguration.CoastInlandOffset;
 
             //Offsetting can give duplicated points
             if (!coastBlockerPolygon.Contains(left))
@@ -176,6 +177,7 @@ public class SceneryStructure
         if (poissonDiskFill.Prefabs == null || poissonDiskFill.Prefabs.Length <= 0)
             return result;
 
+        var globalConfiguration = LevelCreator.Instance.BiomeGlobalConfiguration;
         var size = poissonDiskFill.FrameSize;
         PoissonDiskGenerator.minDist = poissonDiskFill.MinDist;
         PoissonDiskGenerator.sampleRange = (size.x > size.y ? size.x : size.y);
@@ -184,7 +186,7 @@ public class SceneryStructure
         {
             var point = sample + poissonDiskFill.FramePosition;
             var height = terrain.SampleHeight(new Vector3(point.x, 0, point.y) - terrain.transform.position);
-            if (height <= (terrainStructure.BiomeGlobalConfiguration.SeaHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
+            if (height <= (globalConfiguration.SeaHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
                 !point.IsInsidePolygon(poissonDiskFill.Polygon) || //not outside of the area
                 !poissonDiskFill.ClearPolygons.TrueForAll(a => !point.IsInsidePolygon(a)) //not inside of any clear polygon
             )

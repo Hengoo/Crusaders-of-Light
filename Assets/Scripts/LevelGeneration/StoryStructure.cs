@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 public class StoryStructure
 {
-    public BiomeSettings BiomeSettings { get; private set; }
+    public BiomeSettings Biome { get; private set; }
     public int DifficultyLevel { get; private set; }
     public int LootAmount { get; private set; }
     public int MainPathLength { get; private set; }
@@ -25,6 +25,6 @@ public class StoryStructure
         EnemySet = enemySet;
 
         // Select a random biome out of the available ones for the current level
-        BiomeSettings = availableBiomes[Random.Range(0, availableBiomes.Count)];
+        Biome = availableBiomes[Random.Range(0, availableBiomes.Count)];
     }    
 }
