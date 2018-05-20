@@ -7,18 +7,17 @@ public static class LevelDataGenerator
     // Generate a heightmap given terrain structure and biome configuration
     public static float[,] GenerateHeightMap(TerrainStructure terrainStructure)
     {
-        var globalConfiguration = LevelCreator.Instance.BiomeGlobalConfiguration;
-        var result = new float[globalConfiguration.HeightMapResolution, globalConfiguration.HeightMapResolution];
-        var cellSize = globalConfiguration.MapSize / globalConfiguration.HeightMapResolution;
+        var result = new float[terrainStructure.HeightMapResolution, terrainStructure.HeightMapResolution];
+        var cellSize = terrainStructure.MapSize / terrainStructure.HeightMapResolution;
 
-        var octavesOffset = new Vector2[globalConfiguration.Octaves];
+        var octavesOffset = new Vector2[terrainStructure.Octaves];
         for (var i = 0; i < octavesOffset.Length; i++)
             octavesOffset[i] = new Vector2(Random.Range(-100000f, 100000f), Random.Range(-100000f, 100000f));
 
         // Generate heightmap
-        for (var y = 0; y < globalConfiguration.HeightMapResolution; y++)
+        for (var y = 0; y < terrainStructure.HeightMapResolution; y++)
         {
-            for (var x = 0; x < globalConfiguration.HeightMapResolution; x++)
+            for (var x = 0; x < terrainStructure.HeightMapResolution; x++)
             {
                 var biomeHeight = terrainStructure.SampleBiomeHeight(new Vector2(x * cellSize, y * cellSize));
                 var amplitude = 1f;
@@ -27,9 +26,9 @@ public static class LevelDataGenerator
 
                 for (int i = 0; i < octavesOffset.Length; i++)
                 {
-                    var sampleX = (x + octavesOffset[i].x) / globalConfiguration.MapSize * frequency *
+                    var sampleX = (x + octavesOffset[i].x) / terrainStructure.MapSize * frequency *
                                   (biomeHeight.Scale * cellSize);
-                    var sampleY = (y + octavesOffset[i].y) / globalConfiguration.MapSize * frequency *
+                    var sampleY = (y + octavesOffset[i].y) / terrainStructure.MapSize * frequency *
                                   (biomeHeight.Scale * cellSize);
 
                     /* Noise between -1 and 1 */
@@ -51,14 +50,13 @@ public static class LevelDataGenerator
     // Set alphamap texture based on biome configuration
     public static float[,,] GenerateAlphaMap(TerrainStructure terrainStructure)
     {
-        var globalConfiguration = LevelCreator.Instance.BiomeGlobalConfiguration;
-        var result = new float[globalConfiguration.HeightMapResolution, globalConfiguration.HeightMapResolution,
+        var result = new float[terrainStructure.HeightMapResolution, terrainStructure.HeightMapResolution,
             terrainStructure.TextureCount];
-        var cellSize = globalConfiguration.MapSize / globalConfiguration.HeightMapResolution;
+        var cellSize = terrainStructure.MapSize / terrainStructure.HeightMapResolution;
 
-        for (int y = 0; y < globalConfiguration.HeightMapResolution; y++)
+        for (int y = 0; y < terrainStructure.HeightMapResolution; y++)
         {
-            for (int x = 0; x < globalConfiguration.HeightMapResolution; x++)
+            for (int x = 0; x < terrainStructure.HeightMapResolution; x++)
             {
                 var samples = terrainStructure.SampleBiomeTexture(new Vector2(x * cellSize, y * cellSize));
                 foreach (var sample in samples)
@@ -103,14 +101,12 @@ public static class LevelDataGenerator
     }
 
     // Draw roads onto the alpha and height maps
-    public static void DrawLineRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap,
-        List<Vector2[]> roads, int squareSize)
+    public static void DrawLineRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, int squareSize)
     {
-        var globalConfiguration = LevelCreator.Instance.BiomeGlobalConfiguration;
-        var cellSize = globalConfiguration.MapSize / globalConfiguration.HeightMapResolution;
+        var cellSize = terrainStructure.MapSize / terrainStructure.HeightMapResolution;
 
         // Find cells covered by the road polygon
-        var cellsToSmooth = DiscretizeLines(globalConfiguration.HeightMapResolution, cellSize, roads, squareSize, true)
+        var cellsToSmooth = DiscretizeLines(terrainStructure.HeightMapResolution, cellSize, terrainStructure.RoadLines, squareSize, true)
             .ToArray();
 
         // Set alphamap values to only road draw
@@ -283,10 +279,14 @@ public static class LevelDataGenerator
         return result;
     }
 
+    // Instantiate all gameobjects that are part of the scenery
     public static GameObject[] GenerateScenery(Terrain terrain)
     {
+        GameObject[] result = new GameObject[0];
+
         //TODO: implement
-        return null;
+
+        return result;
     }
 
     //---------------------------------------------------------------------
@@ -321,8 +321,7 @@ public static class LevelDataGenerator
     }
 
     // Match multiple lines to cells in a grid
-    private static IEnumerable<Vector2Int> DiscretizeLines(int resolution, float cellSize, IEnumerable<Vector2[]> lines,
-        int lineWidth, bool addNoise)
+    private static IEnumerable<Vector2Int> DiscretizeLines(int resolution, float cellSize, IEnumerable<Vector2[]> lines, int lineWidth, bool addNoise)
     {
         var result = new HashSet<Vector2Int>();
         foreach (var line in lines)

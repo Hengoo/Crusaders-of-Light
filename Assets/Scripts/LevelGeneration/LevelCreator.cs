@@ -35,7 +35,7 @@ public class LevelCreator : Singleton<LevelCreator>
     public Terrain Terrain { get; private set; }
 
    public void CreateMap()
-    {
+   {
         DrawMode = DrawModeEnum.GameMap;
         Seed = GameController.Instance.Seed;
         GeneratePreview();
@@ -55,7 +55,7 @@ public class LevelCreator : Singleton<LevelCreator>
         MyStoryStructure = new StoryStructure(AvailableBiomes, 0, 1, 20, BossArea, new CharacterEnemy[4]);
         if (DrawMode == DrawModeEnum.AreaGraph || DrawMode == DrawModeEnum.GameMap)
         {
-            MyTerrainStructure = new TerrainStructure(MyStoryStructure);
+            MyTerrainStructure = new TerrainStructure(MyStoryStructure, BiomeGlobalConfiguration);
             if (DrawMode == DrawModeEnum.GameMap)
                 MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, NormalAreas, BossArea, RoadHalfWidth);
         }
@@ -85,7 +85,7 @@ public class LevelCreator : Singleton<LevelCreator>
         var alphamap = LevelDataGenerator.GenerateAlphaMap(MyTerrainStructure);
 
         /* Draw roads onto alphamap */
-        LevelDataGenerator.DrawLineRoads(MyTerrainStructure, heightMap, alphamap, MyTerrainStructure.RoadLines, 1);
+        LevelDataGenerator.DrawLineRoads(MyTerrainStructure, heightMap, alphamap, 1);
 
         /* Smoothing passes */
         alphamap = LevelDataGenerator.SmoothAlphaMap(alphamap, 1);

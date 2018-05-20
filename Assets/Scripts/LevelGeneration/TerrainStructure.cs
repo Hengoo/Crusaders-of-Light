@@ -19,6 +19,10 @@ public class TerrainStructure
 
     public int TextureCount { get { return _splatIDMap.Count; } }
 
+    public float MapSize { get; private set; }
+    public int HeightMapResolution { get; private set; }
+    public int Octaves { get; private set; }
+
     public readonly int RoadSplatIndex;
 
     public List<Vector2[]> RoadLines;
@@ -28,10 +32,26 @@ public class TerrainStructure
     private Texture2D _blankSpec;
     private Texture2D _blankBump;
 
-    public TerrainStructure(StoryStructure storyStructure)
+    private BiomeSettings _borderSettings;
+    private SplatPrototypeSerializable _roadSplatPrototype;
+    private int _voronoiSamples;
+    private float _borderNoise;
+
+    public TerrainStructure(StoryStructure storyStructure, BiomeGlobalConfiguration GlobalConfiguration)
     {
         BiomeGraph = new Graph<Biome>();
-        var globalConfiguration = LevelCreator.Instance.BiomeGlobalConfiguration;
+        OuterBorderPolygon = new List<Vector2>();
+        AreaBorders = new List<Vector2[]>();
+        RoadLines = new List<Vector2[]>();
+
+        MapSize = GlobalConfiguration.MapSize;
+        HeightMapResolution = GlobalConfiguration.HeightMapResolution;
+        Octaves = GlobalConfiguration.Octaves;
+
+        _borderSettings = GlobalConfiguration.BorderBiome;
+        _roadSplatPrototype = GlobalConfiguration.RoadSplatPrototype;
+        _voronoiSamples = GlobalConfiguration.VoronoiSamples;
+        _borderNoise = GlobalConfiguration.BorderNoise;
 
         // Add Splat textures to global shader variables
         _blankBump = GenerateBlankNormal();
@@ -46,40 +66,39 @@ public class TerrainStructure
 
 
         // Add border biome to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(globalConfiguration.BorderBiome.Splat))
+        if (!_splatIDMap.ContainsKey(_borderSettings.Splat))
         {
-            _splatIDMap.Add(globalConfiguration.BorderBiome.Splat, count);
+            _splatIDMap.Add(_borderSettings.Splat, count);
 
-            Shader.SetGlobalTexture("_BumpMap" + count, globalConfiguration.BorderBiome.Splat.normalMap ? globalConfiguration.BorderBiome.Splat.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_BumpMap" + count, _borderSettings.Splat.normalMap ? _borderSettings.Splat.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / globalConfiguration.BorderBiome.Splat.tileSize.x);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _borderSettings.Splat.tileSize.x);
             count++;
         }
 
         // Add road to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(globalConfiguration.RoadSplatPrototype))
+        if (!_splatIDMap.ContainsKey(_roadSplatPrototype))
         {
-            _splatIDMap.Add(globalConfiguration.RoadSplatPrototype, count);
+            _splatIDMap.Add(_roadSplatPrototype, count);
 
-            Shader.SetGlobalTexture("_BumpMap" + count, globalConfiguration.RoadSplatPrototype.normalMap ? globalConfiguration.RoadSplatPrototype.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_BumpMap" + count, _roadSplatPrototype.normalMap ? _roadSplatPrototype.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / globalConfiguration.RoadSplatPrototype.tileSize.x);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _roadSplatPrototype.tileSize.x);
             RoadSplatIndex = count;
         }
 
         // Create uniform random point distribution
         var centers = new List<Vector2f>();
-        for (int i = 0; i < globalConfiguration.BiomeSamples; i++)
+        for (int i = 0; i < _voronoiSamples; i++)
         {
-            var x = Random.Range(0f, globalConfiguration.MapSize);
-            var y = Random.Range(0f, globalConfiguration.MapSize);
+            var x = Random.Range(0f, MapSize);
+            var y = Random.Range(0f, MapSize);
             centers.Add(new Vector2f(x, y));
         }
-        VoronoiDiagram = new Voronoi(centers, new Rectf(0, 0, globalConfiguration.MapSize, globalConfiguration.MapSize));
+        VoronoiDiagram = new Voronoi(centers, new Rectf(0, 0, MapSize, MapSize));
 
         // Apply Lloyd Relaxation
-        VoronoiDiagram.LloydRelaxation(globalConfiguration.LloydRelaxation);
-
+        VoronoiDiagram.LloydRelaxation(GlobalConfiguration.LloydRelaxation);
 
         // Assign biomes to each site
         var navigableBiomeIDs = new HashSet<int>();
@@ -103,7 +122,7 @@ public class TerrainStructure
 
             // Assign biome to site - water if on border
             var biome = isOnBorder
-                ? new Biome(site.ToUnityVector2(), globalConfiguration.BorderBiome, true, null)
+                ? new Biome(site.ToUnityVector2(), _borderSettings, true, null)
                 : new Biome(site.ToUnityVector2(), storyStructure.Biome, false, GenerateSitePolygon(site));
 
             var biomeID = BiomeGraph.AddNode(biome);
@@ -245,22 +264,18 @@ public class TerrainStructure
     /* Sample biome height at a given position */
     public BiomeHeight SampleBiomeHeight(Vector2 position)
     {
-        var globalConfiguration = LevelCreator.Instance.BiomeGlobalConfiguration;
-
-        var pos = new Vector2f(position.x + Random.Range(-globalConfiguration.BorderNoise, globalConfiguration.BorderNoise),
-            position.y + Random.Range(-globalConfiguration.BorderNoise, globalConfiguration.BorderNoise));
+        var pos = new Vector2f(position.x + Random.Range(-_borderNoise, _borderNoise),
+            position.y + Random.Range(-_borderNoise, _borderNoise));
         var closestBiome = GetClosestBiome(pos);
 
-        return closestBiome == null ? globalConfiguration.BorderBiome.Height : closestBiome.BiomeSettings.Height;
+        return closestBiome == null ? _borderSettings.Height : closestBiome.BiomeSettings.Height;
     }
 
     /* Sample biome texture at a given position */
     public IEnumerable<KeyValuePair<int, float>> SampleBiomeTexture(Vector2 position)
     {
-        var globalConfiguration = LevelCreator.Instance.BiomeGlobalConfiguration;
-
-        var pos = new Vector2f(position.x + Random.Range(-globalConfiguration.BorderNoise, globalConfiguration.BorderNoise) * 1.2f,
-            position.y + Random.Range(-globalConfiguration.BorderNoise, globalConfiguration.BorderNoise) * 1.2f);
+        var pos = new Vector2f(position.x + Random.Range(-_borderNoise, _borderNoise) * 1.2f,
+            position.y + Random.Range(-_borderNoise, _borderNoise) * 1.2f);
         var closestBiome = GetClosestBiome(pos);
         var result = new List<KeyValuePair<int, float>>
         {

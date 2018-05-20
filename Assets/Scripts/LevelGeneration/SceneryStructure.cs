@@ -38,25 +38,7 @@ public class SceneryStructure
         {
             SceneryAreas.Add(new PoissonDiskFill(prefabs[i], polygons[i], minDistances[i]));
         }
-
-        //Fill areas 
-        var quests = new List<QuestBase>();
-        for (var i = 0; i < NormalAreas.Length; i++)
-            quests = quests.Concat(NormalAreas[i].GenerateQuests(terrainStructure, this, i)).ToList();
-        quests = quests.Concat(BossArea.GenerateQuests(terrainStructure, this, NormalAreas.Length + 1)).ToList();
-
-        var levelController = LevelController.Instance;
-        if (!levelController)
-            levelController = GameObject.Find("LevelController").GetComponent<LevelController>();
-
-        //Clear previously generated quests in editor when not playing
-        if (!Application.isPlaying)
-            levelController.QuestController.ClearQuests();
-
-        //Add all quests
-        foreach (var quest in quests)
-            levelController.QuestController.AddQuest(quest);
-
+        
 
         //Add removal polygon to affected area fill
         foreach (var polygon in RoadPolygons)
