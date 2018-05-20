@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using csDelaunay;
 using UnityEngine;
-using UnityEngine.Networking.Types;
-using Debug = UnityEngine.Debug;
 
 public class SceneryStructure
 {
@@ -12,23 +9,25 @@ public class SceneryStructure
     public StoryStructure StoryStructure { get; private set; }
     public List<Vector2[]> RoadPolygons { get; private set; }
 
-    public AreaBase[] NormalAreas { get; private set; }
+    public AreaBase[] SpecialAreas { get; private set; }
     public AreaBase BossArea { get; private set; }
 
-    public SceneryStructure(StoryStructure storyStructure, TerrainStructure terrainStructure, AreaBase[] normalAreas, AreaBase bossArea, float roadWidth)
+    public SceneryStructure(StoryStructure storyStructure, TerrainStructure terrainStructure, AreaBase[] specialAreas, AreaBase bossArea, float roadWidth)
     {
         SceneryAreas = new List<PoissonDiskFill>();
         RoadPolygons = new List<Vector2[]>();
 
         StoryStructure = storyStructure;
 
-        NormalAreas = normalAreas;
+        SpecialAreas = specialAreas;
         BossArea = bossArea;
 
-        CreateScenery(roadWidth, terrainStructure);
+        // TODO: fill roads and paths - place elements along roads and keep roads clear
+        // TODO: fill special areas - build structures
+        // TODO: fill boss area - place logic elements
     }
 
-    private void CreateScenery(float roadWidth, TerrainStructure terrainStructure)
+    private void CreateScenery(TerrainStructure terrainStructure, float roadWidth)
     {
         //Get the biome edges from the terrain structure and create areas to fill with prefabs and quests
         List<GameObject[]> prefabs;
@@ -184,10 +183,10 @@ public class SceneryStructure
         return result;
     }
 
-    private static void GenerateBorderEdges(TerrainStructure terrainStructure, int NumberOfAreas, HashSet<int>[] AreaBiomes, List<Vector2Int> AreaCrossingNavigationEdges, List<Vector2[]> AreaBorders, Vector2[][] AreaCrossingBorders)
+    private static void GenerateBorderEdges(TerrainStructure terrainStructure, int numberOfAreas, HashSet<int>[] areaBiomes, List<Vector2Int> areaCrossingNavigationEdges, List<Vector2[]> areaBorders, Vector2[][] areaCrossingBorders)
     {
         var innerBorderEdges = new List<Edge>(128);
-        var crossableEdges = new Edge[NumberOfAreas - 1];
+        var crossableEdges = new Edge[numberOfAreas - 1];
         var outerBorderEdges = new List<KeyValuePair<Edge, Vector2>>();
 
         foreach (var edge in terrainStructure.VoronoiDiagram.Edges)
@@ -202,11 +201,11 @@ public class SceneryStructure
             var areaLeft = -1;
 
             //Check in which area each biome is
-            for (var i = 0; i < NumberOfAreas; i++)
+            for (var i = 0; i < numberOfAreas; i++)
             {
-                if (AreaBiomes[i].Contains(biomeRight))
+                if (areaBiomes[i].Contains(biomeRight))
                     areaRight = i;
-                if (AreaBiomes[i].Contains(biomeLeft))
+                if (areaBiomes[i].Contains(biomeLeft))
                     areaLeft = i;
             }
 
@@ -217,8 +216,8 @@ public class SceneryStructure
             if (areaLeft != -1 && areaRight != -1)
             {
                 //Check if edge is crossable between areas or not
-                if (AreaCrossingNavigationEdges.Contains(new Vector2Int(biomeLeft, biomeRight))
-                    || AreaCrossingNavigationEdges.Contains(new Vector2Int(biomeRight, biomeLeft)))
+                if (areaCrossingNavigationEdges.Contains(new Vector2Int(biomeLeft, biomeRight))
+                    || areaCrossingNavigationEdges.Contains(new Vector2Int(biomeRight, biomeLeft)))
                 {
                     //Find lowest area id
                     crossableEdges[areaLeft < areaRight ? areaLeft : areaRight] = edge;
@@ -237,13 +236,13 @@ public class SceneryStructure
         foreach (var edge in innerBorderEdges)
         {
             if (!edge.Visible()) continue;
-            AreaBorders.Add(new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
+            areaBorders.Add(new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
         }
 
-        for (var i = 0; i < AreaCrossingBorders.Length; i++)
+        for (var i = 0; i < areaCrossingBorders.Length; i++)
         {
             var edge = crossableEdges[i];
-            AreaCrossingBorders[i] = new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() };
+            areaCrossingBorders[i] = new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() };
         }
     }
 }

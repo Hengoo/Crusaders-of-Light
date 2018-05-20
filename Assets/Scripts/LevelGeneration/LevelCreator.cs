@@ -18,7 +18,7 @@ public class LevelCreator : Singleton<LevelCreator>
     public BiomeGlobalConfiguration BiomeGlobalConfiguration;
     public List<BiomeSettings> AvailableBiomes;
 
-    public AreaBase[] NormalAreas;
+    public AreaBase[] SpecialAreas;
     public AreaBase BossArea;
     
     public GameObject SpawnerPrefab;
@@ -57,7 +57,7 @@ public class LevelCreator : Singleton<LevelCreator>
         {
             MyTerrainStructure = new TerrainStructure(MyStoryStructure, BiomeGlobalConfiguration);
             if (DrawMode == DrawModeEnum.GameMap)
-                MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, NormalAreas, BossArea, RoadHalfWidth);
+                MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, SpecialAreas, BossArea, RoadHalfWidth);
         }
 
         switch (DrawMode)
