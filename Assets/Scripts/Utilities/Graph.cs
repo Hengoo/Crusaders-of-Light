@@ -81,6 +81,11 @@ public class Graph<T> where T : class
         return result;
     }
 
+    public T[] GetAllNodeData()
+    {
+        return _nodes.Values.Select(node => node.Data).ToArray();
+    }
+
     public int NodeCount()
     {
         return _nodes.Count();
@@ -156,6 +161,28 @@ public class Graph<T> where T : class
         return false;
     }
 
+    public List<int> GetLargestPathInMST(int start)
+    {
+        return GetLargestPathRecursion(start, -1);
+    }
+
+    private List<int> GetLargestPathRecursion(int currentNode, int parent)
+    {
+        var path = new List<int> { currentNode };
+        var longest = new List<int>();
+        var neighborhood = GetNeighbours(currentNode);
+        foreach (var neighbor in neighborhood)
+        {
+            if (neighbor == parent || neighbor == currentNode)
+                continue;
+
+            var newPath = GetLargestPathRecursion(neighbor, currentNode);
+            if (newPath.Count > longest.Count)
+                longest = newPath;
+        }
+
+        return path.Concat(longest).ToList();
+    }
 
     private class Edge
     {

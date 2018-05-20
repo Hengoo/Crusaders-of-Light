@@ -5,23 +5,22 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
-public class MapGenerator : MonoBehaviour
+public class LevelCreator : Singleton<LevelCreator>
 {
-
     public enum DrawModeEnum
     {
-        BiomeGraph,
-        GameMap,
+        TerrainGraph,
+        GameLevel,
         AreaGraph
     }
 
-    public DrawModeEnum DrawMode = DrawModeEnum.BiomeGraph;
+    public DrawModeEnum DrawMode = DrawModeEnum.TerrainGraph;
     public BiomeGlobalConfiguration BiomeGlobalConfiguration;
     public List<BiomeSettings> AvailableBiomes;
 
-    public AreaBase[] NormalAreas;
+    public AreaBase[] SpecialAreas;
     public AreaBase BossArea;
-    
+
     public GameObject SpawnerPrefab;
 
     public int ExtraEdges = 20;
@@ -30,14 +29,14 @@ public class MapGenerator : MonoBehaviour
     public bool GenerateOnPlay = false;
     public int Seed = 0;
 
-    public TerrainStructure TerrainStructure { get; private set; }
-    public WorldStructure WorldStructure { get; private set; }
-    public sceneryStructure SceneryStructure { get; private set; }
+    public TerrainStructure MyTerrainStructure { get; private set; }
+    public StoryStructure MyStoryStructure { get; private set; }
+    public SceneryStructure MySceneryStructure { get; private set; }
     public Terrain Terrain { get; private set; }
 
-   public void CreateMap()
+    public void CreateMap()
     {
-        DrawMode = DrawModeEnum.GameMap;
+        DrawMode = DrawModeEnum.GameLevel;
         Seed = GameController.Instance.Seed;
         GeneratePreview();
     }
@@ -53,20 +52,19 @@ public class MapGenerator : MonoBehaviour
         ClearDisplay();
         Random.InitState(Seed);
 
-        TerrainStructure = new TerrainStructure(AvailableBiomes, BiomeGlobalConfiguration);
-        if (DrawMode == DrawModeEnum.AreaGraph || DrawMode == DrawModeEnum.GameMap)
-        {
-            WorldStructure = new WorldStructure(TerrainStructure, NormalAreas.Length + 1, ExtraEdges);
-            if (DrawMode == DrawModeEnum.GameMap)
-                SceneryStructure = new sceneryStructure(TerrainStructure, WorldStructure, NormalAreas, BossArea, RoadHalfWidth);
-        }
+        MyStoryStructure = new StoryStructure(AvailableBiomes, 0, 1, 20, BossArea, new CharacterEnemy[4]);
+        MyTerrainStructure = new TerrainStructure(MyStoryStructure, BiomeGlobalConfiguration);
+
+        if (DrawMode == DrawModeEnum.GameLevel)
+            MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, SpecialAreas, BossArea, RoadHalfWidth);
+
 
         switch (DrawMode)
         {
-            case DrawModeEnum.BiomeGraph:
-                DrawGraph();
+            case DrawModeEnum.TerrainGraph:
+                DrawBaseGraph();
                 break;
-            case DrawModeEnum.GameMap:
+            case DrawModeEnum.GameLevel:
                 DrawGameMap();
                 break;
             case DrawModeEnum.AreaGraph:
@@ -80,32 +78,25 @@ public class MapGenerator : MonoBehaviour
     void DrawGameMap()
     {
         /* Create heightmap */
-        var heightMap = MapDataGenerator.GenerateHeightMap(TerrainStructure);
+        var heightMap = LevelDataGenerator.GenerateHeightMap(MyTerrainStructure);
 
         /* Create splat textures alphamap */
-        var alphamap = MapDataGenerator.GenerateAlphaMap(TerrainStructure);
-
-        /* Draw borders */
-        //MapDataGenerator.EncloseAreas(_terrainStructure, heightMap, _worldStructure.AreaBorders, 3);
+        var alphamap = LevelDataGenerator.GenerateAlphaMap(MyTerrainStructure);
 
         /* Draw roads onto alphamap */
-        MapDataGenerator.DrawLineRoads(TerrainStructure, heightMap, alphamap, SceneryStructure.RoadLines, 1);
+        LevelDataGenerator.DrawLineRoads(MyTerrainStructure, heightMap, alphamap, 1);
 
         /* Smoothing passes */
-        alphamap = MapDataGenerator.SmoothAlphaMap(alphamap, 1);
+        alphamap = LevelDataGenerator.SmoothAlphaMap(alphamap, 1);
         if (BiomeGlobalConfiguration.SmoothEdges)
         {
             //Smooth only navigable biome borders
-            MapDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeGlobalConfiguration.MapSize / BiomeGlobalConfiguration.HeightMapResolution, TerrainStructure.GetBiomeSmoothBorders(), BiomeGlobalConfiguration.EdgeWidth, BiomeGlobalConfiguration.SquareSize);
-
-            //Smooth all biome borders
-            //heightMap = MapDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeGlobalConfiguration.MapSize / BiomeGlobalConfiguration.HeightMapResolution, _terrainStructure.GetBiomeBorders(), 3, 2);
+            LevelDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeGlobalConfiguration.MapSize / BiomeGlobalConfiguration.HeightMapResolution, MyTerrainStructure.GetNonBlendingBiomeBorders(), BiomeGlobalConfiguration.EdgeWidth, BiomeGlobalConfiguration.SquareSize);
 
             //Overall smoothing
             if (BiomeGlobalConfiguration.OverallSmoothing > 0)
             {
-                MapDataGenerator.SmoothHeightMap(heightMap, BiomeGlobalConfiguration.OverallSmoothing);
-                MapDataGenerator.SmoothHeightMap(heightMap, BiomeGlobalConfiguration.OverallSmoothing);
+                LevelDataGenerator.SmoothHeightMap(heightMap, BiomeGlobalConfiguration.OverallSmoothing, 2);
             }
         }
 
@@ -115,7 +106,7 @@ public class MapGenerator : MonoBehaviour
             baseMapResolution = BiomeGlobalConfiguration.HeightMapResolution,
             heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeGlobalConfiguration.HeightMapResolution) + 1,
             alphamapResolution = BiomeGlobalConfiguration.HeightMapResolution,
-            splatPrototypes = TerrainStructure.GetSplatPrototypes()
+            splatPrototypes = MyTerrainStructure.GetSplatPrototypes()
         };
         terrainData.SetDetailResolution(BiomeGlobalConfiguration.HeightMapResolution, 32);
         terrainData.size = new Vector3(BiomeGlobalConfiguration.MapSize, BiomeGlobalConfiguration.MapHeight, BiomeGlobalConfiguration.MapSize);
@@ -131,20 +122,16 @@ public class MapGenerator : MonoBehaviour
         //terrain.GetComponent<Terrain>().materialTemplate = BiomeGlobalConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
 
         /* Add fences to coast */
-        var fences = MapDataGenerator.GenerateCoastFences(Terrain, WorldStructure,
-            BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerPole, BiomeGlobalConfiguration.CoastBlockerLength);
+        var fences = LevelDataGenerator.GenerateOuterFences(Terrain, MyTerrainStructure, BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerPole, BiomeGlobalConfiguration.CoastBlockerLength);
         fences.transform.parent = Terrain.transform;
 
-        var walls = MapDataGenerator.GenerateAreaWalls(Terrain, WorldStructure, BiomeGlobalConfiguration.AreaBlocker,
-            BiomeGlobalConfiguration.AreaBlockerLength);
+        var walls = LevelDataGenerator.GenerateAreaWalls(Terrain, MyTerrainStructure, BiomeGlobalConfiguration.AreaBlocker, BiomeGlobalConfiguration.AreaBlockerLength);
         walls.transform.parent = Terrain.transform;
 
         /* Fill terrain with scenery */
         if (FillTerrain)
         {
-            var spawnPoints = SceneryStructure.GenerateSpawners(Terrain, SpawnerPrefab);
-            spawnPoints.transform.parent = Terrain.transform;
-            var sceneryObjects = SceneryStructure.GenerateScenery(Terrain.GetComponent<Terrain>());
+            var sceneryObjects = LevelDataGenerator.GenerateScenery(Terrain.GetComponent<Terrain>());
             var scenery = new GameObject("Scenery");
             scenery.transform.parent = Terrain.transform;
             foreach (var obj in sceneryObjects)
@@ -163,39 +150,23 @@ public class MapGenerator : MonoBehaviour
         water.transform.localPosition = new Vector3(terrainData.size.x / 2f, (BiomeGlobalConfiguration.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2f);
     }
 
-    void DrawGraph()
+    void DrawBaseGraph()
     {
-        var newGraphInstance = TerrainStructure.DrawBiomeGraph(BiomeGlobalConfiguration.HeightMapResolution / 500f);
-        newGraphInstance.name = "BiomeGraph";
-        newGraphInstance.transform.parent = transform;
+        StructureDrawer.DrawVoronoiDiagram(MyTerrainStructure.VoronoiDiagram, "Voronoi").transform.parent = gameObject.transform;
+        StructureDrawer.DrawGraph(MyTerrainStructure.BaseGraph, "Base Graph").transform.parent = gameObject.transform;
     }
 
     void DrawAreaGraph()
     {
-        var newAreaGraphInstance = WorldStructure.DrawAreaGraph(BiomeGlobalConfiguration.HeightMapResolution / 500f);
-        newAreaGraphInstance.name = "AreaGraph";
-        newAreaGraphInstance.transform.parent = transform;
+        //TODO: debug class
     }
 
     void ClearDisplay()
     {
-        var toDelete = new List<GameObject>();
-        foreach (var o in FindObjectsOfType(typeof(GameObject)))
+        // Start from the top, because Unity updates the children index after each destroy call
+        for (int i = transform.childCount - 1; i >= 0; --i)
         {
-            var go = (GameObject)o;
-            if (go.name == "BiomeGraph" || go.name == "Terrain" || go.name == "AreaGraph")
-                toDelete.Add(go);
+            DestroyImmediate(transform.GetChild(i).gameObject, true);
         }
-
-        foreach (var go in toDelete)
-        {
-            StartCoroutine(DestroyInEditor(go));
-        }
-    }
-
-    private static IEnumerator DestroyInEditor(GameObject obj)
-    {
-        yield return new WaitForSecondsRealtime(1);
-        DestroyImmediate(obj, true);
     }
 }

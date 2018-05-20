@@ -18,17 +18,17 @@ public class AreaKillBoss : AreaBase
     public GameObject BossPrefab2;
     public AudioClip BossFightAudioClip;
 
-    public override QuestBase[] GenerateQuests(sceneryStructure sceneryStructure, int assignedArea)
+    public override QuestBase[] GenerateQuests(TerrainStructure terrainStructure, SceneryStructure sceneryStructure, int assignedArea)
     {
         var result = new List<QuestBase>();
 
         //Boss spawn position
         var spawn = new GameObject("Area Boss Spawn Point");
-        var spawnPosition = sceneryStructure.TerrainStructure.EndBiomeNode.Key;
+        var spawnPosition = terrainStructure.BossBiomeNode.Key;
         spawn.transform.position = new Vector3(spawnPosition.x, 0, spawnPosition.y);
         
         //Add objects to sceneryStructure for height adjustment
-        sceneryStructure.AddSceneryQuestObject(spawn);
+        //sceneryStructure.AddSceneryQuestObject(spawn);
 
         //Find the boss quest
         var findBoss = new QuestReachPlace(spawn, 30, "The Evil", "Find the ultimate evil in this land");
