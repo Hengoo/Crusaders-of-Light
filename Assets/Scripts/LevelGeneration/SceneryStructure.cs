@@ -27,32 +27,6 @@ public class SceneryStructure
         // TODO: fill boss area - place logic elements
     }
 
-    private void CreateScenery(TerrainStructure terrainStructure, float roadWidth)
-    {
-        //Get the biome edges from the terrain structure and create areas to fill with prefabs and quests
-        List<GameObject[]> prefabs;
-        List<float> minDistances;
-        var polygons = terrainStructure.GetBiomePolygons(out prefabs, out minDistances);
-        for (var i = 0; i < polygons.Count; i++)
-        {
-            SceneryAreas.Add(new PoissonDiskFill(prefabs[i], polygons[i], minDistances[i]));
-        }
-        
-
-        //Add removal polygon to affected area fill
-        foreach (var polygon in RoadPolygons)
-        {
-            foreach (var vertex in polygon)
-            {
-                foreach (var sceneryArea in SceneryAreas)
-                {
-                    if (vertex.IsInsidePolygon(sceneryArea.Polygon))
-                        sceneryArea.AddClearPolygon(polygon);
-                }
-            }
-        }
-    }
-
     private static List<Vector2[]> GenerateRoadPolygons(TerrainStructure terrainStructure, float roadWidth)
     {
         var result = new List<Vector2[]>();
@@ -78,7 +52,7 @@ public class SceneryStructure
         return result;
     }
 
-    private static HashSet<int> GetAllNodesInArea(int currentNode, Graph<Biome> biomeGraph, HashSet<int> set)
+    private static HashSet<int> GetAllNodesInArea(int currentNode, Graph<Area> biomeGraph, HashSet<int> set)
     {
         set.Add(currentNode);
         foreach (var neighbor in biomeGraph.GetNeighbours(currentNode))
@@ -92,7 +66,7 @@ public class SceneryStructure
 
     private void GenerateOuterBorderPolygon(TerrainStructure terrainStructure, List<KeyValuePair<Edge, Vector2>> outerBorderEdges)
     {
-        var globalConfiguration = LevelCreator.Instance.BiomeGlobalConfiguration;
+        var globalConfiguration = LevelCreator.Instance.GlobalSettings;
         var coastBlockerPolygon = new List<Vector2>();
         var coastLines = outerBorderEdges.Select(pair => pair.Key).ToList().EdgesToSortedLines();
         foreach (var line in coastLines)
@@ -158,7 +132,7 @@ public class SceneryStructure
         if (poissonDiskFill.Prefabs == null || poissonDiskFill.Prefabs.Length <= 0)
             return result;
 
-        var globalConfiguration = LevelCreator.Instance.BiomeGlobalConfiguration;
+        var globalConfiguration = LevelCreator.Instance.GlobalSettings;
         var size = poissonDiskFill.FrameSize;
         PoissonDiskGenerator.minDist = poissonDiskFill.MinDist;
         PoissonDiskGenerator.sampleRange = (size.x > size.y ? size.x : size.y);

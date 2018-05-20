@@ -9,8 +9,8 @@ public class TerrainStructure
 {
 
     public Voronoi VoronoiDiagram { get; private set; }
-    public Graph<Biome> BaseGraph { get; private set; }
-    public Graph<Biome> AreaGraph { get; private set; }
+    public Graph<AreaSegment> AreaSegmentGraph { get; private set; }
+    public Graph<Area> AreaGraph { get; private set; }
     public KeyValuePair<Vector2f, int> StartBiomeNode;
     public KeyValuePair<Vector2f, int> BossBiomeNode;
 
@@ -25,62 +25,47 @@ public class TerrainStructure
     public readonly List<Vector2[]> RoadLines;
     public readonly List<Vector2[]> AreaBorders;
 
-    private readonly Dictionary<Vector2f, int> _siteBiomeMap = new Dictionary<Vector2f, int>(); //Mapping of Voronoi library sites and graph IDs
+    private readonly Dictionary<Vector2f, int> _siteAreaMap = new Dictionary<Vector2f, int>(); //Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap = new Dictionary<SplatPrototypeSerializable, int>(); //Mapping of biome SplatPrototypes and terrain texture IDs
 
     private Texture2D _blankSpec;
     private Texture2D _blankBump;
 
-    private readonly BiomeSettings _borderSettings;
     private readonly SplatPrototypeSerializable _roadSplatPrototype;
     private readonly int _voronoiSamples;
+
+    private readonly BiomeSettings _biomeSettings;
+    private readonly BiomeSettings _borderSettings;
     private readonly float _borderNoise;
 
-    public TerrainStructure(StoryStructure storyStructure, BiomeGlobalConfiguration globalConfiguration)
+    public TerrainStructure(StoryStructure storyStructure, GlobalSettings globalSettings, List<BiomeSettings> availableBiomes)
     {
-        BaseGraph = new Graph<Biome>();
+        AreaSegmentGraph = new Graph<AreaSegment>();
         OuterBorderPolygon = new List<Vector2>();
         AreaBorders = new List<Vector2[]>();
         RoadLines = new List<Vector2[]>();
 
-        MapSize = globalConfiguration.MapSize;
-        HeightMapResolution = globalConfiguration.HeightMapResolution;
-        Octaves = globalConfiguration.Octaves;
+        // Select a random biome out of the available ones for the current level
+        _biomeSettings = availableBiomes[Random.Range(0, availableBiomes.Count)];
 
-        _borderSettings = globalConfiguration.BorderBiome;
-        _roadSplatPrototype = globalConfiguration.RoadSplatPrototype;
-        _voronoiSamples = globalConfiguration.VoronoiSamples;
-        _borderNoise = globalConfiguration.BorderNoise;
+        MapSize = globalSettings.MapSize;
+        HeightMapResolution = globalSettings.HeightMapResolution;
+        Octaves = globalSettings.Octaves;
+
+        _borderSettings = globalSettings.BorderBiome;
+        _roadSplatPrototype = globalSettings.RoadSplatPrototype;
+        _voronoiSamples = globalSettings.VoronoiSamples;
+        _borderNoise = globalSettings.EdgeNoise;
 
         // Add splat prototypes to the shader
-        AddShaderTextures(storyStructure);
+        AddShaderTextures();
 
         // Create base graph that later on is transformed with a set of rules and assigned areas to
-        CreateBaseGraph(storyStructure, globalConfiguration);
+        CreateBaseGraph(storyStructure, globalSettings);
 
         // Assign specific areas to each node of the base graph - Start point, Boss arena, paths...
         //TODO: Graph grammar transformations - assign main path, side paths, boss area, start area, special areas...
         CreateAreaGraph();
-    }
-
-    // Returns all biomes' polygons
-    public List<Vector2[]> GetBiomePolygons(out List<GameObject[]> prefabs, out List<float> minDistances)
-    {
-        var result = new List<Vector2[]>();
-        prefabs = new List<GameObject[]>();
-        minDistances = new List<float>();
-        foreach (var siteBiome in _siteBiomeMap)
-        {
-            var biome = BaseGraph.GetNodeData(siteBiome.Value);
-            if (biome.IsBorderBiome)
-                continue;
-
-            result.Add(biome.BiomePolygon);
-            prefabs.Add(biome.BiomeSettings.FillPrefabs);
-            minDistances.Add(biome.BiomeSettings.PrefabMinDistance);
-        }
-
-        return result;
     }
 
     /* Returns a sorted list of the textures */
@@ -118,35 +103,8 @@ public class TerrainStructure
         return result.Values.ToArray();
     }
 
-    /* Get all borders that should not be smoothed between biomes */
-    public IEnumerable<Vector2[]> GetNonBlendingBiomeBorders()
-    {
-        var result = new List<Vector2[]>();
-
-        foreach (var edge in VoronoiDiagram.Edges)
-        {
-            if (!edge.Visible())
-                continue;
-
-            var leftBiome = BaseGraph.GetNodeData(_siteBiomeMap[edge.LeftSite.Coord]);
-            var rightBiome = BaseGraph.GetNodeData(_siteBiomeMap[edge.RightSite.Coord]);
-            if (leftBiome.BiomeSettings.UniqueName == rightBiome.BiomeSettings.UniqueName
-                || leftBiome.BiomeSettings.DontBlendWith.Contains(rightBiome.BiomeSettings)
-                || rightBiome.BiomeSettings.DontBlendWith.Contains(leftBiome.BiomeSettings))
-
-                continue;
-
-            var p0 = edge.ClippedEnds[LR.LEFT].ToUnityVector2();
-            var p1 = edge.ClippedEnds[LR.RIGHT].ToUnityVector2();
-            var segment = new[] { p0, p1 };
-            result.Add(segment);
-        }
-
-        return result;
-    }
-
     /* Get all biome borders */
-    public IEnumerable<LineSegment> GetBiomeBorders()
+    public IEnumerable<LineSegment> GetAreaSegmentBorders()
     {
         var result = new List<LineSegment>();
 
@@ -155,9 +113,9 @@ public class TerrainStructure
             if (!edge.Visible())
                 continue;
 
-            var leftBiome = BaseGraph.GetNodeData(_siteBiomeMap[edge.LeftSite.Coord]);
-            var rightBiome = BaseGraph.GetNodeData(_siteBiomeMap[edge.RightSite.Coord]);
-            if (leftBiome.BiomeSettings.UniqueName == rightBiome.BiomeSettings.UniqueName)
+            var leftArea = AreaSegmentGraph.GetNodeData(_siteAreaMap[edge.LeftSite.Coord]);
+            var rightArea = AreaSegmentGraph.GetNodeData(_siteAreaMap[edge.RightSite.Coord]);
+            if (_siteAreaMap[edge.LeftSite.Coord] == _siteAreaMap[edge.RightSite.Coord])
                 continue;
 
             var p0 = edge.ClippedEnds[LR.LEFT];
@@ -169,34 +127,35 @@ public class TerrainStructure
         return result;
     }
 
-    /* Sample biome height at a given position */
-    public BiomeHeight SampleBiomeHeight(Vector2 position)
+    public IEnumerable<Vector2[]> GetPathLines()
     {
-        var pos = new Vector2f(position.x + Random.Range(-_borderNoise, _borderNoise),
-            position.y + Random.Range(-_borderNoise, _borderNoise));
-        var closestBiome = GetClosestBiome(pos);
+        List<Vector2[]> pathLines = new List<Vector2[]>();
 
-        return closestBiome == null ? _borderSettings.Height : closestBiome.BiomeSettings.Height;
+        return pathLines;
     }
 
-    /* Sample biome texture at a given position */
-    public IEnumerable<KeyValuePair<int, float>> SampleBiomeTexture(Vector2 position)
+    /* Sample area height at a given position */
+    public BiomeHeightParameters SampleHeight(Vector2 position)
     {
-        var pos = new Vector2f(position.x + Random.Range(-_borderNoise, _borderNoise) * 1.2f,
-            position.y + Random.Range(-_borderNoise, _borderNoise) * 1.2f);
-        var closestBiome = GetClosestBiome(pos);
-        var result = new List<KeyValuePair<int, float>>
-        {
-            new KeyValuePair<int, float>(_splatIDMap[closestBiome.BiomeSettings.Splat], 1)
-        };
+        Vector2 noisePosition = position + new Vector2(Random.Range(-_borderNoise, _borderNoise), Random.Range(-_borderNoise, _borderNoise));
+        AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
+        return areaSegment == null || areaSegment.IsBorder ? _borderSettings.HeightParameters : _biomeSettings.HeightParameters;
+    }
 
-        return result;
+    /* Sample area texture at given position */
+    public KeyValuePair<int, float> SampleTexture(Vector2 position)
+    {
+        Vector2 noisePosition = position + new Vector2(Random.Range(-_borderNoise, _borderNoise), Random.Range(-_borderNoise, _borderNoise));
+        AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
+        int splatID = _splatIDMap[areaSegment.IsBorder ? _borderSettings.Splat : _biomeSettings.Splat];
+        float splatValue = 1;
+        return new KeyValuePair<int, float>(splatID, splatValue);
     }
 
     /* Return biome ID from a csDelaunay vector */
     public int GetNodeIDFromSite(Vector2f coord)
     {
-        return _siteBiomeMap[coord];
+        return _siteAreaMap[coord];
     }
 
     //---------------------------------------------------------------
@@ -206,17 +165,18 @@ public class TerrainStructure
     //---------------------------------------------------------------
 
     /* Assign textures to shader */
-    private void AddShaderTextures(StoryStructure storyStructure)
+    private void AddShaderTextures()
     {
         // Add Splat textures to global shader variables
         _blankBump = GenerateBlankNormal();
         _blankSpec = GenerateBlankSpec();
         var count = 0;
 
-        _splatIDMap.Add(storyStructure.Biome.Splat, count);
-        Shader.SetGlobalTexture("_BumpMap" + count, storyStructure.Biome.Splat.normalMap ? storyStructure.Biome.Splat.normalMap : _blankBump);
+        // Add main biome to the SplatPrototypes map
+        _splatIDMap.Add(_biomeSettings.Splat, count);
+        Shader.SetGlobalTexture("_BumpMap" + count, _biomeSettings.Splat.normalMap ? _biomeSettings.Splat.normalMap : _blankBump);
         Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-        Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / storyStructure.Biome.Splat.tileSize.x);
+        Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _biomeSettings.Splat.tileSize.x);
         count++;
 
 
@@ -244,7 +204,7 @@ public class TerrainStructure
     }
 
     /* Create a graph containing all connected empty areas */
-    private void CreateBaseGraph(StoryStructure storyStructure, BiomeGlobalConfiguration globalConfiguration)
+    private void CreateBaseGraph(StoryStructure storyStructure, GlobalSettings globalSettings)
     {
         // Create uniform random point distribution and Voronoi Diagram
         var centers = new List<Vector2f>();
@@ -257,7 +217,7 @@ public class TerrainStructure
         VoronoiDiagram = new Voronoi(centers, new Rectf(0, 0, MapSize, MapSize));
 
         // Apply Lloyd Relaxation
-        VoronoiDiagram.LloydRelaxation(globalConfiguration.LloydRelaxation);
+        VoronoiDiagram.LloydRelaxation(globalSettings.LloydRelaxation);
 
         // Assign base areas to each site
         var navigableBiomeIDs = new HashSet<int>();
@@ -280,13 +240,13 @@ public class TerrainStructure
             }
 
             // Assign biome to site - water if on border
-            var biome = isOnBorder
-                ? new Biome(site.ToUnityVector2(), _borderSettings, true, null)
-                : new Biome(site.ToUnityVector2(), storyStructure.Biome, false, GenerateSitePolygon(site));
+            var areaSegment = isOnBorder
+                ? new AreaSegment(site.ToUnityVector2(), true)
+                : new AreaSegment(site.ToUnityVector2(), false);
 
-            var biomeID = BaseGraph.AddNode(biome);
-            _siteBiomeMap.Add(site, biomeID);
-            if (!biome.BiomeSettings.NotNavigable)
+            var biomeID = AreaSegmentGraph.AddNode(areaSegment);
+            _siteAreaMap.Add(site, biomeID);
+            if (!areaSegment.IsBorder)
                 navigableBiomeIDs.Add(biomeID);
         }
     }
@@ -294,28 +254,7 @@ public class TerrainStructure
     /* Assign areas to the base graph based on a specific set of rules */
     private void CreateAreaGraph()
     {
-        // Build the minimum spanning tree
-        AreaGraph = new Graph<Biome>(BaseGraph);
-        foreach (var edge in GeneratePaths())
-        {
-            AreaGraph.AddEdge(edge.Value, edge.Key, 1);
-        }
-
-        // Create path - for each area, add reachable neighbors
-        foreach (var id in _siteBiomeMap)
-        {
-            var area = BaseGraph.GetNodeData(id.Value);
-            if (area.BiomeSettings.NotNavigable) continue;
-
-            foreach (var neighbor in VoronoiDiagram.NeighborSitesForSite(new Vector2f(area.Center.x, area.Center.y)))
-            {
-                var neighborBiome = BaseGraph.GetNodeData(_siteBiomeMap[neighbor]);
-                if (!neighborBiome.BiomeSettings.NotNavigable)
-                {
-                    BaseGraph.AddEdge(_siteBiomeMap[neighbor], id.Value, 1);
-                }
-            }
-        }
+        // TODO: Build grammar graph with set of rules
     }
 
     /* Generates a polygon for a given voronoi site */
@@ -341,87 +280,22 @@ public class TerrainStructure
         return result.ToArray();
     }
 
-    /* Get biome closest to the given position */
-    private Biome GetClosestBiome(Vector2f position)
+    /* Get closest AreaSegment center to specified pos */
+    private AreaSegment GetClosestAreaSegment(Vector2 pos)
     {
-        Biome result = null;
-        var closestSqrDistance = float.MaxValue;
-        foreach (var biome in _siteBiomeMap)
+        float smallestDistance = float.MaxValue;
+        AreaSegment closestAreaSegment = null;
+        foreach (var areaSegment in AreaSegmentGraph.GetAllNodeData())
         {
-            var currentBiome = BaseGraph.GetNodeData(biome.Value);
-            var center = new Vector2f(currentBiome.Center.x, currentBiome.Center.y);
-            var sqrDistance = center.DistanceSquare(position);
-            if (sqrDistance < closestSqrDistance)
+            float currentDistance = (areaSegment.Center - pos).sqrMagnitude;
+            if (currentDistance < smallestDistance)
             {
-                result = BaseGraph.GetNodeData(biome.Value);
-                closestSqrDistance = sqrDistance;
+                smallestDistance = currentDistance;
+                closestAreaSegment = areaSegment;
             }
         }
 
-        return result;
-    }
-
-    /* Generate paths between existing biomes */
-    private List<KeyValuePair<int, int>> GeneratePaths()
-    {
-        var navigableBiomes = new Dictionary<Vector2f, int>();
-        var randomBiomeList = new List<KeyValuePair<Vector2f, int>>();
-
-        // Get all the navigable biomes list
-        foreach (var pair in _siteBiomeMap)
-        {
-            if (!BaseGraph.GetNodeData(pair.Value).BiomeSettings.NotNavigable)
-            {
-                navigableBiomes.Add(pair.Key, pair.Value);
-                randomBiomeList.Add(pair);
-            }
-        }
-
-        // Less biased towards outer biomes than using unity's random function
-        randomBiomeList.Shuffle();
-        StartBiomeNode = randomBiomeList.First();
-
-        // Construct the minimum spanning tree using Prim
-        var result = PrimMSP(StartBiomeNode, navigableBiomes);
-        return result;
-    }
-
-    /* Create a Minimum Spanning Tree using Prim's algorithm */
-    private static List<KeyValuePair<int, int>> PrimMSP(KeyValuePair<Vector2f, int> startNode, IDictionary<Vector2f, int> nodes)
-    {
-        var result = new List<KeyValuePair<int, int>>();
-        var tree = new List<KeyValuePair<Vector2f, int>>();
-        nodes.Remove(startNode.Key);
-        tree.Add(startNode);
-
-        //Iterate until all nodes all connected to the tree
-        while (nodes.Count > 0)
-        {
-            var current = new KeyValuePair<Vector2f, int>();
-            var closest = new KeyValuePair<Vector2f, int>();
-            float closestSqrDistance = float.MaxValue;
-
-            //Find the closest node pair, where one node is in the tree and the other isn't
-            foreach (var node in tree)
-            {
-                foreach (var outNode in nodes)
-                {
-                    var currentDistance = node.Key.DistanceSquare(outNode.Key);
-                    if (currentDistance < closestSqrDistance)
-                    {
-                        closest = node;
-                        current = outNode;
-                        closestSqrDistance = currentDistance;
-                    }
-                }
-            }
-
-            nodes.Remove(current.Key);
-            tree.Add(current);
-            result.Add(new KeyValuePair<int, int>(current.Value, closest.Value));
-        }
-
-        return result;
+        return closestAreaSegment;
     }
 
     private Texture2D GenerateBlankNormal()

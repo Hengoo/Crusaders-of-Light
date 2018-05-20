@@ -15,7 +15,7 @@ public class LevelCreator : Singleton<LevelCreator>
     }
 
     public DrawModeEnum DrawMode = DrawModeEnum.TerrainGraph;
-    public BiomeGlobalConfiguration BiomeGlobalConfiguration;
+    public GlobalSettings GlobalSettings;
     public List<BiomeSettings> AvailableBiomes;
 
     public AreaBase[] SpecialAreas;
@@ -52,8 +52,8 @@ public class LevelCreator : Singleton<LevelCreator>
         ClearDisplay();
         Random.InitState(Seed);
 
-        MyStoryStructure = new StoryStructure(AvailableBiomes, 0, 1, 20, BossArea, new CharacterEnemy[4]);
-        MyTerrainStructure = new TerrainStructure(MyStoryStructure, BiomeGlobalConfiguration);
+        MyStoryStructure = new StoryStructure(0, 1, 20, BossArea, new CharacterEnemy[4]);
+        MyTerrainStructure = new TerrainStructure(MyStoryStructure, GlobalSettings, AvailableBiomes);
 
         if (DrawMode == DrawModeEnum.GameLevel)
             MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, SpecialAreas, BossArea, RoadHalfWidth);
@@ -62,13 +62,13 @@ public class LevelCreator : Singleton<LevelCreator>
         switch (DrawMode)
         {
             case DrawModeEnum.TerrainGraph:
-                DrawBaseGraph();
+                DrawTerrainSkeleton();
                 break;
             case DrawModeEnum.GameLevel:
                 DrawGameMap();
                 break;
             case DrawModeEnum.AreaGraph:
-                DrawAreaGraph();
+                DrawScenerySkeleton();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -88,28 +88,28 @@ public class LevelCreator : Singleton<LevelCreator>
 
         /* Smoothing passes */
         alphamap = LevelDataGenerator.SmoothAlphaMap(alphamap, 1);
-        if (BiomeGlobalConfiguration.SmoothEdges)
+        if (GlobalSettings.SmoothEdges)
         {
             //Smooth only navigable biome borders
-            LevelDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeGlobalConfiguration.MapSize / BiomeGlobalConfiguration.HeightMapResolution, MyTerrainStructure.GetNonBlendingBiomeBorders(), BiomeGlobalConfiguration.EdgeWidth, BiomeGlobalConfiguration.SquareSize);
+            LevelDataGenerator.SmoothHeightMapWithLines(heightMap, GlobalSettings.MapSize / GlobalSettings.HeightMapResolution, MyTerrainStructure.GetPathLines(), GlobalSettings.EdgeWidth, GlobalSettings.SquareSize);
 
             //Overall smoothing
-            if (BiomeGlobalConfiguration.OverallSmoothing > 0)
+            if (GlobalSettings.OverallSmoothing > 0)
             {
-                LevelDataGenerator.SmoothHeightMap(heightMap, BiomeGlobalConfiguration.OverallSmoothing, 2);
+                LevelDataGenerator.SmoothHeightMap(heightMap, GlobalSettings.OverallSmoothing, 2);
             }
         }
 
         /* Create Terrain Data */
         var terrainData = new TerrainData
         {
-            baseMapResolution = BiomeGlobalConfiguration.HeightMapResolution,
-            heightmapResolution = Mathf.ClosestPowerOfTwo(BiomeGlobalConfiguration.HeightMapResolution) + 1,
-            alphamapResolution = BiomeGlobalConfiguration.HeightMapResolution,
+            baseMapResolution = GlobalSettings.HeightMapResolution,
+            heightmapResolution = Mathf.ClosestPowerOfTwo(GlobalSettings.HeightMapResolution) + 1,
+            alphamapResolution = GlobalSettings.HeightMapResolution,
             splatPrototypes = MyTerrainStructure.GetSplatPrototypes()
         };
-        terrainData.SetDetailResolution(BiomeGlobalConfiguration.HeightMapResolution, 32);
-        terrainData.size = new Vector3(BiomeGlobalConfiguration.MapSize, BiomeGlobalConfiguration.MapHeight, BiomeGlobalConfiguration.MapSize);
+        terrainData.SetDetailResolution(GlobalSettings.HeightMapResolution, 32);
+        terrainData.size = new Vector3(GlobalSettings.MapSize, GlobalSettings.MapHeight, GlobalSettings.MapSize);
         terrainData.SetAlphamaps(0, 0, alphamap);
 
         /* Create Terrain GameObject */
@@ -122,10 +122,10 @@ public class LevelCreator : Singleton<LevelCreator>
         //terrain.GetComponent<Terrain>().materialTemplate = BiomeGlobalConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
 
         /* Add fences to coast */
-        var fences = LevelDataGenerator.GenerateOuterFences(Terrain, MyTerrainStructure, BiomeGlobalConfiguration.CoastBlocker, BiomeGlobalConfiguration.CoastBlockerPole, BiomeGlobalConfiguration.CoastBlockerLength);
+        var fences = LevelDataGenerator.GenerateOuterFences(Terrain, MyTerrainStructure, GlobalSettings.CoastBlocker, GlobalSettings.CoastBlockerPole, GlobalSettings.CoastBlockerLength);
         fences.transform.parent = Terrain.transform;
 
-        var walls = LevelDataGenerator.GenerateAreaWalls(Terrain, MyTerrainStructure, BiomeGlobalConfiguration.AreaBlocker, BiomeGlobalConfiguration.AreaBlockerLength);
+        var walls = LevelDataGenerator.GenerateAreaWalls(Terrain, MyTerrainStructure, GlobalSettings.AreaBlocker, GlobalSettings.AreaBlockerLength);
         walls.transform.parent = Terrain.transform;
 
         /* Fill terrain with scenery */
@@ -143,20 +143,20 @@ public class LevelCreator : Singleton<LevelCreator>
         /* Water Plane Placement */
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
         water.GetComponent<Collider>().enabled = false;
-        water.GetComponent<Renderer>().material = BiomeGlobalConfiguration.WaterMaterial;
+        water.GetComponent<Renderer>().material = GlobalSettings.WaterMaterial;
         water.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
         water.transform.localScale = new Vector3(terrainData.size.x / 5f, 1, terrainData.size.z / 5f);
         water.transform.parent = Terrain.transform;
-        water.transform.localPosition = new Vector3(terrainData.size.x / 2f, (BiomeGlobalConfiguration.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2f);
+        water.transform.localPosition = new Vector3(terrainData.size.x / 2f, (GlobalSettings.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2f);
     }
 
-    void DrawBaseGraph()
+    void DrawTerrainSkeleton()
     {
         StructureDrawer.DrawVoronoiDiagram(MyTerrainStructure.VoronoiDiagram, "Voronoi").transform.parent = gameObject.transform;
-        StructureDrawer.DrawGraph(MyTerrainStructure.BaseGraph, "Base Graph").transform.parent = gameObject.transform;
+        StructureDrawer.DrawGraph(MyTerrainStructure.AreaSegmentGraph, "Base Graph").transform.parent = gameObject.transform;
     }
 
-    void DrawAreaGraph()
+    void DrawScenerySkeleton()
     {
         //TODO: debug class
     }

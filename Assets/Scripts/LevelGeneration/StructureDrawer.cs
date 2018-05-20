@@ -20,7 +20,7 @@ public static class StructureDrawer {
         return voronoiDiagram;
     }
 
-    public static GameObject DrawGraph(Graph<Biome> graph, string name)
+    public static GameObject DrawGraph(Graph<AreaSegment> graph, string name)
     {
         GameObject result = new GameObject(name);
 
@@ -42,7 +42,7 @@ public static class StructureDrawer {
         foreach (var e in graph.GetAllNodeData())
         {
             GameObject node = DrawSphere(new Vector3(e.Center.x, 0, e.Center.y), 20,
-                e.IsBorderBiome ? Color.black : Color.white);
+                e.IsBorder ? Color.black : Color.white);
             node.transform.parent = nodes.transform;
         }
 

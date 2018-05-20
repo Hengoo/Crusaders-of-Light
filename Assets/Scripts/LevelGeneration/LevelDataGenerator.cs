@@ -19,7 +19,7 @@ public static class LevelDataGenerator
         {
             for (var x = 0; x < terrainStructure.HeightMapResolution; x++)
             {
-                var biomeHeight = terrainStructure.SampleBiomeHeight(new Vector2(x * cellSize, y * cellSize));
+                var biomeHeight = terrainStructure.SampleHeight(new Vector2(x * cellSize, y * cellSize));
                 var amplitude = 1f;
                 var frequency = 1f;
                 var noiseHeight = 0f;
@@ -58,11 +58,8 @@ public static class LevelDataGenerator
         {
             for (int x = 0; x < terrainStructure.HeightMapResolution; x++)
             {
-                var samples = terrainStructure.SampleBiomeTexture(new Vector2(x * cellSize, y * cellSize));
-                foreach (var sample in samples)
-                {
-                    result[y, x, sample.Key] = sample.Value;
-                }
+                KeyValuePair<int, float> sample = terrainStructure.SampleTexture(new Vector2(x * cellSize, y * cellSize));
+                result[y, x, sample.Key] = sample.Value;
             }
         }
         return result;
@@ -71,7 +68,7 @@ public static class LevelDataGenerator
     // Smooth every cell in the alphamap using squareSize neighbors in each direction
     public static float[,,] SmoothAlphaMap(float[,,] alphamap, int squareSize)
     {
-        var result = (float[,,]) alphamap.Clone();
+        var result = (float[,,])alphamap.Clone();
         var length = alphamap.GetLength(0);
 
         for (var y = 0; y < length; y++)
@@ -126,7 +123,7 @@ public static class LevelDataGenerator
     // Smooth every cell in the heightmap using squareSize neighbors in each direction
     public static void SmoothHeightMap(float[,] heightMap, int squareSize, int passes)
     {
-        var temp = (float[,]) heightMap.Clone();
+        var temp = (float[,])heightMap.Clone();
         var length = heightMap.GetLength(0);
 
         while (passes > 0)
@@ -157,8 +154,7 @@ public static class LevelDataGenerator
     }
 
     // Smooth a heightmap along given lines
-    public static void SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<Vector2[]> lines,
-        int lineWidth, int squareSize)
+    public static void SmoothHeightMapWithLines(float[,] heightMap, float cellSize, IEnumerable<Vector2[]> lines, int lineWidth, int squareSize)
     {
         var length = heightMap.GetLength(0);
         var cellsToSmooth =
@@ -298,7 +294,7 @@ public static class LevelDataGenerator
     // Smooth cells using a 2*neighborcount + 1 square around each cell
     private static void SmoothHeightMapCells(float[,] heightMap, IEnumerable<Vector2Int> cellsToSmooth, int squareSize)
     {
-        var temp = (float[,]) heightMap.Clone();
+        var temp = (float[,])heightMap.Clone();
         var length = heightMap.GetLength(0);
 
         foreach (var cell in cellsToSmooth)
