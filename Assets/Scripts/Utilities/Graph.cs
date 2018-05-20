@@ -81,6 +81,11 @@ public class Graph<T> where T : class
         return result;
     }
 
+    public T[] GetAllNodeData()
+    {
+        return _nodes.Values.Select(node => node.Data).ToArray();
+    }
+
     public int NodeCount()
     {
         return _nodes.Count();

@@ -9,18 +9,18 @@ public class LevelCreator : Singleton<LevelCreator>
 {
     public enum DrawModeEnum
     {
-        BiomeGraph,
-        GameMap,
+        TerrainGraph,
+        GameLevel,
         AreaGraph
     }
 
-    public DrawModeEnum DrawMode = DrawModeEnum.BiomeGraph;
+    public DrawModeEnum DrawMode = DrawModeEnum.TerrainGraph;
     public BiomeGlobalConfiguration BiomeGlobalConfiguration;
     public List<BiomeSettings> AvailableBiomes;
 
     public AreaBase[] SpecialAreas;
     public AreaBase BossArea;
-    
+
     public GameObject SpawnerPrefab;
 
     public int ExtraEdges = 20;
@@ -34,9 +34,9 @@ public class LevelCreator : Singleton<LevelCreator>
     public SceneryStructure MySceneryStructure { get; private set; }
     public Terrain Terrain { get; private set; }
 
-   public void CreateMap()
-   {
-        DrawMode = DrawModeEnum.GameMap;
+    public void CreateMap()
+    {
+        DrawMode = DrawModeEnum.GameLevel;
         Seed = GameController.Instance.Seed;
         GeneratePreview();
     }
@@ -53,19 +53,18 @@ public class LevelCreator : Singleton<LevelCreator>
         Random.InitState(Seed);
 
         MyStoryStructure = new StoryStructure(AvailableBiomes, 0, 1, 20, BossArea, new CharacterEnemy[4]);
-        if (DrawMode == DrawModeEnum.AreaGraph || DrawMode == DrawModeEnum.GameMap)
-        {
-            MyTerrainStructure = new TerrainStructure(MyStoryStructure, BiomeGlobalConfiguration);
-            if (DrawMode == DrawModeEnum.GameMap)
-                MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, SpecialAreas, BossArea, RoadHalfWidth);
-        }
+        MyTerrainStructure = new TerrainStructure(MyStoryStructure, BiomeGlobalConfiguration);
+
+        if (DrawMode == DrawModeEnum.GameLevel)
+            MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, SpecialAreas, BossArea, RoadHalfWidth);
+
 
         switch (DrawMode)
         {
-            case DrawModeEnum.BiomeGraph:
-                DrawGraph();
+            case DrawModeEnum.TerrainGraph:
+                DrawBaseGraph();
                 break;
-            case DrawModeEnum.GameMap:
+            case DrawModeEnum.GameLevel:
                 DrawGameMap();
                 break;
             case DrawModeEnum.AreaGraph:
@@ -93,7 +92,7 @@ public class LevelCreator : Singleton<LevelCreator>
         {
             //Smooth only navigable biome borders
             LevelDataGenerator.SmoothHeightMapWithLines(heightMap, BiomeGlobalConfiguration.MapSize / BiomeGlobalConfiguration.HeightMapResolution, MyTerrainStructure.GetNonBlendingBiomeBorders(), BiomeGlobalConfiguration.EdgeWidth, BiomeGlobalConfiguration.SquareSize);
-            
+
             //Overall smoothing
             if (BiomeGlobalConfiguration.OverallSmoothing > 0)
             {
@@ -151,9 +150,10 @@ public class LevelCreator : Singleton<LevelCreator>
         water.transform.localPosition = new Vector3(terrainData.size.x / 2f, (BiomeGlobalConfiguration.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2f);
     }
 
-    void DrawGraph()
+    void DrawBaseGraph()
     {
-        //TODO: debug class
+        StructureDrawer.DrawVoronoiDiagram(MyTerrainStructure.VoronoiDiagram, "Voronoi").transform.parent = gameObject.transform;
+        StructureDrawer.DrawGraph(MyTerrainStructure.BaseGraph, "Base Graph").transform.parent = gameObject.transform;
     }
 
     void DrawAreaGraph()
@@ -163,23 +163,10 @@ public class LevelCreator : Singleton<LevelCreator>
 
     void ClearDisplay()
     {
-        var toDelete = new List<GameObject>();
-        foreach (var o in FindObjectsOfType(typeof(GameObject)))
+        // Start from the top, because Unity updates the children index after each destroy call
+        for (int i = transform.childCount - 1; i >= 0; --i)
         {
-            var go = (GameObject)o;
-            if (go.name == "BiomeGraph" || go.name == "Terrain" || go.name == "AreaGraph")
-                toDelete.Add(go);
+            DestroyImmediate(transform.GetChild(i).gameObject, true);
         }
-
-        foreach (var go in toDelete)
-        {
-            StartCoroutine(DestroyInEditor(go));
-        }
-    }
-
-    private static IEnumerator DestroyInEditor(GameObject obj)
-    {
-        yield return new WaitForSecondsRealtime(1);
-        DestroyImmediate(obj, true);
     }
 }
