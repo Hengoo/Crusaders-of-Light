@@ -9,8 +9,8 @@ public class TerrainStructure
 {
 
     public Voronoi VoronoiDiagram { get; private set; }
-    public Graph<AreaSegment> AreaSegmentGraph { get; private set; }
-    public Graph<Area> AreaGraph { get; private set; }
+    public GrammarGraph<AreaSegment> AreaSegmentGraph { get; private set; }
+    public List<Area> AreaGraph { get; private set; }
     public KeyValuePair<Vector2f, int> StartBiomeNode;
     public KeyValuePair<Vector2f, int> BossBiomeNode;
 
@@ -40,7 +40,8 @@ public class TerrainStructure
 
     public TerrainStructure(StoryStructure storyStructure, GlobalSettings globalSettings, List<BiomeSettings> availableBiomes)
     {
-        AreaSegmentGraph = new Graph<AreaSegment>();
+        AreaSegmentGraph = new GrammarGraph<AreaSegment>();
+        AreaGraph = new List<Area>();
         OuterBorderPolygon = new List<Vector2>();
         AreaBorders = new List<Vector2[]>();
         RoadLines = new List<Vector2[]>();
@@ -139,7 +140,7 @@ public class TerrainStructure
     {
         Vector2 noisePosition = position + new Vector2(Random.Range(-_borderNoise, _borderNoise), Random.Range(-_borderNoise, _borderNoise));
         AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
-        return areaSegment == null || areaSegment.IsBorder ? _borderSettings.HeightParameters : _biomeSettings.HeightParameters;
+        return areaSegment == null || areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? _borderSettings.HeightParameters : _biomeSettings.HeightParameters;
     }
 
     /* Sample area texture at given position */
@@ -147,7 +148,7 @@ public class TerrainStructure
     {
         Vector2 noisePosition = position + new Vector2(Random.Range(-_borderNoise, _borderNoise), Random.Range(-_borderNoise, _borderNoise));
         AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
-        int splatID = _splatIDMap[areaSegment.IsBorder ? _borderSettings.Splat : _biomeSettings.Splat];
+        int splatID = _splatIDMap[areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? _borderSettings.Splat : _biomeSettings.Splat];
         float splatValue = 1;
         return new KeyValuePair<int, float>(splatID, splatValue);
     }
@@ -219,8 +220,7 @@ public class TerrainStructure
         // Apply Lloyd Relaxation
         VoronoiDiagram.LloydRelaxation(globalSettings.LloydRelaxation);
 
-        // Assign base areas to each site
-        var navigableBiomeIDs = new HashSet<int>();
+        // Assign area segments to initial areas
         foreach (var site in VoronoiDiagram.SiteCoords())
         {
             bool isOnBorder = false;
@@ -239,15 +239,12 @@ public class TerrainStructure
                 }
             }
 
-            // Assign biome to site - water if on border
-            var areaSegment = isOnBorder
-                ? new AreaSegment(site.ToUnityVector2(), true)
-                : new AreaSegment(site.ToUnityVector2(), false);
+            // Assign areaSegment to site and corresponding area
+            var areaSegment = new AreaSegment(site.ToUnityVector2(),
+                isOnBorder ? AreaSegment.EAreaSegmentType.Border : AreaSegment.EAreaSegmentType.Empty);
 
             var biomeID = AreaSegmentGraph.AddNode(areaSegment);
             _siteAreaMap.Add(site, biomeID);
-            if (!areaSegment.IsBorder)
-                navigableBiomeIDs.Add(biomeID);
         }
     }
 

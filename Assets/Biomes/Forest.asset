@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Forest
+  m_EditorClassIdentifier: Assembly-CSharp::BiomeSettings
+  UniqueName: Forest
+  HeightParameters:
+    Persistence: 0.267
+    LocalMax: 0.25
+    LocalMin: 0.178
+    Lacunarity: 0.86
+    Scale: 20
+  Splat:
+    texture: {fileID: 2800000, guid: e136cedfd423a9b459bdfeff82cecaef, type: 3}
+    normalMap: {fileID: 2800000, guid: 40abb9144020bce489a3ba05ec273136, type: 3}
+    metallic: 0
+    smoothness: 0.2
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 10, y: 10}

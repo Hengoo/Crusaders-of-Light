@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 
 //-------------------------------------------------------------
 // Biomes & Terrain
@@ -76,46 +78,70 @@ public class AreaConfiguration : ScriptableObject
     public GameObject[] Prefabs;
 }
 
-public class AreaSegment
+public class AreaSegment : IEquatable<AreaSegment>
 {
     public enum EAreaSegmentType
     {
         Empty,
-        Occupied,
-        Border
+        Border,
+        Start,
+        Boss,
+        Special,
+        MainPath,
+        SidePath
     }
 
-    public readonly Vector2 Center;
-    public readonly bool IsBorder;
     public EAreaSegmentType Type;
+    public readonly Vector2 Center;
 
-    public AreaSegment(Vector2 center, bool isBorder)
+    public AreaSegment(EAreaSegmentType type)
+    {
+        Center = Vector2.zero;
+        Type = type;
+    }
+
+    public AreaSegment(Vector2 center, EAreaSegmentType type)
     {
         Center = center;
-        IsBorder = isBorder;
-        if (isBorder)
-            Type = EAreaSegmentType.Border;
+        Type = type;
+    }
+
+    public bool Equals(AreaSegment other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Type == other.Type;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((AreaSegment) obj);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return ((int) Type * 397) ^ Center.GetHashCode();
+        }
+    }
+
+    public static bool operator ==(AreaSegment left, AreaSegment right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(AreaSegment left, AreaSegment right)
+    {
+        return !Equals(left, right);
     }
 }
 
-public class Area
+ public class Area
 {
-    public enum EAreaType
-    {
-        StartArea,
-        BossArea,
-        SpecialArea,
-        MainPathArea,
-        SidePathArea
-    }
-
-    public readonly EAreaType AreaType;
-    public readonly AreaConfiguration AreaConfiguration;
     public readonly List<AreaSegment> AreaSegments = new List<AreaSegment>();
-
-    public Area(EAreaType areaType, AreaConfiguration areaConfiguration)
-    {
-        AreaType = areaType;
-        AreaConfiguration = areaConfiguration;
-    }
+    public AreaConfiguration AreaConfiguration;
 }

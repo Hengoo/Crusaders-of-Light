@@ -42,7 +42,7 @@ public static class StructureDrawer {
         foreach (var e in graph.GetAllNodeData())
         {
             GameObject node = DrawSphere(new Vector3(e.Center.x, 0, e.Center.y), 20,
-                e.IsBorder ? Color.black : Color.white);
+                e.Type == AreaSegment.EAreaSegmentType.Border ? Color.black : Color.white);
             node.transform.parent = nodes.transform;
         }
 

@@ -70,6 +70,11 @@ public class Graph<T> where T : class
         return null;
     }
 
+    public int[] GetAllNodeIDs()
+    {
+        return _nodes.Keys.ToArray();
+    }
+
     public Vector2Int[] GetAllEdges()
     {
         var result = new Vector2Int[_edges.Count];
@@ -161,30 +166,7 @@ public class Graph<T> where T : class
         return false;
     }
 
-    public List<int> GetLargestPathInMST(int start)
-    {
-        return GetLargestPathRecursion(start, -1);
-    }
-
-    private List<int> GetLargestPathRecursion(int currentNode, int parent)
-    {
-        var path = new List<int> { currentNode };
-        var longest = new List<int>();
-        var neighborhood = GetNeighbours(currentNode);
-        foreach (var neighbor in neighborhood)
-        {
-            if (neighbor == parent || neighbor == currentNode)
-                continue;
-
-            var newPath = GetLargestPathRecursion(neighbor, currentNode);
-            if (newPath.Count > longest.Count)
-                longest = newPath;
-        }
-
-        return path.Concat(longest).ToList();
-    }
-
-    private class Edge
+    protected class Edge
     {
 
         public readonly Pair Nodes;
@@ -226,7 +208,7 @@ public class Graph<T> where T : class
         }
     }
 
-    private class Node : IEqualityComparer<Node>
+    protected class Node : IEqualityComparer<Node>
     {
         public readonly int NodeID;
         public readonly HashSet<Node> Neighbors = new HashSet<Node>();
@@ -261,7 +243,7 @@ public class Graph<T> where T : class
         }
     }
 
-    private class Pair
+    protected class Pair
     {
         public readonly int A, B; // with A <= B
 
