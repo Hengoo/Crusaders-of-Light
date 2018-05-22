@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class Graph<T> where T : class
 {
-    private readonly Dictionary<int, Node> _nodes = new Dictionary<int, Node>();
-    private readonly Dictionary<Pair, Edge> _edges = new Dictionary<Pair, Edge>();
-    private int _nodeIDCount;
+    protected readonly Dictionary<int, Node> _nodes = new Dictionary<int, Node>();
+    protected readonly Dictionary<Pair, Edge> _edges = new Dictionary<Pair, Edge>();
+    protected int _nodeIDCount;
 
     public Graph() { }
     public Graph(Graph<T> original)
@@ -57,9 +57,9 @@ public class Graph<T> where T : class
 
     public int[] FindNodesWithData(T data)
     {
-        return _nodes.Where(a => a.Value.Data == data).Select(a => a.Key).ToArray();
+        var result = _nodes.Where(a => ((T)a.Value.Data).Equals(data)).Select(a => a.Key).ToArray();
+        return result;
     }
-
 
     public int[] GetNeighbours(int nodeID)
     {

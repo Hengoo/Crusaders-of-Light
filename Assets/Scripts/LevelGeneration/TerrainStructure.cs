@@ -62,11 +62,11 @@ public class TerrainStructure
         AddShaderTextures();
 
         // Create base graph that later on is transformed with a set of rules and assigned areas to
-        CreateBaseGraph(storyStructure, globalSettings);
+        CreateBaseGraph(globalSettings);
 
         // Assign specific areas to each node of the base graph - Start point, Boss arena, paths...
         //TODO: Graph grammar transformations - assign main path, side paths, boss area, start area, special areas...
-        CreateAreaGraph();
+        CreateAreaGraph(storyStructure);
     }
 
     /* Returns a sorted list of the textures */
@@ -107,6 +107,7 @@ public class TerrainStructure
     /* Get all biome borders */
     public IEnumerable<LineSegment> GetAreaSegmentBorders()
     {
+        //TODO REIMPLEMENT
         var result = new List<LineSegment>();
 
         foreach (var edge in VoronoiDiagram.Edges)
@@ -205,7 +206,7 @@ public class TerrainStructure
     }
 
     /* Create a graph containing all connected empty areas */
-    private void CreateBaseGraph(StoryStructure storyStructure, GlobalSettings globalSettings)
+    private void CreateBaseGraph(GlobalSettings globalSettings)
     {
         // Create uniform random point distribution and Voronoi Diagram
         var centers = new List<Vector2f>();
@@ -246,12 +247,29 @@ public class TerrainStructure
             var biomeID = AreaSegmentGraph.AddNode(areaSegment);
             _siteAreaMap.Add(site, biomeID);
         }
+
+        // Create navigation graph - for each area segment that is not a border, add reachable neighbors
+        foreach (var id in _siteAreaMap)
+        {
+            var areaSegment = AreaSegmentGraph.GetNodeData(id.Value);
+            if (areaSegment.Type == AreaSegment.EAreaSegmentType.Border) continue;
+            foreach (var neighbor in VoronoiDiagram.NeighborSitesForSite(new Vector2f(areaSegment.Center.x, areaSegment.Center.y)))
+            {
+                var neighborSegment = AreaSegmentGraph.GetNodeData(_siteAreaMap[neighbor]);
+                if (neighborSegment.Type != AreaSegment.EAreaSegmentType.Border)
+                {
+                    AreaSegmentGraph.AddEdge(_siteAreaMap[neighbor], id.Value, 1);
+                }
+            }
+        }
     }
 
     /* Assign areas to the base graph based on a specific set of rules */
-    private void CreateAreaGraph()
+    private void CreateAreaGraph(StoryStructure storyStructure)
     {
         // TODO: Build grammar graph with set of rules
+        var rule = storyStructure.Rewrites.Dequeue();
+        AreaSegmentGraph.Rewrite(rule.Pattern, rule.Replace);
     }
 
     /* Generates a polygon for a given voronoi site */

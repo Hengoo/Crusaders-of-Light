@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class GrammarGraph<T> : Graph<T> where T : class {
+public class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
 
 
     // Rewrites a portion of the graph, returns true when "match" is a subgraph of this graph
@@ -43,14 +43,16 @@ public class GrammarGraph<T> : Graph<T> where T : class {
             int[] patternNeighbours = pattern.GetNeighbours(patternNode);
 
             // Get all nodes with the same data from this graph
-            List<int> matches = FindNodesWithData(pattern.GetNodeData(patternNode)).ToList();
+            T patternNodeData = pattern.GetNodeData(patternNode);
+            List<int> matches = FindNodesWithData(patternNodeData).ToList();
 
-            // Check if node degree and neighbours' data coincide
+
+            // Check if node degree is sufficiently large and neighbours' data coincide
             foreach (var match in matches.ToList())
             {
                 // Degree check
                 int[] neighbours = GetNeighbours(match);
-                if (patternNeighbours.Length != GetNeighbours(match).Length)
+                if (patternNeighbours.Length > GetNeighbours(match).Length)
                 {
                     matches.Remove(match);
                     continue;

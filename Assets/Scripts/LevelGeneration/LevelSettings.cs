@@ -117,16 +117,12 @@ public class AreaSegment : IEquatable<AreaSegment>
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
-        return Equals((AreaSegment) obj);
+        return obj.GetType() == this.GetType() && Equals((AreaSegment) obj);
     }
 
     public override int GetHashCode()
     {
-        unchecked
-        {
-            return ((int) Type * 397) ^ Center.GetHashCode();
-        }
+        return 1;
     }
 
     public static bool operator ==(AreaSegment left, AreaSegment right)
