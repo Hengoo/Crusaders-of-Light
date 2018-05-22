@@ -12,6 +12,7 @@ public class StoryStructure
     {
         public Graph<AreaSegment> Pattern = new Graph<AreaSegment>();
         public Graph<AreaSegment> Replace = new Graph<AreaSegment>();
+        public Dictionary<int, int> Correspondences = new Dictionary<int, int>();
     }
 
     public int DifficultyLevel { get; private set; }
@@ -44,9 +45,13 @@ public class StoryStructure
         int empty0 = startBoss.Pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty));
         int empty1 = startBoss.Pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty));
         startBoss.Pattern.AddEdge(empty0, empty1, 1);
+
         int start = startBoss.Replace.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Start));
         int end = startBoss.Replace.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
         startBoss.Replace.AddEdge(start, end, 1);
+
+        startBoss.Correspondences.Add(empty0, start);
+        startBoss.Correspondences.Add(empty1, end);
 
         // Main Path - TODO
         AreaSegmentRewrite createMainPath = new AreaSegmentRewrite();

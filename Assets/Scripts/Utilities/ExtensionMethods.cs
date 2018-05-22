@@ -1,10 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using csDelaunay;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public static class ExtensionMethods
 {
+    public static Dictionary<TKey, TValue> DeepClone<TKey, TValue>
+        (Dictionary<TKey, TValue> original) where TValue : ICloneable
+    {
+        Dictionary<TKey, TValue> ret = new Dictionary<TKey, TValue>(original.Count,
+            original.Comparer);
+        foreach (KeyValuePair<TKey, TValue> entry in original)
+        {
+            ret.Add(entry.Key, (TValue)entry.Value.Clone());
+        }
+        return ret;
+    }
+
     public static Vector3 Barycentric(this Vector2 p, Vector2 a, Vector2 b, Vector2 c)
     {
         Vector2 v0 = b - a, v1 = c - a, v2 = p - a;

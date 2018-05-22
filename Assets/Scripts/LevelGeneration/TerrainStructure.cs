@@ -25,6 +25,7 @@ public class TerrainStructure
     public readonly List<Vector2[]> RoadLines;
     public readonly List<Vector2[]> AreaBorders;
 
+    private readonly Dictionary<int, Vector2> _areaSegmentCenterMap = new Dictionary<int, Vector2>(); //Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<Vector2f, int> _siteAreaMap = new Dictionary<Vector2f, int>(); //Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap = new Dictionary<SplatPrototypeSerializable, int>(); //Mapping of biome SplatPrototypes and terrain texture IDs
 
@@ -241,11 +242,11 @@ public class TerrainStructure
             }
 
             // Assign areaSegment to site and corresponding area
-            var areaSegment = new AreaSegment(site.ToUnityVector2(),
-                isOnBorder ? AreaSegment.EAreaSegmentType.Border : AreaSegment.EAreaSegmentType.Empty);
+            var areaSegment = new AreaSegment(isOnBorder ? AreaSegment.EAreaSegmentType.Border : AreaSegment.EAreaSegmentType.Empty);
 
-            var biomeID = AreaSegmentGraph.AddNode(areaSegment);
-            _siteAreaMap.Add(site, biomeID);
+            var nodeID = AreaSegmentGraph.AddNode(areaSegment);
+            _siteAreaMap.Add(site, nodeID);
+            _areaSegmentCenterMap.Add(nodeID, site.ToUnityVector2());
         }
 
         // Create navigation graph - for each area segment that is not a border, add reachable neighbors
@@ -253,7 +254,9 @@ public class TerrainStructure
         {
             var areaSegment = AreaSegmentGraph.GetNodeData(id.Value);
             if (areaSegment.Type == AreaSegment.EAreaSegmentType.Border) continue;
-            foreach (var neighbor in VoronoiDiagram.NeighborSitesForSite(new Vector2f(areaSegment.Center.x, areaSegment.Center.y)))
+
+            Vector2 center = _areaSegmentCenterMap[id.Value];
+            foreach (var neighbor in VoronoiDiagram.NeighborSitesForSite(new Vector2f(center.x, center.y)))
             {
                 var neighborSegment = AreaSegmentGraph.GetNodeData(_siteAreaMap[neighbor]);
                 if (neighborSegment.Type != AreaSegment.EAreaSegmentType.Border)
@@ -269,7 +272,7 @@ public class TerrainStructure
     {
         // TODO: Build grammar graph with set of rules
         var rule = storyStructure.Rewrites.Dequeue();
-        AreaSegmentGraph.Rewrite(rule.Pattern, rule.Replace);
+        AreaSegmentGraph.Rewrite(rule.Pattern, rule.Replace, rule.Correspondences);
     }
 
     /* Generates a polygon for a given voronoi site */
@@ -300,13 +303,14 @@ public class TerrainStructure
     {
         float smallestDistance = float.MaxValue;
         AreaSegment closestAreaSegment = null;
-        foreach (var areaSegment in AreaSegmentGraph.GetAllNodeData())
+        foreach (var id in AreaSegmentGraph.GetAllNodeIDs())
         {
-            float currentDistance = (areaSegment.Center - pos).sqrMagnitude;
+            Vector2 center = _areaSegmentCenterMap[id];
+            float currentDistance = (center - pos).sqrMagnitude;
             if (currentDistance < smallestDistance)
             {
                 smallestDistance = currentDistance;
-                closestAreaSegment = areaSegment;
+                closestAreaSegment = AreaSegmentGraph.GetNodeData(id);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Xml;
 using UnityEngine;
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -92,18 +93,12 @@ public class AreaSegment : IEquatable<AreaSegment>
     }
 
     public EAreaSegmentType Type;
-    public readonly Vector2 Center;
+    public Guid uniqueId;
 
     public AreaSegment(EAreaSegmentType type)
     {
-        Center = Vector2.zero;
         Type = type;
-    }
-
-    public AreaSegment(Vector2 center, EAreaSegmentType type)
-    {
-        Center = center;
-        Type = type;
+        uniqueId = Guid.NewGuid();
     }
 
     public bool Equals(AreaSegment other)

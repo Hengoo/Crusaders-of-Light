@@ -20,29 +20,32 @@ public static class StructureDrawer {
         return voronoiDiagram;
     }
 
-    public static GameObject DrawGraph(Graph<AreaSegment> graph, string name)
+    public static GameObject DrawGraph(TerrainStructure terrainStructure, string name)
     {
         GameObject result = new GameObject(name);
+        var graph = terrainStructure.AreaSegmentGraph;
 
         // Draw all lines
         GameObject edges = new GameObject("Edges");
         edges.transform.parent = result.transform;
-        foreach (var e in graph.GetAllEdges())
+        foreach (var edge in graph.GetAllEdges())
         {
-            Vector2 start = graph.GetNodeData(e.x).Center;
-            Vector2 end = graph.GetNodeData(e.y).Center;
+            Vector2 start = graph.GetNodeData(edge.x).Center;
+            Vector2 end = graph.GetNodeData(edge.y).Center;
 
-            GameObject edge = DrawLine(new Vector3(start.x, 0, start.y), new Vector3(end.x, 0, end.y), 5, Color.gray);
-            edge.transform.parent = edges.transform;
+            GameObject line = DrawLine(new Vector3(start.x, 0, start.y), new Vector3(end.x, 0, end.y), 5, Color.gray);
+            line.transform.parent = edges.transform;
         }
 
         // Draw all centers
-        GameObject nodes = new GameObject("Biomes");
+        GameObject nodes = new GameObject("Nodes");
         nodes.transform.parent = result.transform;
-        foreach (var e in graph.GetAllNodeData())
+        foreach (var id in graph.GetAllNodeIDs())
         {
-            GameObject node = DrawSphere(new Vector3(e.Center.x, 0, e.Center.y), 20,
-                e.Type == AreaSegment.EAreaSegmentType.Border ? Color.black : Color.white);
+            AreaSegment data = graph.GetNodeData(id);
+            GameObject node = DrawSphere(new Vector3(data.Center.x, 0, data.Center.y), 20,
+                data.Type == AreaSegment.EAreaSegmentType.Border ? Color.black : Color.white);
+            node.name = "Node " + id + " - " + data.Type;
             node.transform.parent = nodes.transform;
         }
 
