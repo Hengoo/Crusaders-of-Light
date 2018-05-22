@@ -11,7 +11,7 @@ public class TerrainStructure
     public Voronoi VoronoiDiagram { get; private set; }
     public GrammarGraph<AreaSegment> AreaSegmentGraph { get; private set; }
     public List<Area> AreaGraph { get; private set; }
-    public KeyValuePair<Vector2f, int> StartBiomeNode;
+    public KeyValuePair<Vector2f, int> StartAreaSegment;
     public KeyValuePair<Vector2f, int> BossBiomeNode;
 
     public int TextureCount { get { return _splatIDMap.Count; } }
@@ -66,8 +66,14 @@ public class TerrainStructure
         CreateBaseGraph(globalSettings);
 
         // Assign specific areas to each node of the base graph - Start point, Boss arena, paths...
-        //TODO: Graph grammar transformations - assign main path, side paths, boss area, start area, special areas...
         CreateAreaGraph(storyStructure);
+    }
+
+    /* Returns the center position for a given area segment ID */
+    public Vector2 GetAreaSegmentCenter(int id)
+    {
+        Vector2 value;
+        return _areaSegmentCenterMap.TryGetValue(id, out value) ? value : Vector2.zero;
     }
 
     /* Returns a sorted list of the textures */
@@ -106,7 +112,7 @@ public class TerrainStructure
     }
 
     /* Get all biome borders */
-    public IEnumerable<LineSegment> GetAreaSegmentBorders()
+    public IEnumerable<LineSegment> GetAllAreaSegmentBorders()
     {
         //TODO REIMPLEMENT
         var result = new List<LineSegment>();
@@ -270,9 +276,10 @@ public class TerrainStructure
     /* Assign areas to the base graph based on a specific set of rules */
     private void CreateAreaGraph(StoryStructure storyStructure)
     {
+        // TODO: Graph grammar transformations - assign main path, side paths, boss area, start area, special areas...
         // TODO: Build grammar graph with set of rules
         var rule = storyStructure.Rewrites.Dequeue();
-        AreaSegmentGraph.Rewrite(rule.Pattern, rule.Replace, rule.Correspondences);
+        AreaSegmentGraph.Replace(rule.Pattern, rule.Replace, rule.Correspondences);
     }
 
     /* Generates a polygon for a given voronoi site */

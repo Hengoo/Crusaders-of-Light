@@ -153,7 +153,7 @@ public class LevelCreator : Singleton<LevelCreator>
     void DrawTerrainSkeleton()
     {
         StructureDrawer.DrawVoronoiDiagram(MyTerrainStructure.VoronoiDiagram, "Voronoi").transform.parent = gameObject.transform;
-        StructureDrawer.DrawGraph(MyTerrainStructure.AreaSegmentGraph, "Base Graph").transform.parent = gameObject.transform;
+        StructureDrawer.DrawAreaSegments(MyTerrainStructure, "Base Graph").transform.parent = gameObject.transform;
     }
 
     void DrawScenerySkeleton()

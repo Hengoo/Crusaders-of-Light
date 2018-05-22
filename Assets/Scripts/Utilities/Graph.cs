@@ -112,6 +112,14 @@ public class Graph<T> where T : class
         return default(T);
     }
 
+    public void ReplaceNodeData(int nodeID, T data)
+    {
+        if (_nodes.ContainsKey(nodeID))
+            _nodes[nodeID].Data = data;
+        else
+            Debug.Log("Node not found in graph");
+    }
+
     public bool AddEdge(int node1, int node2, float weight)
     {
         bool nodesExist = _nodes.ContainsKey(node1) && _nodes.ContainsKey(node2);
@@ -212,7 +220,7 @@ public class Graph<T> where T : class
     {
         public readonly int NodeID;
         public readonly HashSet<Node> Neighbors = new HashSet<Node>();
-        public readonly T Data;
+        public T Data;
 
         public Node(int nodeID, T data)
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using csDelaunay;
 using UnityEngine;
@@ -20,7 +21,7 @@ public static class StructureDrawer {
         return voronoiDiagram;
     }
 
-    public static GameObject DrawGraph(TerrainStructure terrainStructure, string name)
+    public static GameObject DrawAreaSegments(TerrainStructure terrainStructure, string name)
     {
         GameObject result = new GameObject(name);
         var graph = terrainStructure.AreaSegmentGraph;
@@ -30,8 +31,8 @@ public static class StructureDrawer {
         edges.transform.parent = result.transform;
         foreach (var edge in graph.GetAllEdges())
         {
-            Vector2 start = graph.GetNodeData(edge.x).Center;
-            Vector2 end = graph.GetNodeData(edge.y).Center;
+            Vector2 start = terrainStructure.GetAreaSegmentCenter(edge.x);
+            Vector2 end = terrainStructure.GetAreaSegmentCenter(edge.y);
 
             GameObject line = DrawLine(new Vector3(start.x, 0, start.y), new Vector3(end.x, 0, end.y), 5, Color.gray);
             line.transform.parent = edges.transform;
@@ -43,8 +44,36 @@ public static class StructureDrawer {
         foreach (var id in graph.GetAllNodeIDs())
         {
             AreaSegment data = graph.GetNodeData(id);
-            GameObject node = DrawSphere(new Vector3(data.Center.x, 0, data.Center.y), 20,
-                data.Type == AreaSegment.EAreaSegmentType.Border ? Color.black : Color.white);
+            Vector2 center = terrainStructure.GetAreaSegmentCenter(id);
+            Color color;
+            switch (data.Type)
+            {
+                case AreaSegment.EAreaSegmentType.Empty:
+                    color = Color.white;
+                    break;
+                case AreaSegment.EAreaSegmentType.Border:
+                    color = Color.black;
+                    break;
+                case AreaSegment.EAreaSegmentType.Start:
+                    color = Color.blue;
+                    break;
+                case AreaSegment.EAreaSegmentType.Boss:
+                    color = Color.red;
+                    break;
+                case AreaSegment.EAreaSegmentType.Special:
+                    color = Color.yellow;
+                    break;
+                case AreaSegment.EAreaSegmentType.MainPath:
+                    color = Color.green;
+                    break;
+                case AreaSegment.EAreaSegmentType.SidePath:
+                    color = Color.cyan;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            GameObject node = DrawSphere(new Vector3(center.x, 0, center.y), 20, color);
             node.name = "Node " + id + " - " + data.Type;
             node.transform.parent = nodes.transform;
         }

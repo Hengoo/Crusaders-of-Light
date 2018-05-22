@@ -44,14 +44,19 @@ public class StoryStructure
         AreaSegmentRewrite startBoss = new AreaSegmentRewrite();
         int empty0 = startBoss.Pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty));
         int empty1 = startBoss.Pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty));
+        int empty2 = startBoss.Pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty));
         startBoss.Pattern.AddEdge(empty0, empty1, 1);
+        startBoss.Pattern.AddEdge(empty1, empty2, 1);
 
         int start = startBoss.Replace.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Start));
+        int mid = startBoss.Replace.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.MainPath));
         int end = startBoss.Replace.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
-        startBoss.Replace.AddEdge(start, end, 1);
+        startBoss.Replace.AddEdge(start, mid, 1);
+        startBoss.Replace.AddEdge(mid, end, 1);
 
         startBoss.Correspondences.Add(empty0, start);
-        startBoss.Correspondences.Add(empty1, end);
+        startBoss.Correspondences.Add(empty1, mid);
+        startBoss.Correspondences.Add(empty2, end);
 
         // Main Path - TODO
         AreaSegmentRewrite createMainPath = new AreaSegmentRewrite();

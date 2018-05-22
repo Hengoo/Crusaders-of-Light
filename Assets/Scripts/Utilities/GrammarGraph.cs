@@ -9,7 +9,7 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
 
 
     // Rewrites a portion of the graph, returns true when "match" is a subgraph of this graph
-    public bool Rewrite(Graph<T> match, Graph<T> replace, Dictionary<int, int> correnpondencies)
+    public bool Rewrite(Graph<T> match, Graph<T> newGraph, Dictionary<int, int> correnpondencies)
     {
         // Match pattern in graph
         Dictionary<int, int> assignments = MatchPattern(match);
@@ -18,7 +18,21 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
         if (assignments.Count == 0)
             return false;
 
-        ApplyRule(replace, correnpondencies, assignments);
+        ApplyRewrite(newGraph, correnpondencies, assignments);
+
+        return true;
+    }
+
+    public bool Replace(Graph<T> match, Graph<T> newGraph, Dictionary<int, int> correnpondencies)
+    {
+        // Match pattern in graph
+        Dictionary<int, int> assignments = MatchPattern(match);
+
+        // No match found
+        if (assignments.Count == 0)
+            return false;
+
+        ApplyReplace(newGraph, correnpondencies, assignments);
 
         return true;
     }
@@ -157,8 +171,8 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
         return false;
     }
 
-    // Replace match in graph with new subgraph
-    private void ApplyRule(Graph<T> replace, Dictionary<int, int> correspondences, Dictionary<int, int> assignments)
+    // Remove match in graph and add new one
+    private void ApplyRewrite(Graph<T> replace, Dictionary<int, int> correspondences, Dictionary<int, int> assignments)
     {
         List<Vector2Int> edgeList = new List<Vector2Int>();
 
@@ -177,15 +191,27 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
 
         // Add new nodes
         Dictionary<int, int> temp = new Dictionary<int, int>();
-        foreach (var newNode in replace.GetAllNodeIDs())
+        foreach (var replaceNode in replace.GetAllNodeIDs())
         {
-            temp.Add(newNode, AddNode(replace.GetNodeData(newNode)));
+            var newNode = AddNode(replace.GetNodeData(replaceNode));
+            temp.Add(replaceNode, newNode);
         }
 
         // Add edges back
         foreach (var edge in edgeList)
         {
             AddEdge(edge.x, temp[correspondences[edge.y]], 1);
+        }
+    }
+
+    // Replace node data with new one
+    private void ApplyReplace(Graph<T> replace, Dictionary<int, int> correspondences, Dictionary<int, int> assignments)
+    {
+        // Replace node data
+        foreach (var assignment in assignments)
+        {
+            var data = replace.GetNodeData(correspondences[assignment.Key]);
+            ReplaceNodeData(assignment.Value, data);
         }
     }
 }
