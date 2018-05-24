@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyTestSwarm : MonoBehaviour {
+public class EnemyTestSwarm : Singleton<EnemyTestSwarm> {
 
     public GameObject BoidPrefab1;
     public int SpawnNumber1 = 30;
@@ -10,6 +10,13 @@ public class EnemyTestSwarm : MonoBehaviour {
     public int SpawnNumber2 = 30;
     public GameObject BoidPrefab3;
     public int SpawnNumber3 = 30;
+
+    public float SeperationFactor = 1f;
+    public float AlignmentFactor = 1f;
+    public float CohesionFactor = 1f;
+    public float DangerFactor = 1f;
+    
+
     // Use this for initialization
     void Start () {
         for (int i = 0; i < SpawnNumber1; i++)

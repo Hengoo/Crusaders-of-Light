@@ -1198,7 +1198,11 @@ MonoBehaviour:
   SpawnNumber2: 50
   BoidPrefab3: {fileID: 1876073506239770, guid: 04e294ea454906e4485b9c85733056cc,
     type: 2}
-  SpawnNumber3: 50
+  SpawnNumber3: 100
+  SeperationFactor: 0.9
+  AlignmentFactor: 0.7
+  CohesionFactor: 0.15
+  DangerFactor: 1
 --- !u!4 &525526826 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 39ff64ef61e61c44280bf8d6060a9b22, type: 3}

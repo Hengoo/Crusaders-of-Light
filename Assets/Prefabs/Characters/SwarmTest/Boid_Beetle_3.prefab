@@ -270,7 +270,7 @@ Transform:
   m_GameObject: {fileID: 1832181120928176}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 4140743137283682}
   - {fileID: 4208878794417046}
@@ -323,15 +323,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NMAgent: {fileID: 195998895084142030}
-  UpdatePercentage: 0.5
-  SeperationDistance: 3
+  UpdatePercentage: 1
+  SeperationDistance: 1.8
   SeperationFactor: 1
   AlignmentDistance: 5
   AlignmentFactor: 1
-  CohesionDistance: 5
+  CohesionDistance: 4
   CohesionFactor: 0.5
   DangerDistance: 5
-  DangerFactor: 3
+  DangerFactor: 1
+  OutsideOn: 1
+  OutsideDistance: 3
+  OutsideFactor: 1
   Speed: 10
   MovVector: {x: 0, y: 0, z: 0}
   GoalVector: {x: 0, y: 0, z: 0}
@@ -461,7 +464,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1876073506239770}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1
+  m_Radius: 0.5
   m_Speed: 4
   m_Acceleration: 8
   avoidancePriority: 50
