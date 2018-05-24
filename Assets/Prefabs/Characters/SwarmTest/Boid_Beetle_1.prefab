@@ -237,18 +237,14 @@ MonoBehaviour:
   NMAgent: {fileID: 195873432943419708}
   UpdatePercentage: 0.5
   SeperationDistance: 3
-  SeperationFactor: 10
-  SeperationTurnSpeed: 90
-  AlignmentDistance: 3
-  AlignmentFactor: 0.4
-  AlignmentTurnSpeed: 90
-  CohesionDistance: 3
+  SeperationFactor: 1
+  AlignmentDistance: 5
+  AlignmentFactor: 1
+  CohesionDistance: 5
   CohesionFactor: 0.5
-  CohesionTurnSpeed: 90
-  DangerDistance: 3
-  DangerFactor: 1
-  DangerTurnSpeed: 90
-  Speed: 30
+  DangerDistance: 5
+  DangerFactor: 3
+  Speed: 10
   MovVector: {x: 0, y: 0, z: 0}
   GoalVector: {x: 0, y: 0, z: 0}
   GoalFactor: 0
@@ -325,8 +321,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 1
-  m_Speed: 20
-  m_Acceleration: 100
+  m_Speed: 4
+  m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
