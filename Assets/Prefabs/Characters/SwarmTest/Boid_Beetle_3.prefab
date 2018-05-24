@@ -324,18 +324,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NMAgent: {fileID: 195998895084142030}
   UpdatePercentage: 1
+  SType: 3
   SeperationDistance: 1.8
   SeperationFactor: 1
-  AlignmentDistance: 5
+  AlignmentDistance: 6
   AlignmentFactor: 1
   CohesionDistance: 4
   CohesionFactor: 0.5
   DangerDistance: 5
   DangerFactor: 1
   OutsideOn: 1
-  OutsideDistance: 3
+  OutsideDistance: 2
   OutsideFactor: 1
-  Speed: 10
+  BaseSpeed: 13
+  Speed: 13
+  BonusSpeedThisFrame: 0
   MovVector: {x: 0, y: 0, z: 0}
   GoalVector: {x: 0, y: 0, z: 0}
   GoalFactor: 0

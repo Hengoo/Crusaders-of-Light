@@ -43,7 +43,9 @@ public class EnemySwarm : MonoBehaviour {
 
 
     [Header("Movement:")]
+    public float BaseSpeed = 1f;
     public float Speed = 1f;
+    public float BonusSpeedThisFrame = 0f;
 
     public Vector3 MovVector;
 
@@ -58,6 +60,9 @@ public class EnemySwarm : MonoBehaviour {
 
     private void FixedUpdate()
     {
+        BonusSpeedThisFrame = 0f;
+        Speed = Mathf.Lerp(Speed, BaseSpeed, Time.deltaTime);
+
         GoalVector = transform.rotation * Vector3.forward;
         GoalFactor = 1;
 
@@ -83,7 +88,7 @@ public class EnemySwarm : MonoBehaviour {
         
 
         // NMAgent.Move(Vector3.forward * Time.deltaTime * Speed);
-        NMAgent.Move(transform.rotation * Vector3.forward * Time.deltaTime * Speed);
+        NMAgent.Move(transform.rotation * Vector3.forward * Time.deltaTime * (Speed + BonusSpeedThisFrame));
         //NMAgent.SetDestination(GoalPosition);
     }
 
@@ -265,6 +270,7 @@ public class EnemySwarm : MonoBehaviour {
                 //Speed += OutsideAcceleration * Time.deltaTime;
                 GoalVector += OutsideVec * NewFactor;
                 GoalFactor += NewFactor;
+                BonusSpeedThisFrame += 10 * NewFactor;
             }
         }
     }
