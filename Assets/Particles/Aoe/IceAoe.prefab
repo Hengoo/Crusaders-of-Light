@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 198392776997687378}
   - component: {fileID: 199758921575080038}
   m_Layer: 0
-  m_Name: IceWeaponEffect
+  m_Name: IceAoe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
