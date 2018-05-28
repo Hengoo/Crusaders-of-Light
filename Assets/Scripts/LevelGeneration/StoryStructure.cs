@@ -10,9 +10,25 @@ public class StoryStructure
 {
     public class AreaSegmentRewrite
     {
-        public Graph<AreaSegment> Pattern = new Graph<AreaSegment>();
-        public Graph<AreaSegment> Replace = new Graph<AreaSegment>();
-        public Dictionary<int, int> Correspondences = new Dictionary<int, int>();
+        public readonly Graph<AreaSegment> Pattern = new Graph<AreaSegment>();
+        public readonly Graph<AreaSegment> Replace = new Graph<AreaSegment>();
+        public readonly Dictionary<int, int> Correspondences = new Dictionary<int, int>();
+
+        public int AddNode(AreaSegment segment, AreaSegment correspondence)
+        {
+            int pat = Pattern.AddNode(segment);
+            int rep = Replace.AddNode(correspondence);
+            Correspondences.Add(pat, rep);
+
+            return pat;
+        }
+
+        public void AddEdge(int l, int r)
+        {
+            Pattern.AddEdge(l, r, 1);
+            Replace.AddEdge(Correspondences[l], Correspondences[r], 1);
+        }
+
     }
 
     public int DifficultyLevel { get; private set; }
@@ -21,7 +37,7 @@ public class StoryStructure
     public AreaBase BossAreaConfiguration { get; private set; }
     public CharacterEnemy[] EnemySet { get; private set; }
 
-    public Queue<AreaSegmentRewrite> Rewrites;
+    public readonly Queue<AreaSegmentRewrite> Rewrites;
     //public Element Reward;
 
     public StoryStructure(int difficultyLevel, int lootAmount, int mainPathLength, AreaBase bossAreaConfiguration, CharacterEnemy[] enemySet)
@@ -41,28 +57,22 @@ public class StoryStructure
     private void CreateRewrites()
     {
         // Set start and end
-        AreaSegmentRewrite startBoss = new AreaSegmentRewrite();
-        int empty0 = startBoss.Pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty));
-        int empty1 = startBoss.Pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty));
-        int empty2 = startBoss.Pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty));
-        startBoss.Pattern.AddEdge(empty0, empty1, 1);
-        startBoss.Pattern.AddEdge(empty1, empty2, 1);
+        AreaSegmentRewrite startAndBoss = new AreaSegmentRewrite();
+        int t0 = startAndBoss.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Start));
+        int t1 = startAndBoss.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
+        startAndBoss.AddEdge(t0, t1);
 
-        int start = startBoss.Replace.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Start));
-        int mid = startBoss.Replace.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.MainPath));
-        int end = startBoss.Replace.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
-        startBoss.Replace.AddEdge(start, mid, 1);
-        startBoss.Replace.AddEdge(mid, end, 1);
+        // Main Path
+        AreaSegmentRewrite mainPath = new AreaSegmentRewrite();
+        t0 = mainPath.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Boss), new AreaSegment(AreaSegment.EAreaSegmentType.MainPath));
+        t1 = mainPath.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
+        mainPath.AddEdge(t0, t1);
 
-        startBoss.Correspondences.Add(empty0, start);
-        startBoss.Correspondences.Add(empty1, mid);
-        startBoss.Correspondences.Add(empty2, end);
-
-        // Main Path - TODO
-        AreaSegmentRewrite createMainPath = new AreaSegmentRewrite();
-        createMainPath.Pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Start));
 
         // Enqueue all segment rewrites
-        Rewrites.Enqueue(startBoss);
+        Rewrites.Enqueue(startAndBoss);
+        for(int i = 0; i < MainPathLength; ++i)
+            Rewrites.Enqueue(mainPath);
+
     }
 }

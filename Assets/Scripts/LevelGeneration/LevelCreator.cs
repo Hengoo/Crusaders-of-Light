@@ -28,6 +28,7 @@ public class LevelCreator : Singleton<LevelCreator>
     public float RoadHalfWidth = 10;
     public bool GenerateOnPlay = false;
     public int Seed = 0;
+    public int MainPathLength = 5;
 
     public TerrainStructure MyTerrainStructure { get; private set; }
     public StoryStructure MyStoryStructure { get; private set; }
@@ -38,11 +39,11 @@ public class LevelCreator : Singleton<LevelCreator>
     {
         DrawMode = DrawModeEnum.GameLevel;
         Seed = GameController.Instance.Seed;
-        GeneratePreview();
+        GenerateLevel();
     }
 
     /* Redraws preview in the scene editor */
-    public void GeneratePreview()
+    public void GenerateLevel()
     {
 #if UNITY_EDITOR
         if (!GenerateOnPlay && Application.isPlaying)
@@ -52,7 +53,7 @@ public class LevelCreator : Singleton<LevelCreator>
         ClearDisplay();
         Random.InitState(Seed);
 
-        MyStoryStructure = new StoryStructure(0, 1, 20, BossArea, new CharacterEnemy[4]);
+        MyStoryStructure = new StoryStructure(0, 1, MainPathLength, BossArea, new CharacterEnemy[4]);
         MyTerrainStructure = new TerrainStructure(MyStoryStructure, GlobalSettings, AvailableBiomes);
 
         if (DrawMode == DrawModeEnum.GameLevel)

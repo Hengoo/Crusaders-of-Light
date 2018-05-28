@@ -278,8 +278,11 @@ public class TerrainStructure
     {
         // TODO: Graph grammar transformations - assign main path, side paths, boss area, start area, special areas...
         // TODO: Build grammar graph with set of rules
-        var rule = storyStructure.Rewrites.Dequeue();
-        AreaSegmentGraph.Replace(rule.Pattern, rule.Replace, rule.Correspondences);
+        while (storyStructure.Rewrites.Count > 0)
+        {
+            var rule = storyStructure.Rewrites.Dequeue();
+            AreaSegmentGraph.Replace(rule.Pattern, rule.Replace, rule.Correspondences);
+        }
     }
 
     /* Generates a polygon for a given voronoi site */

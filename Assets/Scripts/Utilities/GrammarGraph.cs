@@ -29,7 +29,7 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
         Dictionary<int, int> assignments = MatchPattern(match);
 
         // No match found
-        if (assignments.Count == 0)
+        if (assignments == null || assignments.Count == 0)
             return false;
 
         ApplyReplace(newGraph, correnpondencies, assignments);
@@ -74,7 +74,7 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
                     continue;
                 }
 
-                // Check if there are enough neighbours with the corresponding data
+                // Check if there are enough neighbours with the same pattern's neighbours data
                 List<T> patternNeighboursData = patternNeighbours.Select(pattern.GetNodeData).ToList();
                 foreach (var neighbour in neighbours)
                 {
@@ -83,13 +83,11 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
                     {
                         patternNeighboursData.Remove(data);
                     }
-                    else
-                    {
-                        if(patternNeighboursData.Count != 0)
-                            matches.Remove(match);
-                        break;
-                    }
                 }
+
+                // Not enough neighbours with required data
+                if (patternNeighboursData.Count != 0)
+                    matches.Remove(match);
             }
 
             if (matches.Count == 0) // No data match found for a pattern node - can't match
