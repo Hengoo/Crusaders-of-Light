@@ -5,7 +5,8 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
+public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
+{
 
 
     // Rewrites a portion of the graph, returns true when "match" is a subgraph of this graph
@@ -155,14 +156,16 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
                 if (failed)
                     break;
             }
-            
-            // Previous condition was not met for this assignment, try another
-            if(failed)
-                continue;
 
-            // Recursion
-            if(UpdateAssignments(pattern, assignments, currentPossibilities)) // <--- RECURSION CALL
+            // Previous condition was met for this assignment and recursion works, this is a valid solution
+            if (!failed && UpdateAssignments(pattern, assignments, currentPossibilities)) // <--- RECURSION CALL
                 return true; // Break condition on success
+
+            // Add candidate to all other sets again in case of failure
+            foreach (var e in currentPossibilities)
+            {
+                currentPossibilities[e.Key].Add(assignedNode);
+            }
         }
         assignments.Remove(patternNode);
 
