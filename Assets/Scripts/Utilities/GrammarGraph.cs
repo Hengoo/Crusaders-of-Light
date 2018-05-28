@@ -61,6 +61,7 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
             // Get all nodes with the same data from this graph
             T patternNodeData = pattern.GetNodeData(patternNode);
             List<int> matches = FindNodesWithData(patternNodeData).ToList();
+            matches.Shuffle();
 
 
             // Check if node degree is sufficiently large and neighbours' data coincide
@@ -210,6 +211,12 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T> {
         {
             var data = replace.GetNodeData(correspondences[assignment.Key]);
             ReplaceNodeData(assignment.Value, data);
+        }
+
+        // Replace edge values
+        foreach (var edge in replace.GetAllEdges())
+        {
+            SetEdgeValue(assignments[edge.x], assignments[edge.y], replace.GetEdgeValue(edge.x, edge.y));
         }
     }
 }

@@ -24,7 +24,7 @@ public class AreaKillBoss : AreaBase
 
         //Boss spawn position
         var spawn = new GameObject("Area Boss Spawn Point");
-        var spawnPosition = terrainStructure.BossBiomeNode.Key;
+        var spawnPosition = terrainStructure.BossAreaSegment.Key;
         spawn.transform.position = new Vector3(spawnPosition.x, 0, spawnPosition.y);
         
         //Add objects to sceneryStructure for height adjustment

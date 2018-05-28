@@ -10,9 +10,9 @@ public class TerrainStructure
 
     public Voronoi VoronoiDiagram { get; private set; }
     public GrammarGraph<AreaSegment> AreaSegmentGraph { get; private set; }
-    public List<Area> AreaGraph { get; private set; }
+    public List<Area> Areas { get; private set; }
     public KeyValuePair<Vector2f, int> StartAreaSegment;
-    public KeyValuePair<Vector2f, int> BossBiomeNode;
+    public KeyValuePair<Vector2f, int> BossAreaSegment;
 
     public int TextureCount { get { return _splatIDMap.Count; } }
 
@@ -42,7 +42,7 @@ public class TerrainStructure
     public TerrainStructure(StoryStructure storyStructure, GlobalSettings globalSettings, List<BiomeSettings> availableBiomes)
     {
         AreaSegmentGraph = new GrammarGraph<AreaSegment>();
-        AreaGraph = new List<Area>();
+        Areas = new List<Area>();
         OuterBorderPolygon = new List<Vector2>();
         AreaBorders = new List<Vector2[]>();
         RoadLines = new List<Vector2[]>();
@@ -267,7 +267,7 @@ public class TerrainStructure
                 var neighborSegment = AreaSegmentGraph.GetNodeData(_siteAreaMap[neighbor]);
                 if (neighborSegment.Type != AreaSegment.EAreaSegmentType.Border)
                 {
-                    AreaSegmentGraph.AddEdge(_siteAreaMap[neighbor], id.Value, 1);
+                    AreaSegmentGraph.AddEdge(_siteAreaMap[neighbor], id.Value, 0);
                 }
             }
         }

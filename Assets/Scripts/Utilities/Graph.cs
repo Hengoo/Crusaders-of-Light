@@ -120,12 +120,12 @@ public class Graph<T> where T : class
             Debug.Log("Node not found in graph");
     }
 
-    public bool AddEdge(int node1, int node2, float weight)
+    public bool AddEdge(int node1, int node2, int value)
     {
         bool nodesExist = _nodes.ContainsKey(node1) && _nodes.ContainsKey(node2);
         if (nodesExist && !_edges.ContainsKey(new Pair(node1, node2)) && node1 != node2)
         {
-            Edge edge = new Edge(node1, node2, weight);
+            Edge edge = new Edge(node1, node2, value);
             _nodes[node1].AddNeighbor(_nodes[node2]);
             _nodes[node2].AddNeighbor(_nodes[node1]);
             _edges.Add(edge.Nodes, edge);
@@ -151,7 +151,7 @@ public class Graph<T> where T : class
         return false;
     }
 
-    public float GetEdgeWeight(int node1, int node2)
+    public int GetEdgeValue(int node1, int node2)
     {
         Edge edge;
         if (_edges.TryGetValue(new Pair(node1, node2), out edge))
@@ -161,7 +161,7 @@ public class Graph<T> where T : class
         return -1;
     }
 
-    public bool SetEdgeWeight(int node1, int node2, float weight)
+    public bool SetEdgeValue(int node1, int node2, int weight)
     {
         Pair pair = new Pair(node1, node2);
         if (_edges.ContainsKey(pair))
@@ -178,12 +178,12 @@ public class Graph<T> where T : class
     {
 
         public readonly Pair Nodes;
-        public float Weight; // always normalized
+        public int Weight;
 
-        public Edge(int node1, int node2, float weight)
+        public Edge(int node1, int node2, int value)
         {
             Nodes = new Pair(node1, node2);
-            Weight = Mathf.Clamp01(weight);
+            Weight = value;
         }
 
         public override bool Equals(object obj)

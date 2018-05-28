@@ -23,10 +23,10 @@ public class StoryStructure
             return pat;
         }
 
-        public void AddEdge(int l, int r)
+        public void AddEdge(int l, int r, int newWeight)
         {
-            Pattern.AddEdge(l, r, 1);
-            Replace.AddEdge(Correspondences[l], Correspondences[r], 1);
+            Pattern.AddEdge(l, r, 0);
+            Replace.AddEdge(Correspondences[l], Correspondences[r], newWeight);
         }
 
     }
@@ -56,23 +56,34 @@ public class StoryStructure
 
     private void CreateRewrites()
     {
+        int t0, t1, t2;
+
         // Set start and end
         AreaSegmentRewrite startAndBoss = new AreaSegmentRewrite();
-        int t0 = startAndBoss.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Start));
-        int t1 = startAndBoss.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
-        startAndBoss.AddEdge(t0, t1);
+        t0 = startAndBoss.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Start));
+        t1 = startAndBoss.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
+        startAndBoss.AddEdge(t0, t1, 1);
 
         // Main Path
         AreaSegmentRewrite mainPath = new AreaSegmentRewrite();
         t0 = mainPath.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Boss), new AreaSegment(AreaSegment.EAreaSegmentType.MainPath));
         t1 = mainPath.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
-        mainPath.AddEdge(t0, t1);
+        mainPath.AddEdge(t0, t1, 1);
+
+        AreaSegmentRewrite extendPath = new AreaSegmentRewrite();
+        t0 = extendPath.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.MainPath), new AreaSegment(AreaSegment.EAreaSegmentType.MainPath));
+        t1 = extendPath.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.MainPath), new AreaSegment(AreaSegment.EAreaSegmentType.MainPath));
+        t2 = extendPath.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.MainPath));
+        extendPath.AddEdge(t0, t1, 0);
+        extendPath.AddEdge(t0, t2, 1);
+        extendPath.AddEdge(t2, t1, 1);
 
 
         // Enqueue all segment rewrites
         Rewrites.Enqueue(startAndBoss);
         for(int i = 0; i < MainPathLength; ++i)
             Rewrites.Enqueue(mainPath);
+        Rewrites.Enqueue(extendPath);
 
     }
 }

@@ -33,8 +33,22 @@ public static class StructureDrawer {
         {
             Vector2 start = terrainStructure.GetAreaSegmentCenter(edge.x);
             Vector2 end = terrainStructure.GetAreaSegmentCenter(edge.y);
+            Color color;
 
-            GameObject line = DrawLine(new Vector3(start.x, 0, start.y), new Vector3(end.x, 0, end.y), 5, Color.gray);
+            switch (graph.GetEdgeValue(edge.x, edge.y))
+            {
+                case 0:
+                    color = Color.black;
+                    break;
+                case 1:
+                    color = Color.green;
+                    break;
+                default:
+                    color = Color.gray;
+                    break;
+            }
+
+            GameObject line = DrawLine(new Vector3(start.x, 0, start.y), new Vector3(end.x, 0, end.y), 5, color);
             line.transform.parent = edges.transform;
         }
 
