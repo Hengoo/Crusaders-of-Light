@@ -298,18 +298,19 @@ MonoBehaviour:
   SType: 2
   SeperationDistance: 1.8
   SeperationFactor: 1
-  AlignmentDistance: 6
-  AlignmentFactor: 1
+  AlignmentDistance: 5
+  AlignmentFactor: 0
   CohesionDistance: 4
-  CohesionFactor: 0.5
+  CohesionFactor: 0
   DangerDistance: 5
   DangerFactor: 1
   OutsideOn: 0
   OutsideDistance: 3
   OutsideFactor: 1
   Velocity: {x: 0, y: 0, z: 0}
-  Acceleration: {x: 0, y: 0, z: 10}
+  Acceleration: {x: 0, y: 0, z: 1}
   Resistance: 0.97
+  Friction: 0.1
   BaseSpeed: 10
   Speed: 10
   BonusSpeedThisFrame: 0
@@ -317,6 +318,8 @@ MonoBehaviour:
   GoalVector: {x: 0, y: 0, z: 0}
   GoalFactor: 0
   GoalPosition: {x: 0, y: 0, z: 0}
+  TurnSpeed: 360
+  BaseAcceleration: 1
   EnemiesInRange: []
   DangerInRange: []
 --- !u!135 &135873796427040156

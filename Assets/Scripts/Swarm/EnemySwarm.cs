@@ -46,6 +46,7 @@ public class EnemySwarm : MonoBehaviour {
     public Vector3 Velocity = Vector3.zero;
     public Vector3 Acceleration = Vector3.forward;
     public float Resistance = 0.1f;
+    public float Friction = 0.1f;
 
 
     public float BaseSpeed = 1f;
@@ -59,22 +60,28 @@ public class EnemySwarm : MonoBehaviour {
 
     public Vector3 GoalPosition;
 
+    public float TurnSpeed = 360;
+    public float BaseAcceleration = 10f;
+
     [Header("Lists:")]
     public List<EnemySwarm> EnemiesInRange = new List<EnemySwarm>();
     public List<GameObject> DangerInRange = new List<GameObject>();
 
     private void FixedUpdate()
     {
+        // Reset Acceleration:
+        Acceleration = Vector3.zero;
+
         BonusSpeedThisFrame = 0f;
         Speed = Mathf.Lerp(Speed, BaseSpeed, Time.deltaTime);
 
-        GoalVector = Acceleration;
-        GoalFactor = 1;
+        GoalVector = Vector3.zero;
+        GoalFactor = 0;
 
         //RandomMove();
         if (Random.Range(0f, 1f) <= UpdatePercentage)
         {
-            Swarm();
+            //Swarm();
         }
 
       //  DangerAvoidance();
@@ -84,21 +91,54 @@ public class EnemySwarm : MonoBehaviour {
          //   GoToOutside();
         }
 
+        RuleCohesion();
+        RuleSeperation();
+        RuleAlignment();
 
         //GoalPosition = transform.position + transform.rotation * Vector3.forward;
         //GoalPosition = transform.position + GoalVector;
 
-        Acceleration = Acceleration / GoalFactor;
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Velocity), Time.deltaTime * 360);
+        /*if (GoalFactor != 0)
+        {
+            GoalVector = GoalVector / GoalFactor;      
+            Acceleration = Vector3.Lerp(Acceleration, GoalVector, Time.deltaTime * TurnSpeed);
+        }*/
 
+        //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Velocity), Time.deltaTime * TurnSpeed);
+
+        //Velocity += Acceleration * Time.deltaTime;
+        //Velocity *= Resistance;
+        //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Velocity), Time.deltaTime * TurnSpeed);
+
+        if (GoalFactor > 0)
+        {
+            Acceleration = Acceleration / GoalFactor;
+        }
+        
+
+        // Update Velocity:
         Velocity += Acceleration * Time.deltaTime;
-        Velocity *= Resistance;
+        Velocity *= (1 - Friction * Time.deltaTime);
+
+        // Move:
         NMAgent.Move(Velocity * Time.deltaTime);
+
+        
 
 
         // NMAgent.Move(Vector3.forward * Time.deltaTime * Speed);
         //NMAgent.Move(transform.rotation * Vector3.forward * Time.deltaTime * (Speed + BonusSpeedThisFrame));
         //NMAgent.SetDestination(GoalPosition);
+    }
+
+    public Vector3 Steer(Vector3 VelDesired)
+    {
+        return VelDesired - Velocity;
+    }
+
+    public float GetDesiredSpeed()
+    {
+        return 6;
     }
 
     private void RandomMove()
@@ -130,27 +170,110 @@ public class EnemySwarm : MonoBehaviour {
             DistanceVec = transform.position - EnemiesInRange[i].transform.position;
             DistanceVecMag = DistanceVec.magnitude;
 
+            // Cohesion:
             if (DistanceVecMag <= CohesionDistance)
             {
                 CohesionVec += EnemiesInRange[i].transform.position;
                 CohesionNumber++;
             }
         }
-
+        // Cohesion:
         if (CohesionNumber >= 1)
         {
             CohesionVec = CohesionVec / CohesionNumber;
             CohesionVec = CohesionVec - this.transform.position;
+            CohesionVec = CohesionVec.normalized * GetDesiredSpeed();
 
-            if (CohesionVec.magnitude > 0.00001)
+            CohesionVec = Steer(CohesionVec);
+            Acceleration += CohesionVec * EnemyTestSwarm.Instance.CohesionFactor;
+            GoalFactor += EnemyTestSwarm.Instance.CohesionFactor;
+        }
+    }
+
+    private void RuleSeperation()
+    {
+        int NumberOfOthers = EnemiesInRange.Count;
+
+        Vector3 SeperationVec = Vector3.zero;
+        int SeperationNumber = 0;
+
+        Vector3 DistanceVec = Vector3.zero;
+        float DistanceVecMag = 0;
+
+        for (int i = 0; i < NumberOfOthers; i++)
+        {
+            DistanceVec = transform.position - EnemiesInRange[i].transform.position;
+            DistanceVecMag = DistanceVec.magnitude;
+
+            // Seperation:
+            if (DistanceVecMag <= SeperationDistance)
             {
-                //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(CohesionVec), CohesionTurnSpeed * Time.deltaTime * CohesionFactor);
-                //GoalVector = Vector3.Slerp(GoalVector, CohesionVec, CohesionTurnSpeed * Time.deltaTime * CohesionFactor);
-                //GoalVector += CohesionVec * CohesionFactor;
-                GoalVector += CohesionVec * EnemyTestSwarm.Instance.CohesionFactor;
-                GoalFactor += CohesionFactor;
+                SeperationVec += DistanceVec.normalized / DistanceVecMag;
+                SeperationNumber++;
             }
         }
+
+        // Seperation:
+        if (SeperationNumber >= 1)
+        {
+            SeperationVec = SeperationVec.normalized * GetDesiredSpeed();
+
+            SeperationVec = Steer(SeperationVec);
+            Acceleration += SeperationVec * EnemyTestSwarm.Instance.SeperationFactor;
+            GoalFactor += EnemyTestSwarm.Instance.SeperationFactor;
+        }
+    }
+
+    private void RuleAlignment()
+    {
+        int NumberOfOthers = EnemiesInRange.Count;
+
+        Vector3 AlignmentVec = Vector3.zero;
+        int AlignmentNumber = 0;
+
+        Vector3 DistanceVec = Vector3.zero;
+        float DistanceVecMag = 0;
+
+        for (int i = 0; i < NumberOfOthers; i++)
+        {
+            DistanceVec = transform.position - EnemiesInRange[i].transform.position;
+            DistanceVecMag = DistanceVec.magnitude;
+
+            // Alignment:
+            if (DistanceVecMag <= AlignmentDistance)
+            {
+                AlignmentVec += EnemiesInRange[i].GetCurrenVelocity();
+                AlignmentNumber++;
+            }
+        }
+
+        // Alignment:
+        if (AlignmentNumber >= 1)
+        {
+            AlignmentVec = AlignmentVec.normalized * GetDesiredSpeed();
+
+            AlignmentVec = Steer(AlignmentVec);
+            Acceleration += AlignmentVec * EnemyTestSwarm.Instance.AlignmentFactor;
+            GoalFactor += EnemyTestSwarm.Instance.AlignmentFactor;
+
+            /*AlignmentVec = AlignmentVec / AlignmentNumber;
+            //AlignmentVec *= (Speed * (OthersSpeed/AlignmentNumber));
+            Speed = Mathf.Lerp(Speed, (OthersSpeed / AlignmentNumber), Time.deltaTime);
+            OthersVelocity = OthersVelocity / AlignmentNumber;
+            OthersVelocity = OthersVelocity - Velocity;
+
+            if (AlignmentVec.magnitude > 0.00001)
+            {
+                //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(AlignmentVec), AlignmentTurnSpeed * Time.deltaTime * AlignmentFactor);
+                //GoalVector = Vector3.Slerp(GoalVector, AlignmentVec, AlignmentTurnSpeed * Time.deltaTime * AlignmentFactor);
+                //GoalVector += AlignmentVec * AlignmentFactor;
+                GoalVector += AlignmentVec * EnemyTestSwarm.Instance.AlignmentFactor;
+                GoalFactor += AlignmentFactor;
+
+                //Acceleration += AlignmentVec * EnemyTestSwarm.Instance.AlignmentFactor;
+            }*/
+        }
+
     }
 
     private void Swarm()
@@ -187,7 +310,7 @@ public class EnemySwarm : MonoBehaviour {
             // Seperation:
             if (DistanceVecMag <= SeperationDistance)
             {
-                SeperationVec += DistanceVec;
+                SeperationVec += DistanceVec.normalized/DistanceVecMag;
                 SeperationNumber++;
             }
 
@@ -205,7 +328,12 @@ public class EnemySwarm : MonoBehaviour {
         {
             CohesionVec = CohesionVec / CohesionNumber;
             CohesionVec = CohesionVec - this.transform.position;
+            CohesionVec = CohesionVec.normalized * GetDesiredSpeed();
 
+            CohesionVec = Steer(CohesionVec);
+            Acceleration += SeperationVec * EnemyTestSwarm.Instance.CohesionFactor;
+            GoalFactor += EnemyTestSwarm.Instance.CohesionFactor;
+            /*
             if (CohesionVec.magnitude > 0.00001)
             {
                 //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(CohesionVec), CohesionTurnSpeed * Time.deltaTime * CohesionFactor);
@@ -214,25 +342,33 @@ public class EnemySwarm : MonoBehaviour {
                 GoalVector += CohesionVec * EnemyTestSwarm.Instance.CohesionFactor;
                 GoalFactor += CohesionFactor;
 
-                Acceleration += CohesionVec * EnemyTestSwarm.Instance.CohesionFactor;
-            }
+                //Acceleration += CohesionVec * EnemyTestSwarm.Instance.CohesionFactor;
+            }*/
         }
         
         // Seperation:
         if (SeperationNumber >= 1)
         {
-            SeperationVec = SeperationVec / SeperationNumber;
+            //SeperationVec = SeperationVec / SeperationNumber;
 
-            if (SeperationVec.magnitude > 0.00001)
+            SeperationVec = SeperationVec.normalized * GetDesiredSpeed();
+
+            SeperationVec = Steer(SeperationVec);
+            Acceleration += SeperationVec * EnemyTestSwarm.Instance.SeperationFactor;
+            GoalFactor += EnemyTestSwarm.Instance.SeperationFactor;
+
+          /*  if (SeperationVec.magnitude > 0.00001)
             {
                 //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(SeperationVec), SeperationTurnSpeed * Time.deltaTime * SeperationFactor);
                 //GoalVector = Vector3.Slerp(GoalVector, SeperationVec, SeperationTurnSpeed * Time.deltaTime * SeperationFactor);
                 //GoalVector += SeperationVec * SeperationFactor;
-                GoalVector += SeperationVec * EnemyTestSwarm.Instance.SeperationFactor;
-                GoalFactor += SeperationFactor;
+                //GoalVector += SeperationVec * EnemyTestSwarm.Instance.SeperationFactor;
+                //GoalFactor += SeperationFactor;
 
-                Acceleration += SeperationVec * EnemyTestSwarm.Instance.SeperationFactor;
-            }
+
+
+                //Acceleration += SeperationVec * EnemyTestSwarm.Instance.SeperationFactor;
+            }*/
         }
 
         // Alignment:
@@ -252,7 +388,7 @@ public class EnemySwarm : MonoBehaviour {
                 GoalVector += AlignmentVec * EnemyTestSwarm.Instance.AlignmentFactor;
                 GoalFactor += AlignmentFactor;
 
-                Acceleration += AlignmentVec * EnemyTestSwarm.Instance.AlignmentFactor;
+                //Acceleration += AlignmentVec * EnemyTestSwarm.Instance.AlignmentFactor;
             }
         }
 
