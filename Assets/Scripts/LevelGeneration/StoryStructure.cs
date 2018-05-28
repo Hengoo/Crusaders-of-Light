@@ -60,8 +60,10 @@ public class StoryStructure
 
     private void CreateRewrites()
     {
-        int start, bossEntry, t0, t1, t2, t3;
-        int sidePathMod = MainPathLength / SidePathCount;
+        int start, bossEntry, t0, t1;
+        int t2;
+        int t3;
+        int sidePathMod = (MainPathLength + 1) / SidePathCount;
 
         // Set start and end
         AreaSegmentRewrite everything = new AreaSegmentRewrite();
@@ -76,14 +78,16 @@ public class StoryStructure
         everything.AddEdge(t1, bossEntry, (int)AreaSegment.EAreaSegmentEdgeType.BossInnerPath);
 
         // Main Path
+        int count = -1;
         t0 = start;
+        t2 = -1;
         for (int i = 0; i < MainPathLength; i++)
         {
             t1 = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.MainPath)); // MainPath-MainPath node and edge
             everything.AddEdge(t0, t1, (int)AreaSegment.EAreaSegmentEdgeType.MainPath);
 
             // Side Paths
-            if ((i + 1) % sidePathMod == 0)
+            if ((i) % sidePathMod == 0)
             {
                 int specialArea = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty),
                     new AreaSegment(AreaSegment.EAreaSegmentType.Special));
@@ -96,7 +100,21 @@ public class StoryStructure
                     t2 = t3;
                 }
                 everything.AddEdge(t2, specialArea, (int)AreaSegment.EAreaSegmentEdgeType.SidePath);
+                t2 = specialArea;
+                for (int j = 0; j < SidePathLength; j++)
+                {
+                    t3 = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty),
+                        new AreaSegment(AreaSegment.EAreaSegmentType.SidePath));
+                    everything.AddEdge(t2, t3, (int)AreaSegment.EAreaSegmentEdgeType.SidePath);
+                    t2 = t3;
+                }
+                count = SidePathLength + 2;
             }
+            if (count == 0 && t2 >= 0)
+            {
+                everything.AddEdge(t0, t2, (int)AreaSegment.EAreaSegmentEdgeType.SidePath);
+            }
+            count--;
 
             t0 = t1;
         }
