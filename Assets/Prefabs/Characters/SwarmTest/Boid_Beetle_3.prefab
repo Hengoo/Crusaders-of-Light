@@ -352,8 +352,11 @@ MonoBehaviour:
   DesiredBaseSpeed: 6
   DesiredRunSpeed: 12
   NoSeperationThisUpdate: 0
+  AttractionDistance: 4
+  AttractionFactor: 1
   EnemiesInRange: []
   DangerInRange: []
+  PlayersInRange: []
 --- !u!135 &135661142384979000
 SphereCollider:
   m_ObjectHideFlags: 1

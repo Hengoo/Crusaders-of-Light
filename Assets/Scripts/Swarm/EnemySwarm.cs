@@ -69,14 +69,17 @@ public class EnemySwarm : MonoBehaviour {
 
     public bool NoSeperationThisUpdate = false;
 
+    public float AttractionDistance = 4;
+    public float AttractionFactor = 1;
+
     [Header("Lists:")]
     public List<EnemySwarm> EnemiesInRange = new List<EnemySwarm>();
     public List<GameObject> DangerInRange = new List<GameObject>();
+    public List<GameObject> PlayersInRange = new List<GameObject>();
 
     private void FixedUpdate()
     {
-        // Reset Acceleration:
-        Acceleration = Vector3.zero;
+        
 
         BonusSpeedThisFrame = 0f;
         Speed = Mathf.Lerp(Speed, BaseSpeed, Time.deltaTime);
@@ -87,18 +90,22 @@ public class EnemySwarm : MonoBehaviour {
         //RandomMove();
         if (Random.Range(0f, 1f) <= UpdatePercentage)
         {
-            //Swarm();
+            // Reset Acceleration:
+            Acceleration = Vector3.zero;
+
+            if (BorderOn)
+            {
+                RuleGoToBorder();
+            }
+
+            RuleAttraction();
+            RuleCohesion();
+            RuleSeperation();
+            RuleAlignment();
+            RuleDangerAvoidance();
         }
 
-        if (BorderOn)
-        {
-            RuleGoToBorder();
-        }
-
-        RuleCohesion();
-        RuleSeperation();
-        RuleAlignment();
-        RuleDangerAvoidance();
+       
 
        
 
@@ -130,7 +137,13 @@ public class EnemySwarm : MonoBehaviour {
         // Move:
         NMAgent.Move(Velocity * Time.deltaTime);
 
-        
+        // Rotate towards Velocity Direction:
+        if (Velocity.sqrMagnitude > 0)
+        {
+            transform.rotation = Quaternion.LookRotation(Velocity);
+        }
+
+
 
 
         // NMAgent.Move(Vector3.forward * Time.deltaTime * Speed);
@@ -311,7 +324,35 @@ public class EnemySwarm : MonoBehaviour {
 
     private void RuleAttraction()
     {
+        int NumberOfOthers = PlayersInRange.Count;
 
+        Vector3 AttractionVec = Vector3.zero;
+        float AttractionVecMag = AttractionDistance + 1;
+
+        Vector3 DistanceVec = Vector3.zero;
+        float DistanceVecMag = 0;
+        
+        for (int i = 0; i < NumberOfOthers; i++)
+        {
+            DistanceVec = PlayersInRange[i].transform.position - transform.position;
+            DistanceVecMag = DistanceVec.magnitude;
+
+            if (DistanceVecMag <= AttractionDistance
+                && DistanceVecMag < AttractionVecMag)
+            {
+                AttractionVec = DistanceVec;
+                AttractionVecMag = DistanceVecMag;
+            }
+        }
+
+        if (AttractionVecMag < AttractionDistance + 1)
+        {
+            AttractionVec = AttractionVec.normalized * GetDesiredSpeed();
+
+            AttractionVec = Steer(AttractionVec);
+            Acceleration += AttractionVec * AttractionFactor;
+            GoalFactor += AttractionFactor;
+        }
     }
 
     private void RuleGoToBorder()
@@ -352,45 +393,6 @@ public class EnemySwarm : MonoBehaviour {
         }
     }
 
-    private void GoToOutside()
-    {
-        int NumberOfOthers = EnemiesInRange.Count;
-
-        Vector3 OutsideVec = Vector3.zero;
-        Vector3 DistanceVec = Vector3.zero;
-        int OutsideVecNumber = 0;
-
-        for (int i = 0; i < NumberOfOthers; i++)
-        {
-            DistanceVec = transform.position - EnemiesInRange[i].transform.position;
-            if (DistanceVec.magnitude < BorderDistance && EnemiesInRange[i].GetSwarmType() != SType)
-            {
-                OutsideVec += EnemiesInRange[i].transform.position;
-                OutsideVecNumber++;
-            }
-        }
-
-        if (OutsideVecNumber >= 2)
-        {
-            OutsideVec = OutsideVec / OutsideVecNumber;
-            OutsideVec = this.transform.position - OutsideVec;
-
-            if (OutsideVec.magnitude > 0.00001)
-            {
-                // transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(DangerVec), DangerTurnSpeed * Time.deltaTime * DangerFactor);
-                //GoalVector = Vector3.Slerp(GoalVector, DangerVec, DangerTurnSpeed * Time.deltaTime * DangerFactor);
-                //GoalVector += DangerVec * DangerFactor;
-
-                float NewFactor = BorderFactor * Mathf.Max(BorderDistance - OutsideVec.magnitude, 0);
-                //Debug.Log(NewFactor + "=" + OutsideDistance + "-" + OutsideVec.magnitude);
-                //Speed += OutsideAcceleration * Time.deltaTime;
-                GoalVector += OutsideVec * NewFactor;
-                GoalFactor += NewFactor;
-                BonusSpeedThisFrame += 10 * NewFactor;
-            }
-        }
-    }
-
     public void OnTriggerEnter(Collider other)
     {
         if (other.tag == "EnemySwarm")
@@ -400,6 +402,15 @@ public class EnemySwarm : MonoBehaviour {
         else if (other.tag == "SwarmDanger")
         {
             DangerInRange.Add(other.gameObject);
+        }
+        else if (other.tag == "Character")
+        {
+            /*Character otherChar = other.GetComponent<Character>();
+            if (otherChar.GetAlignment() == Character.TeamAlignment.PLAYERS)
+            {
+                PlayersInRange.Add(otherChar);
+            }*/
+            PlayersInRange.Add(other.gameObject);
         }
     }
 
@@ -412,6 +423,15 @@ public class EnemySwarm : MonoBehaviour {
         else if (other.tag == "SwarmDanger")
         {
             DangerInRange.Remove(other.gameObject);
+        }
+        else if (other.tag == "Character")
+        {
+            /*Character otherChar = other.GetComponent<Character>();
+            if (otherChar.GetAlignment() == Character.TeamAlignment.PLAYERS)
+            {
+                PlayersInRange.Remove(otherChar);
+            }*/
+            PlayersInRange.Remove(other.gameObject);
         }
     }
 

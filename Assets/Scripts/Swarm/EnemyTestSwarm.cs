@@ -15,6 +15,8 @@ public class EnemyTestSwarm : Singleton<EnemyTestSwarm> {
     public float AlignmentFactor = 1f;
     public float CohesionFactor = 1f;
     public float DangerFactor = 1f;
+
+    public GameObject GlobalAttractionTarget;
     
 
     // Use this for initialization
