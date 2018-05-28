@@ -15,7 +15,7 @@ public class GlobalSettings
     [Range(16, 1024)] public int HeightMapResolution = 512;
     [Range(16, 1024)] public float MapSize = 512;
     [Range(1, 1024)] public float MapHeight = 80;
-    [Range(10, 1000)] public int VoronoiSamples = 30;
+    [Range(10, 1000)] public int VoronoiSamples = 40;
     [Range(0, 1f)] public float MaxHeight = 1;
     [Range(0, 1f)] public float SeaHeight = 0.15f;
     [Range(0, 50f)] public float EdgeNoise = 8f;

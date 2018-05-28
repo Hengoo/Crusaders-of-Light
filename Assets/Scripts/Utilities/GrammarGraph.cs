@@ -122,7 +122,7 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
         }
 
         // Select a random node from pattern that has not yet been assigned
-        int patternNode = keys[Random.Range(0, keys.Length)];
+        int patternNode = keys.First();
         List<int> candidates = new List<int>(currentPossibilities[patternNode]); // List for iteration
 
         assignments.Add(patternNode, 0);
@@ -132,7 +132,7 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
         while (candidates.Count > 0)
         {
             // Choose a candidate
-            int assignedNode = candidates[Random.Range(0, candidates.Count)];
+            int assignedNode = candidates.First();
             var assignedNeighborhood = GetNeighbours(assignedNode);
             candidates.Remove(assignedNode);
             assignments[patternNode] = assignedNode;
