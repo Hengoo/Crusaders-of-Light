@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -12,7 +13,6 @@ public class TerrainStructure
     public GrammarGraph<AreaSegment> AreaSegmentGraph { get; private set; }
     public List<Area> Areas { get; private set; }
     public KeyValuePair<Vector2f, int> StartAreaSegment;
-    public KeyValuePair<Vector2f, int> BossAreaSegment;
 
     public int TextureCount { get { return _splatIDMap.Count; } }
 
@@ -267,7 +267,7 @@ public class TerrainStructure
                 var neighborSegment = AreaSegmentGraph.GetNodeData(_siteAreaMap[neighbor]);
                 if (neighborSegment.Type != AreaSegment.EAreaSegmentType.Border)
                 {
-                    AreaSegmentGraph.AddEdge(_siteAreaMap[neighbor], id.Value, 0);
+                    AreaSegmentGraph.AddEdge(_siteAreaMap[neighbor], id.Value, (int) AreaSegment.EAreaSegmentEdgeType.NonNavigable);
                 }
             }
         }
@@ -281,7 +281,8 @@ public class TerrainStructure
         while (storyStructure.Rewrites.Count > 0)
         {
             var rule = storyStructure.Rewrites.Dequeue();
-            AreaSegmentGraph.Replace(rule.Pattern, rule.Replace, rule.Correspondences);
+            if(!AreaSegmentGraph.Replace(rule.Pattern, rule.Replace, rule.Correspondences))
+                throw new Exception("Failed to generate");
         }
     }
 

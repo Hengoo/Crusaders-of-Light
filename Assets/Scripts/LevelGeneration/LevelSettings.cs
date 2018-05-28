@@ -36,7 +36,7 @@ public class GlobalSettings
     [Range(0, 20)] public int SquareSize = 2;
 }
 
-[CreateAssetMenu(fileName = "Biome Settings", menuName = "Terrain/Biome Settings")]
+[CreateAssetMenu(fileName = "BiomeSettings", menuName = "Terrain/Biome Settings")]
 public class BiomeSettings : ScriptableObject
 {
     public string UniqueName;
@@ -72,7 +72,7 @@ public class BiomeHeightParameters
 //-------------------------------------------------------------
 // Areas
 //-------------------------------------------------------------
-[CreateAssetMenu(fileName = "Area Configuration", menuName = "Terrain/Area Configuration")]
+[CreateAssetMenu(fileName = "AreaSettings", menuName = "Terrain/Area Settings")]
 public class AreaConfiguration : ScriptableObject
 {
     public Vector2[] AreaPolygon;
@@ -90,6 +90,15 @@ public class AreaSegment : IEquatable<AreaSegment>
         Special,
         MainPath,
         SidePath
+    }
+
+    public enum EAreaSegmentEdgeType
+    {
+        NonNavigable,
+        MainPath,
+        SidePath,
+        BossInnerPath,
+        SpecialInnerPath
     }
 
     public EAreaSegmentType Type;

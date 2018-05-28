@@ -35,13 +35,22 @@ public static class StructureDrawer {
             Vector2 end = terrainStructure.GetAreaSegmentCenter(edge.y);
             Color color;
 
-            switch (graph.GetEdgeValue(edge.x, edge.y))
+            switch ((AreaSegment.EAreaSegmentEdgeType)graph.GetEdgeValue(edge.x, edge.y))
             {
-                case 0:
+                case AreaSegment.EAreaSegmentEdgeType.NonNavigable:
                     color = Color.black;
                     break;
-                case 1:
+                case AreaSegment.EAreaSegmentEdgeType.MainPath:
                     color = Color.green;
+                    break;
+                case AreaSegment.EAreaSegmentEdgeType.SidePath:
+                    color = Color.cyan;
+                    break;
+                case AreaSegment.EAreaSegmentEdgeType.BossInnerPath:
+                    color = Color.red;
+                    break;
+                case AreaSegment.EAreaSegmentEdgeType.SpecialInnerPath:
+                    color = Color.yellow;
                     break;
                 default:
                     color = Color.gray;

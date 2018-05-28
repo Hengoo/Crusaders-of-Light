@@ -9,18 +9,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: Border
+  m_Name: BiomeForest
   m_EditorClassIdentifier: Assembly-CSharp::BiomeSettings
-  UniqueName: 
+  UniqueName: Forest
   HeightParameters:
-    Persistence: 0.3
-    LocalMax: 0.14
-    LocalMin: 0
-    Lacunarity: 2
-    Scale: 20
+    Persistence: 0.056
+    LocalMax: 0.466
+    LocalMin: 0.256
+    Lacunarity: 20
+    Scale: 12.3
   Splat:
-    texture: {fileID: 2800000, guid: 99ba7739aaaf1314d9a3f324091677d4, type: 3}
-    normalMap: {fileID: 0}
+    texture: {fileID: 2800000, guid: ed2c11bdc9c3971479d1399763e24015, type: 3}
+    normalMap: {fileID: 2800000, guid: 7baf6615318c05c44a21ab70e101c30d, type: 3}
     metallic: 0
     smoothness: 0
     tileOffset: {x: 0, y: 0}
