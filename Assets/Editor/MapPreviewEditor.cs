@@ -11,7 +11,7 @@ public class MapPreviewEditor : Editor {
 
         if (GUILayout.Button("Generate"))
         {
-            levelCreator.GeneratePreview();
+            levelCreator.GenerateLevel();
         }
     }
 }

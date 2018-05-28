@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class Graph<T> where T : class
 {
-    private readonly Dictionary<int, Node> _nodes = new Dictionary<int, Node>();
-    private readonly Dictionary<Pair, Edge> _edges = new Dictionary<Pair, Edge>();
-    private int _nodeIDCount;
+    protected readonly Dictionary<int, Node> _nodes = new Dictionary<int, Node>();
+    protected readonly Dictionary<Pair, Edge> _edges = new Dictionary<Pair, Edge>();
+    protected int _nodeIDCount;
 
     public Graph() { }
     public Graph(Graph<T> original)
@@ -57,9 +57,9 @@ public class Graph<T> where T : class
 
     public int[] FindNodesWithData(T data)
     {
-        return _nodes.Where(a => a.Value.Data == data).Select(a => a.Key).ToArray();
+        var result = _nodes.Where(a => ((T)a.Value.Data).Equals(data)).Select(a => a.Key).ToArray();
+        return result;
     }
-
 
     public int[] GetNeighbours(int nodeID)
     {
@@ -68,6 +68,11 @@ public class Graph<T> where T : class
 
         Debug.Log("Node not found in graph");
         return null;
+    }
+
+    public int[] GetAllNodeIDs()
+    {
+        return _nodes.Keys.ToArray();
     }
 
     public Vector2Int[] GetAllEdges()
@@ -107,12 +112,20 @@ public class Graph<T> where T : class
         return default(T);
     }
 
-    public bool AddEdge(int node1, int node2, float weight)
+    public void ReplaceNodeData(int nodeID, T data)
+    {
+        if (_nodes.ContainsKey(nodeID))
+            _nodes[nodeID].Data = data;
+        else
+            Debug.Log("Node not found in graph");
+    }
+
+    public bool AddEdge(int node1, int node2, int value)
     {
         bool nodesExist = _nodes.ContainsKey(node1) && _nodes.ContainsKey(node2);
         if (nodesExist && !_edges.ContainsKey(new Pair(node1, node2)) && node1 != node2)
         {
-            Edge edge = new Edge(node1, node2, weight);
+            Edge edge = new Edge(node1, node2, value);
             _nodes[node1].AddNeighbor(_nodes[node2]);
             _nodes[node2].AddNeighbor(_nodes[node1]);
             _edges.Add(edge.Nodes, edge);
@@ -138,7 +151,7 @@ public class Graph<T> where T : class
         return false;
     }
 
-    public float GetEdgeWeight(int node1, int node2)
+    public int GetEdgeValue(int node1, int node2)
     {
         Edge edge;
         if (_edges.TryGetValue(new Pair(node1, node2), out edge))
@@ -148,7 +161,7 @@ public class Graph<T> where T : class
         return -1;
     }
 
-    public bool SetEdgeWeight(int node1, int node2, float weight)
+    public bool SetEdgeValue(int node1, int node2, int weight)
     {
         Pair pair = new Pair(node1, node2);
         if (_edges.ContainsKey(pair))
@@ -161,39 +174,16 @@ public class Graph<T> where T : class
         return false;
     }
 
-    public List<int> GetLargestPathInMST(int start)
-    {
-        return GetLargestPathRecursion(start, -1);
-    }
-
-    private List<int> GetLargestPathRecursion(int currentNode, int parent)
-    {
-        var path = new List<int> { currentNode };
-        var longest = new List<int>();
-        var neighborhood = GetNeighbours(currentNode);
-        foreach (var neighbor in neighborhood)
-        {
-            if (neighbor == parent || neighbor == currentNode)
-                continue;
-
-            var newPath = GetLargestPathRecursion(neighbor, currentNode);
-            if (newPath.Count > longest.Count)
-                longest = newPath;
-        }
-
-        return path.Concat(longest).ToList();
-    }
-
-    private class Edge
+    protected class Edge
     {
 
         public readonly Pair Nodes;
-        public float Weight; // always normalized
+        public int Weight;
 
-        public Edge(int node1, int node2, float weight)
+        public Edge(int node1, int node2, int value)
         {
             Nodes = new Pair(node1, node2);
-            Weight = Mathf.Clamp01(weight);
+            Weight = value;
         }
 
         public override bool Equals(object obj)
@@ -226,11 +216,11 @@ public class Graph<T> where T : class
         }
     }
 
-    private class Node : IEqualityComparer<Node>
+    protected class Node : IEqualityComparer<Node>
     {
         public readonly int NodeID;
         public readonly HashSet<Node> Neighbors = new HashSet<Node>();
-        public readonly T Data;
+        public T Data;
 
         public Node(int nodeID, T data)
         {
@@ -261,7 +251,7 @@ public class Graph<T> where T : class
         }
     }
 
-    private class Pair
+    protected class Pair
     {
         public readonly int A, B; // with A <= B
 
