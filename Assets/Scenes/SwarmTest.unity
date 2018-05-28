@@ -1200,9 +1200,9 @@ MonoBehaviour:
     type: 2}
   SpawnNumber3: 100
   SeperationFactor: 1
-  AlignmentFactor: 1
+  AlignmentFactor: 0.5
   CohesionFactor: 0.15
-  DangerFactor: 0
+  DangerFactor: 10
 --- !u!4 &525526826 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 39ff64ef61e61c44280bf8d6060a9b22, type: 3}

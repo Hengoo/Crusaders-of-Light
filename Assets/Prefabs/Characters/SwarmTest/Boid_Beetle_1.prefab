@@ -239,11 +239,11 @@ MonoBehaviour:
   SType: 1
   SeperationDistance: 1.8
   SeperationFactor: 1
-  AlignmentDistance: 5
+  AlignmentDistance: 4
   AlignmentFactor: 0
-  CohesionDistance: 4
+  CohesionDistance: 3
   CohesionFactor: 0
-  DangerDistance: 5
+  DangerDistance: 4
   DangerFactor: 1
   OutsideOn: 0
   OutsideDistance: 3
@@ -261,6 +261,8 @@ MonoBehaviour:
   GoalPosition: {x: 0, y: 0, z: 0}
   TurnSpeed: 360
   BaseAcceleration: 1
+  DesiredBaseSpeed: 6
+  DesiredRunSpeed: 12
   EnemiesInRange: []
   DangerInRange: []
 --- !u!135 &135080938787054230
@@ -273,7 +275,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 6
+  m_Radius: 4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!137 &137974346393343504
 SkinnedMeshRenderer:
