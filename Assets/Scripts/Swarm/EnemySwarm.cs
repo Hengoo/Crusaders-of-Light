@@ -43,6 +43,11 @@ public class EnemySwarm : MonoBehaviour {
 
 
     [Header("Movement:")]
+    public Vector3 Velocity = Vector3.zero;
+    public Vector3 Acceleration = Vector3.forward;
+    public float Resistance = 0.1f;
+
+
     public float BaseSpeed = 1f;
     public float Speed = 1f;
     public float BonusSpeedThisFrame = 0f;
@@ -63,7 +68,7 @@ public class EnemySwarm : MonoBehaviour {
         BonusSpeedThisFrame = 0f;
         Speed = Mathf.Lerp(Speed, BaseSpeed, Time.deltaTime);
 
-        GoalVector = transform.rotation * Vector3.forward;
+        GoalVector = Acceleration;
         GoalFactor = 1;
 
         //RandomMove();
@@ -72,23 +77,27 @@ public class EnemySwarm : MonoBehaviour {
             Swarm();
         }
 
-        DangerAvoidance();
+      //  DangerAvoidance();
 
         if (OutsideOn)
         {
-            GoToOutside();
+         //   GoToOutside();
         }
 
 
         //GoalPosition = transform.position + transform.rotation * Vector3.forward;
         //GoalPosition = transform.position + GoalVector;
 
-        GoalVector = GoalVector / GoalFactor;
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(GoalVector), Time.deltaTime * 360);
-        
+        Acceleration = Acceleration / GoalFactor;
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Velocity), Time.deltaTime * 360);
+
+        Velocity += Acceleration * Time.deltaTime;
+        Velocity *= Resistance;
+        NMAgent.Move(Velocity * Time.deltaTime);
+
 
         // NMAgent.Move(Vector3.forward * Time.deltaTime * Speed);
-        NMAgent.Move(transform.rotation * Vector3.forward * Time.deltaTime * (Speed + BonusSpeedThisFrame));
+        //NMAgent.Move(transform.rotation * Vector3.forward * Time.deltaTime * (Speed + BonusSpeedThisFrame));
         //NMAgent.SetDestination(GoalPosition);
     }
 
@@ -106,6 +115,44 @@ public class EnemySwarm : MonoBehaviour {
         
     }
 
+    private void RuleCohesion()
+    {
+        int NumberOfOthers = EnemiesInRange.Count;
+
+        Vector3 CohesionVec = Vector3.zero;
+        int CohesionNumber = 0;
+
+        Vector3 DistanceVec = Vector3.zero;
+        float DistanceVecMag = 0;
+
+        for (int i = 0; i < NumberOfOthers; i++)
+        {
+            DistanceVec = transform.position - EnemiesInRange[i].transform.position;
+            DistanceVecMag = DistanceVec.magnitude;
+
+            if (DistanceVecMag <= CohesionDistance)
+            {
+                CohesionVec += EnemiesInRange[i].transform.position;
+                CohesionNumber++;
+            }
+        }
+
+        if (CohesionNumber >= 1)
+        {
+            CohesionVec = CohesionVec / CohesionNumber;
+            CohesionVec = CohesionVec - this.transform.position;
+
+            if (CohesionVec.magnitude > 0.00001)
+            {
+                //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(CohesionVec), CohesionTurnSpeed * Time.deltaTime * CohesionFactor);
+                //GoalVector = Vector3.Slerp(GoalVector, CohesionVec, CohesionTurnSpeed * Time.deltaTime * CohesionFactor);
+                //GoalVector += CohesionVec * CohesionFactor;
+                GoalVector += CohesionVec * EnemyTestSwarm.Instance.CohesionFactor;
+                GoalFactor += CohesionFactor;
+            }
+        }
+    }
+
     private void Swarm()
     {
         int NumberOfOthers = EnemiesInRange.Count;
@@ -120,6 +167,7 @@ public class EnemySwarm : MonoBehaviour {
         Vector3 AlignmentVec = Vector3.zero;
         int AlignmentNumber = 0;
         float OthersSpeed = 0;
+        Vector3 OthersVelocity = Vector3.zero;
 
         Vector3 DistanceVec = Vector3.zero;
         float DistanceVecMag = 0;
@@ -146,9 +194,10 @@ public class EnemySwarm : MonoBehaviour {
             // Alignment:
             if (DistanceVecMag <= AlignmentDistance)
             {
-                AlignmentVec += EnemiesInRange[i].transform.rotation * Vector3.forward;
+                AlignmentVec += EnemiesInRange[i].GetCurrenVelocity();
                 AlignmentNumber++;
                 OthersSpeed += EnemiesInRange[i].GetCurrentSpeed();
+                OthersVelocity += EnemiesInRange[i].GetCurrenVelocity();
             }
         }
         // Cohesion:
@@ -164,6 +213,8 @@ public class EnemySwarm : MonoBehaviour {
                 //GoalVector += CohesionVec * CohesionFactor;
                 GoalVector += CohesionVec * EnemyTestSwarm.Instance.CohesionFactor;
                 GoalFactor += CohesionFactor;
+
+                Acceleration += CohesionVec * EnemyTestSwarm.Instance.CohesionFactor;
             }
         }
         
@@ -179,6 +230,8 @@ public class EnemySwarm : MonoBehaviour {
                 //GoalVector += SeperationVec * SeperationFactor;
                 GoalVector += SeperationVec * EnemyTestSwarm.Instance.SeperationFactor;
                 GoalFactor += SeperationFactor;
+
+                Acceleration += SeperationVec * EnemyTestSwarm.Instance.SeperationFactor;
             }
         }
 
@@ -188,6 +241,8 @@ public class EnemySwarm : MonoBehaviour {
             AlignmentVec = AlignmentVec / AlignmentNumber;
             //AlignmentVec *= (Speed * (OthersSpeed/AlignmentNumber));
             Speed = Mathf.Lerp(Speed, (OthersSpeed / AlignmentNumber), Time.deltaTime);
+            OthersVelocity = OthersVelocity / AlignmentNumber;
+            OthersVelocity = OthersVelocity - Velocity;
 
             if (AlignmentVec.magnitude > 0.00001)
             {
@@ -196,10 +251,17 @@ public class EnemySwarm : MonoBehaviour {
                 //GoalVector += AlignmentVec * AlignmentFactor;
                 GoalVector += AlignmentVec * EnemyTestSwarm.Instance.AlignmentFactor;
                 GoalFactor += AlignmentFactor;
+
+                Acceleration += AlignmentVec * EnemyTestSwarm.Instance.AlignmentFactor;
             }
         }
 
         //GoalPosition = transform.position + transform.rotation * Vector3.forward;
+    }
+
+    private void Attraction()
+    {
+
     }
 
     private void DangerAvoidance()
@@ -315,6 +377,11 @@ public class EnemySwarm : MonoBehaviour {
     public float GetCurrentSpeed()
     {
         return Speed;
+    }
+
+    public Vector3 GetCurrenVelocity()
+    {
+        return Velocity;
     }
 
     public SwarmType GetSwarmType()

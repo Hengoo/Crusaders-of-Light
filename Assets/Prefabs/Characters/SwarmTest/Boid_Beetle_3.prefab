@@ -336,6 +336,9 @@ MonoBehaviour:
   OutsideOn: 1
   OutsideDistance: 2
   OutsideFactor: 1
+  Velocity: {x: 0, y: 0, z: 0}
+  Acceleration: {x: 0, y: 0, z: 10}
+  Resistance: 0.97
   BaseSpeed: 13
   Speed: 13
   BonusSpeedThisFrame: 0

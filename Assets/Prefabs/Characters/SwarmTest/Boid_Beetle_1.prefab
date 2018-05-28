@@ -248,8 +248,12 @@ MonoBehaviour:
   OutsideOn: 0
   OutsideDistance: 3
   OutsideFactor: 1
+  Velocity: {x: 0, y: 0, z: 0}
+  Acceleration: {x: 0, y: 0, z: 10}
+  Resistance: 0.97
   BaseSpeed: 10
   Speed: 10
+  BonusSpeedThisFrame: 0
   MovVector: {x: 0, y: 0, z: 0}
   GoalVector: {x: 0, y: 0, z: 0}
   GoalFactor: 0

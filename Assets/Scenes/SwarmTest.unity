@@ -1202,7 +1202,7 @@ MonoBehaviour:
   SeperationFactor: 0.9
   AlignmentFactor: 0.7
   CohesionFactor: 0.15
-  DangerFactor: 1
+  DangerFactor: 1.2
 --- !u!4 &525526826 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 39ff64ef61e61c44280bf8d6060a9b22, type: 3}
