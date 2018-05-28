@@ -36,10 +36,10 @@ public class EnemySwarm : MonoBehaviour {
     public float DangerFactor = 1;
     private float DangerTurnSpeed = 1;
 
-    public bool OutsideOn = false;
+    public bool BorderOn = false;
     //public float OutsideAcceleration = 1;
-    public float OutsideDistance = 3;
-    public float OutsideFactor = 1;
+    public float BorderDistance = 3;
+    public float BorderFactor = 1;
 
 
     [Header("Movement:")]
@@ -67,6 +67,8 @@ public class EnemySwarm : MonoBehaviour {
     public float DesiredBaseSpeed = 6;
     public float DesiredRunSpeed = 12;
 
+    public bool NoSeperationThisUpdate = false;
+
     [Header("Lists:")]
     public List<EnemySwarm> EnemiesInRange = new List<EnemySwarm>();
     public List<GameObject> DangerInRange = new List<GameObject>();
@@ -88,17 +90,17 @@ public class EnemySwarm : MonoBehaviour {
             //Swarm();
         }
 
-      //  DangerAvoidance();
-
-        if (OutsideOn)
+        if (BorderOn)
         {
-         //   GoToOutside();
+            RuleGoToBorder();
         }
 
         RuleCohesion();
         RuleSeperation();
         RuleAlignment();
         RuleDangerAvoidance();
+
+       
 
         //GoalPosition = transform.position + transform.rotation * Vector3.forward;
         //GoalPosition = transform.position + GoalVector;
@@ -202,6 +204,12 @@ public class EnemySwarm : MonoBehaviour {
 
     private void RuleSeperation()
     {
+        if (NoSeperationThisUpdate)
+        {
+            NoSeperationThisUpdate = false;
+            return;
+        }
+
         int NumberOfOthers = EnemiesInRange.Count;
 
         Vector3 SeperationVec = Vector3.zero;
@@ -306,6 +314,44 @@ public class EnemySwarm : MonoBehaviour {
 
     }
 
+    private void RuleGoToBorder()
+    {
+        int NumberOfOthers = EnemiesInRange.Count;
+
+        Vector3 BorderVec = Vector3.zero;
+        int BorderNumber = 0;
+
+        Vector3 DistanceVec = Vector3.zero;
+        float DistanceVecMag = 0;
+
+        for (int i = 0; i < NumberOfOthers; i++)
+        {
+            DistanceVec = transform.position - EnemiesInRange[i].transform.position;
+            DistanceVecMag = DistanceVec.magnitude;
+
+            if (DistanceVecMag <= BorderDistance && EnemiesInRange[i].GetSwarmType() != SType)
+            {
+                BorderVec += EnemiesInRange[i].transform.position;
+                BorderNumber++;
+            }
+        }
+
+        if (BorderNumber >= 2)
+        {
+            BorderVec = BorderVec / BorderNumber;
+            BorderVec = this.transform.position - BorderVec;
+           
+            float NewFactor = BorderFactor * Mathf.Max(BorderDistance - BorderVec.magnitude, 0);
+            BorderVec = BorderVec.normalized * GetDesiredRunSpeed() * NewFactor;
+
+            BorderVec = Steer(BorderVec);
+            Acceleration += BorderVec * BorderFactor;
+            GoalFactor += BorderFactor;
+
+            NoSeperationThisUpdate = true;
+        }
+    }
+
     private void GoToOutside()
     {
         int NumberOfOthers = EnemiesInRange.Count;
@@ -317,7 +363,7 @@ public class EnemySwarm : MonoBehaviour {
         for (int i = 0; i < NumberOfOthers; i++)
         {
             DistanceVec = transform.position - EnemiesInRange[i].transform.position;
-            if (DistanceVec.magnitude < OutsideDistance && EnemiesInRange[i].GetSwarmType() != SType)
+            if (DistanceVec.magnitude < BorderDistance && EnemiesInRange[i].GetSwarmType() != SType)
             {
                 OutsideVec += EnemiesInRange[i].transform.position;
                 OutsideVecNumber++;
@@ -335,7 +381,7 @@ public class EnemySwarm : MonoBehaviour {
                 //GoalVector = Vector3.Slerp(GoalVector, DangerVec, DangerTurnSpeed * Time.deltaTime * DangerFactor);
                 //GoalVector += DangerVec * DangerFactor;
 
-                float NewFactor = OutsideFactor * Mathf.Max(OutsideDistance - OutsideVec.magnitude, 0);
+                float NewFactor = BorderFactor * Mathf.Max(BorderDistance - OutsideVec.magnitude, 0);
                 //Debug.Log(NewFactor + "=" + OutsideDistance + "-" + OutsideVec.magnitude);
                 //Speed += OutsideAcceleration * Time.deltaTime;
                 GoalVector += OutsideVec * NewFactor;

@@ -245,9 +245,9 @@ MonoBehaviour:
   CohesionFactor: 0
   DangerDistance: 4
   DangerFactor: 1
-  OutsideOn: 0
-  OutsideDistance: 3
-  OutsideFactor: 1
+  BorderOn: 0
+  BorderDistance: 3
+  BorderFactor: 1
   Velocity: {x: 0, y: 0, z: 0}
   Acceleration: {x: 0, y: 0, z: 1}
   Resistance: 0.97
@@ -263,6 +263,7 @@ MonoBehaviour:
   BaseAcceleration: 1
   DesiredBaseSpeed: 6
   DesiredRunSpeed: 12
+  NoSeperationThisUpdate: 0
   EnemiesInRange: []
   DangerInRange: []
 --- !u!135 &135080938787054230
