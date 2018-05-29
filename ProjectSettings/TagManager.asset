@@ -10,6 +10,7 @@ TagManager:
   - Spawner
   - Skills
   - EnemySwarm
+  - SwarmDanger
   layers:
   - Default
   - TransparentFX
