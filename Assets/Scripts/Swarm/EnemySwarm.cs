@@ -72,24 +72,36 @@ public class EnemySwarm : MonoBehaviour {
     public float AttractionDistance = 4;
     public float AttractionFactor = 1;
 
+    [Header("Testing Stuff:")]
+    int CalcMaxNumber = 10;
+
+    public float UpdateTimer = 0.5f;
+    public float UpdateCounter = 0;
+
     [Header("Lists:")]
     public List<EnemySwarm> EnemiesInRange = new List<EnemySwarm>();
     public List<GameObject> DangerInRange = new List<GameObject>();
     public List<GameObject> PlayersInRange = new List<GameObject>();
 
+    private void Start()
+    {
+        UpdateCounter = Random.Range(0, UpdateTimer);
+    }
+
     private void FixedUpdate()
     {
-        
-
         BonusSpeedThisFrame = 0f;
         Speed = Mathf.Lerp(Speed, BaseSpeed, Time.deltaTime);
 
         GoalVector = Vector3.zero;
         GoalFactor = 0;
 
-        //RandomMove();
-        if (Random.Range(0f, 1f) <= UpdatePercentage)
+        UpdateCounter += Time.deltaTime;
+
+        if (UpdateCounter >= UpdateTimer)
         {
+            UpdateCounter -= UpdateTimer;
+
             // Reset Acceleration:
             Acceleration = Vector3.zero;
 
@@ -104,8 +116,26 @@ public class EnemySwarm : MonoBehaviour {
             RuleAlignment();
             RuleDangerAvoidance();
         }
+        /*
+        //RandomMove();
+        if (Random.Range(0f, 1f) <= UpdatePercentage)
+        {
+            // Reset Acceleration:
+            Acceleration = Vector3.zero;
 
-       
+            if (BorderOn)
+            {
+                //RuleGoToBorder();
+            }
+
+            RuleAttraction();
+            RuleCohesion();
+            RuleSeperation();
+            RuleAlignment();
+            RuleDangerAvoidance();
+        }
+
+       */
 
        
 
@@ -193,10 +223,10 @@ public class EnemySwarm : MonoBehaviour {
         for (int i = 0; i < NumberOfOthers; i++)
         {
             DistanceVec = transform.position - EnemiesInRange[i].transform.position;
-            DistanceVecMag = DistanceVec.magnitude;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
 
             // Cohesion:
-            if (DistanceVecMag <= CohesionDistance)
+            if (DistanceVecMag <= CohesionDistance * CohesionDistance)
             {
                 CohesionVec += EnemiesInRange[i].transform.position;
                 CohesionNumber++;
@@ -208,7 +238,7 @@ public class EnemySwarm : MonoBehaviour {
             CohesionVec = CohesionVec / CohesionNumber;
             CohesionVec = CohesionVec - this.transform.position;
             CohesionVec = CohesionVec.normalized * GetDesiredSpeed();
-
+          
             CohesionVec = Steer(CohesionVec);
             Acceleration += CohesionVec * EnemyTestSwarm.Instance.CohesionFactor;
             GoalFactor += EnemyTestSwarm.Instance.CohesionFactor;
@@ -268,10 +298,10 @@ public class EnemySwarm : MonoBehaviour {
         for (int i = 0; i < NumberOfOthers; i++)
         {
             DistanceVec = transform.position - EnemiesInRange[i].transform.position;
-            DistanceVecMag = DistanceVec.magnitude;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
 
             // Alignment:
-            if (DistanceVecMag <= AlignmentDistance)
+            if (DistanceVecMag <= AlignmentDistance * AlignmentDistance)
             {
                 AlignmentVec += EnemiesInRange[i].GetCurrenVelocity();
                 AlignmentNumber++;
@@ -282,6 +312,7 @@ public class EnemySwarm : MonoBehaviour {
         if (AlignmentNumber >= 1)
         {
             AlignmentVec = AlignmentVec.normalized * GetDesiredSpeed();
+            //AlignmentVec = AlignmentVec / AlignmentNumber;
 
             AlignmentVec = Steer(AlignmentVec);
             Acceleration += AlignmentVec * EnemyTestSwarm.Instance.AlignmentFactor;
@@ -303,11 +334,11 @@ public class EnemySwarm : MonoBehaviour {
         for (int i = 0; i < NumberOfDangers; i++)
         {
             DistanceVec = transform.position - DangerInRange[i].transform.position;
-            DistanceVecMag = DistanceVec.magnitude;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
 
-            if (DistanceVecMag <= DangerDistance)
+            if (DistanceVecMag <= DangerDistance * DangerDistance)
             {
-                DangerVec += DistanceVec.normalized / DistanceVecMag;
+                DangerVec += DistanceVec.normalized / Mathf.Sqrt(DistanceVecMag);
                 DangerVecNumber++;
             }
         }
@@ -327,7 +358,7 @@ public class EnemySwarm : MonoBehaviour {
         int NumberOfOthers = PlayersInRange.Count;
 
         Vector3 AttractionVec = Vector3.zero;
-        float AttractionVecMag = AttractionDistance + 1;
+        float AttractionVecMag = AttractionDistance * AttractionDistance + 1;
 
         Vector3 DistanceVec = Vector3.zero;
         float DistanceVecMag = 0;
@@ -335,9 +366,9 @@ public class EnemySwarm : MonoBehaviour {
         for (int i = 0; i < NumberOfOthers; i++)
         {
             DistanceVec = PlayersInRange[i].transform.position - transform.position;
-            DistanceVecMag = DistanceVec.magnitude;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
 
-            if (DistanceVecMag <= AttractionDistance
+            if (DistanceVecMag <= AttractionDistance * AttractionDistance
                 && DistanceVecMag < AttractionVecMag)
             {
                 AttractionVec = DistanceVec;
@@ -345,7 +376,7 @@ public class EnemySwarm : MonoBehaviour {
             }
         }
 
-        if (AttractionVecMag < AttractionDistance + 1)
+        if (AttractionVecMag < AttractionDistance * AttractionDistance + 1)
         {
             AttractionVec = AttractionVec.normalized * GetDesiredSpeed();
 
@@ -368,9 +399,9 @@ public class EnemySwarm : MonoBehaviour {
         for (int i = 0; i < NumberOfOthers; i++)
         {
             DistanceVec = transform.position - EnemiesInRange[i].transform.position;
-            DistanceVecMag = DistanceVec.magnitude;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
 
-            if (DistanceVecMag <= BorderDistance && EnemiesInRange[i].GetSwarmType() != SType)
+            if (DistanceVecMag <= BorderDistance * BorderDistance && EnemiesInRange[i].GetSwarmType() != SType)
             {
                 BorderVec += EnemiesInRange[i].transform.position;
                 BorderNumber++;
@@ -382,7 +413,7 @@ public class EnemySwarm : MonoBehaviour {
             BorderVec = BorderVec / BorderNumber;
             BorderVec = this.transform.position - BorderVec;
            
-            float NewFactor = BorderFactor * Mathf.Max(BorderDistance - BorderVec.magnitude, 0);
+            float NewFactor = Mathf.Max(BorderDistance - BorderVec.magnitude, 0);
             BorderVec = BorderVec.normalized * GetDesiredRunSpeed() * NewFactor;
 
             BorderVec = Steer(BorderVec);

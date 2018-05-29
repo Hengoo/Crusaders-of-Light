@@ -241,7 +241,7 @@ Transform:
   m_GameObject: {fileID: 1332848127210554}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children:
   - {fileID: 4838830858916504}
   - {fileID: 4397163239341376}
@@ -296,7 +296,7 @@ MonoBehaviour:
   NMAgent: {fileID: 195162299485184198}
   UpdatePercentage: 1
   SType: 2
-  SeperationDistance: 1.8
+  SeperationDistance: 1.2
   SeperationFactor: 1
   AlignmentDistance: 4
   AlignmentFactor: 0
@@ -323,8 +323,10 @@ MonoBehaviour:
   DesiredBaseSpeed: 6
   DesiredRunSpeed: 12
   NoSeperationThisUpdate: 0
-  AttractionDistance: 4
-  AttractionFactor: 1
+  AttractionDistance: 8
+  AttractionFactor: 0.4
+  UpdateTimer: 0.06
+  UpdateCounter: 0
   EnemiesInRange: []
   DangerInRange: []
   PlayersInRange: []
@@ -338,7 +340,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 4
+  m_Radius: 8
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!137 &137034770253479706
 SkinnedMeshRenderer:
@@ -448,7 +450,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1580111593108974}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_Speed: 4
   m_Acceleration: 8
   avoidancePriority: 50

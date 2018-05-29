@@ -1350,8 +1350,8 @@ MonoBehaviour:
     type: 2}
   SpawnNumber3: 100
   SeperationFactor: 1
-  AlignmentFactor: 0.5
-  CohesionFactor: 0.15
+  AlignmentFactor: 0.75
+  CohesionFactor: 0.35
   DangerFactor: 10
   GlobalAttractionTarget: {fileID: 504836233}
 --- !u!4 &525526826 stripped
