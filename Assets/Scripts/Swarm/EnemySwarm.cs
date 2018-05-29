@@ -12,69 +12,54 @@ public class EnemySwarm : MonoBehaviour {
         RANGED = 3
     }
 
+    [Header("Enemy Swarm:")]
     public NavMeshAgent NMAgent;
-
-    public float UpdatePercentage = 0.5f;
-
     public SwarmType SType = SwarmType.STANDARD;
 
     [Header("Core Rules:")]
+    // Note: Seperation, Alignment, Cohesion, and Danger Factors are currently pulled from EnemyTestSwarm for at runtime testing.
+    // Thus, the Factors here for these 4 rules are currently unused, but should be used later!
+    [Header("Seperation:")]
     public float SeperationDistance = 3;
-    public float SeperationFactor = 1;
-    private float SeperationTurnSpeed = 10;
+    private float SeperationFactor = 1;
+    private bool NoSeperationThisUpdate = false;
 
+    [Header("Alignment:")]
     public float AlignmentDistance = 3;
-    public float AlignmentFactor = 1;
-    private float AlignmentTurnSpeed = 10;
+    private float AlignmentFactor = 1;
 
+    [Header("Cohesion:")]
     public float CohesionDistance = 3;
-    public float CohesionFactor = 1;
-    private float CohesionTurnSpeed = 10;
+    private float CohesionFactor = 1;
 
     [Header("Advanced Rules:")]
+    [Header("Danger Avoidance:")]
     public float DangerDistance = 3;
-    public float DangerFactor = 1;
-    private float DangerTurnSpeed = 1;
+    private float DangerFactor = 1;
 
+    [Header("Attraction:")]
+    public float AttractionDistance = 4;
+    public float AttractionFactor = 1;
+
+    [Header("Go To Border:")]
     public bool BorderOn = false;
     //public float OutsideAcceleration = 1;
     public float BorderDistance = 3;
     public float BorderFactor = 1;
 
-
     [Header("Movement:")]
     public Vector3 Velocity = Vector3.zero;
     public Vector3 Acceleration = Vector3.forward;
-    public float Resistance = 0.1f;
+
     public float Friction = 0.1f;
 
-
-    public float BaseSpeed = 1f;
-    public float Speed = 1f;
-    public float BonusSpeedThisFrame = 0f;
-
-    public Vector3 MovVector;
-
-    public Vector3 GoalVector;
     public float GoalFactor;
 
-    public Vector3 GoalPosition;
-
-    public float TurnSpeed = 360;
-    public float BaseAcceleration = 10f;
-
-    [Header("Movement 2:")]
+    [Header("Speed::")]
     public float DesiredBaseSpeed = 6;
     public float DesiredRunSpeed = 12;
 
-    public bool NoSeperationThisUpdate = false;
-
-    public float AttractionDistance = 4;
-    public float AttractionFactor = 1;
-
-    [Header("Testing Stuff:")]
-    int CalcMaxNumber = 10;
-
+    [Header("Optimization:")]
     public float UpdateTimer = 0.5f;
     public float UpdateCounter = 0;
 
@@ -90,10 +75,6 @@ public class EnemySwarm : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        BonusSpeedThisFrame = 0f;
-        Speed = Mathf.Lerp(Speed, BaseSpeed, Time.deltaTime);
-
-        GoalVector = Vector3.zero;
         GoalFactor = 0;
 
         UpdateCounter += Time.deltaTime;
@@ -116,50 +97,12 @@ public class EnemySwarm : MonoBehaviour {
             RuleAlignment();
             RuleDangerAvoidance();
         }
-        /*
-        //RandomMove();
-        if (Random.Range(0f, 1f) <= UpdatePercentage)
-        {
-            // Reset Acceleration:
-            Acceleration = Vector3.zero;
-
-            if (BorderOn)
-            {
-                //RuleGoToBorder();
-            }
-
-            RuleAttraction();
-            RuleCohesion();
-            RuleSeperation();
-            RuleAlignment();
-            RuleDangerAvoidance();
-        }
-
-       */
-
-       
-
-        //GoalPosition = transform.position + transform.rotation * Vector3.forward;
-        //GoalPosition = transform.position + GoalVector;
-
-        /*if (GoalFactor != 0)
-        {
-            GoalVector = GoalVector / GoalFactor;      
-            Acceleration = Vector3.Lerp(Acceleration, GoalVector, Time.deltaTime * TurnSpeed);
-        }*/
-
-        //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Velocity), Time.deltaTime * TurnSpeed);
-
-        //Velocity += Acceleration * Time.deltaTime;
-        //Velocity *= Resistance;
-        //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Velocity), Time.deltaTime * TurnSpeed);
 
         if (GoalFactor > 0)
         {
             Acceleration = Acceleration / GoalFactor;
         }
         
-
         // Update Velocity:
         Velocity += Acceleration * Time.deltaTime * 10;
         Velocity *= (1 - Friction * Time.deltaTime);
@@ -172,13 +115,6 @@ public class EnemySwarm : MonoBehaviour {
         {
             transform.rotation = Quaternion.LookRotation(Velocity);
         }
-
-
-
-
-        // NMAgent.Move(Vector3.forward * Time.deltaTime * Speed);
-        //NMAgent.Move(transform.rotation * Vector3.forward * Time.deltaTime * (Speed + BonusSpeedThisFrame));
-        //NMAgent.SetDestination(GoalPosition);
     }
 
     public Vector3 Steer(Vector3 VelDesired)
@@ -186,29 +122,10 @@ public class EnemySwarm : MonoBehaviour {
         return VelDesired - Velocity;
     }
 
-    public float GetDesiredSpeed()
-    {
-        return DesiredBaseSpeed;
-    }
+    // ===================================================== RULES =====================================================
 
-    public float GetDesiredRunSpeed()
-    {
-        return DesiredRunSpeed;
-    }
-
-    private void RandomMove()
-    {
-        if (Random.Range(0, 1000) <= 5)
-        {
-            MovVector = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
-            //MovVector.Normalize();    
-        }
-        if (MovVector != Vector3.zero)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(MovVector), Time.deltaTime);
-        }
-        
-    }
+    // ================================================ RULE: COHESION ================================================
+    // Enemies should steer to the center of all nearby enemies.
 
     private void RuleCohesion()
     {
@@ -244,6 +161,11 @@ public class EnemySwarm : MonoBehaviour {
             GoalFactor += EnemyTestSwarm.Instance.CohesionFactor;
         }
     }
+
+    // ===============================================/ RULE: COHESION /===============================================
+
+    // =============================================== RULE: SEPERATION ===============================================
+    // Enemies should steer away from other very close enemies.
 
     private void RuleSeperation()
     {
@@ -285,6 +207,11 @@ public class EnemySwarm : MonoBehaviour {
         }
     }
 
+    // ==============================================/ RULE: SEPERATION /==============================================
+
+    // ================================================ RULE: ALIGNMENT ================================================
+    // Enemies should steer towards the average direction of nearby enemies.
+
     private void RuleAlignment()
     {
         int NumberOfOthers = EnemiesInRange.Count;
@@ -321,6 +248,11 @@ public class EnemySwarm : MonoBehaviour {
 
     }
 
+    // ===============================================/ RULE: ALIGNMENT /===============================================
+
+    // ============================================ RULE: DANGER AVOIDANCE =============================================
+    // Enemies should steer away from nearby dangers.
+
     private void RuleDangerAvoidance()
     {
         int NumberOfDangers = DangerInRange.Count;
@@ -352,6 +284,11 @@ public class EnemySwarm : MonoBehaviour {
             GoalFactor += EnemyTestSwarm.Instance.DangerFactor;
         }
     }
+
+    // ===========================================/ RULE: DANGER AVOIDANCE /============================================
+
+    // =============================================== RULE: ATTRACTION ================================================
+    // Enemies steer towards the nearest attraction (in this case Player Characters, so far).
 
     private void RuleAttraction()
     {
@@ -385,6 +322,11 @@ public class EnemySwarm : MonoBehaviour {
             GoalFactor += AttractionFactor;
         }
     }
+
+    // ==============================================/ RULE: ATTRACTION /===============================================
+
+    // ============================================== RULE: GO TO BORDER ===============================================
+    // Tank Enemies should steer towards the outside of the swarm.
 
     private void RuleGoToBorder()
     {
@@ -423,6 +365,13 @@ public class EnemySwarm : MonoBehaviour {
             NoSeperationThisUpdate = true;
         }
     }
+
+    // =============================================/ RULE: GO TO BORDER /==============================================
+
+    // ====================================================/ RULES /====================================================
+
+
+    // ================================================== NEARBY LISTS ==================================================
 
     public void OnTriggerEnter(Collider other)
     {
@@ -479,9 +428,18 @@ public class EnemySwarm : MonoBehaviour {
         EnemiesInRange.Remove(SwarmObject);
     }
 
-    public float GetCurrentSpeed()
+    // =================================================/ NEARBY LISTS /=================================================
+
+    // ================================================ GETTERS/SETTERS =================================================
+
+    public float GetDesiredSpeed()
     {
-        return Speed;
+        return DesiredBaseSpeed;
+    }
+
+    public float GetDesiredRunSpeed()
+    {
+        return DesiredRunSpeed;
     }
 
     public Vector3 GetCurrenVelocity()
@@ -493,4 +451,6 @@ public class EnemySwarm : MonoBehaviour {
     {
         return SType;
     }
+
+    // ===============================================/ GETTERS/SETTERS /================================================
 }
