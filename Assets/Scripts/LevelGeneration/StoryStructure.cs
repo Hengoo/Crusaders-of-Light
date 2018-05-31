@@ -110,11 +110,13 @@ public class StoryStructure
                 }
                 count = SidePathLength + 2;
             }
+
+            // Add the connection back from the side path -- this way we remove the need to backtrack :)
             if (count == 0 && t2 >= 0)
             {
                 everything.AddEdge(t0, t2, (int)AreaSegment.EAreaSegmentEdgeType.SidePath);
             }
-            count--;
+            count--; // I know, don't judge me ;)
 
             t0 = t1;
         }

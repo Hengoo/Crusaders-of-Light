@@ -60,7 +60,7 @@ public class TerrainStructure
         _borderNoise = globalSettings.EdgeNoise;
 
         // Add splat prototypes to the shader
-        //AddShaderTextures();
+        AddShaderTextures();
 
         // Create base graph that later on is transformed with a set of rules and assigned areas to
         CreateBaseGraph(globalSettings);

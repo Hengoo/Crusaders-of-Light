@@ -10,8 +10,9 @@ public class LevelCreator : Singleton<LevelCreator>
     public enum DrawModeEnum
     {
         TerrainGraph,
-        GameLevel,
-        AreaGraph
+        Terrain,
+        AreaGraph,
+        GameLevel
     }
 
     public DrawModeEnum DrawMode = DrawModeEnum.TerrainGraph;
@@ -67,7 +68,7 @@ public class LevelCreator : Singleton<LevelCreator>
                 DrawTerrainSkeleton();
                 break;
             case DrawModeEnum.GameLevel:
-                DrawGameMap();
+                DrawCompleteLevel();
                 break;
             case DrawModeEnum.AreaGraph:
                 DrawScenerySkeleton();
@@ -77,7 +78,12 @@ public class LevelCreator : Singleton<LevelCreator>
         }
     }
 
-    void DrawGameMap()
+    void DrawTerrain()
+    {
+        
+    }
+
+    void DrawCompleteLevel()
     {
         /* Create heightmap */
         var heightMap = LevelDataGenerator.GenerateHeightMap(MyTerrainStructure);

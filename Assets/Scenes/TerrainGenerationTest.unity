@@ -15090,7 +15090,7 @@ MonoBehaviour:
     EdgeNoise: 8
     LloydRelaxation: 5
     Octaves: 3
-    BorderBiome: {fileID: 0}
+    BorderBiome: {fileID: 11400000, guid: 4f027a98eb4994444ac81ba131ac5cfa, type: 2}
     WaterMaterial: {fileID: 2100000, guid: 5e37ecf4f3515d34e9bb6ec9a54f158a, type: 2}
     CoastBlocker: {fileID: 1174950389497864, guid: 14e1e6585488c9e43b2c178011820ae9,
       type: 2}
@@ -15113,7 +15113,7 @@ MonoBehaviour:
     EdgeWidth: 5
     SquareSize: 10
   AvailableBiomes:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: b7e80e27b85b16847b70b28533e901b7, type: 2}
   SpecialAreas:
   - {fileID: 11400000, guid: 550e0cce810f49041873c497c4eeff31, type: 2}
   BossArea: {fileID: 11400000, guid: 550e0cce810f49041873c497c4eeff31, type: 2}
