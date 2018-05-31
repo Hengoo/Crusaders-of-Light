@@ -63,7 +63,7 @@ public class StoryStructure
         int start, bossEntry, t0, t1;
         int t2;
         int t3;
-        int sidePathMod = (MainPathLength + 1) / SidePathCount;
+        int sidePathMod = SidePathCount > 0 ? (MainPathLength + 1) / SidePathCount : 1;
 
         // Set start and end
         AreaSegmentRewrite everything = new AreaSegmentRewrite();
@@ -87,7 +87,7 @@ public class StoryStructure
             everything.AddEdge(t0, t1, (int)AreaSegment.EAreaSegmentEdgeType.MainPath);
 
             // Side Paths
-            if ((i) % sidePathMod == 0)
+            if ((i) % sidePathMod == 0 && SidePathCount > 0)
             {
                 int specialArea = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty),
                     new AreaSegment(AreaSegment.EAreaSegmentType.Special));

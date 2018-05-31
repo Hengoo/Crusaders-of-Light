@@ -98,12 +98,12 @@ public static class LevelDataGenerator
     }
 
     // Draw roads onto the alpha and height maps
-    public static void DrawLineRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, int squareSize)
+    public static void DrawPathLines(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, int squareSize)
     {
         var cellSize = terrainStructure.MapSize / terrainStructure.HeightMapResolution;
 
         // Find cells covered by the road polygon
-        var cellsToSmooth = DiscretizeLines(terrainStructure.HeightMapResolution, cellSize, terrainStructure.RoadLines, squareSize, true)
+        var cellsToSmooth = DiscretizeLines(terrainStructure.HeightMapResolution, cellSize, terrainStructure.PathLines, squareSize, true)
             .ToArray();
 
         // Set alphamap values to only road draw
@@ -184,7 +184,7 @@ public static class LevelDataGenerator
         var result = new GameObject("Area Blockers");
 
         // Iterate over all coastal borders
-        foreach (var line in terrainStructure.AreaBorders)
+        foreach (var line in terrainStructure.AreaBlockerLines)
         {
             var p0 = line[0];
             var p1 = line[1];
@@ -233,12 +233,12 @@ public static class LevelDataGenerator
 
         // Iterate over all coastal borders
         Transform lastTransform = null;
-        for (var i = 0; i < terrainStructure.OuterBorderPolygon.Count; i++)
+        for (var i = 0; i < terrainStructure.BorderLines.Count; i++)
         {
-            var p0 = terrainStructure.OuterBorderPolygon[i];
-            var p1 = i != terrainStructure.OuterBorderPolygon.Count - 1
-                ? terrainStructure.OuterBorderPolygon[i + 1]
-                : terrainStructure.OuterBorderPolygon[0];
+            var p0 = terrainStructure.BorderLines[i];
+            var p1 = i != terrainStructure.BorderLines.Count - 1
+                ? terrainStructure.BorderLines[i + 1]
+                : terrainStructure.BorderLines[0];
 
             //Discretize line and get direction normalized
             var direction = (p1 - p0).normalized;

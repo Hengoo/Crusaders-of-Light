@@ -6,7 +6,6 @@ using UnityEngine;
 public class SceneryStructure
 {
     public List<PoissonDiskFill> SceneryAreas { get; private set; }
-    public StoryStructure StoryStructure { get; private set; }
     public List<Vector2[]> RoadPolygons { get; private set; }
 
     public AreaBase[] SpecialAreas { get; private set; }
@@ -16,8 +15,6 @@ public class SceneryStructure
     {
         SceneryAreas = new List<PoissonDiskFill>();
         RoadPolygons = new List<Vector2[]>();
-
-        StoryStructure = storyStructure;
 
         SpecialAreas = specialAreas;
         BossArea = bossArea;
@@ -30,7 +27,7 @@ public class SceneryStructure
     private static List<Vector2[]> GenerateRoadPolygons(TerrainStructure terrainStructure, float roadWidth)
     {
         var result = new List<Vector2[]>();
-        foreach (var line in terrainStructure.RoadLines)
+        foreach (var line in terrainStructure.PathLines)
         {
             var start = line[0];
             var end = line[1];
@@ -66,7 +63,7 @@ public class SceneryStructure
 
     private void GenerateOuterBorderPolygon(TerrainStructure terrainStructure, List<KeyValuePair<Edge, Vector2>> outerBorderEdges)
     {
-        var globalConfiguration = LevelCreator.Instance.GlobalSettings;
+        var levelCreator = LevelCreator.Instance;
         var coastBlockerPolygon = new List<Vector2>();
         var coastLines = outerBorderEdges.Select(pair => pair.Key).ToList().EdgesToSortedLines();
         foreach (var line in coastLines)
@@ -84,8 +81,8 @@ public class SceneryStructure
                     center = e.Value;
             });
 
-            left += (center - left).normalized * globalConfiguration.CoastInlandOffset;
-            right += (center - right).normalized * globalConfiguration.CoastInlandOffset;
+            left += (center - left).normalized * levelCreator.BorderInlandOffset;
+            right += (center - right).normalized * levelCreator.BorderInlandOffset;
 
             //Offsetting can give duplicated points
             if (!coastBlockerPolygon.Contains(left))
@@ -132,7 +129,7 @@ public class SceneryStructure
         if (poissonDiskFill.Prefabs == null || poissonDiskFill.Prefabs.Length <= 0)
             return result;
 
-        var globalConfiguration = LevelCreator.Instance.GlobalSettings;
+        var levelCreator = LevelCreator.Instance;
         var size = poissonDiskFill.FrameSize;
         PoissonDiskGenerator.minDist = poissonDiskFill.MinDist;
         PoissonDiskGenerator.sampleRange = (size.x > size.y ? size.x : size.y);
@@ -141,7 +138,7 @@ public class SceneryStructure
         {
             var point = sample + poissonDiskFill.FramePosition;
             var height = terrain.SampleHeight(new Vector3(point.x, 0, point.y) - terrain.transform.position);
-            if (height <= (globalConfiguration.SeaHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
+            if (height <= (levelCreator.WaterHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
                 !point.IsInsidePolygon(poissonDiskFill.Polygon) || //not outside of the area
                 !poissonDiskFill.ClearPolygons.TrueForAll(a => !point.IsInsidePolygon(a)) //not inside of any clear polygon
             )
