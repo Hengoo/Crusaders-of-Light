@@ -72,6 +72,9 @@ public class Character : MonoBehaviour
 
     public ItemSkill[] ItemSkillSlots = new ItemSkill[4];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
 
+    [Header("Equipment (NEW!):")]
+    public Item EquippedWeapon;
+    public ElementItem EquippedElement;
 
     public int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
     //public float SkillActivationTimer = 0.0f;
@@ -440,6 +443,26 @@ public class Character : MonoBehaviour
     }
 
     // ===================================  /EQUIPMENT SLOTS ===================================
+
+
+    // =======================================  ELEMENT  =======================================
+
+    public void EquipElement(ElementItem ElementToEquip)
+    {
+        EquippedElement = ElementToEquip;
+    }
+
+    public ElementItem GetEquippedElement()
+    {
+        if(EquippedElement)
+        {
+            return EquippedElement;
+        }
+        return null;
+    }
+
+    // ======================================= /ELEMENT  =======================================
+
 
     // ======================================  ALIGNMENT =======================================
 
