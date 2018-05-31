@@ -19,11 +19,13 @@ public class TerrainStructure
     public float MapSize { get; private set; }
     public int HeightMapResolution { get; private set; }
     public int Octaves { get; private set; }
-    public int RoadSplatIndex { get; private set; }
+    public int MainPathSplatIndex { get; private set; }
+    public int SidePathSplatIndex { get; private set; }
 
-    public readonly List<Vector2> BorderLines;
-    public readonly List<Vector2[]> PathLines;
+    public readonly List<Vector2> BorderBlockerLines;
     public readonly List<Vector2[]> AreaBlockerLines;
+    public readonly List<Vector2[]> MainPathLines;
+    public readonly List<Vector2[]> SidePathLines;
 
     private readonly Dictionary<int, Vector2> _areaSegmentCenterMap = new Dictionary<int, Vector2>(); // Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<Vector2f, int> _siteAreaMap = new Dictionary<Vector2f, int>(); // Mapping of Voronoi library sites and graph IDs
@@ -32,20 +34,25 @@ public class TerrainStructure
     private Texture2D _blankSpec;
     private Texture2D _blankBump;
 
-    private readonly SplatPrototypeSerializable _roadSplatPrototype;
-    private readonly int _voronoiSamples;
+    private readonly SplatPrototypeSerializable _mainSplatPrototype;
+    private readonly SplatPrototypeSerializable _sideSplatPrototype;
 
+    private readonly int _voronoiSamples;
     private readonly BiomeSettings _biomeSettings;
     private readonly BiomeSettings _borderSettings;
     private readonly float _borderNoise;
 
-    public TerrainStructure(StoryStructure storyStructure, List<BiomeSettings> availableBiomes, float mapSize, int heightMapResolution, int octaves, BiomeSettings borderSettings, SplatPrototypeSerializable roadSplatPrototype, int voronoiSamples, int lloydIterations, float edgeNoise)
+    public TerrainStructure(StoryStructure storyStructure, List<BiomeSettings> availableBiomes, float mapSize,
+        int heightMapResolution, int octaves, BiomeSettings borderSettings,
+        SplatPrototypeSerializable mainSplatPrototype, SplatPrototypeSerializable sideSplatPrototype,
+        int voronoiSamples, int lloydIterations, float edgeNoise)
     {
         AreaSegmentGraph = new GrammarGraph<AreaSegment>();
         Areas = new List<Area>();
-        BorderLines = new List<Vector2>();
+        BorderBlockerLines = new List<Vector2>();
         AreaBlockerLines = new List<Vector2[]>();
-        PathLines = new List<Vector2[]>();
+        MainPathLines = new List<Vector2[]>();
+        SidePathLines = new List<Vector2[]>();
 
         // Select a random biome out of the available ones for the current level
         _biomeSettings = availableBiomes[Random.Range(0, availableBiomes.Count)];
@@ -55,7 +62,8 @@ public class TerrainStructure
         Octaves = octaves;
 
         _borderSettings = borderSettings;
-        _roadSplatPrototype = roadSplatPrototype;
+        _mainSplatPrototype = mainSplatPrototype;
+        _sideSplatPrototype = sideSplatPrototype;
         _voronoiSamples = voronoiSamples;
         _borderNoise = edgeNoise;
 
@@ -66,7 +74,7 @@ public class TerrainStructure
         CreateBaseGraph(lloydIterations);
 
         // Assign specific areas to each node of the base graph - Start point, Boss arena, paths...
-        CreateAreaGraph(storyStructure);
+        CreateAreaGraph(storyStructure.Rewrites);
 
         // Populate path lines list
         CreatePathLines();
@@ -197,15 +205,27 @@ public class TerrainStructure
             count++;
         }
 
-        // Add road to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(_roadSplatPrototype))
+        // Add main path to the SplatPrototypes map
+        if (!_splatIDMap.ContainsKey(_mainSplatPrototype))
         {
-            _splatIDMap.Add(_roadSplatPrototype, count);
+            _splatIDMap.Add(_mainSplatPrototype, count);
 
-            Shader.SetGlobalTexture("_BumpMap" + count, _roadSplatPrototype.normalMap ? _roadSplatPrototype.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_BumpMap" + count, _mainSplatPrototype.normalMap ? _mainSplatPrototype.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _roadSplatPrototype.tileSize.x);
-            RoadSplatIndex = count;
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _mainSplatPrototype.tileSize.x);
+            MainPathSplatIndex = count;
+            count++;
+        }
+
+        // Add side path to the SplatPrototypes map
+        if (!_splatIDMap.ContainsKey(_sideSplatPrototype))
+        {
+            _splatIDMap.Add(_sideSplatPrototype, count);
+
+            Shader.SetGlobalTexture("_BumpMap" + count, _sideSplatPrototype.normalMap ? _sideSplatPrototype.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _sideSplatPrototype.tileSize.x);
+            SidePathSplatIndex = count;
         }
     }
 
@@ -274,11 +294,11 @@ public class TerrainStructure
     }
 
     // Assign areas to the base graph based on a specific set of rules
-    private void CreateAreaGraph(StoryStructure storyStructure)
+    private void CreateAreaGraph(Queue<StoryStructure.AreaSegmentRewrite> rewrites)
     {
-        while (storyStructure.Rewrites.Count > 0)
+        while (rewrites.Count > 0)
         {
-            var rule = storyStructure.Rewrites.Dequeue();
+            var rule = rewrites.Dequeue();
             if (!AreaSegmentGraph.Replace(rule.Pattern, rule.Replace, rule.Correspondences))
             {
                 Debug.LogWarning("Failed to generate map with current seed: " + Random.state);
@@ -299,18 +319,20 @@ public class TerrainStructure
     {
         foreach (var edge in AreaSegmentGraph.GetAllEdges())
         {
-            var leftType = AreaSegmentGraph.GetNodeData(edge.x).Type;
-            var rightType = AreaSegmentGraph.GetNodeData(edge.y).Type;
-
-            // Skip non paths
-            if (leftType != AreaSegment.EAreaSegmentType.SidePath && leftType != AreaSegment.EAreaSegmentType.MainPath ||
-                rightType != AreaSegment.EAreaSegmentType.SidePath && rightType != AreaSegment.EAreaSegmentType.MainPath)
-                continue;
-
-            // Add Road
+            int edgeValue = AreaSegmentGraph.GetEdgeValue(edge);
             Vector2 leftCenter = _areaSegmentCenterMap[edge.x];
             Vector2 rightCenter = _areaSegmentCenterMap[edge.y];
-            PathLines.Add(new[] { leftCenter, rightCenter });
+
+            // Add path lines
+            switch (edgeValue)
+            {
+                case (int)AreaSegment.EAreaSegmentEdgeType.MainPath:
+                    MainPathLines.Add(new[] { leftCenter, rightCenter });
+                    break;
+                case (int)AreaSegment.EAreaSegmentEdgeType.SidePath:
+                    SidePathLines.Add(new[] { leftCenter, rightCenter });
+                    break;
+            }
         }
     }
 

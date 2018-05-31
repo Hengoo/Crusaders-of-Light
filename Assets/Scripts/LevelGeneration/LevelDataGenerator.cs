@@ -98,26 +98,26 @@ public static class LevelDataGenerator
     }
 
     // Draw roads onto the alpha and height maps
-    public static void DrawPathLines(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, int squareSize)
+    public static void DrawPathLines(float[,] heightmap, float[,,] alphamap, int splatSize, float mapSize, int heightMapResolution, List<Vector2[]> pathLines, int textureCount, int splatIndex)
     {
-        var cellSize = terrainStructure.MapSize / terrainStructure.HeightMapResolution;
+        var cellSize = mapSize / heightMapResolution;
 
         // Find cells covered by the road polygon
-        var cellsToSmooth = DiscretizeLines(terrainStructure.HeightMapResolution, cellSize, terrainStructure.PathLines, squareSize, true)
+        var cellsToSmooth = DiscretizeLines(heightMapResolution, cellSize, pathLines, splatSize, true)
             .ToArray();
 
         // Set alphamap values to only road draw
         foreach (var index in cellsToSmooth)
         {
             // Other textures to 0
-            for (var i = 0; i < terrainStructure.TextureCount; i++)
+            for (var i = 0; i < textureCount; i++)
                 alphamap[index.x, index.y, i] = 0;
 
             // Road texture to 1
-            alphamap[index.x, index.y, terrainStructure.RoadSplatIndex] = 1;
+            alphamap[index.x, index.y, splatIndex] = 1;
         }
 
-        SmoothHeightMapCells(heightmap, cellsToSmooth, squareSize + 2);
+        SmoothHeightMapCells(heightmap, cellsToSmooth, splatSize + 2);
     }
 
     // Smooth every cell in the heightmap using squareSize neighbors in each direction
@@ -233,12 +233,12 @@ public static class LevelDataGenerator
 
         // Iterate over all coastal borders
         Transform lastTransform = null;
-        for (var i = 0; i < terrainStructure.BorderLines.Count; i++)
+        for (var i = 0; i < terrainStructure.BorderBlockerLines.Count; i++)
         {
-            var p0 = terrainStructure.BorderLines[i];
-            var p1 = i != terrainStructure.BorderLines.Count - 1
-                ? terrainStructure.BorderLines[i + 1]
-                : terrainStructure.BorderLines[0];
+            var p0 = terrainStructure.BorderBlockerLines[i];
+            var p1 = i != terrainStructure.BorderBlockerLines.Count - 1
+                ? terrainStructure.BorderBlockerLines[i + 1]
+                : terrainStructure.BorderBlockerLines[0];
 
             //Discretize line and get direction normalized
             var direction = (p1 - p0).normalized;

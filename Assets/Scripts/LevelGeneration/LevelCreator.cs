@@ -34,7 +34,7 @@ public class LevelCreator : Singleton<LevelCreator>
     [Range(10, 1000)] public int VoronoiSamples = 80;
     [Range(0, 1f)] public float MaxHeight = 1;
     [Range(0, 50f)] public float EdgeNoise = 8f;
-    [Range(0, 20)] public int LloydRelaxation = 5;
+    [Range(0, 100)] public int LloydRelaxation = 20;
     [Range(1, 8)] public int Octaves = 3;
     [Range(0, 1f)] public float WaterHeight = 0.15f;
     public Material WaterMaterial;
@@ -48,8 +48,10 @@ public class LevelCreator : Singleton<LevelCreator>
     [Header("Path Settings")]
     public SplatPrototypeSerializable MainPathSplatPrototype;
     public SplatPrototypeSerializable SidePathSplatPrototype;
-    public float MainPathHalfWidth;
-    public float SidePathHalfWidth;
+    public float MainPathHalfWidth = 8;
+    public float SidePathHalfWidth = 5;
+    public int MainPathSplatSize = 2;
+    public int SidePathSplatSize = 1;
     public int MainPathNodeCount = 8;
     public int SidePathCount = 2;
     public int SidePathNodeCount = 1;
@@ -90,7 +92,8 @@ public class LevelCreator : Singleton<LevelCreator>
         Random.InitState(Seed);
 
         MyStoryStructure = new StoryStructure(0, 1, MainPathNodeCount, SidePathCount, SidePathNodeCount, BossArea, new CharacterEnemy[4]);
-        MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome, MainPathSplatPrototype, VoronoiSamples, LloydRelaxation, EdgeNoise);
+        MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome,
+            MainPathSplatPrototype, SidePathSplatPrototype, VoronoiSamples, LloydRelaxation, EdgeNoise);
 
         if (DrawMode == DrawModeEnum.GameLevel)
             MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, SpecialAreas, BossArea, MainPathHalfWidth);
@@ -133,7 +136,7 @@ public class LevelCreator : Singleton<LevelCreator>
         if (SmoothEdges)
         {
             // Smooth only navigable biome borders
-            LevelDataGenerator.SmoothHeightMapWithLines(_heightMap, MapSize / HeightMapResolution, MyTerrainStructure.PathLines, EdgeWidth, SquareSize);
+            LevelDataGenerator.SmoothHeightMapWithLines(_heightMap, MapSize / HeightMapResolution, MyTerrainStructure.MainPathLines, EdgeWidth, SquareSize);
 
             // Overall smoothing
             if (OverallSmoothing > 0)
@@ -146,8 +149,6 @@ public class LevelCreator : Singleton<LevelCreator>
     // Create Terrain
     private void GenerateTerrain()
     {
-        GenerateAlphaAndHeightmaps();
-
         // Create Terrain Data
         var terrainData = new TerrainData
         {
@@ -206,9 +207,13 @@ public class LevelCreator : Singleton<LevelCreator>
         }
     }
 
+    // Draw roads on alpha map
     private void GeneratePaths()
     {
-        LevelDataGenerator.DrawPathLines(MyTerrainStructure, _heightMap, _alphaMap, 2);
+        LevelDataGenerator.DrawPathLines(_heightMap, _alphaMap, SidePathSplatSize, MapSize, HeightMapResolution,
+            MyTerrainStructure.SidePathLines, MyTerrainStructure.TextureCount, MyTerrainStructure.SidePathSplatIndex);
+        LevelDataGenerator.DrawPathLines(_heightMap, _alphaMap, MainPathSplatSize, MapSize, HeightMapResolution,
+            MyTerrainStructure.MainPathLines, MyTerrainStructure.TextureCount, MyTerrainStructure.MainPathSplatIndex);
     }
 
     //---------------------------------------------------------------

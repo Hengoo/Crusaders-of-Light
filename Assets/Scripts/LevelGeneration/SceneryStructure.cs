@@ -27,7 +27,7 @@ public class SceneryStructure
     private static List<Vector2[]> GenerateRoadPolygons(TerrainStructure terrainStructure, float roadWidth)
     {
         var result = new List<Vector2[]>();
-        foreach (var line in terrainStructure.PathLines)
+        foreach (var line in terrainStructure.MainPathLines)
         {
             var start = line[0];
             var end = line[1];

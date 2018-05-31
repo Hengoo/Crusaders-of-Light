@@ -155,7 +155,17 @@ public class Graph<T> where T : class
     {
         Edge edge;
         if (_edges.TryGetValue(new Pair(node1, node2), out edge))
-            return edge.Weight;
+            return edge.Value;
+
+        Debug.Log("Edge not found in graph");
+        return -1;
+    }
+
+    public int GetEdgeValue(Vector2Int edge)
+    {
+        Edge element;
+        if (_edges.TryGetValue(new Pair(edge.x, edge.y), out element))
+            return element.Value;
 
         Debug.Log("Edge not found in graph");
         return -1;
@@ -166,7 +176,7 @@ public class Graph<T> where T : class
         Pair pair = new Pair(node1, node2);
         if (_edges.ContainsKey(pair))
         {
-            _edges[pair].Weight = weight;
+            _edges[pair].Value = weight;
             return true;
         }
 
@@ -178,12 +188,12 @@ public class Graph<T> where T : class
     {
 
         public readonly Pair Nodes;
-        public int Weight;
+        public int Value;
 
         public Edge(int node1, int node2, int value)
         {
             Nodes = new Pair(node1, node2);
-            Weight = value;
+            Value = value;
         }
 
         public override bool Equals(object obj)
