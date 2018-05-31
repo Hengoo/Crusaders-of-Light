@@ -35,7 +35,7 @@ public class AreaKillBoss : AreaBase
         result.Add(findBoss);
 
         //Kill the boss quest
-        var killBoss = new QuestKillEnemy(spawn.transform, new[] { BossPrefab1, BossPrefab2 }, "The Evil", "Cleanse the land from the evil!", BossFightAudioClip, assignedArea + 2);
+        var killBoss = new QuestKillEnemy(spawn.transform, new[] { BossPrefab1, BossPrefab2 }, "The Evil", "Cleanse the land from the evil!", BossFightAudioClip);
         result.Add(killBoss);
 
         return result.ToArray();

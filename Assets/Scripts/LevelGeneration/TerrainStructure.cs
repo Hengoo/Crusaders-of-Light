@@ -119,12 +119,7 @@ public class TerrainStructure
 
         foreach (var edge in VoronoiDiagram.Edges)
         {
-            if (!edge.Visible())
-                continue;
-
-            var leftArea = AreaSegmentGraph.GetNodeData(_siteAreaMap[edge.LeftSite.Coord]);
-            var rightArea = AreaSegmentGraph.GetNodeData(_siteAreaMap[edge.RightSite.Coord]);
-            if (_siteAreaMap[edge.LeftSite.Coord] == _siteAreaMap[edge.RightSite.Coord])
+            if (!edge.Visible() || _siteAreaMap[edge.LeftSite.Coord] == _siteAreaMap[edge.RightSite.Coord])
                 continue;
 
             var p0 = edge.ClippedEnds[LR.LEFT];

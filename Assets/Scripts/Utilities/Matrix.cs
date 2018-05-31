@@ -258,7 +258,9 @@ public class Matrix
                 for (int j = 0; j < nums.Length; j++) matrix[i, j] = double.Parse(nums[j]);
             }
         }
+#pragma warning disable CS0168 // Variable is declared but never used
         catch (FormatException exc) { throw new MException("Wrong input format!"); }
+#pragma warning restore CS0168 // Variable is declared but never used
         return matrix;
     }
 

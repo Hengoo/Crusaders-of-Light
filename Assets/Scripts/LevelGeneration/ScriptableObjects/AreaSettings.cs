@@ -6,9 +6,6 @@ using UnityEngine;
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 
-
-
-
 //-------------------------------------------------------------
 // Areas
 //-------------------------------------------------------------
