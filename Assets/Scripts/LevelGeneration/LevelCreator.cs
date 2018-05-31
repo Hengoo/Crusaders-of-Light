@@ -25,7 +25,9 @@ public class LevelCreator : Singleton<LevelCreator>
     public GameObject BorderBlocker;
     public GameObject BorderBlockerPole;
     [Range(0.01f, 20)] public float BorderBlockerLength = 3.5f;
-    [Range(0f, 50f)] public float BorderInlandOffset = 20f;
+    [Range(0f, 50f)] public float BorderBlockerOffset = 20f;
+    public GameObject AreaBlocker;
+    [Range(0.01f, 20f)] public float AreaBlockerLength = 2.1f;
 
     [Header("Terrain Settings")]
     [Range(16, 1024)] public int HeightMapResolution = 512;
@@ -60,8 +62,6 @@ public class LevelCreator : Singleton<LevelCreator>
     public AreaBase[] SpecialAreas;
     public AreaBase BossArea;
     public bool FillAreas = true;
-    public GameObject AreaBlocker;
-    [Range(0.01f, 20f)] public float AreaBlockerLength = 2.1f;
 
     public TerrainStructure MyTerrainStructure { get; private set; }
     public StoryStructure MyStoryStructure { get; private set; }
@@ -93,7 +93,7 @@ public class LevelCreator : Singleton<LevelCreator>
 
         MyStoryStructure = new StoryStructure(0, 1, MainPathNodeCount, SidePathCount, SidePathNodeCount, BossArea, new CharacterEnemy[4]);
         MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome,
-            MainPathSplatPrototype, SidePathSplatPrototype, VoronoiSamples, LloydRelaxation, EdgeNoise);
+            MainPathSplatPrototype, SidePathSplatPrototype, VoronoiSamples, LloydRelaxation, EdgeNoise, BorderBlockerOffset);
 
         if (DrawMode == DrawModeEnum.GameLevel)
             MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, SpecialAreas, BossArea, MainPathHalfWidth);
@@ -186,10 +186,10 @@ public class LevelCreator : Singleton<LevelCreator>
     // Add fences to coast and walls between non crossable area segment borders
     private void GenerateBlockers()
     {
-        var fences = LevelDataGenerator.GenerateOuterFences(Terrain, MyTerrainStructure, BorderBlocker, BorderBlockerPole, BorderBlockerLength);
+        var fences = LevelDataGenerator.GenerateBlocker(Terrain, MyTerrainStructure.BorderBlockerLines, BorderBlocker, BorderBlockerPole, BorderBlockerLength);
         fences.transform.parent = Terrain.transform;
 
-        var walls = LevelDataGenerator.GenerateAreaWalls(Terrain, MyTerrainStructure, AreaBlocker, AreaBlockerLength);
+        var walls = LevelDataGenerator.GenerateBlocker(Terrain, MyTerrainStructure.AreaBlockerLines, AreaBlocker, AreaBlockerLength);
         walls.transform.parent = Terrain.transform;
     }
 
@@ -210,9 +210,9 @@ public class LevelCreator : Singleton<LevelCreator>
     // Draw roads on alpha map
     private void GeneratePaths()
     {
-        LevelDataGenerator.DrawPathLines(_heightMap, _alphaMap, SidePathSplatSize, MapSize, HeightMapResolution,
+        LevelDataGenerator.DrawStraightPathLines(_heightMap, _alphaMap, SidePathSplatSize, MapSize, HeightMapResolution,
             MyTerrainStructure.SidePathLines, MyTerrainStructure.TextureCount, MyTerrainStructure.SidePathSplatIndex);
-        LevelDataGenerator.DrawPathLines(_heightMap, _alphaMap, MainPathSplatSize, MapSize, HeightMapResolution,
+        LevelDataGenerator.DrawStraightPathLines(_heightMap, _alphaMap, MainPathSplatSize, MapSize, HeightMapResolution,
             MyTerrainStructure.MainPathLines, MyTerrainStructure.TextureCount, MyTerrainStructure.MainPathSplatIndex);
     }
 
@@ -223,7 +223,6 @@ public class LevelCreator : Singleton<LevelCreator>
     {
         DrawTerrain();
         GenerateScenery();
-        GenerateBlockers();
     }
 
     private void DrawTerrainSkeleton()
@@ -237,6 +236,7 @@ public class LevelCreator : Singleton<LevelCreator>
         GenerateAlphaAndHeightmaps();
         GeneratePaths();
         GenerateTerrain();
+        GenerateBlockers();
         GenerateWaterPlane();
     }
 

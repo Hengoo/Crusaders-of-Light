@@ -81,8 +81,8 @@ public class SceneryStructure
                     center = e.Value;
             });
 
-            left += (center - left).normalized * levelCreator.BorderInlandOffset;
-            right += (center - right).normalized * levelCreator.BorderInlandOffset;
+            left += (center - left).normalized * levelCreator.BorderBlockerOffset;
+            right += (center - right).normalized * levelCreator.BorderBlockerOffset;
 
             //Offsetting can give duplicated points
             if (!coastBlockerPolygon.Contains(left))
@@ -152,69 +152,6 @@ public class SceneryStructure
         }
 
         return result;
-    }
-
-    private static void GenerateBorderEdges(TerrainStructure terrainStructure, int numberOfAreas, HashSet<int>[] areaBiomes, List<Vector2Int> areaCrossingNavigationEdges, List<Vector2[]> areaBorders, Vector2[][] areaCrossingBorders)
-    {
-        var innerBorderEdges = new List<Edge>(128);
-        var crossableEdges = new Edge[numberOfAreas - 1];
-        var outerBorderEdges = new List<KeyValuePair<Edge, Vector2>>();
-
-        foreach (var edge in terrainStructure.VoronoiDiagram.Edges)
-        {
-
-            //Check if this edge is visible before continuing
-            if (!edge.Visible()) continue;
-
-            var biomeRight = terrainStructure.GetNodeIDFromSite(edge.RightSite.Coord);
-            var biomeLeft = terrainStructure.GetNodeIDFromSite(edge.LeftSite.Coord);
-            var areaRight = -1;
-            var areaLeft = -1;
-
-            //Check in which area each biome is
-            for (var i = 0; i < numberOfAreas; i++)
-            {
-                if (areaBiomes[i].Contains(biomeRight))
-                    areaRight = i;
-                if (areaBiomes[i].Contains(biomeLeft))
-                    areaLeft = i;
-            }
-
-            //Check if areas differ
-            if (areaLeft == areaRight) continue;
-
-            //Check if any areas is a coastal area
-            if (areaLeft != -1 && areaRight != -1)
-            {
-                //Check if edge is crossable between areas or not
-                if (areaCrossingNavigationEdges.Contains(new Vector2Int(biomeLeft, biomeRight))
-                    || areaCrossingNavigationEdges.Contains(new Vector2Int(biomeRight, biomeLeft)))
-                {
-                    //Find lowest area id
-                    crossableEdges[areaLeft < areaRight ? areaLeft : areaRight] = edge;
-                }
-                else
-                    innerBorderEdges.Add(edge);
-            }
-            else
-            {
-                // Add coast edge with the biome center to scale inwards later
-                outerBorderEdges.Add(new KeyValuePair<Edge, Vector2>(edge, areaRight != -1 ? edge.RightSite.Coord.ToUnityVector2() : edge.LeftSite.Coord.ToUnityVector2()));
-            }
-        }
-
-        //Add local variables to global variables
-        foreach (var edge in innerBorderEdges)
-        {
-            if (!edge.Visible()) continue;
-            areaBorders.Add(new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() });
-        }
-
-        for (var i = 0; i < areaCrossingBorders.Length; i++)
-        {
-            var edge = crossableEdges[i];
-            areaCrossingBorders[i] = new[] { edge.ClippedEnds[LR.LEFT].ToUnityVector2(), edge.ClippedEnds[LR.RIGHT].ToUnityVector2() };
-        }
     }
 }
 

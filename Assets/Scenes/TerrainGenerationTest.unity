@@ -1664,14 +1664,17 @@ MonoBehaviour:
   BorderBlockerPole: {fileID: 1624022019104524, guid: 27c18f1071ebfa8468618d8634f6cf04,
     type: 2}
   BorderBlockerLength: 3.5
-  BorderInlandOffset: 20
+  BorderBlockerOffset: 20
+  AreaBlocker: {fileID: 1055983341240014, guid: 30c1958176ed413489db99365c9b3ad4,
+    type: 2}
+  AreaBlockerLength: 2.1
   HeightMapResolution: 512
   MapSize: 512
   MapHeight: 80
   VoronoiSamples: 50
   MaxHeight: 1
   EdgeNoise: 8
-  LloydRelaxation: 5
+  LloydRelaxation: 100
   Octaves: 3
   WaterHeight: 0.15
   WaterMaterial: {fileID: 2100000, guid: 5e37ecf4f3515d34e9bb6ec9a54f158a, type: 2}
@@ -1704,9 +1707,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 550e0cce810f49041873c497c4eeff31, type: 2}
   BossArea: {fileID: 11400000, guid: 550e0cce810f49041873c497c4eeff31, type: 2}
   FillAreas: 1
-  AreaBlocker: {fileID: 1055983341240014, guid: 30c1958176ed413489db99365c9b3ad4,
-    type: 2}
-  AreaBlockerLength: 2.1
 --- !u!1 &1088375439
 GameObject:
   m_ObjectHideFlags: 0
