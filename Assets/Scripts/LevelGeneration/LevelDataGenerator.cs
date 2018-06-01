@@ -98,26 +98,26 @@ public static class LevelDataGenerator
     }
 
     // Draw roads onto the alpha and height maps
-    public static void DrawLineRoads(TerrainStructure terrainStructure, float[,] heightmap, float[,,] alphamap, int squareSize)
+    public static void DrawStraightPathLines(float[,] heightmap, float[,,] alphamap, int splatSize, float mapSize, int heightMapResolution, List<Vector2[]> pathLines, int textureCount, int splatIndex)
     {
-        var cellSize = terrainStructure.MapSize / terrainStructure.HeightMapResolution;
+        var cellSize = mapSize / heightMapResolution;
 
         // Find cells covered by the road polygon
-        var cellsToSmooth = DiscretizeLines(terrainStructure.HeightMapResolution, cellSize, terrainStructure.RoadLines, squareSize, true)
+        var cellsToSmooth = DiscretizeLines(heightMapResolution, cellSize, pathLines, splatSize, true)
             .ToArray();
 
         // Set alphamap values to only road draw
         foreach (var index in cellsToSmooth)
         {
             // Other textures to 0
-            for (var i = 0; i < terrainStructure.TextureCount; i++)
+            for (var i = 0; i < textureCount; i++)
                 alphamap[index.x, index.y, i] = 0;
 
             // Road texture to 1
-            alphamap[index.x, index.y, terrainStructure.RoadSplatIndex] = 1;
+            alphamap[index.x, index.y, splatIndex] = 1;
         }
 
-        SmoothHeightMapCells(heightmap, cellsToSmooth, squareSize + 2);
+        SmoothHeightMapCells(heightmap, cellsToSmooth, splatSize + 2);
     }
 
     // Smooth every cell in the heightmap using squareSize neighbors in each direction
@@ -179,99 +179,71 @@ public static class LevelDataGenerator
     }
 
     // Generate blocking gameobjects along the coast to prevent players from going into the water
-    public static GameObject GenerateAreaWalls(Terrain terrain, TerrainStructure terrainStructure, GameObject blocker, float blockerLength)
+    public static GameObject GenerateBlockerLine(Terrain terrain, List<Vector2[]> blockerLines, float blockerLength, Vector3 positionNoise, Vector3 scaleNoise, GameObject blocker, GameObject pole = null, float angleLimit = 35)
     {
-        var result = new GameObject("Area Blockers");
+        var result = new GameObject("Blockers");
+        if (!pole)
+            pole = blocker;
 
-        // Iterate over all coastal borders
-        foreach (var line in terrainStructure.AreaBorders)
+        // Iterate over all border blockers
+        foreach (var line in blockerLines)
         {
             var p0 = line[0];
             var p1 = line[1];
 
             //Discretize line and get direction normalized
-            var direction = (p1 - p0).normalized;
-            var numberOfBlockers = Mathf.CeilToInt((p1 - p0).magnitude / blockerLength) + 1;
-            var lineGO = new GameObject("Area Blocker Line");
-            lineGO.transform.parent = result.transform;
+            Vector2 direction = (p1 - p0).normalized;
+            int numberOfBlockers = Mathf.FloorToInt((p1 - p0).magnitude / blockerLength);
+            float lengthCorrection = ((p1 - p0).magnitude - numberOfBlockers * blockerLength) / numberOfBlockers;
+            GameObject areaSegmentLine = new GameObject("Blocker Line");
+            areaSegmentLine.transform.parent = result.transform;
 
             //Instatiate each blocker with correct positions and orientations
             Transform lastTransform = null;
-            for (var j = 0; j < numberOfBlockers; j++)
+            for (var j = 0; j < numberOfBlockers + 1; j++)
             {
-                var position2D = p0 + direction * blockerLength * j;
-                var position = new Vector3(position2D.x, 0, position2D.y) - terrain.transform.position;
+                var position2D = p0 + direction * (blockerLength + lengthCorrection) * j;
+                var position = new Vector3(position2D.x, 0, position2D.y);
+
+                position -= terrain.transform.position;
                 position = new Vector3(position.x, terrain.SampleHeight(position), position.z) +
                            terrain.transform.position;
 
+                var extraScale = new Vector3(Random.Range(-scaleNoise.x, scaleNoise.x), Random.Range(-scaleNoise.y, scaleNoise.y), Random.Range(-scaleNoise.z, scaleNoise.z));
+                var extraPosition = new Vector3(Random.Range(-positionNoise.x, positionNoise.x), Random.Range(-positionNoise.y, positionNoise.y), Random.Range(-positionNoise.z, positionNoise.z));
+
                 GameObject go;
                 if (lastTransform == null)
-                    go = Object.Instantiate(blocker);
-                else
                 {
-                    var orientation = lastTransform.position - position;
-                    go = Object.Instantiate(blocker);
-                    go.transform.rotation = Quaternion.LookRotation(orientation.normalized, Vector3.up);
-                    go.transform.localScale =
-                        new Vector3(1, 2, 1 + (orientation.magnitude - blockerLength) / blockerLength);
-                }
-                go.transform.position = position;
-                go.transform.parent = lineGO.transform;
-
-                lastTransform = go.transform;
-            }
-        }
-
-        return result;
-    }
-
-
-    // Generate blocking gameobjects along the coast to prevent players from going into the water
-    public static GameObject GenerateOuterFences(Terrain terrain, TerrainStructure terrainStructure, GameObject blocker, GameObject pole, float blockerLength)
-    {
-        var result = new GameObject("Coast Blockers");
-
-        // Iterate over all coastal borders
-        Transform lastTransform = null;
-        for (var i = 0; i < terrainStructure.OuterBorderPolygon.Count; i++)
-        {
-            var p0 = terrainStructure.OuterBorderPolygon[i];
-            var p1 = i != terrainStructure.OuterBorderPolygon.Count - 1
-                ? terrainStructure.OuterBorderPolygon[i + 1]
-                : terrainStructure.OuterBorderPolygon[0];
-
-            //Discretize line and get direction normalized
-            var direction = (p1 - p0).normalized;
-            var numberOfBlockers = Mathf.CeilToInt((p1 - p0).magnitude / blockerLength);
-            var line = new GameObject("Coast Blocker Line");
-            line.transform.parent = result.transform;
-
-            //Instatiate each blocker with correct positions and orientations
-            for (var j = 0; j < numberOfBlockers; j++)
-            {
-                var position2D = p0 + direction * blockerLength * j;
-                var position = new Vector3(position2D.x, 0, position2D.y) - terrain.transform.position;
-                position = new Vector3(position.x, terrain.SampleHeight(position), position.z) +
-                           terrain.transform.position;
-
-                GameObject go;
-                if (lastTransform == null)
                     go = Object.Instantiate(pole);
+                    Ray ray = new Ray(position + Vector3.up * 30, Vector3.down);
+                    var hits = Physics.RaycastAll(ray, Mathf.Infinity);
+                    var terrainHit = hits.First(hit => hit.collider.name == "Terrain");
+                    go.transform.rotation = Quaternion.FromToRotation(Vector3.up, terrainHit.normal);
+                    go.transform.localScale += new Vector3(lengthCorrection, 0, lengthCorrection) / blockerLength;
+                }
                 else
                 {
                     var orientation = lastTransform.position - position;
                     go = Object.Instantiate(blocker);
-                    go.transform.rotation = Quaternion.LookRotation(orientation.normalized, Vector3.up);
-                    go.transform.localScale =
-                        new Vector3(1, 1, 1 + (orientation.magnitude - blockerLength) / blockerLength);
+                    go.transform.rotation = Quaternion.Euler(blocker.transform.eulerAngles + Quaternion.LookRotation(orientation.normalized, Vector3.up).eulerAngles);
+                    go.transform.localScale = blocker.transform.localScale +
+                        new Vector3(lengthCorrection, 0, lengthCorrection) / blockerLength +
+                        new Vector3(Random.Range(0, 0.01f), 0, Mathf.Clamp((orientation.magnitude - (blockerLength + lengthCorrection)) / (blockerLength + lengthCorrection), 0, .2f));
                 }
-                go.transform.position = position;
-                go.transform.parent = line.transform;
+                go.transform.localScale += extraScale;
+                go.transform.position = position + extraPosition;
+                go.transform.parent = areaSegmentLine.transform;
+                float angle = Vector3.Angle(go.transform.up, Vector3.up);
+                if (angle > angleLimit)
+                {
+                    var euler = go.transform.rotation.eulerAngles;
+                    go.transform.rotation = Quaternion.RotateTowards(go.transform.rotation, Quaternion.Euler(0, euler.y, 0),angle - angleLimit);
+                }
 
                 lastTransform = go.transform;
             }
         }
-
         return result;
     }
 

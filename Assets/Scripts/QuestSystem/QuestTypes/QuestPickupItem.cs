@@ -8,18 +8,11 @@ using Object = UnityEngine.Object;
 public class QuestPickupItem : QuestBase
 {
     private readonly Item _item;
-    private readonly Vector3 _spawnPosition = Vector3.zero;
     private bool _isAchieved = false;
 
     public QuestPickupItem(Item item, string title, string description) : base(title, description)
     {
         _item = item;
-    }
-
-    public QuestPickupItem(Item item, string title, string description, Vector3 spawnPosition) : base(title, description)
-    {
-        _item = item;
-        _spawnPosition = spawnPosition;
     }
 
     protected override void QuestStarted()

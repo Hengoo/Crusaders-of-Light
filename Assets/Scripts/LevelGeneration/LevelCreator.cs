@@ -10,31 +10,63 @@ public class LevelCreator : Singleton<LevelCreator>
     public enum DrawModeEnum
     {
         TerrainGraph,
-        GameLevel,
-        AreaGraph
+        Terrain,
+        AreaGraph,
+        GameLevel
     }
 
+    public int Seed = 0;
     public DrawModeEnum DrawMode = DrawModeEnum.TerrainGraph;
-    public GlobalSettings GlobalSettings;
-    public List<BiomeSettings> AvailableBiomes;
+    public bool GenerateOnPlay = false;
 
+    [Header("Story Settings")]
+    public List<BiomeSettings> AvailableBiomes;
+    public BiomeSettings BorderBiome;
+    [Range(0f, 50f)] public float BorderBlockerOffset = 20f;
+
+    [Header("Terrain Settings")]
+    [Range(16, 1024)] public int HeightMapResolution = 512;
+    [Range(16, 1024)] public float MapSize = 512;
+    [Range(1, 1024)] public float MapHeight = 80;
+    [Range(10, 1000)] public int VoronoiSamples = 80;
+    [Range(0, 1f)] public float MaxHeight = 1;
+    [Range(0, 50f)] public float EdgeNoise = 8f;
+    [Range(0, 100)] public int LloydRelaxation = 20;
+    [Range(1, 8)] public int Octaves = 3;
+    [Range(0, 1f)] public float WaterHeight = 0.15f;
+    public Material WaterMaterial;
+
+    [Header("Smooth Settings")]
+    [Range(0, 5)] public int OverallSmoothing = 2;
+    public bool SmoothEdges = true;
+    [Range(0, 20)] public int EdgeWidth = 3;
+    [Range(0, 20)] public int SquareSize = 2;
+
+    [Header("Path Settings")]
+    public SplatPrototypeSerializable MainPathSplatPrototype;
+    public SplatPrototypeSerializable SidePathSplatPrototype;
+    public float MainPathHalfWidth = 8;
+    public float SidePathHalfWidth = 5;
+    public int MainPathSplatSize = 2;
+    public int SidePathSplatSize = 1;
+    public int MainPathNodeCount = 8;
+    public int SidePathCount = 2;
+    public int SidePathNodeCount = 1;
+
+    [Header("Area Settings")]
     public AreaBase[] SpecialAreas;
     public AreaBase BossArea;
-
-    public GameObject SpawnerPrefab;
-
-    public bool FillTerrain = true;
-    public float RoadHalfWidth = 10;
-    public bool GenerateOnPlay = false;
-    public int MainPathLength = 6;
-    public int SidePathCount = 2;
-    public int SidePathLength = 2;
-    public int Seed = 0;
+    public bool FillAreas = true;
 
     public TerrainStructure MyTerrainStructure { get; private set; }
     public StoryStructure MyStoryStructure { get; private set; }
     public SceneryStructure MySceneryStructure { get; private set; }
     public Terrain Terrain { get; private set; }
+
+
+    private float[,] _heightMap;
+    private float[,,] _alphaMap;
+
 
     public void CreateMap()
     {
@@ -43,7 +75,7 @@ public class LevelCreator : Singleton<LevelCreator>
         GenerateLevel();
     }
 
-    /* Redraws preview in the scene editor */
+    // Redraws preview in the scene editor
     public void GenerateLevel()
     {
 #if UNITY_EDITOR
@@ -54,11 +86,12 @@ public class LevelCreator : Singleton<LevelCreator>
         ClearDisplay();
         Random.InitState(Seed);
 
-        MyStoryStructure = new StoryStructure(0, 1, MainPathLength, SidePathCount, SidePathLength, BossArea, new CharacterEnemy[4]);
-        MyTerrainStructure = new TerrainStructure(MyStoryStructure, GlobalSettings, AvailableBiomes);
+        MyStoryStructure = new StoryStructure(0, 1, MainPathNodeCount, SidePathCount, SidePathNodeCount, BossArea, new CharacterEnemy[4]);
+        MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome,
+            MainPathSplatPrototype, SidePathSplatPrototype, VoronoiSamples, LloydRelaxation, EdgeNoise, BorderBlockerOffset);
 
         if (DrawMode == DrawModeEnum.GameLevel)
-            MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, SpecialAreas, BossArea, RoadHalfWidth);
+            MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, SpecialAreas, BossArea, MainPathHalfWidth);
 
 
         switch (DrawMode)
@@ -66,104 +99,162 @@ public class LevelCreator : Singleton<LevelCreator>
             case DrawModeEnum.TerrainGraph:
                 DrawTerrainSkeleton();
                 break;
-            case DrawModeEnum.GameLevel:
-                DrawGameMap();
+            case DrawModeEnum.Terrain:
+                DrawTerrain();
                 break;
             case DrawModeEnum.AreaGraph:
                 DrawScenerySkeleton();
+                break;
+            case DrawModeEnum.GameLevel:
+                DrawCompleteLevel();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
-    void DrawGameMap()
+    //---------------------------------------------------------------
+    //                    GENERATING FUNCTIONS
+    //---------------------------------------------------------------
+
+    // Generate alpha and height maps
+    private void GenerateAlphaAndHeightmaps()
     {
-        /* Create heightmap */
-        var heightMap = LevelDataGenerator.GenerateHeightMap(MyTerrainStructure);
+        // Create heightmap
+        _heightMap = LevelDataGenerator.GenerateHeightMap(MyTerrainStructure);
 
-        /* Create splat textures alphamap */
-        var alphamap = LevelDataGenerator.GenerateAlphaMap(MyTerrainStructure);
+        // Create splat textures alphamap
+        _alphaMap = LevelDataGenerator.GenerateAlphaMap(MyTerrainStructure);
 
-        /* Draw roads onto alphamap */
-        LevelDataGenerator.DrawLineRoads(MyTerrainStructure, heightMap, alphamap, 1);
-
-        /* Smoothing passes */
-        alphamap = LevelDataGenerator.SmoothAlphaMap(alphamap, 1);
-        if (GlobalSettings.SmoothEdges)
+        // Smoothing passes
+        _alphaMap = LevelDataGenerator.SmoothAlphaMap(_alphaMap, 1);
+        if (SmoothEdges)
         {
-            //Smooth only navigable biome borders
-            LevelDataGenerator.SmoothHeightMapWithLines(heightMap, GlobalSettings.MapSize / GlobalSettings.HeightMapResolution, MyTerrainStructure.GetPathLines(), GlobalSettings.EdgeWidth, GlobalSettings.SquareSize);
+            // Smooth only navigable biome borders
+            LevelDataGenerator.SmoothHeightMapWithLines(_heightMap, MapSize / HeightMapResolution, MyTerrainStructure.MainPathLines, EdgeWidth, SquareSize);
 
-            //Overall smoothing
-            if (GlobalSettings.OverallSmoothing > 0)
+            // Overall smoothing
+            if (OverallSmoothing > 0)
             {
-                LevelDataGenerator.SmoothHeightMap(heightMap, GlobalSettings.OverallSmoothing, 2);
+                LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothing, 2);
             }
         }
+    }
 
-        /* Create Terrain Data */
+    // Create Terrain
+    private void GenerateTerrain()
+    {
+        // Create Terrain Data
         var terrainData = new TerrainData
         {
-            baseMapResolution = GlobalSettings.HeightMapResolution,
-            heightmapResolution = Mathf.ClosestPowerOfTwo(GlobalSettings.HeightMapResolution) + 1,
-            alphamapResolution = GlobalSettings.HeightMapResolution,
+            baseMapResolution = HeightMapResolution,
+            heightmapResolution = Mathf.ClosestPowerOfTwo(HeightMapResolution) + 1,
+            alphamapResolution = HeightMapResolution,
             splatPrototypes = MyTerrainStructure.GetSplatPrototypes()
         };
-        terrainData.SetDetailResolution(GlobalSettings.HeightMapResolution, 32);
-        terrainData.size = new Vector3(GlobalSettings.MapSize, GlobalSettings.MapHeight, GlobalSettings.MapSize);
-        terrainData.SetAlphamaps(0, 0, alphamap);
+        terrainData.SetDetailResolution(HeightMapResolution, 32);
+        terrainData.size = new Vector3(MapSize, MapHeight, MapSize);
+        terrainData.SetAlphamaps(0, 0, _alphaMap);
 
-        /* Create Terrain GameObject */
+        // Create Terrain GameObject
         Terrain = Terrain.CreateTerrainGameObject(terrainData).GetComponent<Terrain>();
+        Terrain.gameObject.layer = LayerMask.NameToLayer("Terrain");
         Terrain.name = "Terrain";
         Terrain.transform.parent = transform;
         Terrain.transform.position = Vector3.zero;
-        Terrain.GetComponent<Terrain>().terrainData.SetHeights(0, 0, heightMap);
-        //terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
-        //terrain.GetComponent<Terrain>().materialTemplate = BiomeGlobalConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
+        Terrain.GetComponent<Terrain>().terrainData.SetHeights(0, 0, _heightMap);
+        // terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
+        // terrain.GetComponent<Terrain>().materialTemplate = BiomeGlobalConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
+    }
 
-        /* Add fences to coast */
-        var fences = LevelDataGenerator.GenerateOuterFences(Terrain, MyTerrainStructure, GlobalSettings.CoastBlocker, GlobalSettings.CoastBlockerPole, GlobalSettings.CoastBlockerLength);
-        fences.transform.parent = Terrain.transform;
-
-        var walls = LevelDataGenerator.GenerateAreaWalls(Terrain, MyTerrainStructure, GlobalSettings.AreaBlocker, GlobalSettings.AreaBlockerLength);
-        walls.transform.parent = Terrain.transform;
-
-        /* Fill terrain with scenery */
-        if (FillTerrain)
-        {
-            var sceneryObjects = LevelDataGenerator.GenerateScenery(Terrain.GetComponent<Terrain>());
-            var scenery = new GameObject("Scenery");
-            scenery.transform.parent = Terrain.transform;
-            foreach (var obj in sceneryObjects)
-            {
-                obj.transform.parent = scenery.transform;
-            }
-        }
-
-        /* Water Plane Placement */
+    // Water Plane Placement
+    private void GenerateWaterPlane()
+    {
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
         water.GetComponent<Collider>().enabled = false;
-        water.GetComponent<Renderer>().material = GlobalSettings.WaterMaterial;
+        water.GetComponent<Renderer>().material = WaterMaterial;
         water.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
-        water.transform.localScale = new Vector3(terrainData.size.x / 5f, 1, terrainData.size.z / 5f);
-        water.transform.parent = Terrain.transform;
-        water.transform.localPosition = new Vector3(terrainData.size.x / 2f, (GlobalSettings.SeaHeight + 0.01f) * terrainData.size.y, terrainData.size.z / 2f);
+        water.transform.localScale = new Vector3(Terrain.terrainData.size.x / 5f, 1, Terrain.terrainData.size.z / 5f);
+        water.transform.parent = transform;
+        water.transform.localPosition = new Vector3(Terrain.terrainData.size.x / 2f, (WaterHeight + 0.01f) * Terrain.terrainData.size.y, Terrain.terrainData.size.z / 2f);
     }
 
-    void DrawTerrainSkeleton()
+    // Add fences to coast and walls between non crossable area segment borders
+    private void GenerateBlockers()
     {
-        StructureDrawer.DrawVoronoiDiagram(MyTerrainStructure.VoronoiDiagram, "Voronoi").transform.parent = gameObject.transform;
-        StructureDrawer.DrawAreaSegments(MyTerrainStructure, "Base Graph").transform.parent = gameObject.transform;
+        var borderSettings = MyTerrainStructure.BorderSettings;
+        var fences = LevelDataGenerator.GenerateBlockerLine(Terrain, MyTerrainStructure.BorderBlockerLines,
+            borderSettings.BlockerLength, borderSettings.BlockerPositionNoise, borderSettings.BlockerScaleNoise,
+            borderSettings.Blocker, borderSettings.BlockerPole, borderSettings.BlockerAngleLimit);
+        fences.transform.parent = transform;
+
+        var biomeSettings = MyTerrainStructure.BiomeSettings;
+        var walls = LevelDataGenerator.GenerateBlockerLine(Terrain, MyTerrainStructure.AreaBlockerLines,
+            biomeSettings.BlockerLength, biomeSettings.BlockerPositionNoise, biomeSettings.BlockerScaleNoise,
+            biomeSettings.Blocker, biomeSettings.BlockerPole, biomeSettings.BlockerAngleLimit);
+        walls.transform.parent = transform;
     }
 
-    void DrawScenerySkeleton()
+    // Fill terrain with scenery
+    private void GenerateScenery()
     {
-        //TODO: debug class
+        if (!FillAreas) return;
+
+        var sceneryObjects = LevelDataGenerator.GenerateScenery(Terrain.GetComponent<Terrain>());
+        var scenery = new GameObject("Scenery");
+        scenery.transform.parent = transform;
+        foreach (var obj in sceneryObjects)
+        {
+            obj.transform.parent = scenery.transform;
+        }
     }
 
-    void ClearDisplay()
+    // Draw roads on alpha map
+    private void GeneratePaths()
+    {
+        LevelDataGenerator.DrawStraightPathLines(_heightMap, _alphaMap, SidePathSplatSize, MapSize, HeightMapResolution,
+            MyTerrainStructure.SidePathLines, MyTerrainStructure.TextureCount, MyTerrainStructure.SidePathSplatIndex);
+        LevelDataGenerator.DrawStraightPathLines(_heightMap, _alphaMap, MainPathSplatSize, MapSize, HeightMapResolution,
+            MyTerrainStructure.MainPathLines, MyTerrainStructure.TextureCount, MyTerrainStructure.MainPathSplatIndex);
+    }
+
+    //---------------------------------------------------------------
+    //                     DRAWING FUNCTIONS
+    //---------------------------------------------------------------
+    private void DrawCompleteLevel()
+    {
+        DrawTerrain();
+        GenerateScenery();
+    }
+
+    private void DrawTerrainSkeleton()
+    {
+        var voronoi = StructureDrawer.DrawVoronoiDiagram(MyTerrainStructure.VoronoiDiagram, "Voronoi");
+        var baseGraph = StructureDrawer.DrawAreaSegments(MyTerrainStructure, "Base Graph");
+        var borderLines = StructureDrawer.DrawMultipleLines(MyTerrainStructure.BorderBlockerLines, "Border Blockers");
+        var areaBlocker = StructureDrawer.DrawMultipleLines(MyTerrainStructure.AreaBlockerLines, "Area Blockers");
+
+        voronoi.transform.parent = gameObject.transform;
+        baseGraph.transform.parent = gameObject.transform;
+        borderLines.transform.parent = gameObject.transform;
+        areaBlocker.transform.parent = gameObject.transform;
+    }
+
+    private void DrawTerrain()
+    {
+        GenerateAlphaAndHeightmaps();
+        GeneratePaths();
+        GenerateTerrain();
+        GenerateBlockers();
+        GenerateWaterPlane();
+    }
+
+    private void DrawScenerySkeleton()
+    {
+        // TODO: debug class
+    }
+
+    private void ClearDisplay()
     {
         // Start from the top, because Unity updates the children index after each destroy call
         for (int i = transform.childCount - 1; i >= 0; --i)

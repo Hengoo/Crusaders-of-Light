@@ -12,84 +12,88 @@ public class TerrainStructure
     public Voronoi VoronoiDiagram { get; private set; }
     public GrammarGraph<AreaSegment> AreaSegmentGraph { get; private set; }
     public List<Area> Areas { get; private set; }
-    public KeyValuePair<Vector2f, int> StartAreaSegment;
+    public KeyValuePair<Vector2f, int> StartAreaSegment { get; private set; }
+    public BiomeSettings BiomeSettings { get; private set; }
+    public BiomeSettings BorderSettings { get; private set; }
 
     public int TextureCount { get { return _splatIDMap.Count; } }
 
     public float MapSize { get; private set; }
     public int HeightMapResolution { get; private set; }
     public int Octaves { get; private set; }
-    public int RoadSplatIndex { get; private set; }
+    public int MainPathSplatIndex { get; private set; }
+    public int SidePathSplatIndex { get; private set; }
 
-    public readonly List<Vector2> OuterBorderPolygon;
-    public readonly List<Vector2[]> RoadLines;
-    public readonly List<Vector2[]> AreaBorders;
+    public readonly List<Vector2[]> BorderBlockerLines;
+    public readonly List<Vector2[]> AreaBlockerLines;
+    public readonly List<Vector2[]> MainPathLines;
+    public readonly List<Vector2[]> SidePathLines;
 
-    private readonly Dictionary<int, Vector2> _areaSegmentCenterMap = new Dictionary<int, Vector2>(); //Mapping of Voronoi library sites and graph IDs
-    private readonly Dictionary<Vector2f, int> _siteAreaMap = new Dictionary<Vector2f, int>(); //Mapping of Voronoi library sites and graph IDs
-    private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap = new Dictionary<SplatPrototypeSerializable, int>(); //Mapping of biome SplatPrototypes and terrain texture IDs
+    private readonly Dictionary<int, Vector2> _areaSegmentCenterMap = new Dictionary<int, Vector2>(); // Mapping of Voronoi library sites and graph IDs
+    private readonly Dictionary<Vector2f, int> _siteAreaSegmentMap = new Dictionary<Vector2f, int>(); // Mapping of Voronoi library sites and graph IDs
+    private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap = new Dictionary<SplatPrototypeSerializable, int>(); // Mapping of biome SplatPrototypes and terrain texture IDs
 
     private Texture2D _blankSpec;
     private Texture2D _blankBump;
 
-    private readonly SplatPrototypeSerializable _roadSplatPrototype;
-    private readonly int _voronoiSamples;
+    private readonly SplatPrototypeSerializable _mainSplatPrototype;
+    private readonly SplatPrototypeSerializable _sideSplatPrototype;
 
-    private readonly BiomeSettings _biomeSettings;
-    private readonly BiomeSettings _borderSettings;
+    private readonly int _voronoiSamples;
     private readonly float _borderNoise;
 
-    public TerrainStructure(StoryStructure storyStructure, GlobalSettings globalSettings, List<BiomeSettings> availableBiomes)
+    public TerrainStructure(StoryStructure storyStructure, List<BiomeSettings> availableBiomes, float mapSize,
+        int heightMapResolution, int octaves, BiomeSettings borderSettings,
+        SplatPrototypeSerializable mainSplatPrototype, SplatPrototypeSerializable sideSplatPrototype,
+        int voronoiSamples, int lloydIterations, float edgeNoise, float borderBlockerOffset)
     {
         AreaSegmentGraph = new GrammarGraph<AreaSegment>();
         Areas = new List<Area>();
-        OuterBorderPolygon = new List<Vector2>();
-        AreaBorders = new List<Vector2[]>();
-        RoadLines = new List<Vector2[]>();
+        BorderBlockerLines = new List<Vector2[]>();
+        AreaBlockerLines = new List<Vector2[]>();
+        MainPathLines = new List<Vector2[]>();
+        SidePathLines = new List<Vector2[]>();
 
         // Select a random biome out of the available ones for the current level
-        _biomeSettings = availableBiomes[Random.Range(0, availableBiomes.Count)];
+        BiomeSettings = availableBiomes[Random.Range(0, availableBiomes.Count)];
 
-        MapSize = globalSettings.MapSize;
-        HeightMapResolution = globalSettings.HeightMapResolution;
-        Octaves = globalSettings.Octaves;
+        MapSize = mapSize;
+        HeightMapResolution = heightMapResolution;
+        Octaves = octaves;
 
-        _borderSettings = globalSettings.BorderBiome;
-        _roadSplatPrototype = globalSettings.RoadSplatPrototype;
-        _voronoiSamples = globalSettings.VoronoiSamples;
-        _borderNoise = globalSettings.EdgeNoise;
+        BorderSettings = borderSettings;
+        _mainSplatPrototype = mainSplatPrototype;
+        _sideSplatPrototype = sideSplatPrototype;
+        _voronoiSamples = voronoiSamples;
+        _borderNoise = edgeNoise;
 
         // Add splat prototypes to the shader
-        //AddShaderTextures();
+        CreateShaderTextures();
 
         // Create base graph that later on is transformed with a set of rules and assigned areas to
-        CreateBaseGraph(globalSettings);
+        CreateBaseGraph(lloydIterations);
 
         // Assign specific areas to each node of the base graph - Start point, Boss arena, paths...
-        CreateAreaGraph(storyStructure);
+        CreateAreaGraph(storyStructure.Rewrites);
+
+        // Populate path lines list
+        CreatePathLines();
+
+        // Populate area segment blockers list
+        CreateAreaBlockerLines();
+
+        // Populate border lines list
+        CreateBorderBlockerPolygon(borderBlockerOffset);
     }
 
-    /* Returns the center position for a given area segment ID */
+    // Returns the center position for a given area segment ID
     public Vector2 GetAreaSegmentCenter(int id)
     {
         Vector2 value;
         return _areaSegmentCenterMap.TryGetValue(id, out value) ? value : Vector2.zero;
     }
 
-    /* Returns a sorted list of the textures */
-    public IEnumerable<Texture> GetTerrainTextures()
-    {
-        var result = new SortedList<int, Texture>();
-
-        foreach (var splatID in _splatIDMap)
-        {
-            result.Add(splatID.Value, splatID.Key.texture);
-        }
-
-        return result.Values;
-    }
-
-    /* Returns a sorted list of the splats */
+    // Returns a sorted list of the splats
     public SplatPrototype[] GetSplatPrototypes()
     {
         var result = new SortedList<int, SplatPrototype>();
@@ -111,70 +115,38 @@ public class TerrainStructure
         return result.Values.ToArray();
     }
 
-    /* Get all biome borders */
-    public IEnumerable<LineSegment> GetAllAreaSegmentBorders()
-    {
-        //TODO REIMPLEMENT
-        var result = new List<LineSegment>();
-
-        foreach (var edge in VoronoiDiagram.Edges)
-        {
-            if (!edge.Visible())
-                continue;
-
-            var leftArea = AreaSegmentGraph.GetNodeData(_siteAreaMap[edge.LeftSite.Coord]);
-            var rightArea = AreaSegmentGraph.GetNodeData(_siteAreaMap[edge.RightSite.Coord]);
-            if (_siteAreaMap[edge.LeftSite.Coord] == _siteAreaMap[edge.RightSite.Coord])
-                continue;
-
-            var p0 = edge.ClippedEnds[LR.LEFT];
-            var p1 = edge.ClippedEnds[LR.RIGHT];
-            var segment = new LineSegment(p0, p1);
-            result.Add(segment);
-        }
-
-        return result;
-    }
-
-    public IEnumerable<Vector2[]> GetPathLines()
-    {
-        List<Vector2[]> pathLines = new List<Vector2[]>();
-
-        return pathLines;
-    }
-
-    /* Sample area height at a given position */
+    // Sample area height at a given position 
     public BiomeHeightParameters SampleHeight(Vector2 position)
     {
         Vector2 noisePosition = position + new Vector2(Random.Range(-_borderNoise, _borderNoise), Random.Range(-_borderNoise, _borderNoise));
         AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
-        return areaSegment == null || areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? _borderSettings.HeightParameters : _biomeSettings.HeightParameters;
+        return areaSegment == null || areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? BorderSettings.HeightParameters : BiomeSettings.HeightParameters;
     }
 
-    /* Sample area texture at given position */
+    // Sample area texture at given position
     public KeyValuePair<int, float> SampleTexture(Vector2 position)
     {
         Vector2 noisePosition = position + new Vector2(Random.Range(-_borderNoise, _borderNoise), Random.Range(-_borderNoise, _borderNoise));
         AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
-        int splatID = _splatIDMap[areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? _borderSettings.Splat : _biomeSettings.Splat];
+        int splatID = _splatIDMap[areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? BorderSettings.Splat : BiomeSettings.Splat];
         float splatValue = 1;
         return new KeyValuePair<int, float>(splatID, splatValue);
     }
 
-    /* Return biome ID from a csDelaunay vector */
+    // Return biome ID from a csDelaunay vector
     public int GetNodeIDFromSite(Vector2f coord)
     {
-        return _siteAreaMap[coord];
+        return _siteAreaSegmentMap[coord];
     }
 
     //---------------------------------------------------------------
     //
-    //              HELPER FUNCTIONS
+    //              CREATOR FUNCTIONS
     //
     //---------------------------------------------------------------
 
-    /* Assign textures to shader */
-    private void AddShaderTextures()
+    // Assign textures to shader
+    private void CreateShaderTextures()
     {
         // Add Splat textures to global shader variables
         _blankBump = GenerateBlankNormal();
@@ -182,38 +154,50 @@ public class TerrainStructure
         var count = 0;
 
         // Add main biome to the SplatPrototypes map
-        _splatIDMap.Add(_biomeSettings.Splat, count);
-        Shader.SetGlobalTexture("_BumpMap" + count, _biomeSettings.Splat.normalMap ? _biomeSettings.Splat.normalMap : _blankBump);
+        _splatIDMap.Add(BiomeSettings.Splat, count);
+        Shader.SetGlobalTexture("_BumpMap" + count, BiomeSettings.Splat.normalMap ? BiomeSettings.Splat.normalMap : _blankBump);
         Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-        Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _biomeSettings.Splat.tileSize.x);
+        Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / BiomeSettings.Splat.tileSize.x);
         count++;
 
 
         // Add border biome to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(_borderSettings.Splat))
+        if (!_splatIDMap.ContainsKey(BorderSettings.Splat))
         {
-            _splatIDMap.Add(_borderSettings.Splat, count);
+            _splatIDMap.Add(BorderSettings.Splat, count);
 
-            Shader.SetGlobalTexture("_BumpMap" + count, _borderSettings.Splat.normalMap ? _borderSettings.Splat.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_BumpMap" + count, BorderSettings.Splat.normalMap ? BorderSettings.Splat.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _borderSettings.Splat.tileSize.x);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / BorderSettings.Splat.tileSize.x);
             count++;
         }
 
-        // Add road to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(_roadSplatPrototype))
+        // Add main path to the SplatPrototypes map
+        if (!_splatIDMap.ContainsKey(_mainSplatPrototype))
         {
-            _splatIDMap.Add(_roadSplatPrototype, count);
+            _splatIDMap.Add(_mainSplatPrototype, count);
 
-            Shader.SetGlobalTexture("_BumpMap" + count, _roadSplatPrototype.normalMap ? _roadSplatPrototype.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_BumpMap" + count, _mainSplatPrototype.normalMap ? _mainSplatPrototype.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _roadSplatPrototype.tileSize.x);
-            RoadSplatIndex = count;
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _mainSplatPrototype.tileSize.x);
+            MainPathSplatIndex = count;
+            count++;
+        }
+
+        // Add side path to the SplatPrototypes map
+        if (!_splatIDMap.ContainsKey(_sideSplatPrototype))
+        {
+            _splatIDMap.Add(_sideSplatPrototype, count);
+
+            Shader.SetGlobalTexture("_BumpMap" + count, _sideSplatPrototype.normalMap ? _sideSplatPrototype.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _sideSplatPrototype.tileSize.x);
+            SidePathSplatIndex = count;
         }
     }
 
-    /* Create a graph containing all connected empty areas */
-    private void CreateBaseGraph(GlobalSettings globalSettings)
+    // Create a graph containing all connected empty areas
+    private void CreateBaseGraph(int lloydIterations)
     {
         // Create uniform random point distribution and Voronoi Diagram
         var centers = new List<Vector2f>();
@@ -226,7 +210,7 @@ public class TerrainStructure
         VoronoiDiagram = new Voronoi(centers, new Rectf(0, 0, MapSize, MapSize));
 
         // Apply Lloyd Relaxation
-        VoronoiDiagram.LloydRelaxation(globalSettings.LloydRelaxation);
+        VoronoiDiagram.LloydRelaxation(lloydIterations);
 
         // Assign area segments to initial areas
         foreach (var site in VoronoiDiagram.SiteCoords())
@@ -236,27 +220,30 @@ public class TerrainStructure
 
             foreach (var segment in segments)
             {
-                if (segment.p0.x <= VoronoiDiagram.PlotBounds.left || segment.p0.x >= VoronoiDiagram.PlotBounds.right
-                    || segment.p0.y <= VoronoiDiagram.PlotBounds.top || segment.p0.y >= VoronoiDiagram.PlotBounds.bottom
-                    || segment.p1.x <= VoronoiDiagram.PlotBounds.left || segment.p1.x >= VoronoiDiagram.PlotBounds.right
-                    || segment.p1.y <= VoronoiDiagram.PlotBounds.top ||
-                    segment.p1.y >= VoronoiDiagram.PlotBounds.bottom)
-                {
-                    isOnBorder = true;
-                    break;
-                }
+                if (!(segment.p0.x <= VoronoiDiagram.PlotBounds.left) &&
+                    !(segment.p0.x >= VoronoiDiagram.PlotBounds.right) &&
+                    !(segment.p0.y <= VoronoiDiagram.PlotBounds.top) &&
+                    !(segment.p0.y >= VoronoiDiagram.PlotBounds.bottom) &&
+                    !(segment.p1.x <= VoronoiDiagram.PlotBounds.left) &&
+                    !(segment.p1.x >= VoronoiDiagram.PlotBounds.right) &&
+                    !(segment.p1.y <= VoronoiDiagram.PlotBounds.top) &&
+                    !(segment.p1.y >= VoronoiDiagram.PlotBounds.bottom))
+                    continue;
+
+                isOnBorder = true;
+                break;
             }
 
             // Assign areaSegment to site and corresponding area
             var areaSegment = new AreaSegment(isOnBorder ? AreaSegment.EAreaSegmentType.Border : AreaSegment.EAreaSegmentType.Empty);
 
             var nodeID = AreaSegmentGraph.AddNode(areaSegment);
-            _siteAreaMap.Add(site, nodeID);
+            _siteAreaSegmentMap.Add(site, nodeID);
             _areaSegmentCenterMap.Add(nodeID, site.ToUnityVector2());
         }
 
         // Create navigation graph - for each area segment that is not a border, add reachable neighbors
-        foreach (var id in _siteAreaMap)
+        foreach (var id in _siteAreaSegmentMap)
         {
             var areaSegment = AreaSegmentGraph.GetNodeData(id.Value);
             if (areaSegment.Type == AreaSegment.EAreaSegmentType.Border) continue;
@@ -264,30 +251,163 @@ public class TerrainStructure
             Vector2 center = _areaSegmentCenterMap[id.Value];
             foreach (var neighbor in VoronoiDiagram.NeighborSitesForSite(new Vector2f(center.x, center.y)))
             {
-                var neighborSegment = AreaSegmentGraph.GetNodeData(_siteAreaMap[neighbor]);
+                var neighborSegment = AreaSegmentGraph.GetNodeData(_siteAreaSegmentMap[neighbor]);
                 if (neighborSegment.Type != AreaSegment.EAreaSegmentType.Border)
                 {
-                    AreaSegmentGraph.AddEdge(_siteAreaMap[neighbor], id.Value, (int) AreaSegment.EAreaSegmentEdgeType.NonNavigable);
+                    AreaSegmentGraph.AddEdge(_siteAreaSegmentMap[neighbor], id.Value, (int)AreaSegment.EAreaSegmentEdgeType.NonNavigable);
                 }
             }
         }
     }
 
-    /* Assign areas to the base graph based on a specific set of rules */
-    private void CreateAreaGraph(StoryStructure storyStructure)
+    // Assign areas to the base graph based on a specific set of rules
+    private void CreateAreaGraph(Queue<StoryStructure.AreaSegmentRewrite> rewrites)
     {
-        // TODO: Graph grammar transformations - assign main path, side paths, boss area, start area, special areas...
-        // TODO: Build grammar graph with set of rules
-        while (storyStructure.Rewrites.Count > 0)
+        while (rewrites.Count > 0)
         {
-            var rule = storyStructure.Rewrites.Dequeue();
-            if(!AreaSegmentGraph.Replace(rule.Pattern, rule.Replace, rule.Correspondences))
-                throw new Exception("Failed to generate");
+            var rule = rewrites.Dequeue();
+            if (!AreaSegmentGraph.Replace(rule.Pattern, rule.Replace, rule.Correspondences))
+            {
+                Debug.LogWarning("Failed to generate map with current seed: " + Random.state);
+                Random.InitState(Random.Range(0, int.MaxValue));
+            }
+        }
+
+        // Any empty area is marked as border
+        foreach (var areaSegment in AreaSegmentGraph.GetAllNodeData())
+        {
+            if (areaSegment.Type == AreaSegment.EAreaSegmentType.Empty)
+                areaSegment.Type = AreaSegment.EAreaSegmentType.Border;
         }
     }
 
-    /* Generates a polygon for a given voronoi site */
-    private Vector2[] GenerateSitePolygon(Vector2f site)
+    // Create path lines
+    private void CreatePathLines()
+    {
+        foreach (var edge in AreaSegmentGraph.GetAllEdges())
+        {
+            int edgeValue = AreaSegmentGraph.GetEdgeValue(edge);
+            Vector2 leftCenter = _areaSegmentCenterMap[edge.x];
+            Vector2 rightCenter = _areaSegmentCenterMap[edge.y];
+
+            // Add path lines
+            switch (edgeValue)
+            {
+                case (int)AreaSegment.EAreaSegmentEdgeType.MainPath:
+                    MainPathLines.Add(new[] { leftCenter, rightCenter });
+                    break;
+                case (int)AreaSegment.EAreaSegmentEdgeType.SidePath:
+                    SidePathLines.Add(new[] { leftCenter, rightCenter });
+                    break;
+            }
+        }
+    }
+
+    // Create area segments borders
+    private void CreateAreaBlockerLines()
+    {
+        foreach (var edge in VoronoiDiagram.Edges)
+        {
+            if (!edge.Visible())
+                continue;
+
+            int leftAreaSegmentID = _siteAreaSegmentMap[edge.LeftSite.Coord];
+            int rightAreaSegmentID = _siteAreaSegmentMap[edge.RightSite.Coord];
+            AreaSegment leftAreaSegment = AreaSegmentGraph.GetNodeData(leftAreaSegmentID);
+            AreaSegment rightAreaSegment = AreaSegmentGraph.GetNodeData(rightAreaSegmentID);
+
+            var leftNeighborhood = AreaSegmentGraph.GetNeighbours(leftAreaSegmentID);
+
+            if (leftAreaSegmentID == rightAreaSegmentID ||
+                leftAreaSegment.Type == AreaSegment.EAreaSegmentType.Border ||
+                rightAreaSegment.Type == AreaSegment.EAreaSegmentType.Border ||
+                !leftNeighborhood.Contains(rightAreaSegmentID) ||
+                AreaSegmentGraph.GetEdgeValue(leftAreaSegmentID, rightAreaSegmentID) != (int)AreaSegment.EAreaSegmentEdgeType.NonNavigable)
+                continue;
+
+            var p0 = edge.ClippedEnds[LR.LEFT].ToUnityVector2();
+            var p1 = edge.ClippedEnds[LR.RIGHT].ToUnityVector2();
+            var segment = new[] { p0, p1 };
+            AreaBlockerLines.Add(segment);
+        }
+    }
+
+    // Create border blocker polygon
+    private void CreateBorderBlockerPolygon(float borderInlandOffset)
+    {
+        var temporarySegments = new List<KeyValuePair<Edge, Vector2>>();
+
+        foreach (var edge in VoronoiDiagram.Edges)
+        {
+            //Check if this edge is visible before continuing
+            if (!edge.Visible()) continue;
+
+            int leftAreaSegmentID = _siteAreaSegmentMap[edge.RightSite.Coord];
+            int rightAreaSegmentID = _siteAreaSegmentMap[edge.LeftSite.Coord];
+            AreaSegment leftAreaSegment = AreaSegmentGraph.GetNodeData(leftAreaSegmentID);
+            AreaSegment rightAreaSegment = AreaSegmentGraph.GetNodeData(rightAreaSegmentID);
+
+            // Either one or the other must be a border type
+            if (leftAreaSegment.Type != rightAreaSegment.Type &&
+                (leftAreaSegment.Type == AreaSegment.EAreaSegmentType.Border || rightAreaSegment.Type == AreaSegment.EAreaSegmentType.Border))
+            {
+                // Add border edge with the biome center to scale inwards later
+                temporarySegments.Add(new KeyValuePair<Edge, Vector2>(edge,
+                    leftAreaSegment.Type == AreaSegment.EAreaSegmentType.Border ? edge.LeftSite.Coord.ToUnityVector2() : edge.RightSite.Coord.ToUnityVector2()));
+            }
+        }
+
+        // Create border polygon with sorted vertices and offset them inwards
+        var borderBlockerPolygon = new List<Vector2>();
+        var coastLines = temporarySegments.Select(pair => pair.Key).ToList().EdgesToSortedLines();
+        foreach (var line in coastLines)
+        {
+
+            // Offset borders towards biome center
+            var left = line[0];
+            var right = line[1];
+            var center = Vector2.zero;
+            temporarySegments.ForEach(e =>
+            {
+                var l = e.Key.ClippedEnds[LR.LEFT].ToUnityVector2();
+                var r = e.Key.ClippedEnds[LR.RIGHT].ToUnityVector2();
+                if ((l == left || l == right) && (r == left || r == right))
+                    center = e.Value;
+            });
+
+            left += (center - left).normalized * borderInlandOffset;
+            right += (center - right).normalized * borderInlandOffset;
+
+            // Offsetting can give duplicated points
+            if (!borderBlockerPolygon.Contains(left))
+                borderBlockerPolygon.Add(left);
+            if (!borderBlockerPolygon.Contains(right))
+                borderBlockerPolygon.Add(right);
+        }
+
+        // Create border blocker lines
+        for (int i = 0; i < borderBlockerPolygon.Count; i++)
+        {
+            var p0 = borderBlockerPolygon[i];
+            var p1 = i + 1 == borderBlockerPolygon.Count ?
+                borderBlockerPolygon[0] : borderBlockerPolygon[i + 1];
+
+            // Filter duplicated vertices -> TODO: fix problem in offsetting
+            if ((p0 - p1).magnitude < 0.01f )
+                continue;
+
+            BorderBlockerLines.Add(new[] { p0, p1 });
+        }
+    }
+
+    //---------------------------------------------------------------
+    //
+    //              HELPER FUNCTIONS
+    //
+    //---------------------------------------------------------------
+
+    // Generates a polygon for a given voronoi site
+    private Vector2[] GetSitePolygon(Vector2f site)
     {
         var edges = VoronoiDiagram.SitesIndexedByLocation[site].Edges;
         if (edges == null || edges.Count <= 0)
@@ -309,7 +429,7 @@ public class TerrainStructure
         return result.ToArray();
     }
 
-    /* Get closest AreaSegment center to specified pos */
+    // Get closest AreaSegment center to specified pos
     private AreaSegment GetClosestAreaSegment(Vector2 pos)
     {
         float smallestDistance = float.MaxValue;

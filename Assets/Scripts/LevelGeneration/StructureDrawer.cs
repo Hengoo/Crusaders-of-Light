@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class StructureDrawer {
 
-    public static GameObject DrawVoronoiDiagram(Voronoi voronoi, string name)
+    public static GameObject DrawVoronoiDiagram(Voronoi voronoi, string name = "VoronoiDiagram")
     {
         GameObject voronoiDiagram = new GameObject(name);
         foreach (var lineSegment in voronoi.VoronoiDiagram())
@@ -21,7 +21,7 @@ public static class StructureDrawer {
         return voronoiDiagram;
     }
 
-    public static GameObject DrawAreaSegments(TerrainStructure terrainStructure, string name)
+    public static GameObject DrawAreaSegments(TerrainStructure terrainStructure, string name = "AreaSegments")
     {
         GameObject result = new GameObject(name);
         var graph = terrainStructure.AreaSegmentGraph;
@@ -99,6 +99,22 @@ public static class StructureDrawer {
             GameObject node = DrawSphere(new Vector3(center.x, 0, center.y), 20, color);
             node.name = "Node " + id + " - " + data.Type;
             node.transform.parent = nodes.transform;
+        }
+
+        return result;
+    }
+
+    public static GameObject DrawMultipleLines(IEnumerable<Vector2[]> lines, string name = "Lines")
+    {
+        GameObject result = new GameObject(name);
+
+        foreach (var line in lines)
+        {
+            var p0 = new Vector3(line[0].x, 0, line[0].y);
+            var p1 = new Vector3(line[1].x, 0, line[1].y);
+
+            var go = DrawLine(p0, p1, 3, Color.white);
+            go.transform.parent = result.transform;
         }
 
         return result;
