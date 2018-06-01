@@ -167,6 +167,7 @@ public class Character : MonoBehaviour
     {
         CharacterIsDead = true;
 
+        /*      ### Project 2: Characters should no longer drop Weapons on death! ###
         // Unequip Weapons (so they drop on the gound):
         for (int i = 0; i < WeaponSlots.Length; i++)
         {
@@ -175,6 +176,7 @@ public class Character : MonoBehaviour
                 UnEquipWeapon(i);
             }
         }
+        */
 
         // Update Attention:
         AttentionThisCharacterDied();
