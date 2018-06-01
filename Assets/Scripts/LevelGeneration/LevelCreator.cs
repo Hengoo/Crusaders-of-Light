@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
@@ -9,14 +10,15 @@ public class LevelCreator : Singleton<LevelCreator>
 {
     public enum DrawModeEnum
     {
-        TerrainGraph,
+        TerrainSkeleton,
         Terrain,
-        AreaGraph,
+        ScenerySkeleton,
+        Scenery,
         GameLevel
     }
 
     public int Seed = 0;
-    public DrawModeEnum DrawMode = DrawModeEnum.TerrainGraph;
+    public DrawModeEnum DrawMode = DrawModeEnum.TerrainSkeleton;
     public bool GenerateOnPlay = false;
 
     [Header("Story Settings")]
@@ -35,7 +37,7 @@ public class LevelCreator : Singleton<LevelCreator>
     [Range(1, 8)] public int Octaves = 3;
     [Range(0, 1f)] public float WaterHeight = 0.15f;
     public Material WaterMaterial;
-
+    
     [Header("Smooth Settings")]
     [Range(0, 5)] public int OverallSmoothing = 2;
     public bool SmoothEdges = true;
@@ -96,14 +98,17 @@ public class LevelCreator : Singleton<LevelCreator>
 
         switch (DrawMode)
         {
-            case DrawModeEnum.TerrainGraph:
+            case DrawModeEnum.TerrainSkeleton:
                 DrawTerrainSkeleton();
                 break;
             case DrawModeEnum.Terrain:
                 DrawTerrain();
                 break;
-            case DrawModeEnum.AreaGraph:
+            case DrawModeEnum.ScenerySkeleton:
                 DrawScenerySkeleton();
+                break;
+            case DrawModeEnum.Scenery:
+                DrawTerrainAndScenery();
                 break;
             case DrawModeEnum.GameLevel:
                 DrawCompleteLevel();
@@ -218,13 +223,18 @@ public class LevelCreator : Singleton<LevelCreator>
             MyTerrainStructure.MainPathLines, MyTerrainStructure.TextureCount, MyTerrainStructure.MainPathSplatIndex);
     }
 
+    // Create navmesh using scenery information
+    private void GenerateNavMesh()
+    {
+        GetComponent<NavMeshSurface>().BuildNavMesh();
+    }
+
     //---------------------------------------------------------------
     //                     DRAWING FUNCTIONS
     //---------------------------------------------------------------
     private void DrawCompleteLevel()
     {
-        DrawTerrain();
-        GenerateScenery();
+        DrawTerrainAndScenery();
     }
 
     private void DrawTerrainSkeleton()
@@ -251,7 +261,14 @@ public class LevelCreator : Singleton<LevelCreator>
 
     private void DrawScenerySkeleton()
     {
-        // TODO: debug class
+        // TODO: create debug view
+    }
+
+    private void DrawTerrainAndScenery()
+    {
+        DrawTerrain();
+        // TODO: populate the terrain with scenery
+        GenerateNavMesh();
     }
 
     private void ClearDisplay()
