@@ -226,6 +226,7 @@ public class LevelCreator : Singleton<LevelCreator>
     // Create navmesh using scenery information
     private void GenerateNavMesh()
     {
+        GetComponent<NavMeshSurface>().BuildNavMesh();
     }
 
     //---------------------------------------------------------------
