@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public static class LevelDataGenerator
 {
@@ -245,6 +246,32 @@ public static class LevelDataGenerator
             }
         }
         return result;
+    }
+
+    private static void BuildNavMesh(Transform xform, NavMeshDataInstance instance)
+    {
+
+        // delete the existing navmesh if there is one
+        instance.Remove();
+
+        List<NavMeshBuildSource> buildSources = new List<NavMeshBuildSource>();
+
+        NavMeshBuilder.CollectSources(
+            xform,
+            LayerMask.GetMask("Terrain"),
+            NavMeshCollectGeometry.PhysicsColliders,
+            0,
+            new List<NavMeshBuildMarkup>(),
+            buildSources);
+
+        NavMeshData navData = NavMeshBuilder.BuildNavMeshData(
+            NavMesh.GetSettingsByID(0),
+            buildSources,
+            new Bounds(Vector3.zero, new Vector3(10000, 10000, 10000)),
+            Vector3.down,
+            Quaternion.Euler(Vector3.up));
+
+        instance = NavMesh.AddNavMeshData(navData);
     }
 
     // Instantiate all gameobjects that are part of the scenery
