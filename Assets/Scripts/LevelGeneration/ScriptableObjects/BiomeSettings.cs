@@ -13,6 +13,12 @@ public class BiomeSettings : ScriptableObject
     public string UniqueName;
     public BiomeHeightParameters HeightParameters;
     public SplatPrototypeSerializable Splat;
+    public GameObject Blocker;
+    public GameObject BlockerPole;
+    [Range(0.01f, 20f)] public float BlockerLength = 2.1f;
+    [Range(0.01f, 80f)]  public float BlockerAngleLimit = 80;
+    public Vector3 BlockerPositionNoise = Vector3.zero;
+    public Vector3 BlockerScaleNoise = Vector3.zero;
 
     public BiomeSettings(BiomeHeightParameters heightParameters, bool notNavigable)
     {

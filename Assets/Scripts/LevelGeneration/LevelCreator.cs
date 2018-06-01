@@ -22,12 +22,7 @@ public class LevelCreator : Singleton<LevelCreator>
     [Header("Story Settings")]
     public List<BiomeSettings> AvailableBiomes;
     public BiomeSettings BorderBiome;
-    public GameObject BorderBlocker;
-    public GameObject BorderBlockerPole;
-    [Range(0.01f, 20)] public float BorderBlockerLength = 3.5f;
     [Range(0f, 50f)] public float BorderBlockerOffset = 20f;
-    public GameObject AreaBlocker;
-    [Range(0.01f, 20f)] public float AreaBlockerLength = 2.1f;
 
     [Header("Terrain Settings")]
     [Range(16, 1024)] public int HeightMapResolution = 512;
@@ -163,6 +158,7 @@ public class LevelCreator : Singleton<LevelCreator>
 
         // Create Terrain GameObject
         Terrain = Terrain.CreateTerrainGameObject(terrainData).GetComponent<Terrain>();
+        Terrain.gameObject.layer = LayerMask.NameToLayer("Terrain");
         Terrain.name = "Terrain";
         Terrain.transform.parent = transform;
         Terrain.transform.position = Vector3.zero;
@@ -179,18 +175,24 @@ public class LevelCreator : Singleton<LevelCreator>
         water.GetComponent<Renderer>().material = WaterMaterial;
         water.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
         water.transform.localScale = new Vector3(Terrain.terrainData.size.x / 5f, 1, Terrain.terrainData.size.z / 5f);
-        water.transform.parent = Terrain.transform;
+        water.transform.parent = transform;
         water.transform.localPosition = new Vector3(Terrain.terrainData.size.x / 2f, (WaterHeight + 0.01f) * Terrain.terrainData.size.y, Terrain.terrainData.size.z / 2f);
     }
 
     // Add fences to coast and walls between non crossable area segment borders
     private void GenerateBlockers()
     {
-        var fences = LevelDataGenerator.GenerateBlocker(Terrain, MyTerrainStructure.BorderBlockerLines, BorderBlocker, BorderBlockerPole, BorderBlockerLength);
-        fences.transform.parent = Terrain.transform;
+        var borderSettings = MyTerrainStructure.BorderSettings;
+        var fences = LevelDataGenerator.GenerateBlockerLine(Terrain, MyTerrainStructure.BorderBlockerLines,
+            borderSettings.BlockerLength, borderSettings.BlockerPositionNoise, borderSettings.BlockerScaleNoise,
+            borderSettings.Blocker, borderSettings.BlockerPole, borderSettings.BlockerAngleLimit);
+        fences.transform.parent = transform;
 
-        var walls = LevelDataGenerator.GenerateBlocker(Terrain, MyTerrainStructure.AreaBlockerLines, AreaBlocker, AreaBlockerLength);
-        walls.transform.parent = Terrain.transform;
+        var biomeSettings = MyTerrainStructure.BiomeSettings;
+        var walls = LevelDataGenerator.GenerateBlockerLine(Terrain, MyTerrainStructure.AreaBlockerLines,
+            biomeSettings.BlockerLength, biomeSettings.BlockerPositionNoise, biomeSettings.BlockerScaleNoise,
+            biomeSettings.Blocker, biomeSettings.BlockerPole, biomeSettings.BlockerAngleLimit);
+        walls.transform.parent = transform;
     }
 
     // Fill terrain with scenery
@@ -200,7 +202,7 @@ public class LevelCreator : Singleton<LevelCreator>
 
         var sceneryObjects = LevelDataGenerator.GenerateScenery(Terrain.GetComponent<Terrain>());
         var scenery = new GameObject("Scenery");
-        scenery.transform.parent = Terrain.transform;
+        scenery.transform.parent = transform;
         foreach (var obj in sceneryObjects)
         {
             obj.transform.parent = scenery.transform;
@@ -227,8 +229,15 @@ public class LevelCreator : Singleton<LevelCreator>
 
     private void DrawTerrainSkeleton()
     {
-        StructureDrawer.DrawVoronoiDiagram(MyTerrainStructure.VoronoiDiagram, "Voronoi").transform.parent = gameObject.transform;
-        StructureDrawer.DrawAreaSegments(MyTerrainStructure, "Base Graph").transform.parent = gameObject.transform;
+        var voronoi = StructureDrawer.DrawVoronoiDiagram(MyTerrainStructure.VoronoiDiagram, "Voronoi");
+        var baseGraph = StructureDrawer.DrawAreaSegments(MyTerrainStructure, "Base Graph");
+        var borderLines = StructureDrawer.DrawMultipleLines(MyTerrainStructure.BorderBlockerLines, "Border Blockers");
+        var areaBlocker = StructureDrawer.DrawMultipleLines(MyTerrainStructure.AreaBlockerLines, "Area Blockers");
+
+        voronoi.transform.parent = gameObject.transform;
+        baseGraph.transform.parent = gameObject.transform;
+        borderLines.transform.parent = gameObject.transform;
+        areaBlocker.transform.parent = gameObject.transform;
     }
 
     private void DrawTerrain()

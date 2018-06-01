@@ -25,3 +25,10 @@ MonoBehaviour:
     smoothness: 0
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 10, y: 10}
+  Blocker: {fileID: 1174950389497864, guid: 14e1e6585488c9e43b2c178011820ae9, type: 2}
+  BlockerPole: {fileID: 1624022019104524, guid: 27c18f1071ebfa8468618d8634f6cf04,
+    type: 2}
+  BlockerLength: 3.2
+  BlockerAngleLimit: 45
+  BlockerPositionNoise: {x: 0, y: 0, z: 0}
+  BlockerScaleNoise: {x: 0, y: 0, z: 0}

@@ -12,7 +12,9 @@ public class TerrainStructure
     public Voronoi VoronoiDiagram { get; private set; }
     public GrammarGraph<AreaSegment> AreaSegmentGraph { get; private set; }
     public List<Area> Areas { get; private set; }
-    public KeyValuePair<Vector2f, int> StartAreaSegment;
+    public KeyValuePair<Vector2f, int> StartAreaSegment { get; private set; }
+    public BiomeSettings BiomeSettings { get; private set; }
+    public BiomeSettings BorderSettings { get; private set; }
 
     public int TextureCount { get { return _splatIDMap.Count; } }
 
@@ -38,8 +40,6 @@ public class TerrainStructure
     private readonly SplatPrototypeSerializable _sideSplatPrototype;
 
     private readonly int _voronoiSamples;
-    private readonly BiomeSettings _biomeSettings;
-    private readonly BiomeSettings _borderSettings;
     private readonly float _borderNoise;
 
     public TerrainStructure(StoryStructure storyStructure, List<BiomeSettings> availableBiomes, float mapSize,
@@ -55,13 +55,13 @@ public class TerrainStructure
         SidePathLines = new List<Vector2[]>();
 
         // Select a random biome out of the available ones for the current level
-        _biomeSettings = availableBiomes[Random.Range(0, availableBiomes.Count)];
+        BiomeSettings = availableBiomes[Random.Range(0, availableBiomes.Count)];
 
         MapSize = mapSize;
         HeightMapResolution = heightMapResolution;
         Octaves = octaves;
 
-        _borderSettings = borderSettings;
+        BorderSettings = borderSettings;
         _mainSplatPrototype = mainSplatPrototype;
         _sideSplatPrototype = sideSplatPrototype;
         _voronoiSamples = voronoiSamples;
@@ -120,7 +120,7 @@ public class TerrainStructure
     {
         Vector2 noisePosition = position + new Vector2(Random.Range(-_borderNoise, _borderNoise), Random.Range(-_borderNoise, _borderNoise));
         AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
-        return areaSegment == null || areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? _borderSettings.HeightParameters : _biomeSettings.HeightParameters;
+        return areaSegment == null || areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? BorderSettings.HeightParameters : BiomeSettings.HeightParameters;
     }
 
     // Sample area texture at given position
@@ -128,7 +128,7 @@ public class TerrainStructure
     {
         Vector2 noisePosition = position + new Vector2(Random.Range(-_borderNoise, _borderNoise), Random.Range(-_borderNoise, _borderNoise));
         AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
-        int splatID = _splatIDMap[areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? _borderSettings.Splat : _biomeSettings.Splat];
+        int splatID = _splatIDMap[areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? BorderSettings.Splat : BiomeSettings.Splat];
         float splatValue = 1;
         return new KeyValuePair<int, float>(splatID, splatValue);
     }
@@ -154,21 +154,21 @@ public class TerrainStructure
         var count = 0;
 
         // Add main biome to the SplatPrototypes map
-        _splatIDMap.Add(_biomeSettings.Splat, count);
-        Shader.SetGlobalTexture("_BumpMap" + count, _biomeSettings.Splat.normalMap ? _biomeSettings.Splat.normalMap : _blankBump);
+        _splatIDMap.Add(BiomeSettings.Splat, count);
+        Shader.SetGlobalTexture("_BumpMap" + count, BiomeSettings.Splat.normalMap ? BiomeSettings.Splat.normalMap : _blankBump);
         Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-        Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _biomeSettings.Splat.tileSize.x);
+        Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / BiomeSettings.Splat.tileSize.x);
         count++;
 
 
         // Add border biome to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(_borderSettings.Splat))
+        if (!_splatIDMap.ContainsKey(BorderSettings.Splat))
         {
-            _splatIDMap.Add(_borderSettings.Splat, count);
+            _splatIDMap.Add(BorderSettings.Splat, count);
 
-            Shader.SetGlobalTexture("_BumpMap" + count, _borderSettings.Splat.normalMap ? _borderSettings.Splat.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_BumpMap" + count, BorderSettings.Splat.normalMap ? BorderSettings.Splat.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _borderSettings.Splat.tileSize.x);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / BorderSettings.Splat.tileSize.x);
             count++;
         }
 
@@ -391,6 +391,10 @@ public class TerrainStructure
             var p0 = borderBlockerPolygon[i];
             var p1 = i + 1 == borderBlockerPolygon.Count ?
                 borderBlockerPolygon[0] : borderBlockerPolygon[i + 1];
+
+            // Filter duplicated vertices -> TODO: fix problem in offsetting
+            if ((p0 - p1).magnitude < 0.01f )
+                continue;
 
             BorderBlockerLines.Add(new[] { p0, p1 });
         }
