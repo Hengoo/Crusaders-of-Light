@@ -21,9 +21,9 @@ public class BiomeSettings : ScriptableObject
     public Vector3 BlockerScaleNoise = Vector3.zero;
 
     [Header("Area Settings")]
-    public AreaSettings BossArea;
+    public AreaSettings[] BossAreas;
     public AreaSettings[] ChestAreas;
-    public AreaSettings[] MainPathAreas;
+    public AreaSettings[] Path;
     public AreaSettings[] SidePathAreas;
 
     [Header("Path Settings")]

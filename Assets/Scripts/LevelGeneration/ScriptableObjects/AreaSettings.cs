@@ -12,6 +12,7 @@ using UnityEngine;
 //-------------------------------------------------------------
 public abstract class AreaSettings : ScriptableObject
 {
+    public string Name;
     public GameObject[] Prefabs;
     private readonly Vector2[][] _polygons;
     private readonly Vector2[] _centers;
@@ -21,6 +22,8 @@ public abstract class AreaSettings : ScriptableObject
         _polygons = polygons.ToArray();
         _centers = centers.ToArray();
     }
+
+    public abstract Graph<AreaSegment> GetPatternGraph();
 }
 
 public class AreaSegment : IEquatable<AreaSegment>
