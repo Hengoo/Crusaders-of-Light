@@ -10,20 +10,20 @@ using UnityEngine;
 //-------------------------------------------------------------
 // Areas
 //-------------------------------------------------------------
-public abstract class AreaSettings : ScriptableObject
+public abstract class AreaSettingsFactory : ScriptableObject
 {
-    public string Name;
-    public GameObject[] Prefabs;
-    private readonly Vector2[][] _polygons;
-    private readonly Vector2[] _centers;
-
-    protected AreaSettings(IEnumerable<Vector2[]> polygons, IEnumerable<Vector2> centers)
-    {
-        _polygons = polygons.ToArray();
-        _centers = centers.ToArray();
-    }
-
     public abstract Graph<AreaSegment> GetPatternGraph();
+    public abstract AreaSettings ProduceAreaSettings(Vector2[] centers, Vector2[] polygon, Vector2[] clearPolygons);
+}                                                    
+public abstract class AreaSettings
+{
+    public readonly string Name;
+
+    private Vector2[] _centers;
+    private Vector2[] _polygon;
+    private Vector2[] _clearPolygons;
+
+    public abstract GameObject GenerateAreaScenery();
 }
 
 public class AreaSegment : IEquatable<AreaSegment>

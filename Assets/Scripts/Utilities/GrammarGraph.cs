@@ -8,6 +8,13 @@ using Random = UnityEngine.Random;
 public class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
 {
 
+    public GrammarGraph() { }
+    public GrammarGraph(GrammarGraph<T> original)
+    {
+        Nodes = (from x in original.Nodes select x).ToDictionary(x => x.Key, x => x.Value.Clone());
+        Edges = (from x in original.Edges select x).ToDictionary(x => x.Key, x => x.Value);
+        NodeIDCount = original.NodeIDCount;
+    }
 
     // Rewrites a portion of the graph, returns true when "match" is a subgraph of this graph
     public bool Rewrite(Graph<T> match, Graph<T> newGraph, Dictionary<int, int> correnpondencies)
@@ -16,8 +23,11 @@ public class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
         Dictionary<int, int> assignments = MatchPattern(match);
 
         // No match found
-        if (assignments.Count == 0)
+        if (assignments == null || assignments.Count == 0)
+        {
+            Debug.LogWarning("No match found in grammar graph");
             return false;
+        }
 
         ApplyRewrite(newGraph, correnpondencies, assignments);
 
@@ -97,8 +107,7 @@ public class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
 
         // Start assigning nodes from candidates list recursively
         Dictionary<int, int> assignments = new Dictionary<int, int>();
-        UpdateAssignments(pattern, assignments, possibilities);
-        return assignments;
+        return UpdateAssignments(pattern, assignments, possibilities) ? assignments : null;
     }
 
 

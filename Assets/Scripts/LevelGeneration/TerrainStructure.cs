@@ -78,6 +78,9 @@ public class TerrainStructure
 
         // Populate border lines list
         CreateBorderBlockerPolygon(borderBlockerOffset);
+
+        // Create path polygons
+        CreatePathPolygons(BiomeSettings.PathHalfWidth);
     }
 
     // Returns the center position for a given area segment ID
@@ -441,7 +444,7 @@ public class TerrainStructure
         }
     }
 
-    private void GenerateRoadPolygons(float roadWidth)
+    private void CreatePathPolygons(float roadWidth)
     {
         foreach (var line in MainPathLines)
         {
