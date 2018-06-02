@@ -130,3 +130,46 @@ public sealed class PoissonDiskGenerator : Object {
 		return  index < 0 ? (index % gridLength + gridLength) : (index % gridLength);
 	}
 }
+
+//---------------------------------------------------------------------------
+// CUSTOM STUFF
+//---------------------------------------------------------------------------
+public class PoissonDiskFillData
+{
+    public readonly Vector2[] Polygon;
+    public readonly List<Vector2[]> ClearPolygons;
+    public readonly GameObject[] Prefabs;
+    public readonly Vector2 FrameSize;
+    public readonly Vector2 FramePosition;
+    public readonly float MinDist;
+
+    public PoissonDiskFillData(GameObject[] prefabs, Vector2[] polygon, float minDist)
+    {
+        ClearPolygons = new List<Vector2[]>();
+
+        Prefabs = prefabs;
+        Polygon = polygon;
+        MinDist = minDist;
+
+        var minX = float.MaxValue;
+        var minY = float.MaxValue;
+        var maxX = float.MinValue;
+        var maxY = float.MinValue;
+
+        foreach (var point in polygon)
+        {
+            minX = Mathf.Min(point.x, minX);
+            minY = Mathf.Min(point.y, minY);
+            maxX = Mathf.Max(point.x, maxX);
+            maxY = Mathf.Max(point.y, maxY);
+        }
+
+        FramePosition = new Vector2(minX, minY);
+        FrameSize = new Vector2(maxX - minX, maxY - minY);
+    }
+
+    public void AddClearPolygon(Vector2[] polygon)
+    {
+        ClearPolygons.Add(polygon);
+    }
+}

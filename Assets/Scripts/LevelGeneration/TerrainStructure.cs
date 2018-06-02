@@ -11,7 +11,6 @@ public class TerrainStructure
 
     public Voronoi VoronoiDiagram { get; private set; }
     public GrammarGraph<AreaSegment> AreaSegmentGraph { get; private set; }
-    public List<Area> Areas { get; private set; }
     public KeyValuePair<Vector2f, int> StartAreaSegment { get; private set; }
     public BiomeSettings BiomeSettings { get; private set; }
     public BiomeSettings BorderSettings { get; private set; }
@@ -28,6 +27,7 @@ public class TerrainStructure
     public readonly List<Vector2[]> AreaBlockerLines;
     public readonly List<Vector2[]> MainPathLines;
     public readonly List<Vector2[]> SidePathLines;
+    public readonly List<Vector2[]> PathPolygons;
 
     private readonly Dictionary<int, Vector2> _areaSegmentCenterMap = new Dictionary<int, Vector2>(); // Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<Vector2f, int> _siteAreaSegmentMap = new Dictionary<Vector2f, int>(); // Mapping of Voronoi library sites and graph IDs
@@ -36,23 +36,19 @@ public class TerrainStructure
     private Texture2D _blankSpec;
     private Texture2D _blankBump;
 
-    private readonly SplatPrototypeSerializable _mainSplatPrototype;
-    private readonly SplatPrototypeSerializable _sideSplatPrototype;
-
     private readonly int _voronoiSamples;
     private readonly float _borderNoise;
 
     public TerrainStructure(StoryStructure storyStructure, List<BiomeSettings> availableBiomes, float mapSize,
         int heightMapResolution, int octaves, BiomeSettings borderSettings,
-        SplatPrototypeSerializable mainSplatPrototype, SplatPrototypeSerializable sideSplatPrototype,
         int voronoiSamples, int lloydIterations, float edgeNoise, float borderBlockerOffset)
     {
         AreaSegmentGraph = new GrammarGraph<AreaSegment>();
-        Areas = new List<Area>();
         BorderBlockerLines = new List<Vector2[]>();
         AreaBlockerLines = new List<Vector2[]>();
         MainPathLines = new List<Vector2[]>();
         SidePathLines = new List<Vector2[]>();
+        PathPolygons = new List<Vector2[]>();
 
         // Select a random biome out of the available ones for the current level
         BiomeSettings = availableBiomes[Random.Range(0, availableBiomes.Count)];
@@ -62,8 +58,6 @@ public class TerrainStructure
         Octaves = octaves;
 
         BorderSettings = borderSettings;
-        _mainSplatPrototype = mainSplatPrototype;
-        _sideSplatPrototype = sideSplatPrototype;
         _voronoiSamples = voronoiSamples;
         _borderNoise = edgeNoise;
 
@@ -173,25 +167,25 @@ public class TerrainStructure
         }
 
         // Add main path to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(_mainSplatPrototype))
+        if (!_splatIDMap.ContainsKey(BiomeSettings.MainPathSplatPrototype))
         {
-            _splatIDMap.Add(_mainSplatPrototype, count);
+            _splatIDMap.Add(BiomeSettings.MainPathSplatPrototype, count);
 
-            Shader.SetGlobalTexture("_BumpMap" + count, _mainSplatPrototype.normalMap ? _mainSplatPrototype.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_BumpMap" + count, BiomeSettings.MainPathSplatPrototype.normalMap ? BiomeSettings.MainPathSplatPrototype.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _mainSplatPrototype.tileSize.x);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / BiomeSettings.MainPathSplatPrototype.tileSize.x);
             MainPathSplatIndex = count;
             count++;
         }
 
         // Add side path to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(_sideSplatPrototype))
+        if (!_splatIDMap.ContainsKey(BiomeSettings.SidePathSplatPrototype))
         {
-            _splatIDMap.Add(_sideSplatPrototype, count);
+            _splatIDMap.Add(BiomeSettings.SidePathSplatPrototype, count);
 
-            Shader.SetGlobalTexture("_BumpMap" + count, _sideSplatPrototype.normalMap ? _sideSplatPrototype.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_BumpMap" + count, BiomeSettings.SidePathSplatPrototype.normalMap ? BiomeSettings.SidePathSplatPrototype.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _sideSplatPrototype.tileSize.x);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / BiomeSettings.SidePathSplatPrototype.tileSize.x);
             SidePathSplatIndex = count;
         }
     }
@@ -445,6 +439,48 @@ public class TerrainStructure
                 BorderBlockerLines.Add(new[] { p0, p1 });
             }
         }
+    }
+
+    private void GenerateRoadPolygons(float roadWidth)
+    {
+        foreach (var line in MainPathLines)
+        {
+            var start = line[0];
+            var end = line[1];
+
+            var direction = (end - start).normalized;
+            var normal = (Vector2)Vector3.Cross(direction, Vector3.forward).normalized;
+
+            var p0 = start - direction * roadWidth + normal * roadWidth;
+            var p1 = start - direction * roadWidth - normal * roadWidth;
+            var p2 = end + direction * roadWidth + normal * roadWidth;
+            var p3 = end + direction * roadWidth - normal * roadWidth;
+            var origin = (p0 + p1 + p2 + p3) / 4;
+
+            var poly = new List<Vector2> { p0, p1, p2, p3 };
+            poly.SortVertices(origin);
+            PathPolygons.Add(poly.ToArray());
+        }
+
+        foreach (var line in SidePathLines)
+        {
+            var start = line[0];
+            var end = line[1];
+
+            var direction = (end - start).normalized;
+            var normal = (Vector2)Vector3.Cross(direction, Vector3.forward).normalized;
+
+            var p0 = start - direction * roadWidth + normal * roadWidth;
+            var p1 = start - direction * roadWidth - normal * roadWidth;
+            var p2 = end + direction * roadWidth + normal * roadWidth;
+            var p3 = end + direction * roadWidth - normal * roadWidth;
+            var origin = (p0 + p1 + p2 + p3) / 4;
+
+            var poly = new List<Vector2> { p0, p1, p2, p3 };
+            poly.SortVertices(origin);
+            PathPolygons.Add(poly.ToArray());
+        }
+
     }
 
     //---------------------------------------------------------------

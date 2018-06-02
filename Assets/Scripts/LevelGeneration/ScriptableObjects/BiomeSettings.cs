@@ -20,10 +20,17 @@ public class BiomeSettings : ScriptableObject
     public Vector3 BlockerPositionNoise = Vector3.zero;
     public Vector3 BlockerScaleNoise = Vector3.zero;
 
-    public BiomeSettings(BiomeHeightParameters heightParameters, bool notNavigable)
-    {
-        HeightParameters = heightParameters;
-    }
+    [Header("Area Settings")]
+    public AreaSettings BossArea;
+    public AreaSettings[] ChestAreas;
+    public AreaSettings[] MainPathAreas;
+    public AreaSettings[] SidePathAreas;
+
+    [Header("Path Settings")]
+    public SplatPrototypeSerializable MainPathSplatPrototype;
+    public SplatPrototypeSerializable SidePathSplatPrototype;
+    public int MainPathSplatSize = 2;
+    public int SidePathSplatSize = 1;
 }
 
 [Serializable]
