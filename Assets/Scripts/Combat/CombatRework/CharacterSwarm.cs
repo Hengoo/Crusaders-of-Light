@@ -10,7 +10,7 @@ public class CharacterSwarm : Character {
     [Header("Enemy Testing:")]
     public bool SpawnStartingWeaponsOnStart = false;
 
-
+   
     // ===================================== Override Functions =====================================
 
     protected override void Start()
@@ -59,4 +59,14 @@ public class CharacterSwarm : Character {
     }
 
     // ====================================/ Override Functions /====================================
+
+
+    // ============================================= AI =============================================
+
+    // AI for Swarm Enemies:
+    //      Melee: Attack Closest Player if in Range.
+    //      Ranged: Wait for good attack oportunity, then Attack if in range.
+    //      Tank: Attack Closest if in Range.
+
+    // ============================================/ AI /============================================
 }
