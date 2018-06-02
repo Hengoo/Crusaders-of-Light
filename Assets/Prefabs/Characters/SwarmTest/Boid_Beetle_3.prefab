@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 114689246621321414}
   - component: {fileID: 135661142384979000}
   - component: {fileID: 54032772073000748}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Boid_Beetle_3
   m_TagString: EnemySwarm
   m_Icon: {fileID: 0}
@@ -323,37 +323,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NMAgent: {fileID: 195998895084142030}
-  UpdatePercentage: 1
   SType: 3
   SeperationDistance: 1.2
-  SeperationFactor: 1
   AlignmentDistance: 4
-  AlignmentFactor: 0
   CohesionDistance: 3
-  CohesionFactor: 0
   DangerDistance: 4
-  DangerFactor: 1
+  AttractionDistance: 20
+  AttractionFactor: 0.4
   BorderOn: 1
   BorderDistance: 2
   BorderFactor: 3
   Velocity: {x: 0, y: 0, z: 0}
   Acceleration: {x: 0, y: 0, z: 1}
-  Resistance: 0.97
   Friction: 0.1
-  BaseSpeed: 13
-  Speed: 13
-  BonusSpeedThisFrame: 0
-  MovVector: {x: 0, y: 0, z: 0}
-  GoalVector: {x: 0, y: 0, z: 0}
   GoalFactor: 0
-  GoalPosition: {x: 0, y: 0, z: 0}
-  TurnSpeed: 360
-  BaseAcceleration: 1
   DesiredBaseSpeed: 6
   DesiredRunSpeed: 12
-  NoSeperationThisUpdate: 0
-  AttractionDistance: 8
-  AttractionFactor: 0.4
   UpdateTimer: 0.06
   UpdateCounter: 0
   EnemiesInRange: []

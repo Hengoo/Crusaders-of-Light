@@ -383,7 +383,7 @@ public class EnemySwarm : MonoBehaviour {
         {
             DangerInRange.Add(other.gameObject);
         }
-        else if (other.tag == "Character")
+        else if (other.tag == "Attention")
         {
             /*Character otherChar = other.GetComponent<Character>();
             if (otherChar.GetAlignment() == Character.TeamAlignment.PLAYERS)
@@ -404,7 +404,7 @@ public class EnemySwarm : MonoBehaviour {
         {
             DangerInRange.Remove(other.gameObject);
         }
-        else if (other.tag == "Character")
+        else if (other.tag == "Attention")
         {
             /*Character otherChar = other.GetComponent<Character>();
             if (otherChar.GetAlignment() == Character.TeamAlignment.PLAYERS)
