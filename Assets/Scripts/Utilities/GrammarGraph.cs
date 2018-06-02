@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
+public class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
 {
 
 
@@ -38,14 +38,10 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
         return true;
     }
 
-    //-----------------------------------------------------------------
-    //  Helper Functions
-    //-----------------------------------------------------------------
-
     // Based on Ullman's algorithm -
     // See: https://www.cs.bgu.ac.il/~dinitz/Course/SS-12/Ullman_Algorithm.pdf
     // https://stackoverflow.com/questions/17480142/is-there-any-simple-example-to-explain-ullmann-algorithm
-    private Dictionary<int, int> MatchPattern(Graph<T> pattern)
+    public Dictionary<int, int> MatchPattern(Graph<T> pattern)
     {
         Dictionary<int, List<int>> possibilities = new Dictionary<int, List<int>>();
         int[] patternNodes = pattern.GetAllNodeIDs();
@@ -105,7 +101,12 @@ public partial class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
         return assignments;
     }
 
-    // Recursively assign nodes from pattern to graph
+
+    //-----------------------------------------------------------------
+    //  Helper Functions
+    //-----------------------------------------------------------------
+
+        // Recursively assign nodes from pattern to graph
     private bool UpdateAssignments(Graph<T> pattern, Dictionary<int, int> assignments, Dictionary<int, List<int>> possibilities)
     {
         if (possibilities.Count == 0)

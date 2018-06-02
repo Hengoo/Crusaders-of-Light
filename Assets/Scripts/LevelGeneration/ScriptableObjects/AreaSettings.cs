@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Xml;
 using UnityEngine;
@@ -9,11 +10,20 @@ using UnityEngine;
 //-------------------------------------------------------------
 // Areas
 //-------------------------------------------------------------
-[CreateAssetMenu(fileName = "AreaSettings", menuName = "Terrain/Area Settings")]
-public class AreaSettings : ScriptableObject
+public abstract class AreaSettings : ScriptableObject
 {
-    public Vector2[] AreaPolygon;
+    public string Name;
     public GameObject[] Prefabs;
+    private readonly Vector2[][] _polygons;
+    private readonly Vector2[] _centers;
+
+    protected AreaSettings(IEnumerable<Vector2[]> polygons, IEnumerable<Vector2> centers)
+    {
+        _polygons = polygons.ToArray();
+        _centers = centers.ToArray();
+    }
+
+    public abstract Graph<AreaSegment> GetPatternGraph();
 }
 
 public class AreaSegment : IEquatable<AreaSegment>
@@ -39,12 +49,10 @@ public class AreaSegment : IEquatable<AreaSegment>
     }
 
     public EAreaSegmentType Type;
-    public Guid uniqueId;
 
     public AreaSegment(EAreaSegmentType type)
     {
         Type = type;
-        uniqueId = Guid.NewGuid();
     }
 
     public bool Equals(AreaSegment other)
@@ -75,10 +83,4 @@ public class AreaSegment : IEquatable<AreaSegment>
     {
         return !Equals(left, right);
     }
-}
-
- public class Area
-{
-    public readonly List<AreaSegment> AreaSegments = new List<AreaSegment>();
-    public AreaSettings AreaSettings;
 }

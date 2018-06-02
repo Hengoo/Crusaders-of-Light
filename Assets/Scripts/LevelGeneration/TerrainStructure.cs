@@ -11,7 +11,6 @@ public class TerrainStructure
 
     public Voronoi VoronoiDiagram { get; private set; }
     public GrammarGraph<AreaSegment> AreaSegmentGraph { get; private set; }
-    public List<Area> Areas { get; private set; }
     public KeyValuePair<Vector2f, int> StartAreaSegment { get; private set; }
     public BiomeSettings BiomeSettings { get; private set; }
     public BiomeSettings BorderSettings { get; private set; }
@@ -28,6 +27,7 @@ public class TerrainStructure
     public readonly List<Vector2[]> AreaBlockerLines;
     public readonly List<Vector2[]> MainPathLines;
     public readonly List<Vector2[]> SidePathLines;
+    public readonly List<Vector2[]> PathPolygons;
 
     private readonly Dictionary<int, Vector2> _areaSegmentCenterMap = new Dictionary<int, Vector2>(); // Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<Vector2f, int> _siteAreaSegmentMap = new Dictionary<Vector2f, int>(); // Mapping of Voronoi library sites and graph IDs
@@ -36,23 +36,19 @@ public class TerrainStructure
     private Texture2D _blankSpec;
     private Texture2D _blankBump;
 
-    private readonly SplatPrototypeSerializable _mainSplatPrototype;
-    private readonly SplatPrototypeSerializable _sideSplatPrototype;
-
     private readonly int _voronoiSamples;
     private readonly float _borderNoise;
 
     public TerrainStructure(StoryStructure storyStructure, List<BiomeSettings> availableBiomes, float mapSize,
         int heightMapResolution, int octaves, BiomeSettings borderSettings,
-        SplatPrototypeSerializable mainSplatPrototype, SplatPrototypeSerializable sideSplatPrototype,
         int voronoiSamples, int lloydIterations, float edgeNoise, float borderBlockerOffset)
     {
         AreaSegmentGraph = new GrammarGraph<AreaSegment>();
-        Areas = new List<Area>();
         BorderBlockerLines = new List<Vector2[]>();
         AreaBlockerLines = new List<Vector2[]>();
         MainPathLines = new List<Vector2[]>();
         SidePathLines = new List<Vector2[]>();
+        PathPolygons = new List<Vector2[]>();
 
         // Select a random biome out of the available ones for the current level
         BiomeSettings = availableBiomes[Random.Range(0, availableBiomes.Count)];
@@ -62,8 +58,6 @@ public class TerrainStructure
         Octaves = octaves;
 
         BorderSettings = borderSettings;
-        _mainSplatPrototype = mainSplatPrototype;
-        _sideSplatPrototype = sideSplatPrototype;
         _voronoiSamples = voronoiSamples;
         _borderNoise = edgeNoise;
 
@@ -173,25 +167,25 @@ public class TerrainStructure
         }
 
         // Add main path to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(_mainSplatPrototype))
+        if (!_splatIDMap.ContainsKey(BiomeSettings.MainPathSplatPrototype))
         {
-            _splatIDMap.Add(_mainSplatPrototype, count);
+            _splatIDMap.Add(BiomeSettings.MainPathSplatPrototype, count);
 
-            Shader.SetGlobalTexture("_BumpMap" + count, _mainSplatPrototype.normalMap ? _mainSplatPrototype.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_BumpMap" + count, BiomeSettings.MainPathSplatPrototype.normalMap ? BiomeSettings.MainPathSplatPrototype.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _mainSplatPrototype.tileSize.x);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / BiomeSettings.MainPathSplatPrototype.tileSize.x);
             MainPathSplatIndex = count;
             count++;
         }
 
         // Add side path to the SplatPrototypes map
-        if (!_splatIDMap.ContainsKey(_sideSplatPrototype))
+        if (!_splatIDMap.ContainsKey(BiomeSettings.SidePathSplatPrototype))
         {
-            _splatIDMap.Add(_sideSplatPrototype, count);
+            _splatIDMap.Add(BiomeSettings.SidePathSplatPrototype, count);
 
-            Shader.SetGlobalTexture("_BumpMap" + count, _sideSplatPrototype.normalMap ? _sideSplatPrototype.normalMap : _blankBump);
+            Shader.SetGlobalTexture("_BumpMap" + count, BiomeSettings.SidePathSplatPrototype.normalMap ? BiomeSettings.SidePathSplatPrototype.normalMap : _blankBump);
             Shader.SetGlobalTexture("_SpecMap" + count, _blankSpec);
-            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / _sideSplatPrototype.tileSize.x);
+            Shader.SetGlobalFloat("_TerrainTexScale" + count, 1 / BiomeSettings.SidePathSplatPrototype.tileSize.x);
             SidePathSplatIndex = count;
         }
     }
@@ -335,7 +329,7 @@ public class TerrainStructure
     // Create border blocker polygon
     private void CreateBorderBlockerPolygon(float borderInlandOffset)
     {
-        var temporarySegments = new List<KeyValuePair<Edge, Vector2>>();
+        var segments = new List<KeyValuePair<Edge, Vector2>>();
 
         foreach (var edge in VoronoiDiagram.Edges)
         {
@@ -352,52 +346,141 @@ public class TerrainStructure
                 (leftAreaSegment.Type == AreaSegment.EAreaSegmentType.Border || rightAreaSegment.Type == AreaSegment.EAreaSegmentType.Border))
             {
                 // Add border edge with the biome center to scale inwards later
-                temporarySegments.Add(new KeyValuePair<Edge, Vector2>(edge,
+                segments.Add(new KeyValuePair<Edge, Vector2>(edge,
                     leftAreaSegment.Type == AreaSegment.EAreaSegmentType.Border ? edge.LeftSite.Coord.ToUnityVector2() : edge.RightSite.Coord.ToUnityVector2()));
             }
         }
 
-        // Create border polygon with sorted vertices and offset them inwards
-        var borderBlockerPolygon = new List<Vector2>();
-        var coastLines = temporarySegments.Select(pair => pair.Key).ToList().EdgesToSortedLines();
-        foreach (var line in coastLines)
+        // Group connected segments
+        var edgeGroups = new List<List<KeyValuePair<Edge, Vector2>>>();
+        while (segments.Count > 0)
         {
+            var edges = new List<KeyValuePair<Edge, Vector2>>();
+            var startEdge = segments[0];
+            segments.Remove(startEdge);
+            Vertex headPoint = startEdge.Key.RightVertex;
+            Vertex tailPoint = startEdge.Key.LeftVertex;
+            edges.Add(startEdge);
 
-            // Offset borders towards biome center
-            var left = line[0];
-            var right = line[1];
-            var center = Vector2.zero;
-            temporarySegments.ForEach(e =>
+            // Find a polygon
+            var polygonClosed = false;
+            while (!polygonClosed && segments.Count > 0)
             {
-                var l = e.Key.ClippedEnds[LR.LEFT].ToUnityVector2();
-                var r = e.Key.ClippedEnds[LR.RIGHT].ToUnityVector2();
-                if ((l == left || l == right) && (r == left || r == right))
-                    center = e.Value;
-            });
+                for (int i = 0; i < segments.Count; i++)
+                {
+                    var currentElement = segments[i];
+                    Vertex leftPoint = currentElement.Key.LeftVertex;
+                    Vertex rightPoint = currentElement.Key.RightVertex;
+                    if (leftPoint == headPoint)
+                    {
+                        edges.Add(currentElement);
+                        segments.Remove(currentElement);
+                        headPoint = rightPoint;
+                    }
+                    else if (rightPoint == headPoint)
+                    {
+                        edges.Add(currentElement);
+                        segments.Remove(currentElement);
+                        headPoint = leftPoint;
+                    }
 
-            left += (center - left).normalized * borderInlandOffset;
-            right += (center - right).normalized * borderInlandOffset;
-
-            // Offsetting can give duplicated points
-            if (!borderBlockerPolygon.Contains(left))
-                borderBlockerPolygon.Add(left);
-            if (!borderBlockerPolygon.Contains(right))
-                borderBlockerPolygon.Add(right);
+                    // Polygon has been closed
+                    if (headPoint == tailPoint)
+                    {
+                        polygonClosed = true;
+                        break;
+                    }
+                }
+            }
+            edgeGroups.Add(edges);
         }
 
-        // Create border blocker lines
-        for (int i = 0; i < borderBlockerPolygon.Count; i++)
+        // Iterate over each polygon found previously
+        foreach (var edges in edgeGroups)
         {
-            var p0 = borderBlockerPolygon[i];
-            var p1 = i + 1 == borderBlockerPolygon.Count ?
-                borderBlockerPolygon[0] : borderBlockerPolygon[i + 1];
+            var polygon = new List<Vector2>();
+            var coastLines = edges.Select(pair => pair.Key).ToList().EdgesToSortedLines();
+            foreach (var line in coastLines)
+            {
 
-            // Filter duplicated vertices -> TODO: fix problem in offsetting
-            if ((p0 - p1).magnitude < 0.01f )
-                continue;
+                // Offset borders towards biome center
+                var left = line[0];
+                var right = line[1];
+                var center = Vector2.zero;
+                edges.ForEach(e =>
+                {
+                    var l = e.Key.ClippedEnds[LR.LEFT].ToUnityVector2();
+                    var r = e.Key.ClippedEnds[LR.RIGHT].ToUnityVector2();
+                    if ((l == left || l == right) && (r == left || r == right))
+                        center = e.Value;
+                });
 
-            BorderBlockerLines.Add(new[] { p0, p1 });
+                left += (center - left).normalized * borderInlandOffset;
+                right += (center - right).normalized * borderInlandOffset;
+
+                // Offsetting can give duplicated points
+                if (!polygon.Contains(left))
+                    polygon.Add(left);
+                if (!polygon.Contains(right))
+                    polygon.Add(right);
+            }
+
+            // Create border blocker lines
+            for (int j = 0; j < polygon.Count; j++)
+            {
+                var p0 = polygon[j];
+                var p1 = j + 1 == polygon.Count ?
+                    polygon[0] : polygon[j + 1];
+
+                // Filter duplicated vertices -> TODO: fix problem in offsetting
+                if ((p0 - p1).magnitude < 0.01f)
+                    continue;
+
+                BorderBlockerLines.Add(new[] { p0, p1 });
+            }
         }
+    }
+
+    private void GenerateRoadPolygons(float roadWidth)
+    {
+        foreach (var line in MainPathLines)
+        {
+            var start = line[0];
+            var end = line[1];
+
+            var direction = (end - start).normalized;
+            var normal = (Vector2)Vector3.Cross(direction, Vector3.forward).normalized;
+
+            var p0 = start - direction * roadWidth + normal * roadWidth;
+            var p1 = start - direction * roadWidth - normal * roadWidth;
+            var p2 = end + direction * roadWidth + normal * roadWidth;
+            var p3 = end + direction * roadWidth - normal * roadWidth;
+            var origin = (p0 + p1 + p2 + p3) / 4;
+
+            var poly = new List<Vector2> { p0, p1, p2, p3 };
+            poly.SortVertices(origin);
+            PathPolygons.Add(poly.ToArray());
+        }
+
+        foreach (var line in SidePathLines)
+        {
+            var start = line[0];
+            var end = line[1];
+
+            var direction = (end - start).normalized;
+            var normal = (Vector2)Vector3.Cross(direction, Vector3.forward).normalized;
+
+            var p0 = start - direction * roadWidth + normal * roadWidth;
+            var p1 = start - direction * roadWidth - normal * roadWidth;
+            var p2 = end + direction * roadWidth + normal * roadWidth;
+            var p3 = end + direction * roadWidth - normal * roadWidth;
+            var origin = (p0 + p1 + p2 + p3) / 4;
+
+            var poly = new List<Vector2> { p0, p1, p2, p3 };
+            poly.SortVertices(origin);
+            PathPolygons.Add(poly.ToArray());
+        }
+
     }
 
     //---------------------------------------------------------------

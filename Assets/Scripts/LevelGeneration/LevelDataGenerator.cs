@@ -248,32 +248,6 @@ public static class LevelDataGenerator
         return result;
     }
 
-    private static void BuildNavMesh(Transform xform, NavMeshDataInstance instance)
-    {
-
-        // delete the existing navmesh if there is one
-        instance.Remove();
-
-        List<NavMeshBuildSource> buildSources = new List<NavMeshBuildSource>();
-
-        NavMeshBuilder.CollectSources(
-            xform,
-            LayerMask.GetMask("Terrain"),
-            NavMeshCollectGeometry.PhysicsColliders,
-            0,
-            new List<NavMeshBuildMarkup>(),
-            buildSources);
-
-        NavMeshData navData = NavMeshBuilder.BuildNavMeshData(
-            NavMesh.GetSettingsByID(0),
-            buildSources,
-            new Bounds(Vector3.zero, new Vector3(10000, 10000, 10000)),
-            Vector3.down,
-            Quaternion.Euler(Vector3.up));
-
-        instance = NavMesh.AddNavMeshData(navData);
-    }
-
     // Instantiate all gameobjects that are part of the scenery
     public static GameObject[] GenerateScenery(Terrain terrain)
     {
@@ -289,6 +263,41 @@ public static class LevelDataGenerator
     // HELPER PRIVATE FUNCTIONS
     // 
     //---------------------------------------------------------------------
+    
+    /* Fill an area with prefabs */
+    private static GameObject PoissonDiskFill(Terrain terrain, PoissonDiskFillData poissonDiskFillData)
+    {
+        var result = new GameObject("SceneryAreaFill");
+        result.transform.position = Vector3.zero;
+        result.transform.rotation = Quaternion.identity;
+
+        if (poissonDiskFillData.Prefabs == null || poissonDiskFillData.Prefabs.Length <= 0)
+            return result;
+
+        var levelCreator = LevelCreator.Instance;
+        var size = poissonDiskFillData.FrameSize;
+        PoissonDiskGenerator.minDist = poissonDiskFillData.MinDist;
+        PoissonDiskGenerator.sampleRange = (size.x > size.y ? size.x : size.y);
+        PoissonDiskGenerator.Generate();
+        foreach (var sample in PoissonDiskGenerator.ResultSet)
+        {
+            var point = sample + poissonDiskFillData.FramePosition;
+            var height = terrain.SampleHeight(new Vector3(point.x, 0, point.y) - terrain.transform.position);
+            if (height <= (levelCreator.WaterHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
+                !point.IsInsidePolygon(poissonDiskFillData.Polygon) || //not outside of the area
+                !poissonDiskFillData.ClearPolygons.TrueForAll(a => !point.IsInsidePolygon(a)) //not inside of any clear polygon
+            )
+                continue;
+
+            var go = Object.Instantiate(poissonDiskFillData.Prefabs[Random.Range(0, poissonDiskFillData.Prefabs.Length)]);
+            go.transform.position = new Vector3(point.x, height, point.y) + terrain.transform.position;
+            go.transform.rotation = Quaternion.Euler(go.transform.rotation.eulerAngles.x, Random.Range(0, 360f),
+                go.transform.rotation.eulerAngles.z);
+            go.transform.parent = result.transform;
+        }
+
+        return result;
+    }
 
     // Smooth cells using a 2*neighborcount + 1 square around each cell
     private static void SmoothHeightMapCells(float[,] heightMap, IEnumerable<Vector2Int> cellsToSmooth, int squareSize)

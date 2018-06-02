@@ -45,20 +45,9 @@ public class LevelCreator : Singleton<LevelCreator>
     [Range(0, 20)] public int SquareSize = 2;
 
     [Header("Path Settings")]
-    public SplatPrototypeSerializable MainPathSplatPrototype;
-    public SplatPrototypeSerializable SidePathSplatPrototype;
-    public float MainPathHalfWidth = 8;
-    public float SidePathHalfWidth = 5;
-    public int MainPathSplatSize = 2;
-    public int SidePathSplatSize = 1;
     public int MainPathNodeCount = 8;
     public int SidePathCount = 2;
     public int SidePathNodeCount = 1;
-
-    [Header("Area Settings")]
-    public AreaBase[] SpecialAreas;
-    public AreaBase BossArea;
-    public bool FillAreas = true;
 
     public TerrainStructure MyTerrainStructure { get; private set; }
     public StoryStructure MyStoryStructure { get; private set; }
@@ -88,12 +77,11 @@ public class LevelCreator : Singleton<LevelCreator>
         ClearDisplay();
         Random.InitState(Seed);
 
-        MyStoryStructure = new StoryStructure(0, 1, MainPathNodeCount, SidePathCount, SidePathNodeCount, BossArea, new CharacterEnemy[4]);
-        MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome,
-            MainPathSplatPrototype, SidePathSplatPrototype, VoronoiSamples, LloydRelaxation, EdgeNoise, BorderBlockerOffset);
+        MyStoryStructure = new StoryStructure(0, 1, MainPathNodeCount, SidePathCount, SidePathNodeCount, new CharacterEnemy[4]);
+        MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome, VoronoiSamples, LloydRelaxation, EdgeNoise, BorderBlockerOffset);
 
         if (DrawMode == DrawModeEnum.GameLevel)
-            MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure, SpecialAreas, BossArea, MainPathHalfWidth);
+            MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure);
 
 
         switch (DrawMode)
@@ -203,8 +191,6 @@ public class LevelCreator : Singleton<LevelCreator>
     // Fill terrain with scenery
     private void GenerateScenery()
     {
-        if (!FillAreas) return;
-
         var sceneryObjects = LevelDataGenerator.GenerateScenery(Terrain.GetComponent<Terrain>());
         var scenery = new GameObject("Scenery");
         scenery.transform.parent = transform;
@@ -217,9 +203,9 @@ public class LevelCreator : Singleton<LevelCreator>
     // Draw roads on alpha map
     private void GeneratePaths()
     {
-        LevelDataGenerator.DrawStraightPathLines(_heightMap, _alphaMap, SidePathSplatSize, MapSize, HeightMapResolution,
+        LevelDataGenerator.DrawStraightPathLines(_heightMap, _alphaMap, MyTerrainStructure.BiomeSettings.SidePathSplatSize, MapSize, HeightMapResolution,
             MyTerrainStructure.SidePathLines, MyTerrainStructure.TextureCount, MyTerrainStructure.SidePathSplatIndex);
-        LevelDataGenerator.DrawStraightPathLines(_heightMap, _alphaMap, MainPathSplatSize, MapSize, HeightMapResolution,
+        LevelDataGenerator.DrawStraightPathLines(_heightMap, _alphaMap, MyTerrainStructure.BiomeSettings.MainPathSplatSize, MapSize, HeightMapResolution,
             MyTerrainStructure.MainPathLines, MyTerrainStructure.TextureCount, MyTerrainStructure.MainPathSplatIndex);
     }
 

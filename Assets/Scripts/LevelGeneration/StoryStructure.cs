@@ -36,20 +36,18 @@ public class StoryStructure
     public int MainPathLength { get; private set; }
     public int SidePathCount { get; private set; }
     public int SidePathLength { get; private set; }
-    public AreaBase BossAreaConfiguration { get; private set; }
     public CharacterEnemy[] EnemySet { get; private set; }
 
     public readonly Queue<AreaSegmentRewrite> Rewrites;
     //public Element Reward;
 
-    public StoryStructure(int difficultyLevel, int lootAmount, int mainPathLength, int sidePathCount, int sidePathLength, AreaBase bossAreaConfiguration, CharacterEnemy[] enemySet)
+    public StoryStructure(int difficultyLevel, int lootAmount, int mainPathLength, int sidePathCount, int sidePathLength, CharacterEnemy[] enemySet)
     {
         DifficultyLevel = difficultyLevel;
         LootAmount = lootAmount;
         MainPathLength = mainPathLength;
         SidePathCount = sidePathCount;
         SidePathLength = sidePathLength;
-        BossAreaConfiguration = bossAreaConfiguration;
         EnemySet = enemySet;
 
         Rewrites = new Queue<AreaSegmentRewrite>();
