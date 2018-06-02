@@ -80,7 +80,7 @@ public class LevelCreator : Singleton<LevelCreator>
         MyStoryStructure = new StoryStructure(0, 1, MainPathNodeCount, SidePathCount, SidePathNodeCount, new CharacterEnemy[4]);
         MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome, VoronoiSamples, LloydRelaxation, EdgeNoise, BorderBlockerOffset);
 
-        if (DrawMode == DrawModeEnum.GameLevel)
+        if ((int)DrawModeEnum.ScenerySkeleton <= (int)DrawMode)
             MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure);
 
 
@@ -191,7 +191,7 @@ public class LevelCreator : Singleton<LevelCreator>
     // Fill terrain with scenery
     private void GenerateScenery()
     {
-        var sceneryObjects = LevelDataGenerator.GenerateScenery(Terrain.GetComponent<Terrain>());
+        var sceneryObjects = LevelDataGenerator.GenerateScenery(Terrain.GetComponent<Terrain>(), MySceneryStructure.Areas);
         var scenery = new GameObject("Scenery");
         scenery.transform.parent = transform;
         foreach (var obj in sceneryObjects)
@@ -253,7 +253,7 @@ public class LevelCreator : Singleton<LevelCreator>
     private void DrawTerrainAndScenery()
     {
         DrawTerrain();
-        // TODO: populate the terrain with scenery
+        GenerateScenery();
         GenerateNavMesh();
     }
 

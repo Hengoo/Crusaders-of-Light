@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using csDelaunay;
 using UnityEngine;
 
@@ -115,6 +116,23 @@ public static class StructureDrawer {
 
             var go = DrawLine(p0, p1, 3, Color.white);
             go.transform.parent = result.transform;
+        }
+
+        return result;
+    }
+
+    public static GameObject DrawPolygon(Vector2[] polygon, string name = "Polygon")
+    {
+        GameObject result = new GameObject(name);
+        for (int i = 0; i < polygon.Length; i++)
+        {
+            var p0 = polygon[i];
+            var p1 = polygon[i == polygon.Length - 1 ? 0 : i + 1];
+            var start = new Vector3(p0.x, 0, p0.y);
+            var end = new Vector3(p1.x, 0, p1.y);
+
+            GameObject line = DrawLine(start, end, 3, Color.white);
+            line.transform.parent = result.transform;
         }
 
         return result;

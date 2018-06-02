@@ -13,17 +13,18 @@ using UnityEngine;
 public abstract class AreaSettingsFactory : ScriptableObject
 {
     public abstract Graph<AreaSegment> GetPatternGraph();
-    public abstract AreaSettings ProduceAreaSettings(Vector2[] centers, Vector2[] polygon, Vector2[] clearPolygons);
+    public abstract AreaSettings ProduceAreaSettings(IEnumerable<Vector2> centers, Graph<Vector2[]> polygonGraph, IEnumerable<Vector2[]> clearPolygons);
 }                                                    
 public abstract class AreaSettings
 {
-    public readonly string Name;
+    public string Name = "Area";
+    public List<PoissonDiskFillData> PoissonData = new List<PoissonDiskFillData>();
 
-    private Vector2[] _centers;
-    private Vector2[] _polygon;
-    private Vector2[] _clearPolygons;
+    protected Vector2[] Centers;
+    protected Graph<Vector2[]> PolygonGraph;
+    protected Vector2[][] ClearPolygons;
 
-    public abstract GameObject GenerateAreaScenery();
+    public abstract GameObject GenerateAreaScenery(Terrain terrain);
 }
 
 public class AreaSegment : IEquatable<AreaSegment>

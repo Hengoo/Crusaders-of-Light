@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SceneryStructure
 {
-    public List<AreaSettings> Areas;
+    public readonly List<AreaSettings> Areas = new List<AreaSettings>();
 
     private GrammarGraph<AreaSegment> _graph;
 
@@ -45,14 +45,19 @@ public class SceneryStructure
                 continue;
             }
 
-            Areas.Add(settingsFactory.ProduceAreaSettings());
-
-            // Remove matched nodes from graph
-            foreach (int match in matches.Values)
+            List<Vector2> centers = new List<Vector2>();
+            
+            foreach (var match in matches)
             {
-                availableSegments.Remove(match);
-                _graph.RemoveNode(match);
+                centers.Add(terrainStructure.GetAreaSegmentCenter(match.Value));
+                availableSegments.Remove(match.Value);
+                _graph.RemoveNode(match.Value);
             }
+
+            Graph<Vector2[]> areaPolygons = terrainStructure.GetAreaSegmentsPolygonGraph(matches.Values);
+            List<Vector2[]> clearPolygons = terrainStructure.PathPolygons;
+
+            Areas.Add(settingsFactory.ProduceAreaSettings(centers, areaPolygons, clearPolygons));
         }
     }
 }
