@@ -335,7 +335,7 @@ public class TerrainStructure
     // Create border blocker polygon
     private void CreateBorderBlockerPolygon(float borderInlandOffset)
     {
-        var temporarySegments = new List<KeyValuePair<Edge, Vector2>>();
+        var segments = new List<KeyValuePair<Edge, Vector2>>();
 
         foreach (var edge in VoronoiDiagram.Edges)
         {
@@ -352,51 +352,98 @@ public class TerrainStructure
                 (leftAreaSegment.Type == AreaSegment.EAreaSegmentType.Border || rightAreaSegment.Type == AreaSegment.EAreaSegmentType.Border))
             {
                 // Add border edge with the biome center to scale inwards later
-                temporarySegments.Add(new KeyValuePair<Edge, Vector2>(edge,
+                segments.Add(new KeyValuePair<Edge, Vector2>(edge,
                     leftAreaSegment.Type == AreaSegment.EAreaSegmentType.Border ? edge.LeftSite.Coord.ToUnityVector2() : edge.RightSite.Coord.ToUnityVector2()));
             }
         }
 
-        // Create border polygon with sorted vertices and offset them inwards
-        var borderBlockerPolygon = new List<Vector2>();
-        var coastLines = temporarySegments.Select(pair => pair.Key).ToList().EdgesToSortedLines();
-        foreach (var line in coastLines)
+        // Group connected segments
+        var edgeGroups = new List<List<KeyValuePair<Edge, Vector2>>>();
+        while (segments.Count > 0)
         {
+            var edges = new List<KeyValuePair<Edge, Vector2>>();
+            var startEdge = segments[0];
+            segments.Remove(startEdge);
+            Vertex headPoint = startEdge.Key.RightVertex;
+            Vertex tailPoint = startEdge.Key.LeftVertex;
+            edges.Add(startEdge);
 
-            // Offset borders towards biome center
-            var left = line[0];
-            var right = line[1];
-            var center = Vector2.zero;
-            temporarySegments.ForEach(e =>
+            // Find a polygon
+            var polygonClosed = false;
+            while (!polygonClosed && segments.Count > 0)
             {
-                var l = e.Key.ClippedEnds[LR.LEFT].ToUnityVector2();
-                var r = e.Key.ClippedEnds[LR.RIGHT].ToUnityVector2();
-                if ((l == left || l == right) && (r == left || r == right))
-                    center = e.Value;
-            });
+                for (int i = 0; i < segments.Count; i++)
+                {
+                    var currentElement = segments[i];
+                    Vertex leftPoint = currentElement.Key.LeftVertex;
+                    Vertex rightPoint = currentElement.Key.RightVertex;
+                    if (leftPoint == headPoint)
+                    {
+                        edges.Add(currentElement);
+                        segments.Remove(currentElement);
+                        headPoint = rightPoint;
+                    }
+                    else if (rightPoint == headPoint)
+                    {
+                        edges.Add(currentElement);
+                        segments.Remove(currentElement);
+                        headPoint = leftPoint;
+                    }
 
-            left += (center - left).normalized * borderInlandOffset;
-            right += (center - right).normalized * borderInlandOffset;
-
-            // Offsetting can give duplicated points
-            if (!borderBlockerPolygon.Contains(left))
-                borderBlockerPolygon.Add(left);
-            if (!borderBlockerPolygon.Contains(right))
-                borderBlockerPolygon.Add(right);
+                    // Polygon has been closed
+                    if (headPoint == tailPoint)
+                    {
+                        polygonClosed = true;
+                        break;
+                    }
+                }
+            }
+            edgeGroups.Add(edges);
         }
 
-        // Create border blocker lines
-        for (int i = 0; i < borderBlockerPolygon.Count; i++)
+        // Iterate over each polygon found previously
+        foreach (var edges in edgeGroups)
         {
-            var p0 = borderBlockerPolygon[i];
-            var p1 = i + 1 == borderBlockerPolygon.Count ?
-                borderBlockerPolygon[0] : borderBlockerPolygon[i + 1];
+            var polygon = new List<Vector2>();
+            var coastLines = edges.Select(pair => pair.Key).ToList().EdgesToSortedLines();
+            foreach (var line in coastLines)
+            {
 
-            // Filter duplicated vertices -> TODO: fix problem in offsetting
-            if ((p0 - p1).magnitude < 0.01f )
-                continue;
+                // Offset borders towards biome center
+                var left = line[0];
+                var right = line[1];
+                var center = Vector2.zero;
+                edges.ForEach(e =>
+                {
+                    var l = e.Key.ClippedEnds[LR.LEFT].ToUnityVector2();
+                    var r = e.Key.ClippedEnds[LR.RIGHT].ToUnityVector2();
+                    if ((l == left || l == right) && (r == left || r == right))
+                        center = e.Value;
+                });
 
-            BorderBlockerLines.Add(new[] { p0, p1 });
+                left += (center - left).normalized * borderInlandOffset;
+                right += (center - right).normalized * borderInlandOffset;
+
+                // Offsetting can give duplicated points
+                if (!polygon.Contains(left))
+                    polygon.Add(left);
+                if (!polygon.Contains(right))
+                    polygon.Add(right);
+            }
+
+            // Create border blocker lines
+            for (int j = 0; j < polygon.Count; j++)
+            {
+                var p0 = polygon[j];
+                var p1 = j + 1 == polygon.Count ?
+                    polygon[0] : polygon[j + 1];
+
+                // Filter duplicated vertices -> TODO: fix problem in offsetting
+                if ((p0 - p1).magnitude < 0.01f)
+                    continue;
+
+                BorderBlockerLines.Add(new[] { p0, p1 });
+            }
         }
     }
 
