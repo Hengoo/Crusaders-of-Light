@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05ae0bf356db20f4fa891d24d57b3090, type: 3}
   m_Name: Border
   m_EditorClassIdentifier: 
-  UniqueName: 
+  UniqueName: Border
   HeightParameters:
     Persistence: 0.3
     LocalMax: 0.14
@@ -32,3 +32,23 @@ MonoBehaviour:
   BlockerAngleLimit: 45
   BlockerPositionNoise: {x: 0, y: 0, z: 0}
   BlockerScaleNoise: {x: 0, y: 0, z: 0}
+  BossAreas: []
+  ChestAreas: []
+  PathAreas: []
+  MainPathSplatPrototype:
+    texture: {fileID: 0}
+    normalMap: {fileID: 0}
+    metallic: 0
+    smoothness: 0
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 0, y: 0}
+  SidePathSplatPrototype:
+    texture: {fileID: 0}
+    normalMap: {fileID: 0}
+    metallic: 0
+    smoothness: 0
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 0, y: 0}
+  MainPathSplatSize: 2
+  SidePathSplatSize: 1
+  PathHalfWidth: 5

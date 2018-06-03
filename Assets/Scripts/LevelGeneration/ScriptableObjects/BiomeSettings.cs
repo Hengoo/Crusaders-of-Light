@@ -21,16 +21,16 @@ public class BiomeSettings : ScriptableObject
     public Vector3 BlockerScaleNoise = Vector3.zero;
 
     [Header("Area Settings")]
-    public AreaSettings[] BossAreas;
-    public AreaSettings[] ChestAreas;
-    public AreaSettings[] Path;
-    public AreaSettings[] SidePathAreas;
+    public AreaSettingsFactory[] BossAreas;
+    public AreaSettingsFactory[] ChestAreas;
+    public AreaSettingsFactory[] PathAreas;
 
     [Header("Path Settings")]
     public SplatPrototypeSerializable MainPathSplatPrototype;
     public SplatPrototypeSerializable SidePathSplatPrototype;
     public int MainPathSplatSize = 2;
     public int SidePathSplatSize = 1;
+    public float PathHalfWidth = 5;
 }
 
 [Serializable]

@@ -5,48 +5,46 @@ using UnityEngine;
 
 public class Graph<T> where T : class
 {
-    protected readonly Dictionary<int, Node> _nodes = new Dictionary<int, Node>();
-    protected readonly Dictionary<Pair, Edge> _edges = new Dictionary<Pair, Edge>();
-    protected int _nodeIDCount;
+    protected Dictionary<int, Node> Nodes = new Dictionary<int, Node>();
+    protected Dictionary<Pair, Edge> Edges = new Dictionary<Pair, Edge>();
+    protected int NodeIDCount;
 
     public Graph() { }
     public Graph(Graph<T> original)
     {
-        _nodes = (from x in original._nodes select x).ToDictionary(x => x.Key, x => x.Value.Clone());
-        _edges = (from x in original._edges select x).ToDictionary(x => x.Key, x => x.Value);
-        _nodeIDCount = original._nodeIDCount;
+        Nodes = (from x in original.Nodes select x).ToDictionary(x => x.Key, x => x.Value.Clone());
+        Edges = (from x in original.Edges select x).ToDictionary(x => x.Key, x => x.Value);
+        NodeIDCount = original.NodeIDCount;
     }
 
     public int AddNode(T data)
     {
-        Node node = new Node(_nodeIDCount, data);
-        _nodes.Add(node.NodeID, node);
-        _nodeIDCount++;
+        Node node = new Node(NodeIDCount, data);
+        Nodes.Add(node.NodeID, node);
+        NodeIDCount++;
         return node.NodeID;
     }
 
 
     public bool RemoveNode(int nodeID)
     {
-        if (_nodes.ContainsKey(nodeID))
+        if (Nodes.ContainsKey(nodeID))
         {
-            Node node = _nodes[nodeID];
-
-            foreach (Node neighbor in _nodes.Where(a => a.Value.Neighbors.Contains(node)).Select(a => a.Value))
+            foreach (Node neighbor in Nodes.Where(a => a.Value.Neighbors.Contains(nodeID)).Select(a => a.Value))
             {
-                neighbor.Neighbors.Remove(node);
+                neighbor.Neighbors.Remove(nodeID);
             }
 
             List<Pair> edgesToRemove = new List<Pair>();
-            foreach (Edge edge in _edges.Where(a => a.Value.Nodes.A == nodeID || a.Value.Nodes.B == nodeID).Select(a => a.Value))
+            foreach (Edge edge in Edges.Where(a => a.Value.Nodes.A == nodeID || a.Value.Nodes.B == nodeID).Select(a => a.Value))
             {
                 edgesToRemove.Add(edge.Nodes);
             }
             foreach (Pair p in edgesToRemove)
             {
-                _edges.Remove(p);
+                Edges.Remove(p);
             }
-            _nodes.Remove(nodeID);
+            Nodes.Remove(nodeID);
 
             return true;
         }
@@ -57,14 +55,14 @@ public class Graph<T> where T : class
 
     public int[] FindNodesWithData(T data)
     {
-        var result = _nodes.Where(a => ((T)a.Value.Data).Equals(data)).Select(a => a.Key).ToArray();
+        var result = Nodes.Where(a => ((T)a.Value.Data).Equals(data)).Select(a => a.Key).ToArray();
         return result;
     }
 
     public int[] GetNeighbours(int nodeID)
     {
-        if (_nodes.ContainsKey(nodeID))
-            return _nodes[nodeID].Neighbors.Select(a => a.NodeID).ToArray();
+        if (Nodes.ContainsKey(nodeID))
+            return Nodes[nodeID].Neighbors.ToArray();
 
         Debug.Log("Node not found in graph");
         return null;
@@ -72,14 +70,14 @@ public class Graph<T> where T : class
 
     public int[] GetAllNodeIDs()
     {
-        return _nodes.Keys.ToArray();
+        return Nodes.Keys.ToArray();
     }
 
     public Vector2Int[] GetAllEdges()
     {
-        var result = new Vector2Int[_edges.Count];
-        var edgeArray = _edges.Values.ToArray();
-        for (int i = 0; i < _edges.Count; i++)
+        var result = new Vector2Int[Edges.Count];
+        var edgeArray = Edges.Values.ToArray();
+        for (int i = 0; i < Edges.Count; i++)
         {
             result[i] = new Vector2Int(edgeArray[i].Nodes.A, edgeArray[i].Nodes.B);
         }
@@ -88,24 +86,24 @@ public class Graph<T> where T : class
 
     public T[] GetAllNodeData()
     {
-        return _nodes.Values.Select(node => node.Data).ToArray();
+        return Nodes.Values.Select(node => node.Data).ToArray();
     }
 
     public int NodeCount()
     {
-        return _nodes.Count();
+        return Nodes.Count();
     }
 
     public int EdgeCount()
     {
-        return _edges.Count;
+        return Edges.Count;
     }
 
     public T GetNodeData(int nodeID)
     {
-        if (_nodes.ContainsKey(nodeID))
+        if (Nodes.ContainsKey(nodeID))
         {
-            return _nodes[nodeID].Data;
+            return Nodes[nodeID].Data;
         }
 
         Debug.Log("Node not found in graph");
@@ -114,21 +112,21 @@ public class Graph<T> where T : class
 
     public void ReplaceNodeData(int nodeID, T data)
     {
-        if (_nodes.ContainsKey(nodeID))
-            _nodes[nodeID].Data = data;
+        if (Nodes.ContainsKey(nodeID))
+            Nodes[nodeID].Data = data;
         else
             Debug.Log("Node not found in graph");
     }
 
     public bool AddEdge(int node1, int node2, int value)
     {
-        bool nodesExist = _nodes.ContainsKey(node1) && _nodes.ContainsKey(node2);
-        if (nodesExist && !_edges.ContainsKey(new Pair(node1, node2)) && node1 != node2)
+        bool nodesExist = Nodes.ContainsKey(node1) && Nodes.ContainsKey(node2);
+        if (nodesExist && !Edges.ContainsKey(new Pair(node1, node2)) && node1 != node2)
         {
             Edge edge = new Edge(node1, node2, value);
-            _nodes[node1].AddNeighbor(_nodes[node2]);
-            _nodes[node2].AddNeighbor(_nodes[node1]);
-            _edges.Add(edge.Nodes, edge);
+            Nodes[node1].AddNeighbor(node2);
+            Nodes[node2].AddNeighbor(node1);
+            Edges.Add(edge.Nodes, edge);
             return true;
         }
 
@@ -140,10 +138,10 @@ public class Graph<T> where T : class
 
     public bool RemoveEdge(int node1, int node2)
     {
-        if (_edges.Remove(new Pair(node1, node2)))
+        if (Edges.Remove(new Pair(node1, node2)))
         {
-            _nodes[node1].Neighbors.RemoveWhere(a => a.NodeID == node2);
-            _nodes[node2].Neighbors.RemoveWhere(a => a.NodeID == node1);
+            Nodes[node1].Neighbors.RemoveWhere(node => node == node2);
+            Nodes[node2].Neighbors.RemoveWhere(node => node == node1);
             return true;
         }
 
@@ -154,7 +152,7 @@ public class Graph<T> where T : class
     public int GetEdgeValue(int node1, int node2)
     {
         Edge edge;
-        if (_edges.TryGetValue(new Pair(node1, node2), out edge))
+        if (Edges.TryGetValue(new Pair(node1, node2), out edge))
             return edge.Value;
 
         Debug.Log("Edge not found in graph");
@@ -164,7 +162,7 @@ public class Graph<T> where T : class
     public int GetEdgeValue(Vector2Int edge)
     {
         Edge element;
-        if (_edges.TryGetValue(new Pair(edge.x, edge.y), out element))
+        if (Edges.TryGetValue(new Pair(edge.x, edge.y), out element))
             return element.Value;
 
         Debug.Log("Edge not found in graph");
@@ -174,9 +172,9 @@ public class Graph<T> where T : class
     public bool SetEdgeValue(int node1, int node2, int weight)
     {
         Pair pair = new Pair(node1, node2);
-        if (_edges.ContainsKey(pair))
+        if (Edges.ContainsKey(pair))
         {
-            _edges[pair].Value = weight;
+            Edges[pair].Value = weight;
             return true;
         }
 
@@ -229,7 +227,7 @@ public class Graph<T> where T : class
     protected class Node : IEqualityComparer<Node>
     {
         public readonly int NodeID;
-        public readonly HashSet<Node> Neighbors = new HashSet<Node>();
+        public readonly HashSet<int> Neighbors = new HashSet<int>();
         public T Data;
 
         public Node(int nodeID, T data)
@@ -248,9 +246,9 @@ public class Graph<T> where T : class
             return NodeID.GetHashCode();
         }
 
-        public bool AddNeighbor(Node node)
+        public bool AddNeighbor(int node)
         {
-            return node != this && Neighbors.Add(node);
+            return node != this.NodeID && Neighbors.Add(node);
         }
 
         public Node Clone()

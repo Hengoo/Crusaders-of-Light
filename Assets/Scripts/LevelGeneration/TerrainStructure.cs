@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using csDelaunay;
+// ReSharper disable PossibleMultipleEnumeration
 
 
 public class TerrainStructure
@@ -78,6 +80,9 @@ public class TerrainStructure
 
         // Populate border lines list
         CreateBorderBlockerPolygon(borderBlockerOffset);
+
+        // Create path polygons
+        CreatePathPolygons(BiomeSettings.PathHalfWidth);
     }
 
     // Returns the center position for a given area segment ID
@@ -127,10 +132,127 @@ public class TerrainStructure
         return new KeyValuePair<int, float>(splatID, splatValue);
     }
 
-    // Return biome ID from a csDelaunay vector
-    public int GetNodeIDFromSite(Vector2f coord)
+    // Get area data graph that contains the given area segments, with the respective center and polygon, and neighborhood information
+    public Graph<AreaData> GetAreaDataGraph(IEnumerable<int> areaSegments)
     {
-        return _siteAreaSegmentMap[coord];
+        if (!AreNeighbours(areaSegments))
+            return null;
+
+        // Build polygons for each site
+        Dictionary<int, Vector2[]> areaSegmentPolygonMap = new Dictionary<int, Vector2[]>();
+        foreach (int areaSegment in areaSegments)
+        {
+            var site = new Vector2f(_areaSegmentCenterMap[areaSegment]);
+            areaSegmentPolygonMap.Add(areaSegment, GetSitePolygon(site));
+        }
+
+        // Build graph
+        Dictionary<int, int> graphMap = new Dictionary<int, int>();
+        Graph<AreaData> areaDataGraph = new Graph<AreaData>();
+        foreach (int areaSegment in areaSegments)
+        {
+            AreaData data = new AreaData
+            {
+                Center = _areaSegmentCenterMap[areaSegment],
+                Polygon = areaSegmentPolygonMap[areaSegment],
+                Segment = AreaSegmentGraph.GetNodeData(areaSegment)
+            };
+            int newID = areaDataGraph.AddNode(data);
+            graphMap.Add(areaSegment, newID);
+        }
+        foreach (int areaSegment in areaSegments)
+        {
+            foreach (int neighbour in AreaSegmentGraph.GetNeighbours(areaSegment))
+            {
+                if (areaSegments.Contains(neighbour))
+                    areaDataGraph.AddEdge(graphMap[areaSegment], graphMap[neighbour], 0);
+            }
+        }
+
+        return areaDataGraph;
+    }
+
+    // Get path polygons that have vertices inside areas segments
+    public List<Vector2[]> GetPathPolygons(IEnumerable<int> areaSegments)
+    {
+
+        var paths = new List<Vector2[]>();
+        foreach (var path in PathPolygons)
+        {
+            if (path.Any(vertex => areaSegments.Contains(GetClosestAreaSegmentID(vertex))))
+            {
+                paths.Add(path);
+            }
+        }
+
+        return paths;
+    }
+
+    // Get border polygon for a given set of area segments
+    public Vector2[] GetAreaSegmentsBorderPolygon(IEnumerable<int> areaSegments)
+    {
+        var areaEdges = new List<Edge>();
+
+        // Get corresponding edges
+        foreach (var edge in VoronoiDiagram.Edges)
+        {
+            //Check if this edge is visible before continuing
+            if (!edge.Visible()) continue;
+
+            int leftAreaSegmentID = _siteAreaSegmentMap[edge.RightSite.Coord];
+            int rightAreaSegmentID = _siteAreaSegmentMap[edge.LeftSite.Coord];
+
+            // Either one or the other must be in areaSegments
+            if (!(areaSegments.Contains(leftAreaSegmentID) && areaSegments.Contains(rightAreaSegmentID)) &&
+                (areaSegments.Contains(leftAreaSegmentID) || areaSegments.Contains(rightAreaSegmentID)))
+            {
+                areaEdges.Add(edge);
+            }
+        }
+
+        // Group connected segments
+        var polygon = new List<Vector2>();
+        while (areaEdges.Count > 0)
+        {
+            var startEdge = areaEdges[0];
+            areaEdges.Remove(startEdge);
+            Vertex headPoint = startEdge.RightVertex;
+            Vertex tailPoint = startEdge.LeftVertex;
+            polygon.Add(startEdge.ClippedEnds[LR.RIGHT].ToUnityVector2());
+
+            // Find polygon
+            var polygonClosed = false;
+            while (!polygonClosed && areaEdges.Count > 0)
+            {
+                for (int i = 0; i < areaEdges.Count; i++)
+                {
+                    var currentElement = areaEdges[i];
+                    Vertex leftPoint = currentElement.LeftVertex;
+                    Vertex rightPoint = currentElement.RightVertex;
+                    if (leftPoint == headPoint)
+                    {
+                        areaEdges.Remove(currentElement);
+                        headPoint = rightPoint;
+                        polygon.Add(currentElement.ClippedEnds[LR.RIGHT].ToUnityVector2());
+                    }
+                    else if (rightPoint == headPoint)
+                    {
+                        areaEdges.Remove(currentElement);
+                        headPoint = leftPoint;
+                        polygon.Add(currentElement.ClippedEnds[LR.LEFT].ToUnityVector2());
+                    }
+
+                    // Polygon has been closed
+                    if (headPoint == tailPoint)
+                    {
+                        polygonClosed = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return polygon.ToArray();
     }
 
     //---------------------------------------------------------------
@@ -441,7 +563,7 @@ public class TerrainStructure
         }
     }
 
-    private void GenerateRoadPolygons(float roadWidth)
+    private void CreatePathPolygons(float roadWidth)
     {
         foreach (var line in MainPathLines)
         {
@@ -489,34 +611,59 @@ public class TerrainStructure
     //
     //---------------------------------------------------------------
 
+    // Checks if segments are neighbours
+    private bool AreNeighbours(IEnumerable<int> areaSegments)
+    {
+        // Check for null
+        if (areaSegments == null || !areaSegments.Any())
+            return false;
+
+        // Check if segments are neighbours
+        var found = new List<int> { };
+        var frontier = new Queue<int>();
+        frontier.Enqueue(areaSegments.ElementAt(0));
+        while (found.Count < areaSegments.Count() && frontier.Count > 0)
+        {
+            var element = frontier.Dequeue();
+            if (areaSegments.Contains(element))
+            {
+                found.Add(element);
+                foreach (int neighbour in AreaSegmentGraph.GetNeighbours(element))
+                {
+                    frontier.Enqueue(neighbour);
+                }
+            }
+        }
+        return found.Count == areaSegments.Count();
+    }
+
     // Generates a polygon for a given voronoi site
     private Vector2[] GetSitePolygon(Vector2f site)
     {
-        var edges = VoronoiDiagram.SitesIndexedByLocation[site].Edges;
-        if (edges == null || edges.Count <= 0)
+        List<Edge> edges = new List<Edge>();
+        foreach (var edge in VoronoiDiagram.Edges)
         {
-            Debug.Log("Could not build polygon for site " + site);
-            return null;
-        }
-
-        var result = new List<Vector2>(edges.Count);
-        var reorderer = new EdgeReorderer(edges, typeof(Vertex));
-        for (var i = 0; i < reorderer.Edges.Count; i++)
-        {
-            var edge = reorderer.Edges[i];
             if (!edge.Visible()) continue;
 
-            result.Add(edge.ClippedEnds[reorderer.EdgeOrientations[i]].ToUnityVector2());
-        }
+            if (edge.LeftSite.Coord != site && edge.RightSite.Coord != site)
+                continue;
 
-        return result.ToArray();
+            edges.Add(edge);
+        }
+        return edges.EdgesToSortedLines().Select(t => t[0]).ToArray();
     }
 
-    // Get closest AreaSegment center to specified pos
+    // Get closest AreaSegment to specified pos
     private AreaSegment GetClosestAreaSegment(Vector2 pos)
     {
+        return AreaSegmentGraph.GetNodeData(GetClosestAreaSegmentID(pos));
+    }
+
+    // Get closest AreaSegmentGraph ID center to specified pos
+    private int GetClosestAreaSegmentID(Vector2 pos)
+    {
         float smallestDistance = float.MaxValue;
-        AreaSegment closestAreaSegment = null;
+        int closestAreaSegment = 0;
         foreach (var id in AreaSegmentGraph.GetAllNodeIDs())
         {
             Vector2 center = _areaSegmentCenterMap[id];
@@ -524,10 +671,9 @@ public class TerrainStructure
             if (currentDistance < smallestDistance)
             {
                 smallestDistance = currentDistance;
-                closestAreaSegment = AreaSegmentGraph.GetNodeData(id);
+                closestAreaSegment = id;
             }
         }
-
         return closestAreaSegment;
     }
 

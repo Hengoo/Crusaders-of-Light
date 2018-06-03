@@ -48,16 +48,31 @@ public static class ExtensionMethods
         }
     }
 
+
+    // Rotates objects if outside of angle tolerance
+    public static void CorrectAngleTolerance(this GameObject go, float angleLimit)
+    {
+        float angle = Vector3.Angle(go.transform.up, Vector3.up);
+        if (angle > angleLimit)
+        {
+            var euler = go.transform.rotation.eulerAngles;
+            go.transform.rotation = Quaternion.RotateTowards(go.transform.rotation, Quaternion.Euler(0, euler.y, 0), angle - angleLimit);
+        }
+    }
+
+    // Supports both convex and non convex polygons
     public static bool IsInsidePolygon(this Vector2 p, Vector2[] polyPoints)
     {
         var j = polyPoints.Length - 1;
-        var inside = false; 
-        for (var i = 0; i < polyPoints.Length; j = i++) { 
-            if (((polyPoints[i].y <= p.y && p.y<polyPoints[j].y) || (polyPoints[j].y <= p.y && p.y<polyPoints[i].y)) && 
-                (p.x<(polyPoints[j].x - polyPoints[i].x) * (p.y - polyPoints[i].y) / (polyPoints[j].y - polyPoints[i].y) + polyPoints[i].x)) 
-                inside = !inside; 
-        } 
-        return inside; 
+        var inside = false;
+        for (var i = 0; i < polyPoints.Length; j = i++)
+        {
+            if (((polyPoints[i].y <= p.y && p.y < polyPoints[j].y) ||
+                (polyPoints[j].y <= p.y && p.y < polyPoints[i].y)) &&
+                (p.x < (polyPoints[j].x - polyPoints[i].x) * (p.y - polyPoints[i].y) / (polyPoints[j].y - polyPoints[i].y) + polyPoints[i].x))
+                inside = !inside;
+        }
+        return inside;
     }
 
     public static void SortVertices(this List<Vector2> polygon, Vector2 origin)
@@ -91,7 +106,7 @@ public static class ExtensionMethods
 
             var p0 = edge.ClippedEnds[edgeReorderer.EdgeOrientations[j]].ToUnityVector2();
             var p1 = edge.ClippedEnds[edgeReorderer.EdgeOrientations[j] == LR.LEFT ? LR.RIGHT : LR.LEFT].ToUnityVector2();
-            result.Add(new []{p0, p1});
+            result.Add(new[] { p0, p1 });
         }
 
         return result;

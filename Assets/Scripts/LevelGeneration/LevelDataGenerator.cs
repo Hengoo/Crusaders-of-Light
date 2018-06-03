@@ -180,7 +180,7 @@ public static class LevelDataGenerator
     }
 
     // Generate blocking gameobjects along the coast to prevent players from going into the water
-    public static GameObject GenerateBlockerLine(Terrain terrain, List<Vector2[]> blockerLines, float blockerLength, Vector3 positionNoise, Vector3 scaleNoise, GameObject blocker, GameObject pole = null, float angleLimit = 35)
+    public static GameObject GenerateBlockerLine(Terrain terrain, List<Vector2[]> blockerLines, float blockerLength, Vector3 positionNoise, Vector3 scaleNoise, GameObject blocker, bool useTerrainNormal = false, GameObject pole = null, float angleLimit = 35)
     {
         var result = new GameObject("Blockers");
         if (!pole)
@@ -217,17 +217,18 @@ public static class LevelDataGenerator
                 if (lastTransform == null)
                 {
                     go = Object.Instantiate(pole);
-                    Ray ray = new Ray(position + Vector3.up * 30, Vector3.down);
-                    var hits = Physics.RaycastAll(ray, Mathf.Infinity);
-                    var terrainHit = hits.First(hit => hit.collider.name == "Terrain");
-                    go.transform.rotation = Quaternion.FromToRotation(Vector3.up, terrainHit.normal);
+                    go.transform.rotation = GetTerrainNormalRotation(position);
                     go.transform.localScale += new Vector3(lengthCorrection, 0, lengthCorrection) / blockerLength;
                 }
                 else
                 {
                     var orientation = lastTransform.position - position;
                     go = Object.Instantiate(blocker);
-                    go.transform.rotation = Quaternion.Euler(blocker.transform.eulerAngles + Quaternion.LookRotation(orientation.normalized, Vector3.up).eulerAngles);
+
+                    go.transform.rotation = useTerrainNormal ?
+                        GetTerrainNormalRotation(position) :
+                        Quaternion.Euler(blocker.transform.eulerAngles + Quaternion.LookRotation(orientation.normalized, Vector3.up).eulerAngles);
+
                     go.transform.localScale = blocker.transform.localScale +
                         new Vector3(lengthCorrection, 0, lengthCorrection) / blockerLength +
                         new Vector3(Random.Range(0, 0.01f), 0, Mathf.Clamp((orientation.magnitude - (blockerLength + lengthCorrection)) / (blockerLength + lengthCorrection), 0, .2f));
@@ -235,12 +236,7 @@ public static class LevelDataGenerator
                 go.transform.localScale += extraScale;
                 go.transform.position = position + extraPosition;
                 go.transform.parent = areaSegmentLine.transform;
-                float angle = Vector3.Angle(go.transform.up, Vector3.up);
-                if (angle > angleLimit)
-                {
-                    var euler = go.transform.rotation.eulerAngles;
-                    go.transform.rotation = Quaternion.RotateTowards(go.transform.rotation, Quaternion.Euler(0, euler.y, 0),angle - angleLimit);
-                }
+                go.CorrectAngleTolerance(angleLimit);
 
                 lastTransform = go.transform;
             }
@@ -249,32 +245,42 @@ public static class LevelDataGenerator
     }
 
     // Instantiate all gameobjects that are part of the scenery
-    public static GameObject[] GenerateScenery(Terrain terrain)
+    public static GameObject[] GenerateScenery(Terrain terrain, IEnumerable<AreaSettings> areas)
     {
-        GameObject[] result = new GameObject[0];
+        List<GameObject> result = new List<GameObject>();
 
-        //TODO: implement
+        foreach (var area in areas)
+        {
+            var areaGO = area.GenerateAreaScenery(terrain);
+            foreach (var data in area.PoissonDataList)
+            {
+                var poissonGO = PoissonDiskFill(terrain, data, area.Name + " Fill");
+                poissonGO.transform.parent = areaGO.transform;
+            }
+            result.Add(areaGO);
+        }
 
-        return result;
+        return result.ToArray();
     }
+
 
     //---------------------------------------------------------------------
     // 
     // HELPER PRIVATE FUNCTIONS
     // 
     //---------------------------------------------------------------------
-    
-    /* Fill an area with prefabs */
-    private static GameObject PoissonDiskFill(Terrain terrain, PoissonDiskFillData poissonDiskFillData)
+
+    // Fill an area with prefabs 
+    private static GameObject PoissonDiskFill(Terrain terrain, PoissonDiskFillData poissonDiskFillData, string name = "Scenery Area")
     {
-        var result = new GameObject("SceneryAreaFill");
+        var result = new GameObject(name);
         result.transform.position = Vector3.zero;
         result.transform.rotation = Quaternion.identity;
 
         if (poissonDiskFillData.Prefabs == null || poissonDiskFillData.Prefabs.Length <= 0)
             return result;
 
-        var levelCreator = LevelCreator.Instance;
+        var levelCreator = terrain.transform.parent.GetComponent<LevelCreator>();
         var size = poissonDiskFillData.FrameSize;
         PoissonDiskGenerator.minDist = poissonDiskFillData.MinDist;
         PoissonDiskGenerator.sampleRange = (size.x > size.y ? size.x : size.y);
@@ -291,12 +297,22 @@ public static class LevelDataGenerator
 
             var go = Object.Instantiate(poissonDiskFillData.Prefabs[Random.Range(0, poissonDiskFillData.Prefabs.Length)]);
             go.transform.position = new Vector3(point.x, height, point.y) + terrain.transform.position;
-            go.transform.rotation = Quaternion.Euler(go.transform.rotation.eulerAngles.x, Random.Range(0, 360f),
-                go.transform.rotation.eulerAngles.z);
+            go.transform.rotation = GetTerrainNormalRotation(go.transform.position) * Quaternion.Euler(go.transform.rotation.eulerAngles.x, Random.Range(0, 360f), go.transform.rotation.eulerAngles.z);
+            go.CorrectAngleTolerance(poissonDiskFillData.AngleTolerance);
             go.transform.parent = result.transform;
         }
 
         return result;
+    }
+
+    // Get rotation of the terrain normal
+    private static Quaternion GetTerrainNormalRotation(Vector3 position)
+    {
+
+        Ray ray = new Ray(position + Vector3.up * 30, Vector3.down);
+        var hits = Physics.RaycastAll(ray, Mathf.Infinity);
+        var terrainHit = hits.First(hit => hit.collider.name == "Terrain");
+        return Quaternion.FromToRotation(Vector3.up, terrainHit.normal);
     }
 
     // Smooth cells using a 2*neighborcount + 1 square around each cell

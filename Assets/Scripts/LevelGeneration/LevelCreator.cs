@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
@@ -37,7 +38,7 @@ public class LevelCreator : Singleton<LevelCreator>
     [Range(1, 8)] public int Octaves = 3;
     [Range(0, 1f)] public float WaterHeight = 0.15f;
     public Material WaterMaterial;
-    
+
     [Header("Smooth Settings")]
     [Range(0, 5)] public int OverallSmoothing = 2;
     public bool SmoothEdges = true;
@@ -80,7 +81,7 @@ public class LevelCreator : Singleton<LevelCreator>
         MyStoryStructure = new StoryStructure(0, 1, MainPathNodeCount, SidePathCount, SidePathNodeCount, new CharacterEnemy[4]);
         MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome, VoronoiSamples, LloydRelaxation, EdgeNoise, BorderBlockerOffset);
 
-        if (DrawMode == DrawModeEnum.GameLevel)
+        if ((int)DrawModeEnum.ScenerySkeleton <= (int)DrawMode)
             MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure);
 
 
@@ -178,20 +179,20 @@ public class LevelCreator : Singleton<LevelCreator>
         var borderSettings = MyTerrainStructure.BorderSettings;
         var fences = LevelDataGenerator.GenerateBlockerLine(Terrain, MyTerrainStructure.BorderBlockerLines,
             borderSettings.BlockerLength, borderSettings.BlockerPositionNoise, borderSettings.BlockerScaleNoise,
-            borderSettings.Blocker, borderSettings.BlockerPole, borderSettings.BlockerAngleLimit);
+            borderSettings.Blocker, false, borderSettings.BlockerPole, borderSettings.BlockerAngleLimit);
         fences.transform.parent = transform;
 
         var biomeSettings = MyTerrainStructure.BiomeSettings;
         var walls = LevelDataGenerator.GenerateBlockerLine(Terrain, MyTerrainStructure.AreaBlockerLines,
             biomeSettings.BlockerLength, biomeSettings.BlockerPositionNoise, biomeSettings.BlockerScaleNoise,
-            biomeSettings.Blocker, biomeSettings.BlockerPole, biomeSettings.BlockerAngleLimit);
+            biomeSettings.Blocker, true, biomeSettings.BlockerPole, biomeSettings.BlockerAngleLimit);
         walls.transform.parent = transform;
     }
 
     // Fill terrain with scenery
     private void GenerateScenery()
     {
-        var sceneryObjects = LevelDataGenerator.GenerateScenery(Terrain.GetComponent<Terrain>());
+        var sceneryObjects = LevelDataGenerator.GenerateScenery(Terrain.GetComponent<Terrain>(), MySceneryStructure.Areas);
         var scenery = new GameObject("Scenery");
         scenery.transform.parent = transform;
         foreach (var obj in sceneryObjects)
@@ -247,13 +248,14 @@ public class LevelCreator : Singleton<LevelCreator>
 
     private void DrawScenerySkeleton()
     {
-        // TODO: create debug view
+        var scenery = StructureDrawer.DrawAreas(MySceneryStructure.Areas, "Scenery Skeleton");
+        scenery.transform.parent = transform;
     }
 
     private void DrawTerrainAndScenery()
     {
         DrawTerrain();
-        // TODO: populate the terrain with scenery
+        GenerateScenery();
         GenerateNavMesh();
     }
 
