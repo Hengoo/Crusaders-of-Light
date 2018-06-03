@@ -64,9 +64,14 @@ public class EnemySwarm : MonoBehaviour {
     public float UpdateCounter = 0;
 
     [Header("Lists:")]
+    public SwarmAttention SAttention;
+    public CharacterAttention CAttention;
     public List<EnemySwarm> EnemiesInRange = new List<EnemySwarm>();
     public List<GameObject> DangerInRange = new List<GameObject>();
-    public List<GameObject> PlayersInRange = new List<GameObject>();
+    public List<Character> PlayersInRange = new List<Character>();
+
+    [Header("FOR TESTING:")]
+    public bool PlayerDanger = true;
 
     private void Start()
     {
@@ -95,7 +100,16 @@ public class EnemySwarm : MonoBehaviour {
             RuleCohesion();
             RuleSeperation();
             RuleAlignment();
-            RuleDangerAvoidance();
+
+            if (PlayerDanger)
+            {
+                RuleDangerAvoidanceEnhanced();
+            }
+            else
+            {
+                RuleDangerAvoidance();
+            }
+            
         }
 
         if (GoalFactor > 0)
@@ -255,6 +269,7 @@ public class EnemySwarm : MonoBehaviour {
 
     private void RuleDangerAvoidance()
     {
+        // Dangers in Range:
         int NumberOfDangers = DangerInRange.Count;
 
         Vector3 DangerVec = Vector3.zero;
@@ -269,6 +284,75 @@ public class EnemySwarm : MonoBehaviour {
             DistanceVecMag = DistanceVec.sqrMagnitude;
 
             if (DistanceVecMag <= DangerDistance * DangerDistance)
+            {
+                DangerVec += DistanceVec.normalized / Mathf.Sqrt(DistanceVecMag);
+                DangerVecNumber++;
+            }
+        }
+
+        if (DangerVecNumber >= 1)
+        {
+            DangerVec = DangerVec.normalized * GetDesiredRunSpeed();
+
+            DangerVec = Steer(DangerVec);
+            Acceleration += DangerVec * EnemyTestSwarm.Instance.DangerFactor;
+            GoalFactor += EnemyTestSwarm.Instance.DangerFactor;
+        }
+    }
+
+    private void RuleDangerAvoidanceEnhanced()
+    {
+        // Dangers in Range:
+        int NumberOfDangers = DangerInRange.Count;
+
+        Vector3 DangerVec = Vector3.zero;
+        int DangerVecNumber = 0;
+
+        Vector3 DistanceVec = Vector3.zero;
+        float DistanceVecMag = 0;
+
+        for (int i = 0; i < NumberOfDangers; i++)
+        {
+            DistanceVec = transform.position - DangerInRange[i].transform.position;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            if (DistanceVecMag <= DangerDistance * DangerDistance)
+            {
+                DangerVec += DistanceVec.normalized / Mathf.Sqrt(DistanceVecMag);
+                DangerVecNumber++;
+            }
+        }
+
+        // Player Hit Objects In Range:
+        List<SkillHitObject> PlayerHitObjects = CAttention.GetPlayerHitObjectsInAttentionRange();
+        NumberOfDangers = PlayerHitObjects.Count;
+
+        for (int i = 0; i < NumberOfDangers; i++)
+        {
+            if (PlayerHitObjects[i])
+            {
+                DistanceVec = transform.position - PlayerHitObjects[i].transform.position;
+                DistanceVecMag = DistanceVec.sqrMagnitude;
+
+                if (DistanceVecMag <= DangerDistance * DangerDistance)
+                {
+                    DangerVec += DistanceVec.normalized / Mathf.Sqrt(DistanceVecMag);
+                    DangerVecNumber++;
+                }
+            }
+        }
+
+        // Players in Range:
+        NumberOfDangers = PlayersInRange.Count;
+
+        for (int i = 0; i < NumberOfDangers; i++)
+        {
+            DistanceVec = transform.position - PlayersInRange[i].transform.position;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            if (DistanceVecMag <= (DangerDistance * 0.6f) * (DangerDistance * 0.6f)
+                && PlayersInRange[i].GetCurrentThreatLevel(true, false) >= 2
+                && (Vector3.Dot(PlayersInRange[i].transform.forward, (PlayersInRange[i].transform.position - transform.position).normalized) < 0.3f))
             {
                 DangerVec += DistanceVec.normalized / Mathf.Sqrt(DistanceVecMag);
                 DangerVecNumber++;
@@ -373,62 +457,46 @@ public class EnemySwarm : MonoBehaviour {
 
     // ================================================== NEARBY LISTS ==================================================
 
-    public void OnTriggerEnter(Collider other)
+    public void AddToEnemiesInRange(EnemySwarm AddEnemySwarm)
     {
-        if (other.tag == "EnemySwarm")
-        {
-            EnemiesInRange.Add(other.GetComponent<EnemySwarm>());
-        }
-        else if (other.tag == "SwarmDanger")
-        {
-            DangerInRange.Add(other.gameObject);
-        }
-        else if (other.tag == "Character")
-        {
-            /*Character otherChar = other.GetComponent<Character>();
-            if (otherChar.GetAlignment() == Character.TeamAlignment.PLAYERS)
-            {
-                PlayersInRange.Add(otherChar);
-            }*/
-            PlayersInRange.Add(other.gameObject);
-        }
+        EnemiesInRange.Add(AddEnemySwarm);
     }
 
-    public void OnTriggerExit(Collider other)
+    public void RemoveFromEnemiesInRange(EnemySwarm RemoveEnemySwarm)
     {
-        if (other.tag == "EnemySwarm")
-        {
-            EnemiesInRange.Remove(other.GetComponent<EnemySwarm>());
-        }
-        else if (other.tag == "SwarmDanger")
-        {
-            DangerInRange.Remove(other.gameObject);
-        }
-        else if (other.tag == "Character")
-        {
-            /*Character otherChar = other.GetComponent<Character>();
-            if (otherChar.GetAlignment() == Character.TeamAlignment.PLAYERS)
-            {
-                PlayersInRange.Remove(otherChar);
-            }*/
-            PlayersInRange.Remove(other.gameObject);
-        }
+        EnemiesInRange.Remove(RemoveEnemySwarm);
+    }
+
+    public void AddToDangersInRange(GameObject AddDanger)
+    {
+        DangerInRange.Add(AddDanger);
+    }
+
+    public void RemoveFromDangersInRange(GameObject RemoveDanger)
+    {
+        DangerInRange.Remove(RemoveDanger);
+    }
+
+    public void AddToPlayersInRange(GameObject AddPlayer)
+    {
+        PlayersInRange.Add(AddPlayer.GetComponent<CharacterAttention>().GetOwner());
+    }
+
+    public void RemoveFromPlayersInRanger(GameObject RemovePlayer)
+    {
+        PlayersInRange.Remove(RemovePlayer.GetComponent<CharacterAttention>().GetOwner());
     }
 
     public void OnDestroy()
     {
-      /*  for (int i = 0; i < EnemiesInRange.Count; i++)
+        for (int i = 0; i < EnemiesInRange.Count; i++)
         {
-            EnemiesInRange[i].GetComponent<EnemySwarm>().RemoveFromList(this.gameObject);
-        }*/
-    }
-
-    public void RemoveFromList(EnemySwarm SwarmObject)
-    {
-        EnemiesInRange.Remove(SwarmObject);
+            EnemiesInRange[i].RemoveFromEnemiesInRange(this);
+        }
     }
 
     // =================================================/ NEARBY LISTS /=================================================
+
 
     // ================================================ GETTERS/SETTERS =================================================
 

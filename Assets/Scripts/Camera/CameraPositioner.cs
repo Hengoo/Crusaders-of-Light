@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraPositioner : MonoBehaviour
 {
-    private GameObject[] cameraTargets;
+    public GameObject[] cameraTargets; // Changed to public for testing. Can be made private later again as it is set through code.
     public GameObject AudioListener;
     public float distanceMin;
 	public float distanceMultiplier;
@@ -13,7 +13,10 @@ public class CameraPositioner : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-	    cameraTargets = LevelController.Instance.GetActivePlayers();
+        if (LevelController.Instance)
+        {
+            cameraTargets = LevelController.Instance.GetActivePlayers();
+        }    
 	}
 
 	// Update is called once per frame

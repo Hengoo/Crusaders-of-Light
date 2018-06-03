@@ -25,6 +25,7 @@ public class GUICharacterFollow : MonoBehaviour {
         else
         {
             HealthHealingBarCurrent.enabled = false;
+            gameObject.SetActive(false);
         }
     }
 
