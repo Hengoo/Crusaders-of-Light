@@ -404,6 +404,14 @@ public class EnemySwarm : MonoBehaviour {
         PlayersInRange.Remove(RemovePlayer);
     }
 
+    public void OnDestroy()
+    {
+        for (int i = 0; i < EnemiesInRange.Count; i++)
+        {
+            EnemiesInRange[i].RemoveFromEnemiesInRange(this);
+        }
+    }
+
     // =================================================/ NEARBY LISTS /=================================================
 
 
