@@ -70,6 +70,9 @@ public class EnemySwarm : MonoBehaviour {
     public List<GameObject> DangerInRange = new List<GameObject>();
     public List<Character> PlayersInRange = new List<Character>();
 
+    [Header("FOR TESTING:")]
+    public bool PlayerDanger = true;
+
     private void Start()
     {
         UpdateCounter = Random.Range(0, UpdateTimer);
@@ -97,7 +100,16 @@ public class EnemySwarm : MonoBehaviour {
             RuleCohesion();
             RuleSeperation();
             RuleAlignment();
-            RuleDangerAvoidance();
+
+            if (PlayerDanger)
+            {
+                RuleDangerAvoidanceEnhanced();
+            }
+            else
+            {
+                RuleDangerAvoidance();
+            }
+            
         }
 
         if (GoalFactor > 0)
@@ -278,6 +290,39 @@ public class EnemySwarm : MonoBehaviour {
             }
         }
 
+        if (DangerVecNumber >= 1)
+        {
+            DangerVec = DangerVec.normalized * GetDesiredRunSpeed();
+
+            DangerVec = Steer(DangerVec);
+            Acceleration += DangerVec * EnemyTestSwarm.Instance.DangerFactor;
+            GoalFactor += EnemyTestSwarm.Instance.DangerFactor;
+        }
+    }
+
+    private void RuleDangerAvoidanceEnhanced()
+    {
+        // Dangers in Range:
+        int NumberOfDangers = DangerInRange.Count;
+
+        Vector3 DangerVec = Vector3.zero;
+        int DangerVecNumber = 0;
+
+        Vector3 DistanceVec = Vector3.zero;
+        float DistanceVecMag = 0;
+
+        for (int i = 0; i < NumberOfDangers; i++)
+        {
+            DistanceVec = transform.position - DangerInRange[i].transform.position;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            if (DistanceVecMag <= DangerDistance * DangerDistance)
+            {
+                DangerVec += DistanceVec.normalized / Mathf.Sqrt(DistanceVecMag);
+                DangerVecNumber++;
+            }
+        }
+
         // Player Hit Objects In Range:
         List<SkillHitObject> PlayerHitObjects = CAttention.GetPlayerHitObjectsInAttentionRange();
         NumberOfDangers = PlayerHitObjects.Count;
@@ -294,7 +339,7 @@ public class EnemySwarm : MonoBehaviour {
                     DangerVec += DistanceVec.normalized / Mathf.Sqrt(DistanceVecMag);
                     DangerVecNumber++;
                 }
-            }          
+            }
         }
 
         // Players in Range:

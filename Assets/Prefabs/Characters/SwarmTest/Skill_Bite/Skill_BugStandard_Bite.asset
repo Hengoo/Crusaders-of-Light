@@ -20,7 +20,6 @@ MonoBehaviour:
   AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: f005ee7ea5e9cc343a5c37ab319f50f1, type: 2}
-  - {fileID: 11400000, guid: 2f5650fe568e08a4dae5c40f8cd00944, type: 2}
   HindranceLevel: 2
   AnimationName: Melee_ChargeUp_Swing
   OverwriteAnimationSpeedScaling: -1
