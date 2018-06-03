@@ -122,34 +122,29 @@ public static class LevelDataGenerator
     }
 
     // Smooth every cell in the heightmap using squareSize neighbors in each direction
-    public static void SmoothHeightMap(float[,] heightMap, int squareSize, int passes)
+    public static void SmoothHeightMap(float[,] heightMap, int squareSize)
     {
         var temp = (float[,])heightMap.Clone();
         var length = heightMap.GetLength(0);
 
-        while (passes > 0)
+        for (var y = 0; y < length; y++)
         {
-            passes--;
-
-            for (var y = 0; y < length; y++)
+            for (var x = 0; x < length; x++)
             {
-                for (var x = 0; x < length; x++)
+                var count = 0;
+                var sum = 0.0f;
+                for (var yN = y - squareSize; yN < y + squareSize; yN++)
                 {
-                    var count = 0;
-                    var sum = 0.0f;
-                    for (var yN = y - squareSize; yN < y + squareSize; yN++)
+                    for (var xN = x - squareSize; xN <= x + squareSize; xN++)
                     {
-                        for (var xN = x - squareSize; xN <= x + squareSize; xN++)
-                        {
-                            if (xN < 0 || xN >= length || yN < 0 || yN >= length)
-                                continue;
+                        if (xN < 0 || xN >= length || yN < 0 || yN >= length)
+                            continue;
 
-                            sum += temp[xN, yN];
-                            count++;
-                        }
+                        sum += temp[xN, yN];
+                        count++;
                     }
-                    heightMap[x, y] = sum / count;
                 }
+                heightMap[x, y] = sum / count;
             }
         }
     }
@@ -317,7 +312,6 @@ public static class LevelDataGenerator
     // Get rotation of the terrain normal
     private static Quaternion GetTerrainNormalRotation(Vector3 position)
     {
-
         Ray ray = new Ray(position + Vector3.up * 30, Vector3.down);
         var hits = Physics.RaycastAll(ray, Mathf.Infinity);
         var terrainHit = hits.First(hit => hit.collider.name == "Terrain");

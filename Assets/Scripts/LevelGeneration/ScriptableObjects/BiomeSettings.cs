@@ -28,9 +28,10 @@ public class BiomeSettings : ScriptableObject
     [Header("Path Settings")]
     public SplatPrototypeSerializable MainPathSplatPrototype;
     public SplatPrototypeSerializable SidePathSplatPrototype;
-    public int MainPathSplatSize = 2;
-    public int SidePathSplatSize = 1;
-    public float PathHalfWidth = 5;
+    [Range(1, 20)] public int MainPathSplatSize = 2;
+    [Range(1, 20)] public int SidePathSplatSize = 1;
+    [Range(1, 20)] public float PathHalfWidth = 5;
+    [Range(1, 50)] public float PathBezierSegmentSize = 15;
 }
 
 [Serializable]

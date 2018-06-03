@@ -146,7 +146,7 @@ public static class StructureDrawer
         return result;
     }
 
-    public static GameObject DrawMultipleLines(IEnumerable<Vector2[]> lines, string name = "Lines")
+    public static GameObject DrawMultipleLines(IEnumerable<Vector2[]> lines, Color color, string name = "Lines")
     {
         GameObject result = new GameObject(name);
 
@@ -155,7 +155,7 @@ public static class StructureDrawer
             var p0 = new Vector3(line[0].x, 0, line[0].y);
             var p1 = new Vector3(line[1].x, 0, line[1].y);
 
-            var go = DrawLine(p0, p1, 3, Color.white);
+            var go = DrawLine(p0, p1, 3, color);
             go.transform.parent = result.transform;
         }
 

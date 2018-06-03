@@ -214,7 +214,7 @@ public class LevelController : Singleton<LevelController>
     {
         var terrain = LevelCreator.Terrain;
         var terrainStructure = LevelCreator.MyTerrainStructure;
-        var startPosition2D = terrainStructure.StartAreaSegment.Key.ToUnityVector2();
+        var startPosition2D = terrainStructure.Start.Key;
         for (var i = 0; i < GameController.Instance.ActivePlayers; i++)
         {
             Vector3 spawnPosition = new Vector3(startPosition2D.x, 0, startPosition2D.y);
