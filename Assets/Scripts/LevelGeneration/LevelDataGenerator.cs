@@ -237,7 +237,9 @@ public static class LevelDataGenerator
                 go.transform.position = position + extraPosition;
                 go.transform.parent = areaSegmentLine.transform;
                 go.CorrectAngleTolerance(angleLimit);
-
+                var navMod = go.AddComponent<NavMeshModifier>();
+                navMod.overrideArea = true;
+                navMod.area = NavMesh.GetAreaFromName("Not Walkable");
                 lastTransform = go.transform;
             }
         }
@@ -300,6 +302,13 @@ public static class LevelDataGenerator
             go.transform.rotation = GetTerrainNormalRotation(go.transform.position) * Quaternion.Euler(go.transform.rotation.eulerAngles.x, Random.Range(0, 360f), go.transform.rotation.eulerAngles.z);
             go.CorrectAngleTolerance(poissonDiskFillData.AngleTolerance);
             go.transform.parent = result.transform;
+
+            if (poissonDiskFillData.NotWalkable)
+            {
+                var navMod = go.AddComponent<NavMeshModifier>();
+                navMod.overrideArea = true;
+                navMod.area = NavMesh.GetAreaFromName("Not Walkable");
+            }
         }
 
         return result;
