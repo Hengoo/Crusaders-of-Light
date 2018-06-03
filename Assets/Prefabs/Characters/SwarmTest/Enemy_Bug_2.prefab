@@ -464,7 +464,7 @@ Transform:
   m_GameObject: {fileID: 1147540830727540}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_Children:
   - {fileID: 4621472493015304}
   - {fileID: 4148943469930622}
@@ -990,10 +990,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NMAgent: {fileID: 195089037404193112}
   SType: 2
-  SeperationDistance: 1.2
-  AlignmentDistance: 4
-  CohesionDistance: 3
-  DangerDistance: 6
+  SeperationDistance: 2.4
+  AlignmentDistance: 4.8
+  CohesionDistance: 3.8
+  DangerDistance: 6.8
   AttractionDistance: 20
   AttractionFactor: 0.4
   BorderOn: 0
@@ -1012,6 +1012,7 @@ MonoBehaviour:
   EnemiesInRange: []
   DangerInRange: []
   PlayersInRange: []
+  PlayerDanger: 1
 --- !u!135 &135543687570199976
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -1045,7 +1046,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.7
+  m_Radius: 0.6
   m_Height: 4
   m_Direction: 1
   m_Center: {x: 0, y: 1.9, z: 0}
@@ -1207,7 +1208,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1093138811057458}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.4
+  m_Radius: 0.6
   m_Speed: 4
   m_Acceleration: 8
   avoidancePriority: 50

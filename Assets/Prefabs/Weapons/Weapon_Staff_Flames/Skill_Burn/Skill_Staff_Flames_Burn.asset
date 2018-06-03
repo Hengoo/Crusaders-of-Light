@@ -33,7 +33,7 @@ MonoBehaviour:
   EffectsStart: []
   EffectsEnd: []
   AtStartHitObjectPrefabs:
-  - {fileID: 114908530064051912, guid: 179e54ea2f215d048a2e20c99c3c576a, type: 2}
+  - {fileID: 114614617614865910, guid: de4f8846c756b1e49b2d5267adbdb23a, type: 2}
   IntervallHitObjectPrefabs: []
   AtEndHitObjectPrefabs: []
   UseSkillLevelAtActivationMoment: 1

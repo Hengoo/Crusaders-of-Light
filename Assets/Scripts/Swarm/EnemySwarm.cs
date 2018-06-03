@@ -56,8 +56,8 @@ public class EnemySwarm : MonoBehaviour {
     public float GoalFactor;
 
     [Header("Speed::")]
-    public float DesiredBaseSpeed = 6;
-    public float DesiredRunSpeed = 12;
+    public float DesiredBaseSpeed = 8;
+    public float DesiredRunSpeed = 15;
 
     [Header("Optimization:")]
     public float UpdateTimer = 0.5f;
