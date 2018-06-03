@@ -72,6 +72,9 @@ public class Character : MonoBehaviour
 
     public ItemSkill[] ItemSkillSlots = new ItemSkill[4];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
 
+    [Header("Equipment (NEW!):")]
+    public Item EquippedWeapon;
+    public ElementItem EquippedElement;
 
     public int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
     //public float SkillActivationTimer = 0.0f;
@@ -89,18 +92,21 @@ public class Character : MonoBehaviour
     public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand
     public Animator BodyAnimator;
 
-    //[Header("GUI (for Testing Purposes):")]
-    protected GUICharacterFollow GUIChar;
-
     protected bool IsWalking = false;
     public string Anim_StartWalking = "StartWalking";
     public string Anim_EndWalking = "EndWalking";
+
+    //[Header("GUI (for Testing Purposes):")]
+    [Header("GUI HealthBars:")]
+    protected GUICharacterFollow GUIChar;
 
     // Attention:
     [Header("Attention:")]
     public CharacterAttention CharAttention;
     
     protected UnityAction _onCharacterDeathAction; // Event system for character death
+
+    
 
     protected virtual void Start()
     {
@@ -164,6 +170,7 @@ public class Character : MonoBehaviour
     {
         CharacterIsDead = true;
 
+        /*      ### Project 2: Characters should no longer drop Weapons on death! ###
         // Unequip Weapons (so they drop on the gound):
         for (int i = 0; i < WeaponSlots.Length; i++)
         {
@@ -172,6 +179,7 @@ public class Character : MonoBehaviour
                 UnEquipWeapon(i);
             }
         }
+        */
 
         // Update Attention:
         AttentionThisCharacterDied();
@@ -440,6 +448,26 @@ public class Character : MonoBehaviour
     }
 
     // ===================================  /EQUIPMENT SLOTS ===================================
+
+
+    // =======================================  ELEMENT  =======================================
+
+    public void EquipElement(ElementItem ElementToEquip)
+    {
+        EquippedElement = ElementToEquip;
+    }
+
+    public ElementItem GetEquippedElement()
+    {
+        if(EquippedElement)
+        {
+            return EquippedElement;
+        }
+        return null;
+    }
+
+    // ======================================= /ELEMENT  =======================================
+
 
     // ======================================  ALIGNMENT =======================================
 

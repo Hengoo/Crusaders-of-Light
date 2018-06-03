@@ -264,16 +264,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NMAgent: {fileID: 195668385356807518}
-  SeperationFactor: 1
-  SeperationTurnSpeed: 2
-  AlignmentFactor: 1
+  UpdatePercentage: 0.5
+  SeperationDistance: 3
+  SeperationFactor: 3
+  SeperationTurnSpeed: 5
+  AlignmentDistance: 3
+  AlignmentFactor: 0.5
   AlignmentTurnSpeed: 10
+  CohesionDistance: 3
   CohesionFactor: 1
-  CohesionTurnSpeed: 2
+  CohesionTurnSpeed: 1
+  DangerDistance: 3
+  DangerFactor: 1
+  DangerTurnSpeed: 1
   Speed: 2
   MovVector: {x: 0, y: 0, z: 0}
   GoalPosition: {x: 0, y: 0, z: 0}
   EnemiesInRange: []
+  DangerInRange: []
 --- !u!135 &135693855487204198
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -24,8 +24,6 @@ public class SkillTypeCreateHitObjectChannel : SkillType {
     public AudioClip ChanellingLoop;
     public AudioClip ChanellingRelease;
 
-    private Coroutine _currentCoroutine;
-
     public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime < ActivationTime)
@@ -44,7 +42,6 @@ public class SkillTypeCreateHitObjectChannel : SkillType {
                 audioSource.clip = ChanellingLoop;
                 audioSource.loop = true;
                 audioSource.Play();
-                _currentCoroutine = SourceItemSkill.StartCoroutine(FadeSoundIn(audioSource, .3f));
             }
 
             SkillHitObject SpawnedHitObjectStart;

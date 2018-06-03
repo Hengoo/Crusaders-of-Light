@@ -64,7 +64,7 @@ public class CharacterEnemy : Character {
         }
         UpdateMovePattern();
     }
-
+    
 
     private void FixedUpdate()
     {

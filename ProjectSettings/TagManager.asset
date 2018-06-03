@@ -10,6 +10,7 @@ TagManager:
   - Spawner
   - Skills
   - EnemySwarm
+  - SwarmDanger
   layers:
   - Default
   - TransparentFX
@@ -25,10 +26,10 @@ TagManager:
   - Skills
   - DeadCharacter
   - Weapon
-  - 
-  - 
-  - 
-  - 
+  - Terrain
+  - EnemySwarm
+  - AttentionEnemy
+  - CharacterEnemy
   - 
   - 
   - PostProcessing
