@@ -13,7 +13,7 @@ public class TerrainStructure
 
     public Voronoi VoronoiDiagram { get; private set; }
     public GrammarGraph<AreaSegment> AreaSegmentGraph { get; private set; }
-    public KeyValuePair<Vector2f, int> StartAreaSegment { get; private set; }
+    public KeyValuePair<Vector2, int> Start { get; private set; }
     public BiomeSettings BiomeSettings { get; private set; }
     public BiomeSettings BorderSettings { get; private set; }
 
@@ -27,17 +27,18 @@ public class TerrainStructure
 
     public readonly List<Vector2[]> BorderBlockerLines;
     public readonly List<Vector2[]> AreaBlockerLines;
-    public readonly List<Vector2[]> MainPathLines;
-    public readonly List<Vector2[]> SidePathLines;
+    public List<Vector2[]> MainPathLines;
+    public List<Vector2[]> SidePathLines;
     public readonly List<Vector2[]> PathPolygons;
 
-    private readonly Dictionary<int, Vector2> _areaSegmentCenterMap = new Dictionary<int, Vector2>(); // Mapping of Voronoi library sites and graph IDs
+    private readonly Dictionary<int, Vector2> _areaSegmentCenterMap = new Dictionary<int, Vector2>(); // Mapping of graph ID to center coord
     private readonly Dictionary<Vector2f, int> _siteAreaSegmentMap = new Dictionary<Vector2f, int>(); // Mapping of Voronoi library sites and graph IDs
     private readonly Dictionary<SplatPrototypeSerializable, int> _splatIDMap = new Dictionary<SplatPrototypeSerializable, int>(); // Mapping of biome SplatPrototypes and terrain texture IDs
 
     private Texture2D _blankSpec;
     private Texture2D _blankBump;
 
+    private readonly int _lloydIterations;
     private readonly int _voronoiSamples;
     private readonly float _borderNoise;
 
@@ -60,6 +61,7 @@ public class TerrainStructure
         Octaves = octaves;
 
         BorderSettings = borderSettings;
+        _lloydIterations = lloydIterations;
         _voronoiSamples = voronoiSamples;
         _borderNoise = edgeNoise;
 
@@ -71,15 +73,18 @@ public class TerrainStructure
 
         // Assign specific areas to each node of the base graph - Start point, Boss arena, paths...
         CreateAreaGraph(storyStructure.Rewrites);
+        var startID = AreaSegmentGraph.FindNodesWithData(new AreaSegment(AreaSegment.EAreaSegmentType.Start))[0];
+        Start = new KeyValuePair<Vector2, int>(_areaSegmentCenterMap[startID], startID);
 
-        // Populate path lines list
-        CreatePathLines();
 
         // Populate area segment blockers list
         CreateAreaBlockerLines();
 
         // Populate border lines list
         CreateBorderBlockerPolygon(borderBlockerOffset);
+
+        // Populate path lines list
+        CreatePathLines();
 
         // Create path polygons
         CreatePathPolygons(BiomeSettings.PathHalfWidth);
@@ -377,15 +382,24 @@ public class TerrainStructure
     }
 
     // Assign areas to the base graph based on a specific set of rules
+    private int _tries = 3;
     private void CreateAreaGraph(Queue<StoryStructure.AreaSegmentRewrite> rewrites)
     {
+        var rewritesCopy = new Queue<StoryStructure.AreaSegmentRewrite>(rewrites);
         while (rewrites.Count > 0)
         {
             var rule = rewrites.Dequeue();
             if (!AreaSegmentGraph.Replace(rule.Pattern, rule.Replace, rule.Correspondences))
             {
+                // Try again
                 Debug.LogWarning("Failed to generate map with current seed: " + Random.state);
+                _tries--;
+                if (_tries < 0)
+                    throw new Exception("Failed to generate map with current seed: " + Random.state);
+
                 Random.InitState(Random.Range(0, int.MaxValue));
+                CreateBaseGraph(_lloydIterations);
+                CreateAreaGraph(rewritesCopy);
             }
         }
 
@@ -400,6 +414,8 @@ public class TerrainStructure
     // Create path lines
     private void CreatePathLines()
     {
+        var mainPath = new List<Vector2[]>();
+        var allSidePaths = new List<Vector2[]>();
         foreach (var edge in AreaSegmentGraph.GetAllEdges())
         {
             int edgeValue = AreaSegmentGraph.GetEdgeValue(edge);
@@ -410,12 +426,46 @@ public class TerrainStructure
             switch (edgeValue)
             {
                 case (int)AreaSegment.EAreaSegmentEdgeType.MainPath:
-                    MainPathLines.Add(new[] { leftCenter, rightCenter });
+                    mainPath.Add(new[] { leftCenter, rightCenter });
                     break;
                 case (int)AreaSegment.EAreaSegmentEdgeType.SidePath:
-                    SidePathLines.Add(new[] { leftCenter, rightCenter });
+                    allSidePaths.Add(new[] { leftCenter, rightCenter });
                     break;
             }
+        }
+
+        // Separate side paths
+        var sidePathsList = new List<List<Vector2[]>>();
+        while (allSidePaths.Count > 0)
+        {
+            var sidePath = new List<Vector2[]>();
+            sidePath.Add(allSidePaths[0]);
+            allSidePaths.Remove(sidePath[0]);
+
+            bool found = true;
+            while (found)
+            {
+                found = false;
+                for (int i = 0; i < allSidePaths.Count; i++)
+                {
+                    var line = allSidePaths[i];
+                    var predicate = new Func<Vector2[], bool>(a => a[0] == line[0] || a[0] == line[1] || a[1] == line[0] || a[1] == line[1]);
+                    if (sidePath.Any(predicate))
+                    {
+                        found = true;
+                        sidePath.Add(line);
+                        allSidePaths.Remove(line);
+                        break;
+                    }
+                }
+            }
+            sidePathsList.Add(sidePath);
+        }
+
+        MainPathLines = CreateBezierPath(mainPath);
+        foreach (var sidePath in sidePathsList)
+        {
+            SidePathLines.AddRange(CreateBezierPath(sidePath));
         }
     }
 
@@ -610,6 +660,67 @@ public class TerrainStructure
     //              HELPER FUNCTIONS
     //
     //---------------------------------------------------------------
+
+    private List<Vector2[]> CreateBezierPath(List<Vector2[]> original)
+    {
+        var mainAnchorPoints = new List<Vector2>();
+
+        // Find one of the end points
+        Vector2 start = Vector2.zero;
+        foreach (var line in original)
+        {
+            foreach (var p in line)
+            {
+                if (!original.Any(a => a != line && (a[0] == p || a[1] == p)))
+                {
+                    start = p;
+                    break;
+                }
+            }
+            if (start != Vector2.zero)
+                break;
+        }
+        if (start == Vector2.zero)
+            return new List<Vector2[]>();
+
+        mainAnchorPoints.Add(start);
+        // Create main path control pointss
+        while (original.Count > 0)
+        {
+            for (int i = 0; i < original.Count; i++)
+            {
+                var line = original[i];
+                if (line[0] == mainAnchorPoints.Last())
+                {
+
+                    mainAnchorPoints.Add((mainAnchorPoints.Last() + line[1]) / 2);
+                    mainAnchorPoints.Add(line[1]);
+                    original.Remove(line);
+                    break;
+                }
+                else if (line[1] == mainAnchorPoints.Last())
+                {
+                    mainAnchorPoints.Add((mainAnchorPoints.Last() + line[0]) / 2);
+                    mainAnchorPoints.Add(line[0]);
+                    original.Remove(line);
+                    break;
+                }
+            }
+        }
+
+        // Create main path bezier spline
+        BezierPath path = new BezierPath(mainAnchorPoints);
+        var curve = path.CalculateEvenlySpacedPoints(BiomeSettings.PathBezierSegmentSize);
+        var result = new List<Vector2[]>();
+        for (int i = 0; i < curve.Length - 1; i++)
+        {
+            var p0 = curve[i];
+            var p1 = curve[i + 1];
+            result.Add(new[] { p0, p1 });
+        }
+
+        return result;
+    }
 
     // Checks if segments are neighbours
     private bool AreNeighbours(IEnumerable<int> areaSegments)

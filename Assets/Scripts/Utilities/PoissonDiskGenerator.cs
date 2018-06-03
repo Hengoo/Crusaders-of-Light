@@ -161,8 +161,9 @@ public class PoissonDiskFillData
     public readonly Vector2 FramePosition;
     public readonly float MinDist;
     public readonly float AngleTolerance;
+    public readonly bool NotWalkable;
 
-    public PoissonDiskFillData(GameObject[] prefabs, Vector2[] polygon, float minDist, float angleTolerance)
+    public PoissonDiskFillData(GameObject[] prefabs, Vector2[] polygon, float minDist, float angleTolerance, bool notWalkable)
     {
         ClearPolygons = new List<Vector2[]>();
 
@@ -170,6 +171,7 @@ public class PoissonDiskFillData
         Polygon = polygon;
         MinDist = minDist;
         AngleTolerance = angleTolerance;
+        NotWalkable = notWalkable;
 
         var minX = float.MaxValue;
         var minY = float.MaxValue;

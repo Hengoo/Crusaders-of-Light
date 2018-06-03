@@ -39,16 +39,22 @@ public class LevelCreator : Singleton<LevelCreator>
     [Range(0, 1f)] public float WaterHeight = 0.15f;
     public Material WaterMaterial;
 
-    [Header("Smooth Settings")]
-    [Range(0, 5)] public int OverallSmoothing = 2;
-    public bool SmoothEdges = true;
-    [Range(0, 20)] public int EdgeWidth = 3;
-    [Range(0, 20)] public int SquareSize = 2;
+    [Header("Terrain Smooth Settings")]
+    [Range(0, 5)] public int OverallSmoothPasses = 2;
+    [Range(0, 20)] public int OverallSmoothSquareSize = 2;
+    [Range(0, 5)] public int OverallAlphaSmoothPasses = 2;
+    [Range(0, 20)] public int OverallAlphaSmoothSquareSize = 2;
 
     [Header("Path Settings")]
     public int MainPathNodeCount = 8;
     public int SidePathCount = 2;
     public int SidePathNodeCount = 1;
+
+    [Header("Path Smooth Settings")]
+    [Range(0, 20)] public int PathSmoothSquaresize = 2;
+    [Range(0, 20)] public int PathSmoothPasses = 1;
+    [Range(0, 20)] public int PathAlphaSmoothSquareSize = 2;
+    [Range(0, 20)] public int PathAlphaSmoothPasses = 1;
 
     public TerrainStructure MyTerrainStructure { get; private set; }
     public StoryStructure MyStoryStructure { get; private set; }
@@ -119,19 +125,30 @@ public class LevelCreator : Singleton<LevelCreator>
 
         // Create splat textures alphamap
         _alphaMap = LevelDataGenerator.GenerateAlphaMap(MyTerrainStructure);
+    }
 
+    private void SmoothAlphaMap()
+    {
         // Smoothing passes
-        _alphaMap = LevelDataGenerator.SmoothAlphaMap(_alphaMap, 1);
-        if (SmoothEdges)
+        for (int i = 0; i < OverallAlphaSmoothPasses; i++)
         {
-            // Smooth only navigable biome borders
-            LevelDataGenerator.SmoothHeightMapWithLines(_heightMap, MapSize / HeightMapResolution, MyTerrainStructure.MainPathLines, EdgeWidth, SquareSize);
+            _alphaMap = LevelDataGenerator.SmoothAlphaMap(_alphaMap, OverallAlphaSmoothSquareSize);
+        }
+    }
 
-            // Overall smoothing
-            if (OverallSmoothing > 0)
-            {
-                LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothing, 2);
-            }
+    private void SmoothHeightMap()
+    {
+        // Overall smoothing
+        for(int i = 0; i < OverallSmoothPasses; i++)
+        {
+            LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothSquareSize);
+        }
+
+        // Smooth paths
+        for (int i = 0; i < PathSmoothPasses; i++)
+        {
+            LevelDataGenerator.SmoothHeightMapWithLines(_heightMap, MapSize / HeightMapResolution, MyTerrainStructure.MainPathLines, MyTerrainStructure.BiomeSettings.MainPathSplatSize, PathSmoothSquaresize);
+            LevelDataGenerator.SmoothHeightMapWithLines(_heightMap, MapSize / HeightMapResolution, MyTerrainStructure.SidePathLines, MyTerrainStructure.BiomeSettings.SidePathSplatSize, PathSmoothSquaresize);
         }
     }
 
@@ -228,19 +245,27 @@ public class LevelCreator : Singleton<LevelCreator>
     {
         var voronoi = StructureDrawer.DrawVoronoiDiagram(MyTerrainStructure.VoronoiDiagram, "Voronoi");
         var baseGraph = StructureDrawer.DrawAreaSegments(MyTerrainStructure, "Base Graph");
-        var borderLines = StructureDrawer.DrawMultipleLines(MyTerrainStructure.BorderBlockerLines, "Border Blockers");
-        var areaBlocker = StructureDrawer.DrawMultipleLines(MyTerrainStructure.AreaBlockerLines, "Area Blockers");
+        var borderLines = StructureDrawer.DrawMultipleLines(MyTerrainStructure.BorderBlockerLines, Color.white, "Border Blockers");
+        var areaBlocker = StructureDrawer.DrawMultipleLines(MyTerrainStructure.AreaBlockerLines, Color.white, "Area Blockers");
+        var mainPaths = StructureDrawer.DrawMultipleLines(MyTerrainStructure.MainPathLines, Color.green, "Main Path");
+        var sidePaths = StructureDrawer.DrawMultipleLines(MyTerrainStructure.SidePathLines, Color.cyan, "Side Paths");
 
-        voronoi.transform.parent = gameObject.transform;
-        baseGraph.transform.parent = gameObject.transform;
-        borderLines.transform.parent = gameObject.transform;
-        areaBlocker.transform.parent = gameObject.transform;
+        voronoi.transform.parent = transform;
+        baseGraph.transform.parent = transform;
+        borderLines.transform.parent = transform;
+        areaBlocker.transform.parent = transform;
+        mainPaths.transform.parent = transform;
+        sidePaths.transform.parent = transform;
     }
 
     private void DrawTerrain()
     {
         GenerateAlphaAndHeightmaps();
         GeneratePaths();
+
+        SmoothHeightMap();
+        SmoothAlphaMap();
+
         GenerateTerrain();
         GenerateBlockers();
         GenerateWaterPlane();

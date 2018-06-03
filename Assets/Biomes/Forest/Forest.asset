@@ -42,7 +42,7 @@ MonoBehaviour:
     metallic: 0
     smoothness: 0
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 5, y: 5}
+    tileSize: {x: 10, y: 10}
   SidePathSplatPrototype:
     texture: {fileID: 2800000, guid: d3b13cf04e7af504bb964f32300d1f4f, type: 3}
     normalMap: {fileID: 2800000, guid: db11ae5f4fb5cc245a7df629c6373913, type: 3}
@@ -53,3 +53,4 @@ MonoBehaviour:
   MainPathSplatSize: 2
   SidePathSplatSize: 1
   PathHalfWidth: 8
+  PathBezierSegmentSize: 10
