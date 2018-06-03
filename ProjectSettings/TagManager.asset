@@ -28,8 +28,8 @@ TagManager:
   - Weapon
   - Terrain
   - EnemySwarm
-  - 
-  - 
+  - AttentionEnemy
+  - CharacterEnemy
   - 
   - 
   - PostProcessing

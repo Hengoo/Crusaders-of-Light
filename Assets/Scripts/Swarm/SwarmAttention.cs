@@ -12,7 +12,7 @@ public class SwarmAttention : MonoBehaviour {
     {
         if (other.tag == "EnemySwarm")
         {
-            Owner.AddToEnemiesInRange(other.GetComponent<EnemySwarm>());
+            Owner.AddToEnemiesInRange(other.GetComponent<SwarmAttention>().GetOwner());
         }
         else if (other.tag == "SwarmDanger")
         {
@@ -33,7 +33,7 @@ public class SwarmAttention : MonoBehaviour {
     {
         if (other.tag == "EnemySwarm")
         {
-            Owner.RemoveFromEnemiesInRange(other.GetComponent<EnemySwarm>());
+            Owner.RemoveFromEnemiesInRange(other.GetComponent<SwarmAttention>().GetOwner());
         }
         else if (other.tag == "SwarmDanger")
         {
@@ -64,5 +64,10 @@ public class SwarmAttention : MonoBehaviour {
     }
 
     // =================================================/ NEARBY LISTS /=================================================
+
+    public EnemySwarm GetOwner()
+    {
+        return Owner;
+    }
 
 }
