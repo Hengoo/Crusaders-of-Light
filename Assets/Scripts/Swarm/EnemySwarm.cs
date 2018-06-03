@@ -65,6 +65,7 @@ public class EnemySwarm : MonoBehaviour {
 
     [Header("Lists:")]
     public SwarmAttention SAttention;
+    public CharacterAttention CAttention;
     public List<EnemySwarm> EnemiesInRange = new List<EnemySwarm>();
     public List<GameObject> DangerInRange = new List<GameObject>();
     public List<GameObject> PlayersInRange = new List<GameObject>();
@@ -274,6 +275,24 @@ public class EnemySwarm : MonoBehaviour {
                 DangerVec += DistanceVec.normalized / Mathf.Sqrt(DistanceVecMag);
                 DangerVecNumber++;
             }
+        }
+
+        List<SkillHitObject> PlayerHitObjects = CAttention.GetPlayerHitObjectsInAttentionRange();
+        NumberOfDangers = PlayerHitObjects.Count;
+
+        for (int i = 0; i < NumberOfDangers; i++)
+        {
+            if (PlayerHitObjects[i])
+            {
+                DistanceVec = transform.position - PlayerHitObjects[i].transform.position;
+                DistanceVecMag = DistanceVec.sqrMagnitude;
+
+                if (DistanceVecMag <= DangerDistance * DangerDistance)
+                {
+                    DangerVec += DistanceVec.normalized / Mathf.Sqrt(DistanceVecMag);
+                    DangerVecNumber++;
+                }
+            }          
         }
 
         if (DangerVecNumber >= 1)

@@ -993,7 +993,7 @@ MonoBehaviour:
   SeperationDistance: 1.2
   AlignmentDistance: 4
   CohesionDistance: 3
-  DangerDistance: 4
+  DangerDistance: 6
   AttractionDistance: 20
   AttractionFactor: 0.4
   BorderOn: 0
@@ -1008,6 +1008,7 @@ MonoBehaviour:
   UpdateTimer: 0.06
   UpdateCounter: 0
   SAttention: {fileID: 114871658367671940}
+  CAttention: {fileID: 114350221483272596}
   EnemiesInRange: []
   DangerInRange: []
   PlayersInRange: []

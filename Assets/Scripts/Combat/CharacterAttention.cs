@@ -220,6 +220,11 @@ public class CharacterAttention : MonoBehaviour {
         return PlayerHitObjectsInAttentionRange;
     }
 
+    public List<SkillHitObject> GetPlayerHitObjectsInAttentionRange()
+    {
+        return PlayerHitObjectsInRange;
+    }
+
     public void RemoveHitObjectAfterDestroy(SkillHitObject DestroyedHitObject)
     {
         if ((DestroyedHitObject.GetAlignment() == Character.TeamAlignment.ALL
