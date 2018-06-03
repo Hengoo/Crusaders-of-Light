@@ -54,8 +54,8 @@ public class EnemyTestSwarm : Singleton<EnemyTestSwarm> {
 
     private void GenerateSpawnPosition()
     {
-        spawnPos.x = Random.Range(-40, 40) + transform.position.x;
-        spawnPos.z = Random.Range(-40, 40) + transform.position.z;
+        spawnPos.x = Random.Range(-30, 30) + transform.position.x;
+        spawnPos.z = Random.Range(-30, 30) + transform.position.z;
         spawnPos.y = 0;
         spawnPos.y = Terr.SampleHeight(spawnPos);
 

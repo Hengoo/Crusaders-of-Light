@@ -530,7 +530,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1369649773286374}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -565,7 +565,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1418062833207110}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -913,7 +913,7 @@ MonoBehaviour:
   - {fileID: 4095804258683784}
   - {fileID: 4207263127012226}
   StartingWeapons:
-  - {fileID: 114066496244682900, guid: aa94daf626a371f4ea7bcb6b4e1637cb, type: 2}
+  - {fileID: 114066496244682900, guid: 2f3dd14cae8e5064a80efb3a5d5da0fd, type: 2}
   - {fileID: 0}
   SkillsPerWeapon: 2
   WeaponSlots:

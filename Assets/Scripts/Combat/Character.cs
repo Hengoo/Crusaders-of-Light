@@ -92,18 +92,21 @@ public class Character : MonoBehaviour
     public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand
     public Animator BodyAnimator;
 
-    //[Header("GUI (for Testing Purposes):")]
-    protected GUICharacterFollow GUIChar;
-
     protected bool IsWalking = false;
     public string Anim_StartWalking = "StartWalking";
     public string Anim_EndWalking = "EndWalking";
+
+    //[Header("GUI (for Testing Purposes):")]
+    [Header("GUI HealthBars:")]
+    protected GUICharacterFollow GUIChar;
 
     // Attention:
     [Header("Attention:")]
     public CharacterAttention CharAttention;
     
     protected UnityAction _onCharacterDeathAction; // Event system for character death
+
+    
 
     protected virtual void Start()
     {
