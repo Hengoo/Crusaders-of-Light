@@ -209,6 +209,7 @@ public class TerrainStructure
             areaEdges.Remove(startEdge);
             Vertex headPoint = startEdge.RightVertex;
             Vertex tailPoint = startEdge.LeftVertex;
+            polygon.Add(startEdge.ClippedEnds[LR.RIGHT].ToUnityVector2());
 
             // Find polygon
             var polygonClosed = false;

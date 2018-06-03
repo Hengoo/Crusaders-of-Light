@@ -20,9 +20,9 @@ public abstract class AreaSettings
     public string Name = "Area";
     public List<PoissonDiskFillData> PoissonDataList = new List<PoissonDiskFillData>();
 
-    protected Graph<AreaData> AreaDataGraph;
-    protected Vector2[][] ClearPolygons;
-    protected Vector2[] BorderPolygon;
+    public Graph<AreaData> AreaDataGraph { get; protected set; }
+    public Vector2[][] ClearPolygons { get; protected set; }
+    public Vector2[] BorderPolygon { get; protected set; }
 
     public abstract GameObject GenerateAreaScenery(Terrain terrain);
 }

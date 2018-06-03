@@ -248,29 +248,8 @@ public class LevelCreator : Singleton<LevelCreator>
 
     private void DrawScenerySkeleton()
     {
-        // TODO: debug view?
-        Graph<AreaData> graph = new Graph<AreaData>();
-        graph.AddNode(new AreaData { Center = new Vector2(10, 10) });
-        graph.AddNode(new AreaData { Center = new Vector2(0, 10) });
-        graph.AddNode(new AreaData { Center = new Vector2(10, 0) });
-        graph.AddEdge(0, 1, 0);
-        graph.AddEdge(2, 1, 0);
-        graph.AddEdge(0, 2, 0);
-
-        var newGraph = new Graph<AreaData>(graph);
-        newGraph.RemoveEdge(0, 2);
-
-        foreach (var data in newGraph.GetAllNodeData())
-        {
-            StructureDrawer.DrawSphere(data.Center, 2, Color.magenta).transform.parent = transform;
-        }
-
-        foreach (var edge in newGraph.GetAllEdges())
-        {
-            var start = newGraph.GetNodeData(edge.x).Center;
-            var end = newGraph.GetNodeData(edge.y).Center;
-            StructureDrawer.DrawLine(start, end, 1, Color.blue).transform.parent = transform;
-        }
+        var scenery = StructureDrawer.DrawAreas(MySceneryStructure.Areas, "Scenery Skeleton");
+        scenery.transform.parent = transform;
     }
 
     private void DrawTerrainAndScenery()

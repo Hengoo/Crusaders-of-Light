@@ -19,7 +19,7 @@ public class ForestSettingsFactory : AreaSettingsFactory
 
     public override AreaSettings ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
-        return new ForestSettings(areaDataGraph, clearPolygons, borderPolygon)
+        return new ForestSettings(areaDataGraph, clearPolygons, borderPolygon, SegmentType.ToString())
         {
             Trees = Trees
         };
@@ -30,11 +30,11 @@ public class ForestSettings : AreaSettings
 {
     public GameObject[] Trees;
 
-    public ForestSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
+    public ForestSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, string type)
     {
-        Name = "Forest Area";
+        Name = "Forest " + type + " Area";
         AreaDataGraph = areaDataGraph;
-        ClearPolygons = clearPolygons != null? clearPolygons.ToArray() : new Vector2[][]{};
+        ClearPolygons = clearPolygons != null ? clearPolygons.ToArray() : new Vector2[][] { };
         BorderPolygon = borderPolygon;
     }
 

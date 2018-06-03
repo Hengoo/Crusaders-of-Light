@@ -5,7 +5,48 @@ using System.Linq;
 using csDelaunay;
 using UnityEngine;
 
-public static class StructureDrawer {
+public static class StructureDrawer
+{
+
+    public static GameObject DrawAreas(IEnumerable<AreaSettings> areaSettingsCollection, string name = "Areas")
+    {
+        GameObject areas = new GameObject(name);
+
+        foreach (var area in areaSettingsCollection)
+        {
+            GameObject areaGO = DrawAreaSettings(area);
+            areaGO.transform.parent = areas.transform;
+        }
+
+        return areas;
+    }
+
+    public static GameObject DrawAreaSettings(AreaSettings areaSettings)
+    {
+        GameObject result = new GameObject(areaSettings.Name);
+
+        var border = DrawPolygon(areaSettings.BorderPolygon, Color.yellow, "Border");
+        border.transform.parent = result.transform;
+
+        foreach (var clearPolygon in areaSettings.ClearPolygons)
+        {
+            var clearPolygonGO = DrawPolygon(clearPolygon, Color.red, "Clear");
+            clearPolygonGO.transform.parent = result.transform;
+        }
+
+        foreach (var areaData in areaSettings.AreaDataGraph.GetAllNodeData())
+        {
+            var segment = DrawPolygon(areaData.Polygon, Color.blue, areaData.Segment.Type + " Segment");
+            segment.transform.parent = result.transform;
+            segment.SetActive(false);
+
+            var center = DrawSphere(new Vector3(areaData.Center.x, 0, areaData.Center.y), 2, Color.blue, areaData.Segment.Type + " Center");
+            center.transform.parent = result.transform;
+        }
+
+
+        return result;
+    }
 
     public static GameObject DrawVoronoiDiagram(Voronoi voronoi, string name = "VoronoiDiagram")
     {
@@ -121,7 +162,7 @@ public static class StructureDrawer {
         return result;
     }
 
-    public static GameObject DrawPolygon(Vector2[] polygon, string name = "Polygon")
+    public static GameObject DrawPolygon(Vector2[] polygon, Color color, string name = "Polygon")
     {
         GameObject result = new GameObject(name);
         for (int i = 0; i < polygon.Length; i++)
@@ -131,17 +172,17 @@ public static class StructureDrawer {
             var start = new Vector3(p0.x, 0, p0.y);
             var end = new Vector3(p1.x, 0, p1.y);
 
-            GameObject line = DrawLine(start, end, 3, Color.white);
+            GameObject line = DrawLine(start, end, 3, color);
             line.transform.parent = result.transform;
         }
 
         return result;
     }
 
-    public static GameObject DrawSphere(Vector3 center, float radius, Color color)
+    public static GameObject DrawSphere(Vector3 center, float radius, Color color, string name = "Sphere")
     {
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphere.name = "Sphere";
+        sphere.name = name;
         sphere.transform.position = center;
         sphere.transform.localScale = new Vector3(radius, radius, radius);
 
