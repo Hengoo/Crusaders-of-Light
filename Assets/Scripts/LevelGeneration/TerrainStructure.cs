@@ -175,8 +175,17 @@ public class TerrainStructure
     // Get path polygons that have vertices inside areas segments
     public List<Vector2[]> GetPathPolygons(IEnumerable<int> areaSegments)
     {
-        //TODO: implement this
-        return null;
+
+        var paths = new List<Vector2[]>();
+        foreach (var path in PathPolygons)
+        {
+            if (path.Any(vertex => areaSegments.Contains(GetClosestAreaSegmentID(vertex))))
+            {
+                paths.Add(path);
+            }
+        }
+
+        return paths;
     }
 
     // Get border polygon for a given set of area segments
@@ -644,11 +653,17 @@ public class TerrainStructure
         return edges.EdgesToSortedLines().Select(t => t[0]).ToArray();
     }
 
-    // Get closest AreaSegment center to specified pos
+    // Get closest AreaSegment to specified pos
     private AreaSegment GetClosestAreaSegment(Vector2 pos)
     {
+        return AreaSegmentGraph.GetNodeData(GetClosestAreaSegmentID(pos));
+    }
+
+    // Get closest AreaSegmentGraph ID center to specified pos
+    private int GetClosestAreaSegmentID(Vector2 pos)
+    {
         float smallestDistance = float.MaxValue;
-        AreaSegment closestAreaSegment = null;
+        int closestAreaSegment = 0;
         foreach (var id in AreaSegmentGraph.GetAllNodeIDs())
         {
             Vector2 center = _areaSegmentCenterMap[id];
@@ -656,10 +671,9 @@ public class TerrainStructure
             if (currentDistance < smallestDistance)
             {
                 smallestDistance = currentDistance;
-                closestAreaSegment = AreaSegmentGraph.GetNodeData(id);
+                closestAreaSegment = id;
             }
         }
-
         return closestAreaSegment;
     }
 
