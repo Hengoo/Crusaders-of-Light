@@ -68,7 +68,7 @@ public class EnemySwarm : MonoBehaviour {
     public CharacterAttention CAttention;
     public List<EnemySwarm> EnemiesInRange = new List<EnemySwarm>();
     public List<GameObject> DangerInRange = new List<GameObject>();
-    public List<GameObject> PlayersInRange = new List<GameObject>();
+    public List<Character> PlayersInRange = new List<Character>();
 
     private void Start()
     {
@@ -257,6 +257,7 @@ public class EnemySwarm : MonoBehaviour {
 
     private void RuleDangerAvoidance()
     {
+        // Dangers in Range:
         int NumberOfDangers = DangerInRange.Count;
 
         Vector3 DangerVec = Vector3.zero;
@@ -277,6 +278,7 @@ public class EnemySwarm : MonoBehaviour {
             }
         }
 
+        // Player Hit Objects In Range:
         List<SkillHitObject> PlayerHitObjects = CAttention.GetPlayerHitObjectsInAttentionRange();
         NumberOfDangers = PlayerHitObjects.Count;
 
@@ -293,6 +295,23 @@ public class EnemySwarm : MonoBehaviour {
                     DangerVecNumber++;
                 }
             }          
+        }
+
+        // Players in Range:
+        NumberOfDangers = PlayersInRange.Count;
+
+        for (int i = 0; i < NumberOfDangers; i++)
+        {
+            DistanceVec = transform.position - PlayersInRange[i].transform.position;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            if (DistanceVecMag <= (DangerDistance * 0.6f) * (DangerDistance * 0.6f)
+                && PlayersInRange[i].GetCurrentThreatLevel(true, false) >= 2
+                && (Vector3.Dot(PlayersInRange[i].transform.forward, (PlayersInRange[i].transform.position - transform.position).normalized) < 0.3f))
+            {
+                DangerVec += DistanceVec.normalized / Mathf.Sqrt(DistanceVecMag);
+                DangerVecNumber++;
+            }
         }
 
         if (DangerVecNumber >= 1)
@@ -415,12 +434,12 @@ public class EnemySwarm : MonoBehaviour {
 
     public void AddToPlayersInRange(GameObject AddPlayer)
     {
-        PlayersInRange.Add(AddPlayer);
+        PlayersInRange.Add(AddPlayer.GetComponent<CharacterAttention>().GetOwner());
     }
 
     public void RemoveFromPlayersInRanger(GameObject RemovePlayer)
     {
-        PlayersInRange.Remove(RemovePlayer);
+        PlayersInRange.Remove(RemovePlayer.GetComponent<CharacterAttention>().GetOwner());
     }
 
     public void OnDestroy()
