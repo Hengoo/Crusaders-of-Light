@@ -44,20 +44,18 @@ public class SceneryStructure
                 availableSettings.Remove(settingsFactory);
                 continue;
             }
-
-            List<Vector2> centers = new List<Vector2>();
             
             foreach (var match in matches)
             {
-                centers.Add(terrainStructure.GetAreaSegmentCenter(match.Value));
                 availableSegments.Remove(match.Value);
                 _graph.RemoveNode(match.Value);
             }
 
-            Graph<Vector2[]> areaPolygons = terrainStructure.GetAreaSegmentsPolygonGraph(matches.Values);
-            List<Vector2[]> clearPolygons = terrainStructure.PathPolygons;
+            Graph<AreaData> areaDataGraph = terrainStructure.GetAreaDataGraph(matches.Values);
+            List<Vector2[]> clearPolygons = terrainStructure.GetPathPolygons(matches.Values);
+            Vector2[] borderPolygon = terrainStructure.GetAreaSegmentsBorderPolygon(matches.Values);
 
-            Areas.Add(settingsFactory.ProduceAreaSettings(centers, areaPolygons, clearPolygons));
+            Areas.Add(settingsFactory.ProduceAreaSettings(areaDataGraph, clearPolygons, borderPolygon));
         }
     }
 }

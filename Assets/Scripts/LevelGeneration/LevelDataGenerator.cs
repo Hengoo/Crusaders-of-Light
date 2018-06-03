@@ -256,7 +256,7 @@ public static class LevelDataGenerator
         foreach (var area in areas)
         {
             var areaGO = area.GenerateAreaScenery(terrain);
-            foreach (var data in area.PoissonData)
+            foreach (var data in area.PoissonDataList)
             {
                 var poissonGO = PoissonDiskFill(terrain, data, area.Name + " Fill");
                 poissonGO.transform.parent = areaGO.transform;
@@ -294,8 +294,8 @@ public static class LevelDataGenerator
             var point = sample + poissonDiskFillData.FramePosition;
             var height = terrain.SampleHeight(new Vector3(point.x, 0, point.y) - terrain.transform.position);
             if (height <= (levelCreator.WaterHeight + 0.01f) * terrain.terrainData.size.y || // not underwater
-                !point.IsInsideConvexPolygon(poissonDiskFillData.Polygon) || //not outside of the area
-                !poissonDiskFillData.ClearPolygons.TrueForAll(a => !point.IsInsideConvexPolygon(a)) //not inside of any clear polygon
+                !point.IsInsidePolygon(poissonDiskFillData.Polygon) || //not outside of the area
+                !poissonDiskFillData.ClearPolygons.TrueForAll(a => !point.IsInsidePolygon(a)) //not inside of any clear polygon
             )
                 continue;
 

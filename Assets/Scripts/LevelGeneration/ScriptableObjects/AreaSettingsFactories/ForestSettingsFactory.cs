@@ -6,7 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ForestSettingsFactory", menuName = "Terrain/Areas/Forest")]
 public class ForestSettingsFactory : AreaSettingsFactory
 {
-    public AreaSegment.EAreaSegmentType SegmentType;
+    public AreaSegment.EAreaSegmentType SegmentType = AreaSegment.EAreaSegmentType.MainPath;
     public GameObject[] Trees;
 
     public override Graph<AreaSegment> GetPatternGraph()
@@ -17,9 +17,9 @@ public class ForestSettingsFactory : AreaSettingsFactory
         return pattern;
     }
 
-    public override AreaSettings ProduceAreaSettings(IEnumerable<Vector2> centers, Graph<Vector2[]> polygonGraph, IEnumerable<Vector2[]> clearPolygons)
+    public override AreaSettings ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
-        return new ForestSettings(centers, polygonGraph, clearPolygons)
+        return new ForestSettings(areaDataGraph, clearPolygons, borderPolygon)
         {
             Trees = Trees
         };
@@ -30,20 +30,20 @@ public class ForestSettings : AreaSettings
 {
     public GameObject[] Trees;
 
-    public ForestSettings(IEnumerable<Vector2> centers, Graph<Vector2[]> polygonGraph, IEnumerable<Vector2[]> clearPolygons)
+    public ForestSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
         Name = "Forest Area";
-        Centers = centers.ToArray();
-        PolygonGraph = polygonGraph;
-        ClearPolygons = clearPolygons.ToArray();
+        AreaDataGraph = areaDataGraph;
+        ClearPolygons = clearPolygons != null? clearPolygons.ToArray() : new Vector2[][]{};
+        BorderPolygon = borderPolygon;
     }
 
     public override GameObject GenerateAreaScenery(Terrain terrain)
     {
-        var poly = PolygonGraph.GetAllNodeData()[0];
-        PoissonDiskFillData data = new PoissonDiskFillData(Trees, poly, 5);
-        data.AddClearPolygons(ClearPolygons);
-        PoissonData.Add(data);
+        var areaData = AreaDataGraph.GetAllNodeData()[0];
+        PoissonDiskFillData poissonData = new PoissonDiskFillData(Trees, areaData.Polygon, 5);
+        poissonData.AddClearPolygons(ClearPolygons);
+        PoissonDataList.Add(poissonData);
         return new GameObject(Name);
     }
 }

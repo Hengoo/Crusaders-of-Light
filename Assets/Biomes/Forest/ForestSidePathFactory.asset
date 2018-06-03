@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Name: ForestSidePathFactory
   m_EditorClassIdentifier: 
   SegmentType: 6
+  SegmentEdgeType: 2
   Trees:
   - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
@@ -37,7 +38,7 @@ public class LevelCreator : Singleton<LevelCreator>
     [Range(1, 8)] public int Octaves = 3;
     [Range(0, 1f)] public float WaterHeight = 0.15f;
     public Material WaterMaterial;
-    
+
     [Header("Smooth Settings")]
     [Range(0, 5)] public int OverallSmoothing = 2;
     public bool SmoothEdges = true;
@@ -247,7 +248,29 @@ public class LevelCreator : Singleton<LevelCreator>
 
     private void DrawScenerySkeleton()
     {
-        // TODO: create debug view
+        // TODO: debug view?
+        Graph<AreaData> graph = new Graph<AreaData>();
+        graph.AddNode(new AreaData { Center = new Vector2(10, 10) });
+        graph.AddNode(new AreaData { Center = new Vector2(0, 10) });
+        graph.AddNode(new AreaData { Center = new Vector2(10, 0) });
+        graph.AddEdge(0, 1, 0);
+        graph.AddEdge(2, 1, 0);
+        graph.AddEdge(0, 2, 0);
+
+        var newGraph = new Graph<AreaData>(graph);
+        newGraph.RemoveEdge(0, 2);
+
+        foreach (var data in newGraph.GetAllNodeData())
+        {
+            StructureDrawer.DrawSphere(data.Center, 2, Color.magenta).transform.parent = transform;
+        }
+
+        foreach (var edge in newGraph.GetAllEdges())
+        {
+            var start = newGraph.GetNodeData(edge.x).Center;
+            var end = newGraph.GetNodeData(edge.y).Center;
+            StructureDrawer.DrawLine(start, end, 1, Color.blue).transform.parent = transform;
+        }
     }
 
     private void DrawTerrainAndScenery()

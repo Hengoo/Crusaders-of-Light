@@ -30,11 +30,9 @@ public class Graph<T> where T : class
     {
         if (Nodes.ContainsKey(nodeID))
         {
-            Node node = Nodes[nodeID];
-
-            foreach (Node neighbor in Nodes.Where(a => a.Value.Neighbors.Contains(node)).Select(a => a.Value))
+            foreach (Node neighbor in Nodes.Where(a => a.Value.Neighbors.Contains(nodeID)).Select(a => a.Value))
             {
-                neighbor.Neighbors.Remove(node);
+                neighbor.Neighbors.Remove(nodeID);
             }
 
             List<Pair> edgesToRemove = new List<Pair>();
@@ -64,7 +62,7 @@ public class Graph<T> where T : class
     public int[] GetNeighbours(int nodeID)
     {
         if (Nodes.ContainsKey(nodeID))
-            return Nodes[nodeID].Neighbors.Select(a => a.NodeID).ToArray();
+            return Nodes[nodeID].Neighbors.ToArray();
 
         Debug.Log("Node not found in graph");
         return null;
@@ -126,8 +124,8 @@ public class Graph<T> where T : class
         if (nodesExist && !Edges.ContainsKey(new Pair(node1, node2)) && node1 != node2)
         {
             Edge edge = new Edge(node1, node2, value);
-            Nodes[node1].AddNeighbor(Nodes[node2]);
-            Nodes[node2].AddNeighbor(Nodes[node1]);
+            Nodes[node1].AddNeighbor(node2);
+            Nodes[node2].AddNeighbor(node1);
             Edges.Add(edge.Nodes, edge);
             return true;
         }
@@ -142,8 +140,8 @@ public class Graph<T> where T : class
     {
         if (Edges.Remove(new Pair(node1, node2)))
         {
-            Nodes[node1].Neighbors.RemoveWhere(a => a.NodeID == node2);
-            Nodes[node2].Neighbors.RemoveWhere(a => a.NodeID == node1);
+            Nodes[node1].Neighbors.RemoveWhere(node => node == node2);
+            Nodes[node2].Neighbors.RemoveWhere(node => node == node1);
             return true;
         }
 
@@ -229,7 +227,7 @@ public class Graph<T> where T : class
     protected class Node : IEqualityComparer<Node>
     {
         public readonly int NodeID;
-        public readonly HashSet<Node> Neighbors = new HashSet<Node>();
+        public readonly HashSet<int> Neighbors = new HashSet<int>();
         public T Data;
 
         public Node(int nodeID, T data)
@@ -248,9 +246,9 @@ public class Graph<T> where T : class
             return NodeID.GetHashCode();
         }
 
-        public bool AddNeighbor(Node node)
+        public bool AddNeighbor(int node)
         {
-            return node != this && Neighbors.Add(node);
+            return node != this.NodeID && Neighbors.Add(node);
         }
 
         public Node Clone()

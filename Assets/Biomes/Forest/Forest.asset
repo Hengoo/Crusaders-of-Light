@@ -28,7 +28,7 @@ MonoBehaviour:
   Blocker: {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
   BlockerPole: {fileID: 0}
   BlockerLength: 3
-  BlockerAngleLimit: 30
+  BlockerAngleLimit: 15
   BlockerPositionNoise: {x: 1, y: 0, z: 1}
   BlockerScaleNoise: {x: 0.1, y: 0.5, z: 0.1}
   BossAreas: []

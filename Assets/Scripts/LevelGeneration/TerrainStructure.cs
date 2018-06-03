@@ -132,30 +132,10 @@ public class TerrainStructure
         return new KeyValuePair<int, float>(splatID, splatValue);
     }
 
-    // Get polygon graph that contain the given area segments polygon with neighborhood information
-    public Graph<Vector2[]> GetAreaSegmentsPolygonGraph(IEnumerable<int> areaSegments)
+    // Get area data graph that contains the given area segments, with the respective center and polygon, and neighborhood information
+    public Graph<AreaData> GetAreaDataGraph(IEnumerable<int> areaSegments)
     {
-        // Check for null
-        if (areaSegments == null || !areaSegments.Any())
-            return null;
-
-        // Check if segments are neighbours
-        var found = new List<int> { };
-        var frontier = new Queue<int>();
-        frontier.Enqueue(areaSegments.ElementAt(0));
-        while (found.Count < areaSegments.Count() && frontier.Count > 0)
-        {
-            var element = frontier.Dequeue();
-            if (areaSegments.Contains(element))
-            {
-                found.Add(element);
-                foreach (int neighbour in AreaSegmentGraph.GetNeighbours(element))
-                {
-                    frontier.Enqueue(neighbour);
-                }
-            }
-        }
-        if (found.Count != areaSegments.Count())
+        if (!AreNeighbours(areaSegments))
             return null;
 
         // Build polygons for each site
@@ -167,21 +147,29 @@ public class TerrainStructure
         }
 
         // Build graph
-        Graph<Vector2[]> polygonGraph = new Graph<Vector2[]>();
+        Dictionary<int, int> graphMap = new Dictionary<int, int>();
+        Graph<AreaData> areaDataGraph = new Graph<AreaData>();
         foreach (int areaSegment in areaSegments)
         {
-            polygonGraph.AddNode(areaSegmentPolygonMap[areaSegment]);
+            AreaData data = new AreaData
+            {
+                Center = _areaSegmentCenterMap[areaSegment],
+                Polygon = areaSegmentPolygonMap[areaSegment],
+                Segment = AreaSegmentGraph.GetNodeData(areaSegment)
+            };
+            int newID = areaDataGraph.AddNode(data);
+            graphMap.Add(areaSegment, newID);
         }
         foreach (int areaSegment in areaSegments)
         {
             foreach (int neighbour in AreaSegmentGraph.GetNeighbours(areaSegment))
             {
                 if (areaSegments.Contains(neighbour))
-                    polygonGraph.AddEdge(areaSegment, neighbour, 0);
+                    areaDataGraph.AddEdge(graphMap[areaSegment], graphMap[neighbour], 0);
             }
         }
 
-        return polygonGraph;
+        return areaDataGraph;
     }
 
     // Get path polygons that have vertices inside areas segments
@@ -189,6 +177,72 @@ public class TerrainStructure
     {
         //TODO: implement this
         return null;
+    }
+
+    // Get border polygon for a given set of area segments
+    public Vector2[] GetAreaSegmentsBorderPolygon(IEnumerable<int> areaSegments)
+    {
+        var areaEdges = new List<Edge>();
+
+        // Get corresponding edges
+        foreach (var edge in VoronoiDiagram.Edges)
+        {
+            //Check if this edge is visible before continuing
+            if (!edge.Visible()) continue;
+
+            int leftAreaSegmentID = _siteAreaSegmentMap[edge.RightSite.Coord];
+            int rightAreaSegmentID = _siteAreaSegmentMap[edge.LeftSite.Coord];
+
+            // Either one or the other must be in areaSegments
+            if (!(areaSegments.Contains(leftAreaSegmentID) && areaSegments.Contains(rightAreaSegmentID)) &&
+                (areaSegments.Contains(leftAreaSegmentID) || areaSegments.Contains(rightAreaSegmentID)))
+            {
+                areaEdges.Add(edge);
+            }
+        }
+
+        // Group connected segments
+        var polygon = new List<Vector2>();
+        while (areaEdges.Count > 0)
+        {
+            var startEdge = areaEdges[0];
+            areaEdges.Remove(startEdge);
+            Vertex headPoint = startEdge.RightVertex;
+            Vertex tailPoint = startEdge.LeftVertex;
+
+            // Find polygon
+            var polygonClosed = false;
+            while (!polygonClosed && areaEdges.Count > 0)
+            {
+                for (int i = 0; i < areaEdges.Count; i++)
+                {
+                    var currentElement = areaEdges[i];
+                    Vertex leftPoint = currentElement.LeftVertex;
+                    Vertex rightPoint = currentElement.RightVertex;
+                    if (leftPoint == headPoint)
+                    {
+                        areaEdges.Remove(currentElement);
+                        headPoint = rightPoint;
+                        polygon.Add(currentElement.ClippedEnds[LR.RIGHT].ToUnityVector2());
+                    }
+                    else if (rightPoint == headPoint)
+                    {
+                        areaEdges.Remove(currentElement);
+                        headPoint = leftPoint;
+                        polygon.Add(currentElement.ClippedEnds[LR.LEFT].ToUnityVector2());
+                    }
+
+                    // Polygon has been closed
+                    if (headPoint == tailPoint)
+                    {
+                        polygonClosed = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return polygon.ToArray();
     }
 
     //---------------------------------------------------------------
@@ -547,7 +601,31 @@ public class TerrainStructure
     //
     //---------------------------------------------------------------
 
-    
+    // Checks if segments are neighbours
+    private bool AreNeighbours(IEnumerable<int> areaSegments)
+    {
+        // Check for null
+        if (areaSegments == null || !areaSegments.Any())
+            return false;
+
+        // Check if segments are neighbours
+        var found = new List<int> { };
+        var frontier = new Queue<int>();
+        frontier.Enqueue(areaSegments.ElementAt(0));
+        while (found.Count < areaSegments.Count() && frontier.Count > 0)
+        {
+            var element = frontier.Dequeue();
+            if (areaSegments.Contains(element))
+            {
+                found.Add(element);
+                foreach (int neighbour in AreaSegmentGraph.GetNeighbours(element))
+                {
+                    frontier.Enqueue(neighbour);
+                }
+            }
+        }
+        return found.Count == areaSegments.Count();
+    }
 
     // Generates a polygon for a given voronoi site
     private Vector2[] GetSitePolygon(Vector2f site)

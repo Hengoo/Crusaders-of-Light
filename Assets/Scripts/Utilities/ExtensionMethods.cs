@@ -48,7 +48,8 @@ public static class ExtensionMethods
         }
     }
 
-    public static bool IsInsideConvexPolygon(this Vector2 p, Vector2[] polyPoints)
+    // Supports both convex and non convex polygons
+    public static bool IsInsidePolygon(this Vector2 p, Vector2[] polyPoints)
     {
         var j = polyPoints.Length - 1;
         var inside = false;
