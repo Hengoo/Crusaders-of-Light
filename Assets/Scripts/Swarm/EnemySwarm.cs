@@ -64,6 +64,7 @@ public class EnemySwarm : MonoBehaviour {
     public float UpdateCounter = 0;
 
     [Header("Lists:")]
+    public SwarmAttention SAttention;
     public List<EnemySwarm> EnemiesInRange = new List<EnemySwarm>();
     public List<GameObject> DangerInRange = new List<GameObject>();
     public List<GameObject> PlayersInRange = new List<GameObject>();
@@ -373,62 +374,38 @@ public class EnemySwarm : MonoBehaviour {
 
     // ================================================== NEARBY LISTS ==================================================
 
-    public void OnTriggerEnter(Collider other)
+    public void AddToEnemiesInRange(EnemySwarm AddEnemySwarm)
     {
-        if (other.tag == "EnemySwarm")
-        {
-            EnemiesInRange.Add(other.GetComponent<EnemySwarm>());
-        }
-        else if (other.tag == "SwarmDanger")
-        {
-            DangerInRange.Add(other.gameObject);
-        }
-        else if (other.tag == "Attention")
-        {
-            /*Character otherChar = other.GetComponent<Character>();
-            if (otherChar.GetAlignment() == Character.TeamAlignment.PLAYERS)
-            {
-                PlayersInRange.Add(otherChar);
-            }*/
-            PlayersInRange.Add(other.gameObject);
-        }
+        EnemiesInRange.Add(AddEnemySwarm);
     }
 
-    public void OnTriggerExit(Collider other)
+    public void RemoveFromEnemiesInRange(EnemySwarm RemoveEnemySwarm)
     {
-        if (other.tag == "EnemySwarm")
-        {
-            EnemiesInRange.Remove(other.GetComponent<EnemySwarm>());
-        }
-        else if (other.tag == "SwarmDanger")
-        {
-            DangerInRange.Remove(other.gameObject);
-        }
-        else if (other.tag == "Attention")
-        {
-            /*Character otherChar = other.GetComponent<Character>();
-            if (otherChar.GetAlignment() == Character.TeamAlignment.PLAYERS)
-            {
-                PlayersInRange.Remove(otherChar);
-            }*/
-            PlayersInRange.Remove(other.gameObject);
-        }
+        EnemiesInRange.Remove(RemoveEnemySwarm);
     }
 
-    public void OnDestroy()
+    public void AddToDangersInRange(GameObject AddDanger)
     {
-      /*  for (int i = 0; i < EnemiesInRange.Count; i++)
-        {
-            EnemiesInRange[i].GetComponent<EnemySwarm>().RemoveFromList(this.gameObject);
-        }*/
+        DangerInRange.Add(AddDanger);
     }
 
-    public void RemoveFromList(EnemySwarm SwarmObject)
+    public void RemoveFromDangersInRange(GameObject RemoveDanger)
     {
-        EnemiesInRange.Remove(SwarmObject);
+        DangerInRange.Remove(RemoveDanger);
+    }
+
+    public void AddToPlayersInRange(GameObject AddPlayer)
+    {
+        PlayersInRange.Add(AddPlayer);
+    }
+
+    public void RemoveFromPlayersInRanger(GameObject RemovePlayer)
+    {
+        PlayersInRange.Remove(RemovePlayer);
     }
 
     // =================================================/ NEARBY LISTS /=================================================
+
 
     // ================================================ GETTERS/SETTERS =================================================
 
