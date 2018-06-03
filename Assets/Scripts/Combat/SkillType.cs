@@ -124,13 +124,13 @@ public class SkillType : ScriptableObject
         // Can Activation Cost be paid?
         if (Owner.GetEnergyCurrent() < Cost)
         {
-            Debug.Log(Owner + " can not activate Skill " + this + "! Reason: Not enough Energy!");
+           // Debug.Log(Owner + " can not activate Skill " + this + "! Reason: Not enough Energy!");
             return false;
         }
 
         if (SourceItemSkill.IsCurrentlyOnCooldown())
         {
-            Debug.Log(Owner + " can not activate Skill " + this + "! Reason: Skill is on Cooldown!");
+           // Debug.Log(Owner + " can not activate Skill " + this + "! Reason: Skill is on Cooldown!");
             return false;
         }
 

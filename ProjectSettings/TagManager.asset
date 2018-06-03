@@ -27,9 +27,9 @@ TagManager:
   - DeadCharacter
   - Weapon
   - Terrain
-  - 
-  - 
-  - 
+  - EnemySwarm
+  - AttentionEnemy
+  - CharacterEnemy
   - 
   - 
   - PostProcessing
