@@ -39,7 +39,7 @@ public class TerrainStructure
     private Texture2D _blankBump;
 
     private readonly int _lloydIterations;
-    private readonly int _voronoiSamples;
+    private int _voronoiSamples;
     private readonly float _borderNoise;
 
     public TerrainStructure(StoryStructure storyStructure, List<BiomeSettings> availableBiomes, float mapSize,
@@ -382,7 +382,6 @@ public class TerrainStructure
     }
 
     // Assign areas to the base graph based on a specific set of rules
-    private int _tries = 3;
     private void CreateAreaGraph(Queue<StoryStructure.AreaSegmentRewrite> rewrites)
     {
         var rewritesCopy = new Queue<StoryStructure.AreaSegmentRewrite>(rewrites);
@@ -393,11 +392,7 @@ public class TerrainStructure
             {
                 // Try again
                 Debug.LogWarning("Failed to generate map with current seed: " + Random.state);
-                _tries--;
-                if (_tries < 0)
-                    throw new Exception("Failed to generate map with current seed: " + Random.state);
-
-                Random.InitState(Random.Range(0, int.MaxValue));
+                _voronoiSamples += 10;
                 CreateBaseGraph(_lloydIterations);
                 CreateAreaGraph(rewritesCopy);
             }
