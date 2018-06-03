@@ -179,13 +179,13 @@ public class LevelCreator : Singleton<LevelCreator>
         var borderSettings = MyTerrainStructure.BorderSettings;
         var fences = LevelDataGenerator.GenerateBlockerLine(Terrain, MyTerrainStructure.BorderBlockerLines,
             borderSettings.BlockerLength, borderSettings.BlockerPositionNoise, borderSettings.BlockerScaleNoise,
-            borderSettings.Blocker, borderSettings.BlockerPole, borderSettings.BlockerAngleLimit);
+            borderSettings.Blocker, false, borderSettings.BlockerPole, borderSettings.BlockerAngleLimit);
         fences.transform.parent = transform;
 
         var biomeSettings = MyTerrainStructure.BiomeSettings;
         var walls = LevelDataGenerator.GenerateBlockerLine(Terrain, MyTerrainStructure.AreaBlockerLines,
             biomeSettings.BlockerLength, biomeSettings.BlockerPositionNoise, biomeSettings.BlockerScaleNoise,
-            biomeSettings.Blocker, biomeSettings.BlockerPole, biomeSettings.BlockerAngleLimit);
+            biomeSettings.Blocker, true, biomeSettings.BlockerPole, biomeSettings.BlockerAngleLimit);
         walls.transform.parent = transform;
     }
 

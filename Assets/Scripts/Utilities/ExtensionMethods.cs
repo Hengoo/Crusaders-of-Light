@@ -48,6 +48,18 @@ public static class ExtensionMethods
         }
     }
 
+
+    // Rotates objects if outside of angle tolerance
+    public static void CorrectAngleTolerance(this GameObject go, float angleLimit)
+    {
+        float angle = Vector3.Angle(go.transform.up, Vector3.up);
+        if (angle > angleLimit)
+        {
+            var euler = go.transform.rotation.eulerAngles;
+            go.transform.rotation = Quaternion.RotateTowards(go.transform.rotation, Quaternion.Euler(0, euler.y, 0), angle - angleLimit);
+        }
+    }
+
     // Supports both convex and non convex polygons
     public static bool IsInsidePolygon(this Vector2 p, Vector2[] polyPoints)
     {
