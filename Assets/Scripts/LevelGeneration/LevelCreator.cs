@@ -86,10 +86,7 @@ public class LevelCreator : Singleton<LevelCreator>
 
         MyStoryStructure = new StoryStructure(0, 1, MainPathNodeCount, SidePathCount, SidePathNodeCount, new CharacterEnemy[4]);
         MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome, VoronoiSamples, LloydRelaxation, EdgeNoise, BorderBlockerOffset);
-
-        if ((int)DrawModeEnum.ScenerySkeleton <= (int)DrawMode)
-            MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure);
-
+        MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure);
 
         switch (DrawMode)
         {
