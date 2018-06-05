@@ -20,6 +20,8 @@ public class LevelCreator : Singleton<LevelCreator>
 
     public int Seed;
     public DrawModeEnum DrawMode = DrawModeEnum.TerrainSkeleton;
+    public Terrain Terrain;
+    public Vector2 StartPostion;
     public bool GenerateOnPlay = false;
 
     [Header("Story Settings")]
@@ -59,7 +61,6 @@ public class LevelCreator : Singleton<LevelCreator>
     public TerrainStructure MyTerrainStructure { get; private set; }
     public StoryStructure MyStoryStructure { get; private set; }
     public SceneryStructure MySceneryStructure { get; private set; }
-    public Terrain Terrain { get; private set; }
 
 
     private float[,] _heightMap;
@@ -240,6 +241,7 @@ public class LevelCreator : Singleton<LevelCreator>
     private void DrawCompleteLevel()
     {
         DrawTerrainAndScenery();
+        StartPostion = MyTerrainStructure.Start.Key;
     }
 
     private void DrawTerrainSkeleton()
