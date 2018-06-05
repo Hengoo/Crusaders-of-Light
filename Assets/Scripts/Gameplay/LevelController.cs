@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Experimental.UIElements;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class LevelController : Singleton<LevelController>
     public QuestController QuestController;
 
     public CharacterPlayer[] PlayerCharacters;
+    public LightWisp LightWisp;
 
     public Canvas Instructions;
 
@@ -32,10 +34,9 @@ public class LevelController : Singleton<LevelController>
 
     void Start()
     {
-
         InitializeLevel();
-        LevelCreator.CreateMap();
-        StartCoroutine(DisplayIntro(10));
+        LevelCreator.CreateGameLevel();
+        StartCoroutine(StartLevel(10));
     }
 
     void Update()
@@ -74,7 +75,7 @@ public class LevelController : Singleton<LevelController>
         GameController.Instance.FinalizeGameSession();
     }
 
-    private IEnumerator DisplayIntro(float seconds)
+    private IEnumerator StartLevel(float seconds)
     {
         Intro.enabled = true;
         IntroImage.color = new Color(IntroImage.color.r, IntroImage.color.g, IntroImage.color.b, 0);
@@ -87,7 +88,7 @@ public class LevelController : Singleton<LevelController>
         if (SkipIntro)
         {
             Intro.enabled = false;
-            StartGame();
+            PlacePlayersAndStartQuest();
             yield break;
         }
 #endif
@@ -124,7 +125,7 @@ public class LevelController : Singleton<LevelController>
             yield return new WaitForEndOfFrame();
         }
 
-        StartGame();
+        PlacePlayersAndStartQuest();
 
         //Fade black out
         while (IntroBlackImage.color.a > 0)
@@ -210,7 +211,7 @@ public class LevelController : Singleton<LevelController>
         StartCoroutine(WaitAndFinalize(10));
     }
 
-    public void StartGame()
+    public void PlacePlayersAndStartQuest()
     {
         var terrain = LevelCreator.Terrain;
         var terrainStructure = LevelCreator.MyTerrainStructure;
@@ -236,6 +237,10 @@ public class LevelController : Singleton<LevelController>
             spawnPosition = new Vector3(spawnPosition.x, terrain.SampleHeight(spawnPosition) + 0.05f, spawnPosition.z);
             PlayerCharacters[i].transform.position = spawnPosition;
         }
+        Vector3 wispPosition = new Vector3(startPosition2D.x, 0, startPosition2D.y);
+        wispPosition += new Vector3(0, terrain.SampleHeight(wispPosition) + 0.05f, 0);
+        LightWisp.GetComponent<NavMeshAgent>().Warp(wispPosition);
+
         var cameraPosition = new Vector3(startPosition2D.x, 0, startPosition2D.y);
         MainCamera.gameObject.transform.position = cameraPosition + new Vector3(0, terrain.SampleHeight(cameraPosition) + 20, 0);
 

@@ -66,7 +66,7 @@ public class LevelCreator : Singleton<LevelCreator>
     private float[,,] _alphaMap;
 
 
-    public void CreateMap()
+    public void CreateGameLevel()
     {
         DrawMode = DrawModeEnum.GameLevel;
         Seed = GameController.Instance.Seed;

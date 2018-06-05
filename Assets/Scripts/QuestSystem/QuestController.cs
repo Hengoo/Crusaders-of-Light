@@ -78,7 +78,7 @@ public class QuestController : Singleton<QuestController>
 
     private IEnumerator VictoryEnding()
     {
-        const float step = 1 / 3f;
+        const float step = 1 / 2f;
         while (Sun.intensity < 20)
         {
             Sun.intensity += step * Time.deltaTime;
