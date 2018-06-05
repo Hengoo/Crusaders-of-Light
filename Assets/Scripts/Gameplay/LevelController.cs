@@ -9,20 +9,11 @@ using Image = UnityEngine.UI.Image;
 public class LevelController : Singleton<LevelController>
 {
     public LevelCreator LevelCreator;
-    public QuestController QuestController;
 
     public CharacterPlayer[] PlayerCharacters;
-    public LightWisp LightWisp;
+    public GameObject LightWisp;
 
     public Canvas Instructions;
-
-    public Canvas Intro;
-    public Image IntroBlackImage;
-    public Image IntroImage;
-
-    public Canvas Outro;
-    public Image OutroDeadImage;
-    public Image OutroVictoryImage;
 
     public Camera MainCamera;
 
@@ -36,7 +27,7 @@ public class LevelController : Singleton<LevelController>
     {
         InitializeLevel();
         LevelCreator.CreateGameLevel();
-        StartCoroutine(StartLevel(10));
+        StartLevel();
     }
 
     void Update()
@@ -65,8 +56,6 @@ public class LevelController : Singleton<LevelController>
         //Destroy inactive players
         for (int i = GameController.Instance.ActivePlayers; i < PlayerCharacters.Length; i++)
             Destroy(PlayerCharacters[i].gameObject);
-
-        QuestController.ClearQuests();
     }
 
     public void FinalizeLevel()
@@ -75,143 +64,16 @@ public class LevelController : Singleton<LevelController>
         GameController.Instance.FinalizeGameSession();
     }
 
-    private IEnumerator StartLevel(float seconds)
-    {
-        Intro.enabled = true;
-        IntroImage.color = new Color(IntroImage.color.r, IntroImage.color.g, IntroImage.color.b, 0);
-        var text = IntroImage.GetComponentInChildren<Text>();
-        text.color = new Color(text.color.r, text.color.g, text.color.b, 0);
-
-
-
-#if UNITY_EDITOR
-        if (SkipIntro)
-        {
-            Intro.enabled = false;
-            PlacePlayersAndStartQuest();
-            yield break;
-        }
-#endif
-
-        yield return new WaitForSeconds(3);
-
-        const float step = 1 / 5f;
-
-        //Fade intro text in
-        while (IntroImage.color.a < 1)
-        {
-            var currentColour = IntroImage.color;
-            var currentTextColour = text.color;
-            var value = step * Time.deltaTime;
-            currentColour += new Color(0, 0, 0, value);
-            currentTextColour += new Color(0, 0, 0, value);
-            IntroImage.color = currentColour;
-            text.color = currentTextColour;
-            yield return new WaitForEndOfFrame();
-        }
-
-        yield return new WaitForSeconds(seconds);
-
-        //Fade intro text out
-        while (IntroImage.color.a > 0)
-        {
-            var currentColour = IntroImage.color;
-            var currentTextColour = text.color;
-            var value = step * Time.deltaTime;
-            currentColour -= new Color(0, 0, 0, value);
-            currentTextColour -= new Color(0, 0, 0, value);
-            IntroImage.color = currentColour;
-            text.color = currentTextColour;
-            yield return new WaitForEndOfFrame();
-        }
-
-        PlacePlayersAndStartQuest();
-
-        //Fade black out
-        while (IntroBlackImage.color.a > 0)
-        {
-            var currentColour = IntroBlackImage.color;
-            currentColour -= new Color(0, 0, 0, step * 2 * Time.deltaTime);
-            IntroBlackImage.color = currentColour;
-            yield return new WaitForEndOfFrame();
-        }
-
-        Intro.enabled = false;
-    }
-
-
-    public void FinalizeLevelWithWait(float seconds)
-    {
-        StartCoroutine(WaitAndFinalize(seconds));
-    }
-
-    private IEnumerator WaitAndFinalize(float seconds)
-    {
-        Outro.enabled = true;
-        OutroDeadImage.color = new Color(OutroDeadImage.color.r, OutroDeadImage.color.g, OutroDeadImage.color.b, 0);
-        OutroVictoryImage.color = new Color(OutroVictoryImage.color.r, OutroVictoryImage.color.g, OutroVictoryImage.color.b, 0);
-        OutroDeadImage.GetComponentInChildren<Text>().color -= new Color(0, 0, 0, 1);
-        OutroVictoryImage.GetComponentInChildren<Text>().color -= new Color(0, 0, 0, 1);
-
-        if (!_allDead)
-            foreach (var enemy in FindObjectsOfType<CharacterEnemy>())
-            {
-                Destroy(enemy.gameObject);
-            }
-
-        yield return new WaitForSeconds(3);
-
-        const float step = 0.7f;
-        if (_allDead)
-        {
-            QuestController.Instance.FadeAudioToAmbience(3);
-            var text = OutroDeadImage.GetComponentInChildren<Text>();
-            text.color = new Color(text.color.r, text.color.g, text.color.b, 0);
-            while (OutroDeadImage.color.a < 1f)
-            {
-                var currentColour = OutroDeadImage.color;
-                var currentTextColour = text.color;
-                var value = step * Time.deltaTime;
-                currentColour += new Color(0, 0, 0, value);
-                currentTextColour += new Color(0, 0, 0, value);
-                OutroDeadImage.color = currentColour;
-                text.color = currentTextColour;
-                yield return new WaitForEndOfFrame();
-            }
-
-        }
-        else
-        {
-            var text = OutroVictoryImage.GetComponentInChildren<Text>();
-            text.color = new Color(text.color.r, text.color.g, text.color.b, 0);
-            while (OutroVictoryImage.color.a < 1f)
-            {
-                var currentColour = OutroVictoryImage.color;
-                var currentTextColour = text.color;
-                var value = step * Time.deltaTime;
-                currentColour += new Color(0, 0, 0, value);
-                currentTextColour += new Color(0, 0, 0, value);
-                OutroVictoryImage.color = currentColour;
-                text.color = currentTextColour;
-                yield return new WaitForEndOfFrame();
-            }
-
-        }
-        yield return new WaitForSeconds(seconds);
-        GameController.Instance.FinalizeGameSession();
-    }
-
-    public void CheckIfAllDead()
+    public bool CheckIfAllDead()
     {
         for (var i = 0; i < GameController.Instance.ActivePlayers; i++)
             if (!PlayerCharacters[i].GetCharacterIsDead())
-                return;
-
-        _allDead = true;
-        StartCoroutine(WaitAndFinalize(10));
+                return false;
+        
+        return true;
     }
 
-    public void PlacePlayersAndStartQuest()
+    public void StartLevel()
     {
         var terrain = LevelCreator.Terrain;
         var terrainStructure = LevelCreator.MyTerrainStructure;
@@ -247,8 +109,6 @@ public class LevelController : Singleton<LevelController>
         //Reactivate all controllers
         for (var i = 0; i < GameController.Instance.ActivePlayers; i++)
             PlayerCharacters[i].gameObject.SetActive(true);
-
-        QuestController.Instance.StartQuests();
     }
 
     public GameObject[] GetActivePlayers()

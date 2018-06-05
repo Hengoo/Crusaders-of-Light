@@ -150,6 +150,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a1c5ff9ace1be644b942c932c01ece3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MoveSpeed: 6
+  PlayerDistance: 4
 --- !u!135 &135122749292927254
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -177,7 +179,7 @@ NavMeshAgent:
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 1.3

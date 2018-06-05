@@ -84,7 +84,7 @@ public class QuestController : Singleton<QuestController>
             Sun.intensity += step * Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        LevelController.Instance.FinalizeLevelWithWait(10);
+        LevelController.Instance.FinalizeLevel();
     }
 
     public void FadeAudioToSpecial(float seconds, AudioClip audioClip)
