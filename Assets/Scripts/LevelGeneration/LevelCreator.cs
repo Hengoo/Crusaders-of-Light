@@ -18,7 +18,7 @@ public class LevelCreator : Singleton<LevelCreator>
         GameLevel
     }
 
-    public int Seed = 0;
+    public int Seed;
     public DrawModeEnum DrawMode = DrawModeEnum.TerrainSkeleton;
     public bool GenerateOnPlay = false;
 
@@ -32,17 +32,17 @@ public class LevelCreator : Singleton<LevelCreator>
     [Range(16, 1024)] public float MapSize = 512;
     [Range(1, 1024)] public float MapHeight = 80;
     [Range(10, 1000)] public int VoronoiSamples = 80;
-    [Range(0, 1f)] public float MaxHeight = 1;
     [Range(0, 50f)] public float EdgeNoise = 8f;
     [Range(0, 100)] public int LloydRelaxation = 20;
     [Range(1, 8)] public int Octaves = 3;
     [Range(0, 1f)] public float WaterHeight = 0.15f;
     public Material WaterMaterial;
+    public Material TerrainMaterial;
 
     [Header("Terrain Smooth Settings")]
     [Range(0, 5)] public int OverallSmoothPasses = 2;
     [Range(0, 20)] public int OverallSmoothSquareSize = 2;
-    [Range(0, 5)] public int OverallAlphaSmoothPasses = 2;
+    [Range(0, 5)] public int OverallAlphaSmoothPasses = 1;
     [Range(0, 20)] public int OverallAlphaSmoothSquareSize = 2;
 
     [Header("Path Settings")]
@@ -171,8 +171,12 @@ public class LevelCreator : Singleton<LevelCreator>
         Terrain.transform.parent = transform;
         Terrain.transform.position = Vector3.zero;
         Terrain.GetComponent<Terrain>().terrainData.SetHeights(0, 0, _heightMap);
-        // terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
-        // terrain.GetComponent<Terrain>().materialTemplate = BiomeGlobalConfiguration.TerrainMaterial; <-- TODO: fix to support more than 4 textures
+        if (TerrainMaterial)
+        {
+            Terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
+            Terrain.GetComponent<Terrain>().materialTemplate = TerrainMaterial;
+        }
+        
     }
 
     // Water Plane Placement
