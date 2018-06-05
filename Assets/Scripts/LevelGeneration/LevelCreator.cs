@@ -136,14 +136,17 @@ public class LevelCreator : Singleton<LevelCreator>
 
     private void SmoothHeightMap()
     {
-        // Overall smoothing
-        for(int i = 0; i < OverallSmoothPasses; i++)
-        {
-            LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothSquareSize);
-        }
+		// Overall smoothing
+		//for(int i = 0; i < OverallSmoothPasses; i++)
+		//{
+		//    LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothSquareSize);
+		//}
 
-        // Smooth paths
-        for (int i = 0; i < PathSmoothPasses; i++)
+		//GPU smooth:
+		LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothSquareSize,OverallAlphaSmoothPasses);
+
+		// Smooth paths
+		for (int i = 0; i < PathSmoothPasses; i++)
         {
             LevelDataGenerator.SmoothHeightMapWithLines(_heightMap, MapSize / HeightMapResolution, MyTerrainStructure.MainPathLines, MyTerrainStructure.BiomeSettings.MainPathSplatSize, PathSmoothSquaresize);
             LevelDataGenerator.SmoothHeightMapWithLines(_heightMap, MapSize / HeightMapResolution, MyTerrainStructure.SidePathLines, MyTerrainStructure.BiomeSettings.SidePathSplatSize, PathSmoothSquaresize);

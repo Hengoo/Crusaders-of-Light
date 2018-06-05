@@ -66,8 +66,155 @@ public static class LevelDataGenerator
         return result;
     }
 
-    // Smooth every cell in the alphamap using squareSize neighbors in each direction
-    public static float[,,] SmoothAlphaMap(float[,,] alphamap, int squareSize)
+	/// <summary>
+	/// Smoothes the float array. Expects squared arrays
+	/// </summary>
+	/// <param name="IOArray">IO float array</param>
+	/// <param name="squareSize"></param>
+	/// <param name="loop">number of loops</param>
+	public static void SmoothHeightMap(float[,] IOArray, int squareSize, int loop)
+	{
+		//variables
+		int arraySize = IOArray.GetLength(0);
+		ComputeBuffer heightmap;
+		ComputeBuffer heightmapTmp;
+
+		//find compute shader:
+		ComputeShader computeShader = (ComputeShader)Resources.Load("Smoothing");
+		
+		//set kernel ids:
+		int kernelSmooth = computeShader.FindKernel("Smooth");
+		int kernelPrepArray = computeShader.FindKernel("PrepArray");
+
+		heightmap = new ComputeBuffer(arraySize * arraySize, sizeof(float), ComputeBufferType.Default);
+		heightmapTmp = new ComputeBuffer(arraySize * arraySize, sizeof(float), ComputeBufferType.Default);
+
+
+		float[] mapTmp = new float[arraySize * arraySize];
+		//for (int i = 0; i < arraySize; i++)
+		//{
+		//	for (int j = 0; j < arraySize; j++)
+		//	{
+		//		mapTmp[j * arraySize + i] = IOArray[i, j];
+		//	}
+		//}
+
+		System.Buffer.BlockCopy(IOArray, 0, mapTmp, 0, IOArray.Length* sizeof(float));
+
+		heightmap.SetData(mapTmp);
+
+		computeShader.SetInt("arraySize", arraySize);
+		computeShader.SetInt("squareSize", squareSize);
+		computeShader.SetBuffer(kernelPrepArray, "heightmapBuffer", heightmap);
+		computeShader.SetBuffer(kernelPrepArray, "heightmapTmpBuffer", heightmapTmp);
+		computeShader.SetBuffer(kernelSmooth, "heightmapBuffer", heightmap);
+		computeShader.SetBuffer(kernelSmooth, "heightmapTmpBuffer", heightmapTmp);
+		for (int i = 0; i < loop; i++)
+		{
+			computeShader.Dispatch(kernelPrepArray, (arraySize * arraySize) / 64, 1, 1);
+
+			computeShader.Dispatch(kernelSmooth, arraySize / 16, arraySize / 16, 1);
+		}
+
+		//read data: skip this for performance testing on compoute code
+		heightmap.GetData(mapTmp);
+
+
+		//for (int i = 0; i < arraySize; i++)
+		//{
+		//	for (int j = 0; j < arraySize; j++)
+		//	{
+		//		IOArray[j, i] = mapTmp[j * arraySize + i];
+		//	}
+		//}
+		System.Buffer.BlockCopy(mapTmp, 0, IOArray, 0, mapTmp.Length * sizeof(float));
+
+		//cleanup afterwards:
+		heightmap.Release();
+		heightmapTmp.Release();
+	}
+
+	/// <summary>
+	/// smoothes the array with the weights defined in mask
+	/// </summary>
+	/// <param name="IOArray">IO float array</param>
+	/// <param name="mask">mask array. same sice as IOArray</param>
+	/// <param name="squareSize"></param>
+	/// <param name="loop">number of loops</param>
+	public static void SmoothHeightMap(float[,] IOArray, float[,] mask, int squareSize, int loop)
+	{
+		//variables
+		int arraySize = IOArray.GetLength(0);
+		ComputeBuffer heightmap;
+		ComputeBuffer heightmapTmp;
+		ComputeBuffer maskBuffer;
+
+		//find compute shader:
+		ComputeShader computeShader = (ComputeShader)Resources.Load("Smoothing");
+
+		//set kernel ids:
+		int kernelSmooth = computeShader.FindKernel("SmoothMask");
+		int kernelPrepArray = computeShader.FindKernel("PrepArray");
+
+		heightmap = new ComputeBuffer(arraySize * arraySize, sizeof(float), ComputeBufferType.Default);
+		heightmapTmp = new ComputeBuffer(arraySize * arraySize, sizeof(float), ComputeBufferType.Default);
+		maskBuffer = new ComputeBuffer(arraySize * arraySize, sizeof(float), ComputeBufferType.Default);
+
+
+		float[] mapTmp = new float[arraySize * arraySize];
+		//for (int i = 0; i < arraySize; i++)
+		//{
+		//	for (int j = 0; j < arraySize; j++)
+		//	{
+		//		mapTmp[j * arraySize + i] = IOArray[i, j];
+		//	}
+		//}
+
+		System.Buffer.BlockCopy(IOArray, 0, mapTmp, 0, IOArray.Length * sizeof(float));
+
+		float[] maskTmp = new float[arraySize * arraySize];
+		System.Buffer.BlockCopy(mask, 0, maskTmp, 0, mask.Length * sizeof(float));
+
+		//set buffers
+		heightmap.SetData(mapTmp);
+		maskBuffer.SetData(maskTmp);
+
+		computeShader.SetInt("arraySize", arraySize);
+		computeShader.SetInt("squareSize", squareSize);
+		computeShader.SetBuffer(kernelPrepArray, "heightmapBuffer", heightmap);
+		computeShader.SetBuffer(kernelPrepArray, "heightmapTmpBuffer", heightmapTmp);
+		computeShader.SetBuffer(kernelSmooth, "heightmapBuffer", heightmap);
+		computeShader.SetBuffer(kernelSmooth, "heightmapTmpBuffer", heightmapTmp);
+		computeShader.SetBuffer(kernelSmooth, "maskBuffer", maskBuffer);
+
+		for (int i = 0; i < loop; i++)
+		{
+			computeShader.Dispatch(kernelPrepArray, (arraySize * arraySize) / 64, 1, 1);
+
+			computeShader.Dispatch(kernelSmooth, arraySize / 16, arraySize / 16, 1);
+		}
+
+		//read data: skip this for performance testing on compoute code
+		heightmap.GetData(mapTmp);
+
+
+		//for (int i = 0; i < arraySize; i++)
+		//{
+		//	for (int j = 0; j < arraySize; j++)
+		//	{
+		//		IOArray[j, i] = mapTmp[j * arraySize + i];
+		//	}
+		//}
+		System.Buffer.BlockCopy(mapTmp, 0, IOArray, 0, mapTmp.Length * sizeof(float));
+
+		//cleanup afterwards:
+		heightmap.Release();
+		heightmapTmp.Release();
+		maskBuffer.Release();
+	}
+
+	// Smooth every cell in the alphamap using squareSize neighbors in each direction
+	public static float[,,] SmoothAlphaMap(float[,,] alphamap, int squareSize)
     {
         var result = (float[,,])alphamap.Clone();
         var length = alphamap.GetLength(0);
