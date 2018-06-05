@@ -10,5 +10,5 @@ using UnityEngine;
 public abstract class AreaSettingsFactory : ScriptableObject
 {
     public abstract Graph<AreaSegment> GetPatternGraph();
-    public abstract AreaSettings ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon);
+    public abstract AreaSettings[] ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon);
 }

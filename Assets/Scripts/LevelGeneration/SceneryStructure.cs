@@ -55,7 +55,7 @@ public class SceneryStructure
             List<Vector2[]> clearPolygons = terrainStructure.GetPathPolygons(matches.Values);
             Vector2[] borderPolygon = terrainStructure.GetAreaSegmentsBorderPolygon(matches.Values);
 
-            Areas.Add(settingsFactory.ProduceAreaSettings(areaDataGraph, clearPolygons, borderPolygon));
+            Areas.AddRange(settingsFactory.ProduceAreaSettings(areaDataGraph, clearPolygons, borderPolygon));
         }
     }
 }

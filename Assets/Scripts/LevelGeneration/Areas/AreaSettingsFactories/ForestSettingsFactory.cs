@@ -19,12 +19,13 @@ public class ForestSettingsFactory : AreaSettingsFactory
         return pattern;
     }
 
-    public override AreaSettings ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
+    public override AreaSettings[] ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
-        return new ForestSettings(areaDataGraph, clearPolygons, borderPolygon, TreeDistance, AngleTolerance, SegmentType.ToString())
+        AreaSettings forest = new ForestSettings(areaDataGraph, clearPolygons, borderPolygon, TreeDistance, AngleTolerance, SegmentType.ToString())
         {
             Trees = Trees
         };
+        return new[] {forest};
     }
 }
 
