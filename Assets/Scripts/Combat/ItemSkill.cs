@@ -20,6 +20,10 @@ public class ItemSkill : MonoBehaviour {
     public float EffectFloat = 0.0f;
     public List<SkillHitObject> EffectSkillHitObjects = new List<SkillHitObject>();
 
+    [Header("Combo System")]
+    public int ItemSkillID = -1;
+    public ItemSkill[] ComboInput = new ItemSkill[4];
+
     //[Header("Animation:")]
     //public string AnimationName = "no_animation";
 
@@ -269,6 +273,26 @@ public class ItemSkill : MonoBehaviour {
             EffectSkillHitObjects.Remove(EndHitObjects[i]);
         }
     }
+
+
+    // =================================== COMBO SYSTEM ====================================
+
+    public int GetItemSkillIDFromComboInput(int SlotID)
+    {
+        if (ComboInput[SlotID])
+        {
+            return ComboInput[SlotID].GetItemSkillID();
+        }
+
+        return -1;
+    }
+
+    public int GetItemSkillID()
+    {
+        return ItemSkillID;
+    }
+
+    // ==================================/ COMBO SYSTEM /===================================
 
 
     public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()

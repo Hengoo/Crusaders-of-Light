@@ -415,7 +415,7 @@ public class CharacterPlayer : Character {
     }
 
     private void PlayerInputStartSkillActivation()
-    {
+    {/*
         if (SkillCurrentlyActivating[0] < 0)
         {
             if (SkillActivationButtonsPressed[0])
@@ -442,7 +442,36 @@ public class CharacterPlayer : Character {
                 // Try starting Activation of Skill 2 from Weapon 2
                 StartSkillActivation(3);
             }
-        }   
+        }   */
+        
+        if (SkillCurrentlyActivating[0] >= 0)
+        {
+            // A Skill is currently Activating!
+            return;
+        }
+
+        if (LastSkillActivated < 0)
+        {
+            for (int i = 0; i < SkillActivationButtonsPressed.Length; i++)
+            {
+                if (SkillActivationButtonsPressed[i])
+                {
+                    StartSkillActivation(i);
+                    return;
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < SkillActivationButtonsPressed.Length; i++)
+            {
+                if (SkillActivationButtonsPressed[i] && ItemSkillSlots[LastSkillActivated].GetItemSkillIDFromComboInput(i) >= 0)
+                {
+                    StartSkillActivation(ItemSkillSlots[LastSkillActivated].GetItemSkillIDFromComboInput(i));
+                    return;
+                }
+            }
+        }
     }
 
     public void SetPlayerID(int ID)
@@ -453,6 +482,16 @@ public class CharacterPlayer : Character {
     public int GetPlayerID()
     {
         return PlayerID;
+    }
+
+    public int GetCurrentItemSkillIDForInput()
+    {
+        if (SkillCurrentlyActivating[0] >= 0)
+        {
+            return SkillCurrentlyActivating[0];
+        }
+
+        return LastSkillActivated;
     }
 
     // ======================================== /INPUT =========================================

@@ -61,7 +61,7 @@ public class Character : MonoBehaviour
     public Item[] StartingWeapons = new Item[0];    // Note: Slot in Array corresponds to Hand it is holding. Up to 2 Starting Weapons!
 
     [Header("Equipment (for Testing):")]
-    public int SkillsPerWeapon = 2;                 // Note: Number of Skills granted by each equipped weapon. The ItemSkillSlots[] has to take that number into account. Weapons with less Skills are allowed to exist!
+    public int SkillsPerWeapon = 8;                 // Note: Number of Skills granted by each equipped weapon. The ItemSkillSlots[] has to take that number into account. Weapons with less Skills are allowed to exist!
     public Item[] WeaponSlots = new Item[2];        // Note: [0]: Left Hand,  [1]: Right Hand
     protected bool TwoHandedWeaponEquipped = false;
     // public Item[] ItemSlots = new Item[0];       // Note: Currently Unused, define which slot equals which type of item if more item types that are equipable are implemented.
@@ -70,13 +70,17 @@ public class Character : MonoBehaviour
     // CURRENT IDEA: 2 Weapon Skill Slots: Left Hand [0], Right Hand [1], but if other Slot empty: Write Second Skill (Primary Skill always, Secondary if possible(ie. no other Skill).
     // Two Handed: Write Both (unequip other weapon!).
 
-    public ItemSkill[] ItemSkillSlots = new ItemSkill[4];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
+    public ItemSkill[] ItemSkillSlots = new ItemSkill[8];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
 
     [Header("Equipment (NEW!):")]
     public Item EquippedWeapon;
     public ElementItem EquippedElement;
 
     public int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
+    public int LastSkillActivated = -1;
+    public float LastSkillActivatedTimer = 0.0f;
+    public float LastSkillActivatedStartTime = 1f;
+
     //public float SkillActivationTimer = 0.0f;
 
     public int HindranceLevel = 0;
@@ -123,7 +127,7 @@ public class Character : MonoBehaviour
         UpdateCurrentSkillActivation();
         UpdateAllCooldowns();
         UpdateHealthHealingMax();
-
+        UpdateLastSkillActivated();
     }
 
     protected void LateUpdate()
@@ -499,11 +503,13 @@ public class Character : MonoBehaviour
         {
             SkillCurrentlyActivating[0] = WeaponSkillSlotID;
             WeaponSlots[0].SetSkillActivationTimer(0.0f);
+            ResetLastSkillActivated();
         }
         else
         {
             SkillCurrentlyActivating[1] = WeaponSkillSlotID;
             WeaponSlots[1].SetSkillActivationTimer(0.0f);
+            ResetLastSkillActivated();
         }
     }
 
@@ -526,7 +532,11 @@ public class Character : MonoBehaviour
             return;
         }*/
         ChangeHindranceLevel(Hindrance);
+
+        SetLastSkillActivated(SkillCurrentlyActivating[WeaponSlotID]);
+
         SkillCurrentlyActivating[WeaponSlotID] = -1;
+        
         // SkillActivationTimer = 0.0f; // Now handled in ItemSkill/Item
     }
 
@@ -580,6 +590,31 @@ public class Character : MonoBehaviour
             return false;
         }
         return true;
+    }
+
+    public void UpdateLastSkillActivated()
+    {
+        if (LastSkillActivatedTimer > 0)
+        {
+            LastSkillActivatedTimer -= Time.deltaTime;
+
+            if (LastSkillActivatedTimer <= 0)
+            {
+                LastSkillActivated = -1;
+            }
+        }
+    }
+
+    public void SetLastSkillActivated(int SkillSlotID)
+    {
+        LastSkillActivated = SkillSlotID;
+        LastSkillActivatedTimer = LastSkillActivatedStartTime;
+    }
+
+    public void ResetLastSkillActivated()
+    {
+        LastSkillActivated = -1;
+        LastSkillActivatedTimer = -1;
     }
 
     // =================================== /SKILL ACTIVATION ====================================
