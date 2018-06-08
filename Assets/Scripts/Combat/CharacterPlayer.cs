@@ -39,6 +39,7 @@ public class CharacterPlayer : Character {
     {
         base.Start();
         SpawnAndEquipStartingWeapons();
+        
     }
 
     private UnityAction _itemPickupAction;

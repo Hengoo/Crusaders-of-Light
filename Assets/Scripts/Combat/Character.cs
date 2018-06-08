@@ -46,7 +46,7 @@ public class Character : MonoBehaviour
     public int HealthHealingMax = 100;
     public int HealthHealingLostPerCount = 10;
     public float HealthHealingCounter = 0f;
-    private float HealthHealingCounterTimer = 1f;
+    protected float HealthHealingCounterTimer = 1f;
 
     public int EnergyCurrent = 100;
     public int EnergyMax = 100;
@@ -72,18 +72,19 @@ public class Character : MonoBehaviour
 
     public ItemSkill[] ItemSkillSlots = new ItemSkill[8];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
 
-    [Header("Equipment (NEW!):")]
-    public Item EquippedWeapon;
+    [Header("Element:")]
     public ElementItem EquippedElement;
+    public ElementItem StartingElement;
 
-    public int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
-    public int LastSkillActivated = -1;
-    public float LastSkillActivatedTimer = 0.0f;
+    [Header("Skill Activation:")]
+    protected int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
+    protected int LastSkillActivated = -1;
+    protected float LastSkillActivatedTimer = 0.0f;
     public float LastSkillActivatedStartTime = 1f;
 
     //public float SkillActivationTimer = 0.0f;
 
-    public int HindranceLevel = 0;
+    protected int HindranceLevel = 0;
 
     [Header("Active Conditions:")]
     public List<ActiveCondition> ActiveConditions = new List<ActiveCondition>();
@@ -119,6 +120,7 @@ public class Character : MonoBehaviour
         PhysCont = new PhysicsController(gameObject);
         CreateCharacterFollowGUI();     // Could be changed to when entering camera view or close to players, etc... as optimization.
         // SpawnAndEquipStartingWeapons();
+        SpawnAndEquipStartingElement();
     }
 
     protected virtual void Update()
@@ -459,6 +461,26 @@ public class Character : MonoBehaviour
     public void EquipElement(ElementItem ElementToEquip)
     {
         EquippedElement = ElementToEquip;
+        EquipElementVisually();
+    }
+
+    private void EquipElementVisually()
+    {
+        EquippedElement.transform.SetParent(CharacterHands[0], false);
+        // TODO : How exactly should the Element be displayed?
+        // TODO : Add Element Effect to Weapon!
+    }
+
+    public ElementItem UnequipElement()
+    {
+        ElementItem tempElement = EquippedElement;
+        EquippedElement = null;
+        return tempElement;
+    }
+
+    public void UnequipElementAndDestroy()
+    {
+        Destroy(UnequipElement().gameObject);
     }
 
     public ElementItem GetEquippedElement()
@@ -468,6 +490,17 @@ public class Character : MonoBehaviour
             return EquippedElement;
         }
         return null;
+    }
+
+    private void SpawnAndEquipStartingElement()
+    {
+        if (!StartingElement)
+        {
+            return;
+        }
+
+        ElementItem tempEle = Instantiate(StartingElement);
+        EquipElement(tempEle);
     }
 
     // ======================================= /ELEMENT  =======================================
