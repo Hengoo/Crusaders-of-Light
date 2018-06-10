@@ -13,10 +13,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WallPrefab: {fileID: 1055983341240014, guid: 30c1958176ed413489db99365c9b3ad4, type: 2}
   WallLenght: 7
-  WallAngleLimit: 0
+  WallAngleLimit: 5
   WallPositionNoise: {x: 0, y: 0, z: 0}
   WallScaleNoise: {x: 0.1, y: 0, z: 0}
-  TowerPrefab: {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0,
+  TowerPrefab: {fileID: 1624022019104524, guid: 94a16d23ee0336547b909f4988249b7b,
     type: 2}
   RewardPedestalPrefab: {fileID: 0}
   BuildingPrefabs: []

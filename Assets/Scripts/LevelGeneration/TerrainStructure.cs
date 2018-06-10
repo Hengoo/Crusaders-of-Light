@@ -124,8 +124,12 @@ public class TerrainStructure
     // Sample area height at a given position 
     public BiomeHeightParameters SampleHeight(Vector2 position)
     {
-        Vector2 noisePosition = position + new Vector2(Random.Range(-_edgeNoise, _edgeNoise), Random.Range(-_edgeNoise, _edgeNoise));
-        AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
+        AreaSegment areaSegment = GetClosestAreaSegment(position);
+        if (areaSegment.Type == AreaSegment.EAreaSegmentType.Border)
+        {
+            position += new Vector2(Random.Range(-_edgeNoise, _edgeNoise), Random.Range(-_edgeNoise, _edgeNoise));
+            areaSegment = GetClosestAreaSegment(position);
+        }
         return areaSegment == null || areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? BorderSettings.HeightParameters : BiomeSettings.HeightParameters;
     }
 

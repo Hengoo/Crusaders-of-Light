@@ -211,7 +211,7 @@ public static class LevelDataGenerator
                 if (lastTransform == null)
                 {
                     go = Object.Instantiate(polePrefab);
-                    go.transform.localScale += new Vector3(lengthCorrection, 0, lengthCorrection) / blockerLength;
+                    go.transform.localScale += new Vector3(0, 0, lengthCorrection) / blockerLength;
                     go.transform.rotation = useTerrainNormal ?
                         GetTerrainNormalRotation(position) :
                         Quaternion.Euler(blocker.transform.eulerAngles + Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y).normalized, Vector3.up).eulerAngles);
@@ -226,7 +226,7 @@ public static class LevelDataGenerator
                         Quaternion.Euler(blocker.transform.eulerAngles + Quaternion.LookRotation(orientation.normalized, Vector3.up).eulerAngles);
 
                     go.transform.localScale = blocker.transform.localScale +
-                        new Vector3(lengthCorrection, 0, lengthCorrection) / blockerLength +
+                        new Vector3(0, 0, lengthCorrection) / blockerLength +
                         new Vector3(Random.Range(0, 0.01f), 0, Mathf.Clamp((orientation.magnitude - (blockerLength + lengthCorrection)) / (blockerLength + lengthCorrection), 0, .2f));
                 }
                 go.transform.localScale += extraScale;

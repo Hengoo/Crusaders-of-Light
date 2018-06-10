@@ -42,7 +42,7 @@ public class LevelCreator : Singleton<LevelCreator>
     public Material TerrainMaterial;
 
     [Header("Terrain Smooth Settings")]
-    [Range(0, 5)] public int OverallSmoothPasses = 2;
+    [Range(0, 5)] public int OverallSmoothPasses = 1;
     [Range(0, 20)] public int OverallSmoothSquareSize = 2;
     [Range(0, 5)] public int OverallAlphaSmoothPasses = 1;
     [Range(0, 20)] public int OverallAlphaSmoothSquareSize = 2;

@@ -120,6 +120,24 @@ public static class ExtensionMethods
         }
     }
 
+    public static Vector2 ClosestPoint(this Vector2[] polygon, Vector2 point)
+    {
+        Vector2 closestPoint = Vector2.zero;
+        float closestDistance = float.MaxValue;
+
+        foreach (var p in polygon)
+        {
+            float currentDistance = (p - point).sqrMagnitude;
+            if (currentDistance < closestDistance)
+            {
+                closestDistance = currentDistance;
+                closestPoint = p;
+            }
+        }
+
+        return closestPoint;
+    }
+
     public static List<Vector2[]> PolygonToLines(this Vector2[] polygon)
     {
         var result = new List<Vector2[]>();
