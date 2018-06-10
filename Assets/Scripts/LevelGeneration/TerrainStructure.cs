@@ -40,11 +40,12 @@ public class TerrainStructure
 
     private readonly int _lloydIterations;
     private int _voronoiSamples;
-    private readonly float _borderNoise;
+    private readonly float _edgeNoise;
+    private readonly float _borderBlockerOffset;
 
     public TerrainStructure(StoryStructure storyStructure, List<BiomeSettings> availableBiomes, float mapSize,
         int heightMapResolution, int octaves, BiomeSettings borderSettings,
-        int voronoiSamples, int lloydIterations, float edgeNoise, float borderBlockerOffset)
+        int voronoiSamples, int lloydIterations, float edgeNoise, float borderBlockerBlockerOffset)
     {
         AreaSegmentGraph = new GrammarGraph<AreaSegment>();
         BorderBlockerLines = new List<Vector2[]>();
@@ -63,7 +64,8 @@ public class TerrainStructure
         BorderSettings = borderSettings;
         _lloydIterations = lloydIterations;
         _voronoiSamples = voronoiSamples;
-        _borderNoise = edgeNoise;
+        _edgeNoise = edgeNoise;
+        _borderBlockerOffset = borderBlockerBlockerOffset;
 
         // Add splat prototypes to the shader
         CreateShaderTextures();
@@ -81,7 +83,7 @@ public class TerrainStructure
         CreateAreaBlockerLines();
 
         // Populate border lines list
-        CreateBorderBlockerPolygon(borderBlockerOffset);
+        CreateBorderBlockerLines(borderBlockerBlockerOffset);
 
         // Populate path lines list
         CreatePathLines();
@@ -122,7 +124,7 @@ public class TerrainStructure
     // Sample area height at a given position 
     public BiomeHeightParameters SampleHeight(Vector2 position)
     {
-        Vector2 noisePosition = position + new Vector2(Random.Range(-_borderNoise, _borderNoise), Random.Range(-_borderNoise, _borderNoise));
+        Vector2 noisePosition = position + new Vector2(Random.Range(-_edgeNoise, _edgeNoise), Random.Range(-_edgeNoise, _edgeNoise));
         AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
         return areaSegment == null || areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? BorderSettings.HeightParameters : BiomeSettings.HeightParameters;
     }
@@ -130,7 +132,7 @@ public class TerrainStructure
     // Sample area texture at given position
     public KeyValuePair<int, float> SampleTexture(Vector2 position)
     {
-        Vector2 noisePosition = position + new Vector2(Random.Range(-_borderNoise, _borderNoise), Random.Range(-_borderNoise, _borderNoise));
+        Vector2 noisePosition = position + new Vector2(Random.Range(-_edgeNoise, _edgeNoise), Random.Range(-_edgeNoise, _edgeNoise));
         AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
         int splatID = _splatIDMap[areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? BorderSettings.Splat : BiomeSettings.Splat];
         float splatValue = 1;
@@ -231,20 +233,22 @@ public class TerrainStructure
             {
                 for (int i = 0; i < areaEdges.Count; i++)
                 {
-                    var currentElement = areaEdges[i];
-                    Vertex leftPoint = currentElement.LeftVertex;
-                    Vertex rightPoint = currentElement.RightVertex;
+                    var currentEdge = areaEdges[i];
+                    Vertex leftPoint = currentEdge.LeftVertex;
+                    Vertex rightPoint = currentEdge.RightVertex;
                     if (leftPoint == headPoint)
                     {
-                        areaEdges.Remove(currentElement);
+                        areaEdges.Remove(currentEdge);
                         headPoint = rightPoint;
-                        polygon.Add(currentElement.ClippedEnds[LR.RIGHT].ToUnityVector2());
+                        Vector2 point = currentEdge.ClippedEnds[LR.RIGHT].ToUnityVector2();
+                        polygon.Add(point);
                     }
                     else if (rightPoint == headPoint)
                     {
-                        areaEdges.Remove(currentElement);
+                        areaEdges.Remove(currentEdge);
                         headPoint = leftPoint;
-                        polygon.Add(currentElement.ClippedEnds[LR.LEFT].ToUnityVector2());
+                        Vector2 point = currentEdge.ClippedEnds[LR.LEFT].ToUnityVector2();
+                        polygon.Add(point);
                     }
 
                     // Polygon has been closed
@@ -494,7 +498,7 @@ public class TerrainStructure
     }
 
     // Create border blocker polygon
-    private void CreateBorderBlockerPolygon(float borderInlandOffset)
+    private void CreateBorderBlockerLines(float borderInlandOffset)
     {
         var segments = new List<KeyValuePair<Edge, Vector2>>();
 
@@ -566,8 +570,8 @@ public class TerrainStructure
         foreach (var edges in edgeGroups)
         {
             var polygon = new List<Vector2>();
-            var coastLines = edges.Select(pair => pair.Key).ToList().EdgesToSortedLines();
-            foreach (var line in coastLines)
+            var borderLines = edges.Select(pair => pair.Key).ToList().EdgesToSortedLines();
+            foreach (var line in borderLines)
             {
 
                 // Offset borders towards biome center
@@ -593,18 +597,7 @@ public class TerrainStructure
             }
 
             // Create border blocker lines
-            for (int j = 0; j < polygon.Count; j++)
-            {
-                var p0 = polygon[j];
-                var p1 = j + 1 == polygon.Count ?
-                    polygon[0] : polygon[j + 1];
-
-                // Filter duplicated vertices -> TODO: fix problem in offsetting
-                if ((p0 - p1).magnitude < 0.01f)
-                    continue;
-
-                BorderBlockerLines.Add(new[] { p0, p1 });
-            }
+            BorderBlockerLines.AddRange(polygon.ToArray().PolygonToLines());
         }
     }
 

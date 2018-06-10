@@ -178,8 +178,7 @@ public static class LevelDataGenerator
     public static GameObject GenerateBlockerLine(Terrain terrain, List<Vector2[]> blockerLines, float blockerLength, Vector3 positionNoise, Vector3 scaleNoise, GameObject blocker, bool useTerrainNormal = false, GameObject pole = null, float angleLimit = 35)
     {
         var result = new GameObject("Blockers");
-        if (!pole)
-            pole = blocker;
+        var polePrefab = pole ? pole : blocker;
 
         // Iterate over all border blockers
         foreach (var line in blockerLines)
@@ -211,9 +210,11 @@ public static class LevelDataGenerator
                 GameObject go;
                 if (lastTransform == null)
                 {
-                    go = Object.Instantiate(pole);
-                    go.transform.rotation = GetTerrainNormalRotation(position);
+                    go = Object.Instantiate(polePrefab);
                     go.transform.localScale += new Vector3(lengthCorrection, 0, lengthCorrection) / blockerLength;
+                    go.transform.rotation = useTerrainNormal ?
+                        GetTerrainNormalRotation(position) :
+                        Quaternion.Euler(blocker.transform.eulerAngles + Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y).normalized, Vector3.up).eulerAngles);
                 }
                 else
                 {

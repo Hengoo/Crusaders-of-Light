@@ -112,6 +112,35 @@ public static class ExtensionMethods
         return result;
     }
 
+    public static void OffsetToCenter(this Vector2[] polygon, Vector2 center, float amount)
+    {
+        for (int i = 0; i < polygon.Length; i++)
+        {
+            polygon[i] += (center - polygon[i]).normalized * amount;
+        }
+    }
+
+    public static List<Vector2[]> PolygonToLines(this Vector2[] polygon)
+    {
+        var result = new List<Vector2[]>();
+
+        // Create border blocker lines
+        for (int j = 0; j < polygon.Length; j++)
+        {
+            var p0 = polygon[j];
+            var p1 = j + 1 == polygon.Length ?
+                polygon[0] : polygon[j + 1];
+
+            // Filter any duplicated vertices
+            if ((p0 - p1).magnitude < 0.01f)
+                continue;
+
+            result.Add(new[] { p0, p1 });
+        }
+
+        return result;
+    }
+
     /// <summary>
     ///     ClockwiseComparer provides functionality for sorting a collection of Vector2s such
     ///     that they are ordered clockwise about a given origin.
