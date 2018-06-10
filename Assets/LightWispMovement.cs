@@ -21,7 +21,8 @@ public class LightWispMovement : MonoBehaviour
 
     void Update()
     {
-        _agent.SetDestination(_target.transform.position);
+        if(_target)
+            _agent.SetDestination(_target.transform.position);
     }
 
     void OnTriggerEnter(Collider col)
