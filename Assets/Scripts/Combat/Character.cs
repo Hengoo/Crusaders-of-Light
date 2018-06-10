@@ -117,7 +117,7 @@ public class Character : MonoBehaviour
     {
         HealthHealingMax = HealthCurrent;
         CalculateHealthHealingMin();
-        PhysCont = new PhysicsController(gameObject);
+        //PhysCont = new PhysicsController(gameObject);
         CreateCharacterFollowGUI();     // Could be changed to when entering camera view or close to players, etc... as optimization.
         // SpawnAndEquipStartingWeapons();
         SpawnAndEquipStartingElement();

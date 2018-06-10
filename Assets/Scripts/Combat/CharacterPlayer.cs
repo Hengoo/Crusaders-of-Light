@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.AI;
 
 public class CharacterPlayer : Character {
 
@@ -31,6 +32,10 @@ public class CharacterPlayer : Character {
 
     public string DeathAnimationResetTrigger = "Trigger_DeathReset";
 
+    [Header("Navmesh Movement:")]
+    public NavMeshAgent NavAgent;
+    public float RotationSpeed = 5;
+
  //   public float DyingPhysicsDuration = 0.8f;
  //   public bool DyingPhysicsTimerRunning = false;
  //   public float DyingPhysicsTimer = 0f;
@@ -38,6 +43,7 @@ public class CharacterPlayer : Character {
     protected override void Start()
     {
         base.Start();
+        NavAgent.updateRotation = false;
         SpawnAndEquipStartingWeapons();
         
     }
@@ -64,9 +70,16 @@ public class CharacterPlayer : Character {
             targetDir = targetVel;
         }
 
-        targetVel *= speedfaktor;
+        targetVel = targetVel.normalized * speedfaktor * Time.deltaTime;
 
-        PhysCont.SetVelRot(targetVel, targetDir);
+        // Rotate towards Velocity Direction:
+        if (targetDir.sqrMagnitude > 0)
+        {
+            transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, Quaternion.LookRotation(targetDir), Time.deltaTime * RotationSpeed);
+        }
+
+        //PhysCont.SetVelRot(targetVel, targetDir);
+        NavAgent.Move(targetVel);
 
         if (!IsWalking && (Input.GetAxisRaw("Horizontal_" + PlayerID) >= 0.05f 
             || Input.GetAxisRaw("Vertical_" + PlayerID) >= 0.05f

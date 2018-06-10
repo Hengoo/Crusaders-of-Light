@@ -44,6 +44,7 @@ public class CharacterEnemy : Character {
 
     protected override void Start()
     {
+        PhysCont = new PhysicsController(gameObject);
         base.Start();
         if (SpawnStartingWeaponsOnStart)
         {
