@@ -40,12 +40,12 @@ public class TerrainStructure
 
     private readonly int _lloydIterations;
     private int _voronoiSamples;
-    private readonly float _edgeNoise;
-    private readonly float _borderBlockerOffset;
+    private readonly float _heightNoise;
+    private readonly float _alphaNoise;
 
     public TerrainStructure(StoryStructure storyStructure, List<BiomeSettings> availableBiomes, float mapSize,
         int heightMapResolution, int octaves, BiomeSettings borderSettings,
-        int voronoiSamples, int lloydIterations, float edgeNoise, float borderBlockerBlockerOffset)
+        int voronoiSamples, int lloydIterations, float heightNoise, float alphaNoise, float borderBlockerBlockerOffset)
     {
         AreaSegmentGraph = new GrammarGraph<AreaSegment>();
         BorderBlockerLines = new List<Vector2[]>();
@@ -64,8 +64,8 @@ public class TerrainStructure
         BorderSettings = borderSettings;
         _lloydIterations = lloydIterations;
         _voronoiSamples = voronoiSamples;
-        _edgeNoise = edgeNoise;
-        _borderBlockerOffset = borderBlockerBlockerOffset;
+        _heightNoise = heightNoise;
+        _alphaNoise = alphaNoise;
 
         // Add splat prototypes to the shader
         CreateShaderTextures();
@@ -127,7 +127,7 @@ public class TerrainStructure
         AreaSegment areaSegment = GetClosestAreaSegment(position);
         if (areaSegment.Type == AreaSegment.EAreaSegmentType.Border)
         {
-            position += new Vector2(Random.Range(-_edgeNoise, _edgeNoise), Random.Range(-_edgeNoise, _edgeNoise));
+            position += new Vector2(Random.Range(-_heightNoise, _heightNoise), Random.Range(-_heightNoise, _heightNoise));
             areaSegment = GetClosestAreaSegment(position);
         }
         return areaSegment == null || areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? BorderSettings.HeightParameters : BiomeSettings.HeightParameters;
@@ -136,7 +136,7 @@ public class TerrainStructure
     // Sample area texture at given position
     public KeyValuePair<int, float> SampleTexture(Vector2 position)
     {
-        Vector2 noisePosition = position + new Vector2(Random.Range(-_edgeNoise, _edgeNoise), Random.Range(-_edgeNoise, _edgeNoise));
+        Vector2 noisePosition = position + new Vector2(Random.Range(-_alphaNoise, _alphaNoise), Random.Range(-_alphaNoise, _alphaNoise));
         AreaSegment areaSegment = GetClosestAreaSegment(noisePosition);
         int splatID = _splatIDMap[areaSegment.Type == AreaSegment.EAreaSegmentType.Border ? BorderSettings.Splat : BiomeSettings.Splat];
         float splatValue = 1;

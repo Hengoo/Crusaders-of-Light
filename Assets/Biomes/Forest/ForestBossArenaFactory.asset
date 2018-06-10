@@ -16,7 +16,8 @@ MonoBehaviour:
   WallAngleLimit: 5
   WallPositionNoise: {x: 0, y: 0, z: 0}
   WallScaleNoise: {x: 0.1, y: 0, z: 0}
-  TowerPrefab: {fileID: 1624022019104524, guid: 94a16d23ee0336547b909f4988249b7b,
+  GatePrefab: {fileID: 0}
+  TowerPrefab: {fileID: 1624022019104524, guid: f6cdbb3f66ff82a4a9f211ea66b02128,
     type: 2}
   RewardPedestalPrefab: {fileID: 0}
   BuildingPrefabs: []
