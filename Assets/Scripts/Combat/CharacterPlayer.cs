@@ -21,8 +21,8 @@ public class CharacterPlayer : Character {
     [Header("Respawning:")]
     public CharacterDeathTimer DeathTimer;
 
-    public int CharacterLayerID = 8;
-    public int DeadCharacterLayerID = 12;
+    public static int CharacterLayerID = 8;
+    public static int DeadCharacterLayerID = 12;
 
     public float RespawnMinRange = 2f;
     public float RespawnMaxRange = 5f;
@@ -35,6 +35,13 @@ public class CharacterPlayer : Character {
     [Header("Navmesh Movement:")]
     public NavMeshAgent NavAgent;
     public float RotationSpeed = 5;
+
+    [Header("Orb Input:")]
+    public float OrbInputTimer = -1f;
+    public float OrbInputReviveTime = 1f;
+    public float OrbInputHealMaxTime = 0.3f;
+    private bool OrbInputButtonPressed = false;
+
 
  //   public float DyingPhysicsDuration = 0.8f;
  //   public bool DyingPhysicsTimerRunning = false;
@@ -140,6 +147,9 @@ public class CharacterPlayer : Character {
 
         // Update Attention:
         AttentionThisCharacterDied();
+
+        // Update LightOrb:
+        LightOrbEffects.Instance.CharacterDied(this);
 
         //Stop Active Coroutines and Sound
         StopAllCoroutines();
@@ -248,8 +258,20 @@ public class CharacterPlayer : Character {
         DeathTimer.enabled = false;
         IsWalking = false;
         CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerRespawn(this.gameObject);
-        GetComponent<Rigidbody>().isKinematic = false;
+        //GetComponent<Rigidbody>().isKinematic = false;
+        LightOrbEffects.Instance.CharacterRevived(this);
         this.enabled = true;
+    }
+
+    public void RespawnThisCharacter()
+    {
+        RespawnThisCharacter(RespawnHealthGainPerc);
+    }
+
+    public void RespawnThisCharacter(Vector3 AtPosition)
+    {
+        RespawnThisCharacter();
+        NavAgent.Warp(AtPosition);
     }
 
     private void ResetAnimations()
@@ -408,11 +430,11 @@ public class CharacterPlayer : Character {
             SkillActivationButtonsPressed[3] = false;
         }
 
-        // Respawning Players:
+       /* // Respawning Players:
         if (Input.GetButtonDown("RevivePlayer_" + PlayerID))
         {
             RespawnNearestCharacter();
-        }
+        }*/
 
 
         // Weapon PickUp:
@@ -424,8 +446,52 @@ public class CharacterPlayer : Character {
             }
         }
 
+        // Light Orb Interaction:
+        UpdatePlayerOrbInput();
+
         // Skill Activation:
         PlayerInputStartSkillActivation();
+    }
+
+    private void UpdatePlayerOrbInput()
+    {
+        // Light Orb Interaction:
+        if (Input.GetButton("RevivePlayer_" + PlayerID))
+        {
+            // Fresh button press (Timer not running):
+            if (OrbInputTimer <= 0)
+            {
+                OrbInputButtonPressed = true;
+                OrbInputTimer = 0;
+            }
+            // Press Button again after pressing it shortly before (Timer still running):
+            else if (!OrbInputButtonPressed)
+            {
+                if (OrbInputTimer <= OrbInputHealMaxTime)
+                {
+                    LightOrbEffects.Instance.ActivateOrbHeal(this);
+                }
+                OrbInputTimer = -1;
+            }    
+        }
+        else if (OrbInputButtonPressed)
+        {
+            OrbInputButtonPressed = false;
+        }
+
+        if (OrbInputTimer >= 0)
+        {
+            OrbInputTimer += Time.deltaTime;
+
+            if (OrbInputTimer >= OrbInputReviveTime)
+            {
+                if (OrbInputButtonPressed)
+                {
+                    LightOrbEffects.Instance.ActivateOrbRevive(this);
+                }
+                OrbInputTimer = -1;
+            }
+        }
     }
 
     private void PlayerInputStartSkillActivation()
