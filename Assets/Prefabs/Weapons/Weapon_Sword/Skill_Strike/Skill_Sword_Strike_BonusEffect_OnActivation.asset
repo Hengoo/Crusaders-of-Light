@@ -8,10 +8,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15f6c5bdb8cff11488a1c950bf33b120, type: 3}
-  m_Name: Element_Fire_BE_Light
+  m_Script: {fileID: 11500000, guid: 8c0f8c90d7a988e44979878247ead774, type: 3}
+  m_Name: Skill_Sword_Strike_BonusEffect_OnActivation
   m_EditorClassIdentifier: 
-  EType: 0
-  AdditionalEffectsOnApply:
-  - {fileID: 11400000, guid: 82933d5523779e142a9aba857c2e583e, type: 2}
-  AdditionalEffectsOnActivation: []
+  BonusEffectType: 1
+  OnApply: 0

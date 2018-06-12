@@ -9,6 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c0f8c90d7a988e44979878247ead774, type: 3}
-  m_Name: Skill_Sword_Strike_LightBonusEffect
+  m_Name: Skill_Sword_Strike_BonusEffect_OnApply
   m_EditorClassIdentifier: 
-  BonusEffectType: 0
+  BonusEffectType: 1
+  OnApply: 1

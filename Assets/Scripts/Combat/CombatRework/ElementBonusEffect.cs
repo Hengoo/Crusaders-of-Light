@@ -9,10 +9,18 @@ public class ElementBonusEffect : ScriptableObject {
     public ElementItem.EffectType EType = ElementItem.EffectType.LIGHT;
 
     [Header("Additional Effects:")]
-    public SkillEffect[] AdditionalEffects = new SkillEffect[0];
+    public SkillEffect[] AdditionalEffectsOnApply = new SkillEffect[0];
+    public SkillEffect[] AdditionalEffectsOnActivation = new SkillEffect[0];
 
-    public SkillEffect[] GetAdditionalEffects()
+    public SkillEffect[] GetAdditionalEffects(bool OnApply)
     {
-        return AdditionalEffects;
+        if (OnApply)
+        {
+            return AdditionalEffectsOnApply;
+        }
+        else
+        {
+            return AdditionalEffectsOnActivation;
+        }
     }
 }

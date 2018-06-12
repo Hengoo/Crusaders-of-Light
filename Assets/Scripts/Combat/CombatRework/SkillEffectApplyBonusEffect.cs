@@ -8,9 +8,13 @@ public class SkillEffectApplyBonusEffect : SkillEffect {
     [Header("Bonus Effect Type:")]
     public ElementItem.EffectType BonusEffectType = ElementItem.EffectType.LIGHT;
 
+    [Header("Effects: OnApply(true) or OnActivation(false):")]
+    public bool OnApply = true;
+    
+
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
-        SkillEffect[] BonusEffects = Owner.GetEquippedElement().GetBonusEffectOfType(BonusEffectType).GetAdditionalEffects();
+        SkillEffect[] BonusEffects = Owner.GetEquippedElement().GetBonusEffectOfType(BonusEffectType).GetAdditionalEffects(OnApply);        
 
         for (int i = 0; i < BonusEffects.Length; i++)
         {
@@ -20,7 +24,7 @@ public class SkillEffectApplyBonusEffect : SkillEffect {
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
     {
-        SkillEffect[] BonusEffects = Owner.GetEquippedElement().GetBonusEffectOfType(BonusEffectType).GetAdditionalEffects();
+        SkillEffect[] BonusEffects = Owner.GetEquippedElement().GetBonusEffectOfType(BonusEffectType).GetAdditionalEffects(OnApply);
 
         for (int i = 0; i < BonusEffects.Length; i++)
         {

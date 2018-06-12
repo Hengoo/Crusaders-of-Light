@@ -40,7 +40,8 @@ MonoBehaviour:
   MinModifier: 1
   MaxModifier: 1
   EffectsSelfOnMinimumActivationTimeEnd: []
-  EffectsSelfOnRelease: []
+  EffectsSelfOnRelease:
+  - {fileID: 11400000, guid: f1e8c3399e0abcd45953b0924e79e703, type: 2}
   EffectsSelfOnEnd: []
   ReleaseAnimation: Charge_Released
   ChargeUp: {fileID: 0}

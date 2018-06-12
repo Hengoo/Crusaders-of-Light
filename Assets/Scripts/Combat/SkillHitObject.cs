@@ -6,7 +6,7 @@ public class SkillHitObject : MonoBehaviour {
 
     [Header("Hit Object Attributes:")]
     public float MaxTimeAlive = 0;
-    private float TimeAliveCounter = 0;
+    protected float TimeAliveCounter = 0;
 
     public float TickTime = 0;
     public float CurrentTickTime = 0.0f;
@@ -32,7 +32,6 @@ public class SkillHitObject : MonoBehaviour {
     public float SizeOverTimeDuration = 0f;
 
     [Header("Hit Object - Does not need to be set in Editor!:")]
-    public SkillEffect[] HitObjectSkillEffects = new SkillEffect[0];
     public Character Owner;
     public SkillType SourceSkill;
     public ItemSkill SourceItemSkill;
@@ -49,7 +48,7 @@ public class SkillHitObject : MonoBehaviour {
 
     [HideInInspector] public bool FadeSound;
 
-    private AudioSource _audioSource;
+    protected AudioSource _audioSource;
 
     public void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
     {
@@ -114,71 +113,7 @@ public class SkillHitObject : MonoBehaviour {
         {
             ApplyForceImpulse();
         }
-    }
-
-    public void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, bool[] AllowTargets, float[] SkillThreat, bool UseLevelAtActivationMoment)
-    {
-        // Link Skill User and Skill:
-        Owner = _Owner;
-        SourceItemSkill = _SourceItemSkill;
-        _audioSource = GetComponent<AudioSource>();
-
-
-        if (UseLevelAtActivationMoment)
-        {
-            FixedLevel = SourceItemSkill.GetSkillLevel();
-        }
-        else
-        {
-            FixedLevel = -1;
-        }
-
-        // Calculate which Team(s) the HitObject can hit:
-        int counter = 0;
-
-        if (AllowTargets[0])
-        {
-            counter += (int)(Owner.GetAlignment());
-        }
-
-        if (AllowTargets[1])
-        {
-            counter += ((int)(Owner.GetAlignment()) % 2) + 1;
-        }
-
-        HitObjectAlignment = (Character.TeamAlignment)(counter);
-
-        // Living Time:
-        if (MaxTimeAlive <= 0)
-        {
-            SourceItemSkill.AddEffectSkillHitObject(this);
-        }
-
-        if (TickTime > 0)
-        {
-            CurrentTickTime = TickTime;
-        }
-
-        // Parenting:
-        if (HitObjectIsChildOfOwner)
-        {
-            transform.SetParent(Owner.transform);
-        }
-
-        if (AlwaysHitOwner)
-        {
-            HitTarget(Owner);
-        }
-
-        // Threat:
-        Threat = SkillThreat;
-
-        // Force Impulse:
-        if (UseForceImpulse)
-        {
-            ApplyForceImpulse();
-        }
-    }
+    }   
 
     public void Update()
     {
@@ -312,7 +247,7 @@ public class SkillHitObject : MonoBehaviour {
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    protected void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Character")
         {

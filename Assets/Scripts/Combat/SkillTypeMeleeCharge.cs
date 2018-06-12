@@ -19,8 +19,6 @@ public class SkillTypeMeleeCharge : SkillType
     public float MinModifier = 1.0f;
     public float MaxModifier = 1.0f;
 
-
-
     [Header("Skill Charge Up Melee Additional Effects:")]
     public SkillEffect[] EffectsSelfOnMinimumActivationTimeEnd = new SkillEffect[0];
     public SkillEffect[] EffectsSelfOnRelease = new SkillEffect[0];
