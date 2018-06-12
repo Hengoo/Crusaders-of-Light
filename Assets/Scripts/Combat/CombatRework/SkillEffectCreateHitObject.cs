@@ -35,15 +35,6 @@ public class SkillEffectCreateHitObject : SkillEffect {
         }
         SpawnedHitObject.InitializeHitObject(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, this,
             UseSkillLevelAtActivationMoment);
-
-        // Stop Skill Activation:
-        if (Cooldown > 0)
-        {
-            SourceItemSkill.SetCurrentCooldown(Cooldown);
-        }
-        RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
-        SourceItemSkill.StoppedActivatingSkillWithHitObjects(this);
-        SourceItemSkill.FinishedSkillActivation();
     }
 
     private IEnumerator FadeAudioIn(AudioSource source, float time)
