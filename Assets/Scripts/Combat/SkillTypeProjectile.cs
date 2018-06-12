@@ -37,6 +37,7 @@ public class SkillTypeProjectile : SkillType
             SourceItemSkill.SetCurrentCooldown(Cooldown);
         }
         RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+        SourceItemSkill.StoppedActivatingSkillWithHitObjects(this);
         SourceItemSkill.FinishedSkillActivation();
     }
 }
