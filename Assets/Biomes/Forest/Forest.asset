@@ -31,7 +31,8 @@ MonoBehaviour:
   BlockerAngleLimit: 15
   BlockerPositionNoise: {x: 1, y: 0, z: 1}
   BlockerScaleNoise: {x: 0.1, y: 0.5, z: 0.1}
-  BossAreas: []
+  BossAreas:
+  - {fileID: 11400000, guid: c61b14e114f2a4a4b822d3ad05c59e24, type: 2}
   ChestAreas: []
   PathAreas:
   - {fileID: 11400000, guid: 69ec5d8bfc0bb4b4dac2661c8a4d7a24, type: 2}

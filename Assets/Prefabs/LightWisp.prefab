@@ -55,6 +55,7 @@ GameObject:
   - component: {fileID: 135122749292927254}
   - component: {fileID: 195405887915390138}
   - component: {fileID: 114271838533342474}
+  - component: {fileID: 114605295700996342}
   m_Layer: 0
   m_Name: LightWisp
   m_TagString: Untagged
@@ -150,6 +151,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a1c5ff9ace1be644b942c932c01ece3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114605295700996342
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1719093381775514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_IgnoreFromBuild: 1
+  m_AffectedAgents: ffffffff
 --- !u!135 &135122749292927254
 SphereCollider:
   m_ObjectHideFlags: 1
