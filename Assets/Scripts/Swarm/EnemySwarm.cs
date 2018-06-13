@@ -21,21 +21,21 @@ public class EnemySwarm : MonoBehaviour {
     // Thus, the Factors here for these 4 rules are currently unused, but should be used later!
     [Header("Seperation:")]
     public float SeperationDistance = 3;
-    private float SeperationFactor = 1;
+    public float SeperationFactor = 1;
     private bool NoSeperationThisUpdate = false;
 
     [Header("Alignment:")]
     public float AlignmentDistance = 3;
-    private float AlignmentFactor = 1;
+    public float AlignmentFactor = 1;
 
     [Header("Cohesion:")]
     public float CohesionDistance = 3;
-    private float CohesionFactor = 1;
+    public float CohesionFactor = 1;
 
     [Header("Advanced Rules:")]
     [Header("Danger Avoidance:")]
     public float DangerDistance = 3;
-    private float DangerFactor = 1;
+    public float DangerFactor = 1;
 
     [Header("Attraction:")]
     public float AttractionDistance = 4;
@@ -73,9 +73,128 @@ public class EnemySwarm : MonoBehaviour {
     [Header("FOR TESTING:")]
     public bool PlayerDanger = true;
 
+    [Header("New Variables:")]
+    public Transform SwarmlingTransform;
+    public int NeighbourRadius = 7;
+    public Collider[] NeighbourColliders = new Collider[6];
+    public int NeighbourCount = 0;
+    public int NeighbourLayerMask = 0;
+
+    public EnemySwarm CurrentSwarmling;
+
+    public Vector3 CohesionVec = Vector3.zero;
+    public Vector3 SeperationVec = Vector3.zero;
+    public Vector3 AlignmentVec = Vector3.zero;
+
+    int CohesionNumber = 0;
+    int SeperationNumber = 0;
+    int AlignmentNumber = 0;
+
+    public Vector3 DistanceVec = Vector3.zero;
+    float DistanceVecMag = 0;
+
+    // ================================================================================================================
+
+    public void UpdateSwarmling()
+    {
+        // Get List of Neighbours:
+        NeighbourCount = Physics.OverlapSphereNonAlloc(SwarmlingTransform.position, NeighbourRadius, NeighbourColliders, NeighbourLayerMask);
+
+       // NeighbourColliders = Physics.OverlapSphere(SwarmlingTransform.position, NeighbourRadius, NeighbourLayerMask);
+        // Stop if not enough Neighbours:
+        if (NeighbourCount < 2) return;
+
+        CohesionVec = Vector3.zero;
+        SeperationVec = Vector3.zero;
+        AlignmentVec = Vector3.zero;
+
+        CohesionNumber = 0;
+        SeperationNumber = 0;
+        AlignmentNumber = 0;
+
+        DistanceVec = Vector3.zero;
+        DistanceVecMag = 0;
+
+        for (int i = 0; i < NeighbourCount; i++)
+        {
+            CurrentSwarmling = NeighbourColliders[i].GetComponent<EnemySwarm>();
+
+            DistanceVec = SwarmlingTransform.position - CurrentSwarmling.SwarmlingTransform.position;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            if (DistanceVecMag <= 0) return;
+
+            // Cohesion:
+            if (DistanceVecMag <= Mathf.Pow(CohesionDistance, 2)) // Could be optimized by storing the pow2 distance!
+            {
+                CohesionVec += CurrentSwarmling.SwarmlingTransform.position;
+                CohesionNumber++;
+            }
+
+            // Seperation:
+            if (DistanceVecMag <= Mathf.Pow(SeperationDistance, 2)) // Could be optimized by storing the pow2 distance!
+            {
+                SeperationVec += DistanceVec / DistanceVecMag;
+                
+                SeperationNumber++;
+            }
+
+            // Alignment:
+            if (DistanceVecMag <= Mathf.Pow(AlignmentDistance, 2)) // Could be optimized by storing the pow2 distance!
+            {
+                AlignmentVec += CurrentSwarmling.Velocity;
+                AlignmentNumber++;
+            }
+        }
+        // Cohesion:
+        if (CohesionNumber > 0)
+        {
+            CohesionVec = Vector3.ClampMagnitude(((CohesionVec / CohesionNumber) - SwarmlingTransform.position), DesiredBaseSpeed);
+            Debug.Log("Cohesion: " + CohesionVec);
+            CohesionVec = Steer(CohesionVec);
+            
+            Acceleration += CohesionVec * CohesionFactor;
+            GoalFactor += CohesionFactor;
+        }
+
+        // Seperation:
+        if (SeperationNumber > 0)
+        {
+            if (NoSeperationThisUpdate)
+            {
+                NoSeperationThisUpdate = false;
+            }
+            else
+            {
+                SeperationVec = Vector3.ClampMagnitude((SeperationVec / SeperationNumber), DesiredBaseSpeed);
+                Debug.Log("SeperationVec: " + SeperationVec);
+                SeperationVec = Steer(SeperationVec);
+                Acceleration += SeperationVec * SeperationFactor;
+                
+                GoalFactor += SeperationFactor;
+            }    
+        }
+
+        // Alignment:
+        if (AlignmentNumber > 0)
+        {
+            AlignmentVec = Vector3.ClampMagnitude((AlignmentVec/AlignmentNumber), DesiredBaseSpeed);
+            Debug.Log("AlignmentVec: " + AlignmentVec);
+
+            AlignmentVec = Steer(AlignmentVec);
+            
+            Acceleration += AlignmentVec * AlignmentFactor;
+            GoalFactor += AlignmentFactor;
+        }
+
+    }
+
+    // ================================================================================================================
+
     private void Start()
     {
         UpdateCounter = Random.Range(0, UpdateTimer);
+        NeighbourLayerMask = 1 << NeighbourLayerMask;
     }
 
     private void FixedUpdate()
@@ -91,24 +210,26 @@ public class EnemySwarm : MonoBehaviour {
             // Reset Acceleration:
             Acceleration = Vector3.zero;
 
-            if (BorderOn)
+            UpdateSwarmling();
+
+            /*if (BorderOn)
             {
                 RuleGoToBorder();
-            }
+            }*/
 
-            RuleAttraction();
-            RuleCohesion();
-            RuleSeperation();
-            RuleAlignment();
+            //RuleAttraction();
+           // RuleCohesion();
+           // RuleSeperation();
+            //RuleAlignment();
 
-            if (PlayerDanger)
+            /*if (PlayerDanger)
             {
                 RuleDangerAvoidanceEnhanced();
             }
             else
             {
                 RuleDangerAvoidance();
-            }
+            }*/
             
         }
 
@@ -135,6 +256,8 @@ public class EnemySwarm : MonoBehaviour {
     {
         return VelDesired - Velocity;
     }
+
+   
 
     // ===================================================== RULES =====================================================
 
@@ -174,6 +297,8 @@ public class EnemySwarm : MonoBehaviour {
             Acceleration += CohesionVec * EnemyTestSwarm.Instance.CohesionFactor;
             GoalFactor += EnemyTestSwarm.Instance.CohesionFactor;
         }
+
+
     }
 
     // ===============================================/ RULE: COHESION /===============================================
