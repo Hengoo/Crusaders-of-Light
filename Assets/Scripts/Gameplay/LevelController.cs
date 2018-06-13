@@ -21,7 +21,6 @@ public class LevelController : Singleton<LevelController>
 
     private float _quitTimer = 0;
     private bool _loadingLevel = false;
-    private bool _allDead = false;
 
     void Start()
     {

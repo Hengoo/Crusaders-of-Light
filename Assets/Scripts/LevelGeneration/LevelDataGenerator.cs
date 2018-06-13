@@ -325,8 +325,7 @@ public static class LevelDataGenerator
     public static GameObject GenerateBlockerLine(Terrain terrain, List<Vector2[]> blockerLines, float blockerLength, Vector3 positionNoise, Vector3 scaleNoise, GameObject blocker, bool useTerrainNormal = false, GameObject pole = null, float angleLimit = 35)
     {
         var result = new GameObject("Blockers");
-        if (!pole)
-            pole = blocker;
+        var polePrefab = pole ? pole : blocker;
 
         // Iterate over all border blockers
         foreach (var line in blockerLines)
@@ -358,9 +357,11 @@ public static class LevelDataGenerator
                 GameObject go;
                 if (lastTransform == null)
                 {
-                    go = Object.Instantiate(pole);
-                    go.transform.rotation = GetTerrainNormalRotation(position);
-                    go.transform.localScale += new Vector3(lengthCorrection, 0, lengthCorrection) / blockerLength;
+                    go = Object.Instantiate(polePrefab);
+                    go.transform.localScale += new Vector3(0, 0, lengthCorrection) / blockerLength;
+                    go.transform.rotation = useTerrainNormal ?
+                        GetTerrainNormalRotation(position) :
+                        Quaternion.Euler(blocker.transform.eulerAngles + Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y).normalized, Vector3.up).eulerAngles);
                 }
                 else
                 {
@@ -372,7 +373,7 @@ public static class LevelDataGenerator
                         Quaternion.Euler(blocker.transform.eulerAngles + Quaternion.LookRotation(orientation.normalized, Vector3.up).eulerAngles);
 
                     go.transform.localScale = blocker.transform.localScale +
-                        new Vector3(lengthCorrection, 0, lengthCorrection) / blockerLength +
+                        new Vector3(0, 0, lengthCorrection) / blockerLength +
                         new Vector3(Random.Range(0, 0.01f), 0, Mathf.Clamp((orientation.magnitude - (blockerLength + lengthCorrection)) / (blockerLength + lengthCorrection), 0, .2f));
                 }
                 go.transform.localScale += extraScale;

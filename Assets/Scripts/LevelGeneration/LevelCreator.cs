@@ -34,7 +34,8 @@ public class LevelCreator : Singleton<LevelCreator>
     [Range(16, 1024)] public float MapSize = 512;
     [Range(1, 1024)] public float MapHeight = 80;
     [Range(10, 1000)] public int VoronoiSamples = 80;
-    [Range(0, 50f)] public float EdgeNoise = 8f;
+    [Range(0, 50f)] public float HeightNoise = 32f;
+    [Range(0, 50f)] public float AlphaNoise = 8f;
     [Range(0, 100)] public int LloydRelaxation = 20;
     [Range(1, 8)] public int Octaves = 3;
     [Range(0, 1f)] public float WaterHeight = 0.15f;
@@ -42,7 +43,7 @@ public class LevelCreator : Singleton<LevelCreator>
     public Material TerrainMaterial;
 
     [Header("Terrain Smooth Settings")]
-    [Range(0, 5)] public int OverallSmoothPasses = 2;
+    [Range(0, 5)] public int OverallSmoothPasses = 1;
     [Range(0, 20)] public int OverallSmoothSquareSize = 2;
     [Range(0, 5)] public int OverallAlphaSmoothPasses = 1;
     [Range(0, 20)] public int OverallAlphaSmoothSquareSize = 2;
@@ -86,7 +87,7 @@ public class LevelCreator : Singleton<LevelCreator>
         Random.InitState(Seed);
 
         MyStoryStructure = new StoryStructure(0, 1, MainPathNodeCount, SidePathCount, SidePathNodeCount, new CharacterEnemy[4]);
-        MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome, VoronoiSamples, LloydRelaxation, EdgeNoise, BorderBlockerOffset);
+        MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome, VoronoiSamples, LloydRelaxation, HeightNoise, AlphaNoise, BorderBlockerOffset);
         MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure);
 
         switch (DrawMode)
@@ -187,6 +188,7 @@ public class LevelCreator : Singleton<LevelCreator>
     private void GenerateWaterPlane()
     {
         var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        water.name = "Water";
         water.GetComponent<Collider>().enabled = false;
         water.GetComponent<Renderer>().material = WaterMaterial;
         water.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
@@ -274,7 +276,7 @@ public class LevelCreator : Singleton<LevelCreator>
 
         GenerateTerrain();
         GenerateBlockers();
-        GenerateWaterPlane();
+        //GenerateWaterPlane();
     }
 
     private void DrawScenerySkeleton()
