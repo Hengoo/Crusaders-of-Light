@@ -86,19 +86,33 @@ public class EnemySwarm : MonoBehaviour {
     public Vector3 SeperationVec = Vector3.zero;
     public Vector3 AlignmentVec = Vector3.zero;
 
-    int CohesionNumber = 0;
-    int SeperationNumber = 0;
-    int AlignmentNumber = 0;
+    public int CohesionNumber = 0;
+    public int SeperationNumber = 0;
+    public int AlignmentNumber = 0;
 
     public Vector3 DistanceVec = Vector3.zero;
-    float DistanceVecMag = 0;
+    public float DistanceVecMag = 0;
+
+    public float NewNeighbourTimer = 0f;
+    public float NewNeighbourCounter = 1f;
 
     // ================================================================================================================
 
     public void UpdateSwarmling()
     {
+
         // Get List of Neighbours:
-        NeighbourCount = Physics.OverlapSphereNonAlloc(SwarmlingTransform.position, NeighbourRadius, NeighbourColliders, NeighbourLayerMask);
+        if (NewNeighbourCounter <= 0)
+        {
+            NeighbourCount = Physics.OverlapSphereNonAlloc(SwarmlingTransform.position, NeighbourRadius, NeighbourColliders, NeighbourLayerMask);
+            NewNeighbourCounter = NewNeighbourTimer;
+        }
+        else
+        {
+            NewNeighbourCounter -= Time.deltaTime;
+        }
+        
+       
 
        // NeighbourColliders = Physics.OverlapSphere(SwarmlingTransform.position, NeighbourRadius, NeighbourLayerMask);
         // Stop if not enough Neighbours:
@@ -122,7 +136,7 @@ public class EnemySwarm : MonoBehaviour {
             DistanceVec = SwarmlingTransform.position - CurrentSwarmling.SwarmlingTransform.position;
             DistanceVecMag = DistanceVec.sqrMagnitude;
 
-            if (DistanceVecMag <= 0) return;
+            if (DistanceVecMag <= 0) continue;
 
             // Cohesion:
             if (DistanceVecMag <= Mathf.Pow(CohesionDistance, 2)) // Could be optimized by storing the pow2 distance!
@@ -149,8 +163,12 @@ public class EnemySwarm : MonoBehaviour {
         // Cohesion:
         if (CohesionNumber > 0)
         {
-            CohesionVec = Vector3.ClampMagnitude(((CohesionVec / CohesionNumber) - SwarmlingTransform.position), DesiredBaseSpeed);
-            Debug.Log("Cohesion: " + CohesionVec);
+            //CohesionVec = Vector3.ClampMagnitude(((CohesionVec / CohesionNumber) - SwarmlingTransform.position), DesiredBaseSpeed);
+            //Debug.Log("Cohesion: " + CohesionVec);
+            CohesionVec = CohesionVec / CohesionNumber;
+            CohesionVec = CohesionVec - SwarmlingTransform.position;
+            CohesionVec = CohesionVec.normalized * DesiredBaseSpeed;
+
             CohesionVec = Steer(CohesionVec);
             
             Acceleration += CohesionVec * CohesionFactor;
@@ -166,8 +184,10 @@ public class EnemySwarm : MonoBehaviour {
             }
             else
             {
-                SeperationVec = Vector3.ClampMagnitude((SeperationVec / SeperationNumber), DesiredBaseSpeed);
-                Debug.Log("SeperationVec: " + SeperationVec);
+                //SeperationVec = Vector3.ClampMagnitude((SeperationVec / SeperationNumber), DesiredBaseSpeed);
+                //Debug.Log("SeperationVec: " + SeperationVec);
+                SeperationVec = SeperationVec.normalized * DesiredBaseSpeed;
+
                 SeperationVec = Steer(SeperationVec);
                 Acceleration += SeperationVec * SeperationFactor;
                 
@@ -178,8 +198,12 @@ public class EnemySwarm : MonoBehaviour {
         // Alignment:
         if (AlignmentNumber > 0)
         {
-            AlignmentVec = Vector3.ClampMagnitude((AlignmentVec/AlignmentNumber), DesiredBaseSpeed);
-            Debug.Log("AlignmentVec: " + AlignmentVec);
+            //AlignmentVec = Vector3.ClampMagnitude((AlignmentVec/AlignmentNumber), DesiredBaseSpeed);
+            //Debug.Log("AlignmentVec: " + AlignmentVec);
+
+            AlignmentVec = AlignmentVec.normalized * DesiredBaseSpeed;
+
+            //AlignmentVec = AlignmentVec / AlignmentNumber;
 
             AlignmentVec = Steer(AlignmentVec);
             
@@ -194,6 +218,7 @@ public class EnemySwarm : MonoBehaviour {
     private void Start()
     {
         UpdateCounter = Random.Range(0, UpdateTimer);
+        NewNeighbourCounter = Random.Range(0, NewNeighbourTimer);
         NeighbourLayerMask = 1 << NeighbourLayerMask;
     }
 
