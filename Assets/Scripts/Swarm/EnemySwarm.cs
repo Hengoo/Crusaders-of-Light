@@ -33,15 +33,15 @@ public class EnemySwarm : MonoBehaviour {
 
     public struct MoveJob : IJob
     {
-        public float[] CohesionVec;
-        public float[] SeperationVec;
-        public float[] AlignmentVec;
+        public NativeArray<float> CohesionVec;
+        public NativeArray<float> SeperationVec;
+        public NativeArray<float> AlignmentVec;
 
         public int CohesionNumber;
         public int SeperationNumber;
         public int AlignmentNumber;
 
-        public float[] DistanceVec;
+        public NativeArray<float> DistanceVec;
         public float DistanceVecMag;
 
         public float SeperationDistance;
@@ -67,20 +67,13 @@ public class EnemySwarm : MonoBehaviour {
         public float DesiredBaseSpeed;
         public float DesiredRunSpeed;
 
-        // Native Arrays:
-        public NativeArray<float> GoalFactor;
-        public NativeArray<Vector3> Acceleration;
-
         // New Assign per Schedule:
         public int NeighbourCount;
-        public float[] SwarmlingPos;
-        public float[] OtherSwarmlingPos;
-        public float[] OtherSwarmlingVelocity;
+        public NativeArray<float> SwarmlingPos;
+        public NativeArray<float> OtherSwarmlingPos;
+        public NativeArray<float> OtherSwarmlingVelocity;
         public bool NoSeperationThisUpdate;
-        public float[] Velocity;
-
-        public float[] CurrentVelocity;
-        public float[] CurrentPosition;
+        //public float[] Velocity;
 
         public void Execute()
         {
@@ -89,54 +82,84 @@ public class EnemySwarm : MonoBehaviour {
             // Stop if not enough Neighbours:
             if (NeighbourCount < 2) return;
 
-            CohesionVec = Vector3.zero;
-            SeperationVec = Vector3.zero;
-            AlignmentVec = Vector3.zero;
+            for (int v = 0; v < CohesionVec.Length; v++)
+            {
+                CohesionVec[v] = 0;
+                SeperationVec[v] = 0;
+                AlignmentVec[v] = 0;
+            }
 
             CohesionNumber = 0;
             SeperationNumber = 0;
             AlignmentNumber = 0;
 
-            DistanceVec = Vector3.zero;
+            for (int v = 0; v < DistanceVec.Length; v++)
+            {
+                DistanceVec[v] = 0;
+            }
+
             DistanceVecMag = 0;
 
             for (int i = 0; i < NeighbourCount; i++)
             {
-                CurrentPosition[0] = OtherSwarmlingPos[i * 3];
+               /* CurrentPosition[0] = OtherSwarmlingPos[i * 3];
                 CurrentPosition[1] = OtherSwarmlingPos[i * 3 + 1];
                 CurrentPosition[2] = OtherSwarmlingPos[i * 3 + 2];
                 CurrentVelocity[0] = OtherSwarmlingVelocity[i * 3];
                 CurrentVelocity[1] = OtherSwarmlingVelocity[i * 3 + 1];
-                CurrentVelocity[2] = OtherSwarmlingVelocity[i * 3 + 2];
+                CurrentVelocity[2] = OtherSwarmlingVelocity[i * 3 + 2];*/
 
-                DistanceVec = SwarmlingPos - CurrentPosition;
+                //DistanceVec = VectorSub(SwarmlingPos, CurrentPosition);
+                for (int v = 0; v < 3; v++)
+                {
+                    DistanceVec[v] = SwarmlingPos[v] - OtherSwarmlingPos[i * 3 + v];
+                }
 
-                DistanceVecMag = DistanceVec.sqrMagnitude;
+
+                //DistanceVecMag = DistanceVec.sqrMagnitude;
+                DistanceVecMag = DistanceVec[0] * DistanceVec[0] + DistanceVec[1] * DistanceVec[1] + DistanceVec[2] * DistanceVec[2];
 
                 if (DistanceVecMag <= 0) continue;
 
                 // Cohesion:
                 if (DistanceVecMag <= Mathf.Pow(CohesionDistance, 2)) // Could be optimized by storing the pow2 distance!
                 {
-                    CohesionVec += CurrentPosition;
-                    CohesionNumber++;
+                    //CohesionVec += CurrentPosition;
+                    for (int v = 0; v < 3; v++)
+                    {
+                        CohesionVec[v] += OtherSwarmlingPos[i * 3 + v];
+                    }
+
+                    //CohesionNumber++;
+                    CohesionVec[3]++;
                 }
 
                 // Seperation:
                 if (DistanceVecMag <= Mathf.Pow(SeperationDistance, 2)) // Could be optimized by storing the pow2 distance!
                 {
-                    SeperationVec += DistanceVec / DistanceVecMag;
+                    //SeperationVec += DistanceVec / DistanceVecMag;
+                    for (int v = 0; v < 3; v++)
+                    {
+                        SeperationVec[v] += DistanceVec[v] / DistanceVecMag;
+                    }
 
-                    SeperationNumber++;
+                    //SeperationNumber++;
+                    SeperationVec[3]++;
                 }
 
                 // Alignment:
                 if (DistanceVecMag <= Mathf.Pow(AlignmentDistance, 2)) // Could be optimized by storing the pow2 distance!
                 {
-                    AlignmentVec += CurrentVelocity;
-                    AlignmentNumber++;
+                    //AlignmentVec += CurrentVelocity;
+                    for (int v = 0; v < 3; v++)
+                    {
+                        AlignmentVec[v] += OtherSwarmlingVelocity[i * 3 + v];
+                    }
+                    //AlignmentNumber++;
+                    AlignmentVec[3]++;
                 }
             }
+            /*
             // Cohesion:
             if (CohesionNumber > 0)
             {
@@ -186,20 +209,7 @@ public class EnemySwarm : MonoBehaviour {
 
                 Acceleration[0] += AlignmentVec * AlignmentFactor;
                 GoalFactor[0] += AlignmentFactor;
-            }
-        }
-
-        public Vector3 Steer(Vector3 VelDesired)
-        {
-            return VelDesired - Velocity;
-        }
-
-        public void VectorSub(float[] BaseVector, float[] ModifiedBy)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                BaseVector[i] = BaseVector[i] - ModifiedBy[i];
-            }
+            }*/
         }
     }
 
@@ -337,13 +347,17 @@ public class EnemySwarm : MonoBehaviour {
     public JobHandle MJobHandle;
     public MoveJob MJobData;
 
-    public NativeArray<Vector3> AccelerationNA;
-    public NativeArray<float> GoalFactorNA;
+
+    public NativeArray<float> CohesionVecNA;
+    public NativeArray<float> SeperationVecNA;
+    public NativeArray<float> AlignmentVecNA;
 
     public bool MJobRunning = false;
 
-    public float[] OtherSwarmlingPos;
-    public float[] OtherSwarmlingVelocity;
+    public NativeArray<float> OtherSwarmlingPos;
+    public NativeArray<float> OtherSwarmlingVelocity;
+    public NativeArray<float> DistanceVecNA;
+    public NativeArray<float> SwarmlingPosNA;
 
     // ================================================================================================================
 
@@ -490,39 +504,40 @@ public class EnemySwarm : MonoBehaviour {
     {
         SwarmlingID = NewSwarmlingID;
 
-        OtherSwarmlingPos = new float[NeighbourColliders.Length * 3];
-        OtherSwarmlingVelocity = new float[NeighbourColliders.Length * 3];
+        OtherSwarmlingPos = new NativeArray<float>(NeighbourColliders.Length * 3, Allocator.Persistent);
+        OtherSwarmlingVelocity = new NativeArray<float>(NeighbourColliders.Length * 3, Allocator.Persistent);
 
         MJobData = new MoveJob();
 
        // MJobHandle = MJobData.Schedule();
 
-        AccelerationNA = new NativeArray<Vector3>(1, Allocator.Persistent);
-        MJobData.Acceleration = AccelerationNA;
-
-        GoalFactorNA = new NativeArray<float>(1, Allocator.Persistent);
-        MJobData.GoalFactor = GoalFactorNA;
-
         MJobData.CohesionDistance = CohesionDistance;
         MJobData.CohesionFactor = CohesionFactor;
         MJobData.CohesionNumber = 0;
-        MJobData.CohesionVec = Vector3.zero;
+        CohesionVecNA = new NativeArray<float>(4, Allocator.Persistent);
+        MJobData.CohesionVec = CohesionVecNA;
 
         MJobData.SeperationDistance = SeperationDistance;
         MJobData.SeperationFactor = SeperationFactor;
         MJobData.SeperationNumber = 0;
-        MJobData.SeperationVec = Vector3.zero;
+        SeperationVecNA = new NativeArray<float>(4, Allocator.Persistent);
+        MJobData.SeperationVec = SeperationVecNA;
 
         MJobData.AlignmentDistance = AlignmentDistance;
         MJobData.AlignmentFactor = AlignmentFactor;
         MJobData.AlignmentNumber = 0;
-        MJobData.AlignmentVec = Vector3.zero;
+        AlignmentVecNA = new NativeArray<float>(4, Allocator.Persistent);
+        MJobData.AlignmentVec = AlignmentVecNA;
 
-        MJobData.DistanceVec = Vector3.zero;
+        DistanceVecNA = new NativeArray<float>(3, Allocator.Persistent);
+        MJobData.DistanceVec = DistanceVecNA;
         MJobData.DistanceVecMag = 0;
 
         MJobData.DesiredBaseSpeed = DesiredBaseSpeed;
         MJobData.DesiredRunSpeed = DesiredRunSpeed;
+
+        SwarmlingPosNA = new NativeArray<float>(3, Allocator.Persistent);
+        MJobData.SwarmlingPos = SwarmlingPosNA;
 /*
    
 
@@ -629,8 +644,10 @@ public class EnemySwarm : MonoBehaviour {
             if (!MJobRunning)
             {
                 MJobData.NeighbourCount = NeighbourCount;
-                MJobData.SwarmlingPos = SwarmlingTransform.position;
-                MJobData.Velocity = Velocity;
+                MJobData.SwarmlingPos[0] = SwarmlingTransform.position.x;
+                MJobData.SwarmlingPos[1] = SwarmlingTransform.position.y;
+                MJobData.SwarmlingPos[2] = SwarmlingTransform.position.z;
+               // MJobData.Velocity = Velocity;
                 MJobData.NoSeperationThisUpdate = NoSeperationThisUpdate;
 
                 for (int i = 0; i < NeighbourCount; i++)
@@ -654,10 +671,79 @@ public class EnemySwarm : MonoBehaviour {
             }
             else if (MJobHandle.IsCompleted)
             {
-                UpdateCounter -= UpdateTimer;
+                MJobHandle.Complete();
 
-                Acceleration = AccelerationNA[0];
-                GoalFactor = GoalFactorNA[0];
+                CohesionNumber = Mathf.FloorToInt(CohesionVecNA[3]);
+                SeperationNumber = Mathf.FloorToInt(SeperationVecNA[3]);
+                AlignmentNumber = Mathf.FloorToInt(AlignmentVecNA[3]);
+
+                CohesionVec = new Vector3(CohesionVecNA[0], CohesionVecNA[1], CohesionVecNA[2]);
+                SeperationVec = new Vector3(SeperationVecNA[0], SeperationVecNA[1], SeperationVecNA[2]);
+                AlignmentVec = new Vector3(AlignmentVecNA[0], AlignmentVecNA[1], AlignmentVecNA[2]);
+
+                // Cohesion:
+                if (CohesionNumber > 0)
+                {
+                    //CohesionVec = Vector3.ClampMagnitude(((CohesionVec / CohesionNumber) - SwarmlingTransform.position), DesiredBaseSpeed);
+                    //Debug.Log("Cohesion: " + CohesionVec);
+                    CohesionVec = CohesionVec / CohesionNumber;
+                    CohesionVec = CohesionVec - SwarmlingTransform.position;
+                    CohesionVec = CohesionVec.normalized * DesiredBaseSpeed;
+
+                    CohesionVec = Steer(CohesionVec);
+
+                    Acceleration += CohesionVec * CohesionFactor;
+                    GoalFactor += CohesionFactor;
+                }
+
+                // Seperation:
+                if (SeperationNumber > 0)
+                {
+                    if (NoSeperationThisUpdate)
+                    {
+                        NoSeperationThisUpdate = false;
+                    }
+                    else
+                    {
+                        //SeperationVec = Vector3.ClampMagnitude((SeperationVec / SeperationNumber), DesiredBaseSpeed);
+                        //Debug.Log("SeperationVec: " + SeperationVec);
+                        SeperationVec = SeperationVec.normalized * DesiredBaseSpeed;
+
+                        SeperationVec = Steer(SeperationVec);
+                        Acceleration += SeperationVec * SeperationFactor;
+
+                        GoalFactor += SeperationFactor;
+                    }
+                }
+
+                // Alignment:
+                if (AlignmentNumber > 0)
+                {
+                    //AlignmentVec = Vector3.ClampMagnitude((AlignmentVec/AlignmentNumber), DesiredBaseSpeed);
+                    //Debug.Log("AlignmentVec: " + AlignmentVec);
+
+                    AlignmentVec = AlignmentVec.normalized * DesiredBaseSpeed;
+
+                    //AlignmentVec = AlignmentVec / AlignmentNumber;
+
+                    AlignmentVec = Steer(AlignmentVec);
+
+                    Acceleration += AlignmentVec * AlignmentFactor;
+                    GoalFactor += AlignmentFactor;
+                }
+
+
+
+
+
+
+
+
+
+                UpdateCounter = 0;
+
+                //Acceleration = AccelerationNA[0];
+                //GoalFactor = GoalFactorNA[0];
 
                 if (GoalFactor > 0)
                 {
@@ -1097,8 +1183,16 @@ public class EnemySwarm : MonoBehaviour {
 
     private void OnApplicationQuit()
     {
-        AccelerationNA.Dispose();
-        GoalFactorNA.Dispose();
+        MJobHandle.Complete();
+
+        AlignmentVecNA.Dispose();
+        SeperationVecNA.Dispose();
+        CohesionVecNA.Dispose();
+
+        SwarmlingPosNA.Dispose();
+        DistanceVecNA.Dispose();
+        OtherSwarmlingPos.Dispose();
+        OtherSwarmlingVelocity.Dispose();
 
     }
 
