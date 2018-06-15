@@ -7,7 +7,7 @@ public class EnemyTestSwarm : Singleton<EnemyTestSwarm> {
 
     public bool Spawn = false;
 
-    public GameObject BoidPrefab1;
+    public EnemySwarm BoidPrefab1;
     public int SpawnNumber1 = 30;
     public GameObject BoidPrefab2;
     public int SpawnNumber2 = 30;
@@ -23,6 +23,24 @@ public class EnemyTestSwarm : Singleton<EnemyTestSwarm> {
     public Terrain Terr;
     private Vector3 spawnPos = Vector3.zero;
     private NavMeshHit hit;
+    private EnemySwarm[] SpawnedSwarmlings = new EnemySwarm[0];
+
+    private void Update()
+    {
+        for (int i = 0; i < SpawnedSwarmlings.Length; i++)
+        {
+            if (SpawnedSwarmlings[i])
+            {
+                SpawnedSwarmlings[i].SwarmlingFixedUpdate();
+            }
+        }
+    }
+
+    public EnemySwarm GetSwarmling(int id)
+    {
+        return SpawnedSwarmlings[id];
+    }
+    
 
     // Use this for initialization
     void Start () {
@@ -30,14 +48,15 @@ public class EnemyTestSwarm : Singleton<EnemyTestSwarm> {
         {
             return;
         }
-
+        SpawnedSwarmlings = new EnemySwarm[SpawnNumber1];
         
         
 
         for (int i = 0; i < SpawnNumber1; i++)
         {
             GenerateSpawnPosition();
-            Instantiate(BoidPrefab1, spawnPos, BoidPrefab1.transform.rotation);
+            SpawnedSwarmlings[i] = Instantiate(BoidPrefab1, spawnPos, BoidPrefab1.transform.rotation);
+            SpawnedSwarmlings[i].InitializeSwarmling(i);
         }
         for (int i = 0; i < SpawnNumber2; i++)
         {

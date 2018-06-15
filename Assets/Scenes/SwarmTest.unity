@@ -3530,9 +3530,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Spawn: 1
-  BoidPrefab1: {fileID: 1198837369056032, guid: 40ccada09f73a684197eda1e831f0bc5,
+  BoidPrefab1: {fileID: 114104079446479296, guid: 40ccada09f73a684197eda1e831f0bc5,
     type: 2}
-  SpawnNumber1: 1000
+  SpawnNumber1: 400
   BoidPrefab2: {fileID: 1977362748234288, guid: 6baaa80a0a4e56d458bccea21de0c8ae,
     type: 2}
   SpawnNumber2: 0

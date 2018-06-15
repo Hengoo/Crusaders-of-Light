@@ -2,8 +2,243 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Unity.Jobs;
+using Unity.Collections;
 
 public class EnemySwarm : MonoBehaviour {
+
+
+
+    /*  public struct NeighbourJob : IJob
+      {
+          public Vector3 SwarmlingPos;
+          public float NeighbourRadius;
+         // public Collider[] NeighbourColliders;
+          public int NeighbourLayerMask;
+
+          public NativeArray<int> NeighbourCount;
+          public NativeArray<int> NeighbourIDs;
+
+          public void Execute()
+          {
+              // NeighbourCount[0] = Physics.OverlapSphereNonAlloc(SwarmlingPos, NeighbourRadius, NeighbourColliders, NeighbourLayerMask);
+              Physics.OverlapSphere(SwarmlingPos, NeighbourRadius, NeighbourLayerMask);
+
+              /*  for (int i = 0; i < NeighbourColliders.Length; i++)
+                {
+                    NeighbourIDs[i] = NeighbourColliders[i].GetComponent<EnemySwarm>().SwarmlingID;
+                }*/
+    //}
+    //} 
+
+    public struct MoveJob : IJob
+    {
+        public float[] CohesionVec;
+        public float[] SeperationVec;
+        public float[] AlignmentVec;
+
+        public int CohesionNumber;
+        public int SeperationNumber;
+        public int AlignmentNumber;
+
+        public float[] DistanceVec;
+        public float DistanceVecMag;
+
+        public float SeperationDistance;
+        public float SeperationFactor;
+        
+
+        public float AlignmentDistance;
+        public float AlignmentFactor;
+
+        public float CohesionDistance;
+        public float CohesionFactor;
+
+        public float DangerDistance;
+        public float DangerFactor;
+
+        public float AttractionDistance;
+        public float AttractionFactor;
+
+        public bool BorderOn;
+        //public float OutsideAcceleration = 1;
+        public float BorderDistance;
+        public float BorderFactor;
+        public float DesiredBaseSpeed;
+        public float DesiredRunSpeed;
+
+        // Native Arrays:
+        public NativeArray<float> GoalFactor;
+        public NativeArray<Vector3> Acceleration;
+
+        // New Assign per Schedule:
+        public int NeighbourCount;
+        public float[] SwarmlingPos;
+        public float[] OtherSwarmlingPos;
+        public float[] OtherSwarmlingVelocity;
+        public bool NoSeperationThisUpdate;
+        public float[] Velocity;
+
+        public float[] CurrentVelocity;
+        public float[] CurrentPosition;
+
+        public void Execute()
+        {
+            
+            // NeighbourColliders = Physics.OverlapSphere(SwarmlingTransform.position, NeighbourRadius, NeighbourLayerMask);
+            // Stop if not enough Neighbours:
+            if (NeighbourCount < 2) return;
+
+            CohesionVec = Vector3.zero;
+            SeperationVec = Vector3.zero;
+            AlignmentVec = Vector3.zero;
+
+            CohesionNumber = 0;
+            SeperationNumber = 0;
+            AlignmentNumber = 0;
+
+            DistanceVec = Vector3.zero;
+            DistanceVecMag = 0;
+
+            for (int i = 0; i < NeighbourCount; i++)
+            {
+                CurrentPosition[0] = OtherSwarmlingPos[i * 3];
+                CurrentPosition[1] = OtherSwarmlingPos[i * 3 + 1];
+                CurrentPosition[2] = OtherSwarmlingPos[i * 3 + 2];
+                CurrentVelocity[0] = OtherSwarmlingVelocity[i * 3];
+                CurrentVelocity[1] = OtherSwarmlingVelocity[i * 3 + 1];
+                CurrentVelocity[2] = OtherSwarmlingVelocity[i * 3 + 2];
+
+                DistanceVec = SwarmlingPos - CurrentPosition;
+
+                DistanceVecMag = DistanceVec.sqrMagnitude;
+
+                if (DistanceVecMag <= 0) continue;
+
+                // Cohesion:
+                if (DistanceVecMag <= Mathf.Pow(CohesionDistance, 2)) // Could be optimized by storing the pow2 distance!
+                {
+                    CohesionVec += CurrentPosition;
+                    CohesionNumber++;
+                }
+
+                // Seperation:
+                if (DistanceVecMag <= Mathf.Pow(SeperationDistance, 2)) // Could be optimized by storing the pow2 distance!
+                {
+                    SeperationVec += DistanceVec / DistanceVecMag;
+
+                    SeperationNumber++;
+                }
+
+                // Alignment:
+                if (DistanceVecMag <= Mathf.Pow(AlignmentDistance, 2)) // Could be optimized by storing the pow2 distance!
+                {
+                    AlignmentVec += CurrentVelocity;
+                    AlignmentNumber++;
+                }
+            }
+            // Cohesion:
+            if (CohesionNumber > 0)
+            {
+                //CohesionVec = Vector3.ClampMagnitude(((CohesionVec / CohesionNumber) - SwarmlingTransform.position), DesiredBaseSpeed);
+                //Debug.Log("Cohesion: " + CohesionVec);
+                CohesionVec = CohesionVec / CohesionNumber;
+                CohesionVec = CohesionVec - SwarmlingPos;
+                CohesionVec = CohesionVec.normalized * DesiredBaseSpeed;
+
+                CohesionVec = Steer(CohesionVec);
+
+                Acceleration[0] += CohesionVec * CohesionFactor;
+                GoalFactor[0] += CohesionFactor;
+            }
+
+            // Seperation:
+            if (SeperationNumber > 0)
+            {
+                if (NoSeperationThisUpdate)
+                {
+                    NoSeperationThisUpdate = false;
+                }
+                else
+                {
+                    //SeperationVec = Vector3.ClampMagnitude((SeperationVec / SeperationNumber), DesiredBaseSpeed);
+                    //Debug.Log("SeperationVec: " + SeperationVec);
+                    SeperationVec = SeperationVec.normalized * DesiredBaseSpeed;
+
+                    SeperationVec = Steer(SeperationVec);
+                    Acceleration[0] += SeperationVec * SeperationFactor;
+
+                    GoalFactor[0] += SeperationFactor;
+                }
+            }
+
+            // Alignment:
+            if (AlignmentNumber > 0)
+            {
+                //AlignmentVec = Vector3.ClampMagnitude((AlignmentVec/AlignmentNumber), DesiredBaseSpeed);
+                //Debug.Log("AlignmentVec: " + AlignmentVec);
+
+                AlignmentVec = AlignmentVec.normalized * DesiredBaseSpeed;
+
+                //AlignmentVec = AlignmentVec / AlignmentNumber;
+
+                AlignmentVec = Steer(AlignmentVec);
+
+                Acceleration[0] += AlignmentVec * AlignmentFactor;
+                GoalFactor[0] += AlignmentFactor;
+            }
+        }
+
+        public Vector3 Steer(Vector3 VelDesired)
+        {
+            return VelDesired - Velocity;
+        }
+
+        public void VectorSub(float[] BaseVector, float[] ModifiedBy)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                BaseVector[i] = BaseVector[i] - ModifiedBy[i];
+            }
+        }
+    }
+
+ /*   public struct MovJob : IJobParallelFor
+    {
+        public void Execute(int index)
+        {
+            CurrentSwarmling = NeighbourColliders[index].GetComponent<EnemySwarm>();
+            //CurrentSwarmling = NeighbourSwarmlings[i];
+            DistanceVec = SwarmlingTransform.position - CurrentSwarmling.SwarmlingTransform.position;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            if (DistanceVecMag <= 0) continue;
+
+            // Cohesion:
+            if (DistanceVecMag <= Mathf.Pow(CohesionDistance, 2)) // Could be optimized by storing the pow2 distance!
+            {
+                CohesionVec += CurrentSwarmling.SwarmlingTransform.position;
+                CohesionNumber++;
+            }
+
+            // Seperation:
+            if (DistanceVecMag <= Mathf.Pow(SeperationDistance, 2)) // Could be optimized by storing the pow2 distance!
+            {
+                SeperationVec += DistanceVec / DistanceVecMag;
+
+                SeperationNumber++;
+            }
+
+            // Alignment:
+            if (DistanceVecMag <= Mathf.Pow(AlignmentDistance, 2)) // Could be optimized by storing the pow2 distance!
+            {
+                AlignmentVec += CurrentSwarmling.Velocity;
+                AlignmentNumber++;
+            }
+
+
+        }
+    }*/
 
     public enum SwarmType
     {
@@ -23,11 +258,11 @@ public class EnemySwarm : MonoBehaviour {
     public float SeperationDistance = 3;
     public float SeperationFactor = 1;
     private bool NoSeperationThisUpdate = false;
-
+    
     [Header("Alignment:")]
     public float AlignmentDistance = 3;
     public float AlignmentFactor = 1;
-
+    
     [Header("Cohesion:")]
     public float CohesionDistance = 3;
     public float CohesionFactor = 1;
@@ -93,27 +328,27 @@ public class EnemySwarm : MonoBehaviour {
     public Vector3 DistanceVec = Vector3.zero;
     public float DistanceVecMag = 0;
 
-    public float NewNeighbourTimer = 0f;
-    public float NewNeighbourCounter = 1f;
+    public float NewNeighbourTimer = 1f;
+    public float NewNeighbourCounter = 0f;
+
+    public int SwarmlingID = -1;
+    public int NeighbourMax = 30;
+
+    public JobHandle MJobHandle;
+    public MoveJob MJobData;
+
+    public NativeArray<Vector3> AccelerationNA;
+    public NativeArray<float> GoalFactorNA;
+
+    public bool MJobRunning = false;
+
+    public float[] OtherSwarmlingPos;
+    public float[] OtherSwarmlingVelocity;
 
     // ================================================================================================================
 
     public void UpdateSwarmling()
     {
-
-        // Get List of Neighbours:
-        if (NewNeighbourCounter <= 0)
-        {
-            NeighbourCount = Physics.OverlapSphereNonAlloc(SwarmlingTransform.position, NeighbourRadius, NeighbourColliders, NeighbourLayerMask);
-            NewNeighbourCounter = NewNeighbourTimer;
-        }
-        else
-        {
-            NewNeighbourCounter -= Time.deltaTime;
-        }
-        
-       
-
        // NeighbourColliders = Physics.OverlapSphere(SwarmlingTransform.position, NeighbourRadius, NeighbourLayerMask);
         // Stop if not enough Neighbours:
         if (NeighbourCount < 2) return;
@@ -132,7 +367,7 @@ public class EnemySwarm : MonoBehaviour {
         for (int i = 0; i < NeighbourCount; i++)
         {
             CurrentSwarmling = NeighbourColliders[i].GetComponent<EnemySwarm>();
-
+            //CurrentSwarmling = NeighbourSwarmlings[i];
             DistanceVec = SwarmlingTransform.position - CurrentSwarmling.SwarmlingTransform.position;
             DistanceVecMag = DistanceVec.sqrMagnitude;
 
@@ -220,22 +455,239 @@ public class EnemySwarm : MonoBehaviour {
         UpdateCounter = Random.Range(0, UpdateTimer);
         NewNeighbourCounter = Random.Range(0, NewNeighbourTimer);
         NeighbourLayerMask = 1 << NeighbourLayerMask;
+
+        /*    var jobData = new TestJob();
+
+            jobData.NumA = new NativeArray<float>(1, Allocator.Temp);
+            jobData.NumA[0] = 10;
+
+            jobData.NumB = new NativeArray<float>(1, Allocator.Temp);
+            jobData.NumB[0] = 12;
+
+            NativeArray<float> result = new NativeArray<float>(10, Allocator.Temp);
+            jobData.result = result;
+
+            JobHandle handle = jobData.Schedule(result.Length, 1);
+
+            handle.Complete();
+
+            string debugMess = "Result: ";
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                debugMess += "/ " + i + ": " + result[i] + " ";
+            }
+
+            Debug.Log(debugMess);
+
+            result.Dispose();
+            jobData.NumA.Dispose();
+            jobData.NumB.Dispose();*/
     }
 
-    private void FixedUpdate()
+
+    public void InitializeSwarmling(int NewSwarmlingID)
+    {
+        SwarmlingID = NewSwarmlingID;
+
+        OtherSwarmlingPos = new float[NeighbourColliders.Length * 3];
+        OtherSwarmlingVelocity = new float[NeighbourColliders.Length * 3];
+
+        MJobData = new MoveJob();
+
+       // MJobHandle = MJobData.Schedule();
+
+        AccelerationNA = new NativeArray<Vector3>(1, Allocator.Persistent);
+        MJobData.Acceleration = AccelerationNA;
+
+        GoalFactorNA = new NativeArray<float>(1, Allocator.Persistent);
+        MJobData.GoalFactor = GoalFactorNA;
+
+        MJobData.CohesionDistance = CohesionDistance;
+        MJobData.CohesionFactor = CohesionFactor;
+        MJobData.CohesionNumber = 0;
+        MJobData.CohesionVec = Vector3.zero;
+
+        MJobData.SeperationDistance = SeperationDistance;
+        MJobData.SeperationFactor = SeperationFactor;
+        MJobData.SeperationNumber = 0;
+        MJobData.SeperationVec = Vector3.zero;
+
+        MJobData.AlignmentDistance = AlignmentDistance;
+        MJobData.AlignmentFactor = AlignmentFactor;
+        MJobData.AlignmentNumber = 0;
+        MJobData.AlignmentVec = Vector3.zero;
+
+        MJobData.DistanceVec = Vector3.zero;
+        MJobData.DistanceVecMag = 0;
+
+        MJobData.DesiredBaseSpeed = DesiredBaseSpeed;
+        MJobData.DesiredRunSpeed = DesiredRunSpeed;
+/*
+   
+
+    public float DangerDistance;
+    public float DangerFactor;
+
+    public float AttractionDistance;
+    public float AttractionFactor;
+
+    public bool BorderOn;
+    //public float OutsideAcceleration = 1;
+    public float BorderDistance;
+    public float BorderFactor;
+
+    // New Assign per Schedule:
+    public int NeighbourCount;
+    public Vector3 SwarmlingPos;
+    public Vector3[] OtherSwarmlingPos;
+    public Vector3[] OtherSwarmlingVelocity;
+    public bool NoSeperationThisUpdate;
+    public Vector3 Velocity;
+    */
+
+
+
+}
+
+    public void SwarmlingFixedUpdate()
     {
         GoalFactor = 0;
 
         UpdateCounter += Time.deltaTime;
 
+        // Get List of Neighbours:
+        if (NewNeighbourCounter <= 0)
+        {
+            /*
+             if (!NJobCurrentlyRunning)
+             {
+                 NJobCurrentlyRunning = true;
+
+                // NJobData.NeighbourColliders = new Collider[NeighbourMax];
+
+                 NJobData.NeighbourLayerMask = NeighbourLayerMask;
+                 NJobData.NeighbourRadius = NeighbourRadius;
+
+                 NJobData.NeighbourCount = NeighbourCountNA;
+                 NJobData.NeighbourIDs = NeighbourIDsNA;
+                 NJobHandle = NJobData.Schedule();
+             }
+             else if (NJobHandle.IsCompleted)
+             {
+                NewNeighbourCounter += Random.Range(0, NewNeighbourTimer) + Mathf.Pow((NeighbourCount * 0.15f), 2);
+
+                for (int i = 0; i < NeighbourIDsNA.Length; i++)
+                {
+                    NeighbourSwarmlings[i] = EnemyTestSwarm.Instance.GetSwarmling(NeighbourIDsNA[i]);
+                }
+
+                NJobCurrentlyRunning = false;
+            }*/
+             /*
+            NeighbourCountNA = new NativeArray<int>(1, Allocator.Temp);
+            NeighbourIDsNA = new NativeArray<int> (30, Allocator.Temp);
+
+
+            NJobData.NeighbourCount = NeighbourCountNA;
+            NJobData.NeighbourIDs = NeighbourIDsNA;
+
+            NJobData.NeighbourColliders = new Collider[NeighbourMax];
+
+            NJobData.NeighbourLayerMask = NeighbourLayerMask;
+            NJobData.NeighbourRadius = NeighbourRadius;
+
+            //NJobData.NeighbourCount = NeighbourCountNA;
+           // NJobData.NeighbourIDs = NeighbourIDsNA;
+            NJobHandle = NJobData.Schedule();
+
+            NJobHandle.Complete();
+
+            NewNeighbourCounter += Random.Range(0, NewNeighbourTimer) + Mathf.Pow((NeighbourCount * 0.15f), 2);
+
+            for (int i = 0; i < NeighbourIDsNA.Length; i++)
+            {
+                NeighbourSwarmlings[i] = EnemyTestSwarm.Instance.GetSwarmling(NeighbourIDsNA[i]);
+            }
+
+            NeighbourIDsNA.Dispose();
+            NeighbourCountNA.Dispose();
+            */
+
+
+            NeighbourCount = Physics.OverlapSphereNonAlloc(SwarmlingTransform.position, NeighbourRadius, NeighbourColliders, NeighbourLayerMask);
+            //NewNeighbourCounter += NewNeighbourTimer;
+            NewNeighbourCounter += Random.Range(0, NewNeighbourTimer) + Mathf.Pow((NeighbourCount * 0.15f), 2);
+        }
+        else
+        {
+            NewNeighbourCounter -= Time.deltaTime;
+        }
+
         if (UpdateCounter >= UpdateTimer)
         {
-            UpdateCounter -= UpdateTimer;
+            if (!MJobRunning)
+            {
+                MJobData.NeighbourCount = NeighbourCount;
+                MJobData.SwarmlingPos = SwarmlingTransform.position;
+                MJobData.Velocity = Velocity;
+                MJobData.NoSeperationThisUpdate = NoSeperationThisUpdate;
+
+                for (int i = 0; i < NeighbourCount; i++)
+                {
+                    CurrentSwarmling = NeighbourColliders[i].GetComponent<EnemySwarm>();
+                    OtherSwarmlingPos[i * 3] = CurrentSwarmling.transform.position.x;
+                    OtherSwarmlingPos[i * 3 + 1] = CurrentSwarmling.transform.position.y;
+                    OtherSwarmlingPos[i * 3 + 2] = CurrentSwarmling.transform.position.z;
+                    OtherSwarmlingVelocity[i * 3] = CurrentSwarmling.Velocity.x;
+                    OtherSwarmlingVelocity[i * 3 + 1] = CurrentSwarmling.Velocity.y;
+                    OtherSwarmlingVelocity[i * 3 + 2] = CurrentSwarmling.Velocity.z;
+                }
+
+                MJobData.OtherSwarmlingPos = OtherSwarmlingPos;
+                MJobData.OtherSwarmlingVelocity = OtherSwarmlingVelocity;
+
+
+
+                MJobHandle = MJobData.Schedule();
+                MJobRunning = true;
+            }
+            else if (MJobHandle.IsCompleted)
+            {
+                UpdateCounter -= UpdateTimer;
+
+                Acceleration = AccelerationNA[0];
+                GoalFactor = GoalFactorNA[0];
+
+                if (GoalFactor > 0)
+                {
+                    Acceleration = Acceleration / GoalFactor;
+                }
+
+                MJobRunning = false;
+            }
+
+
+
+
+
+
+
+
+
+            
 
             // Reset Acceleration:
-            Acceleration = Vector3.zero;
+            //Acceleration = Vector3.zero;
 
-            UpdateSwarmling();
+            //UpdateSwarmling();
+
+            // ====
+
+            
+
+            // ====
+
 
             /*if (BorderOn)
             {
@@ -258,10 +710,7 @@ public class EnemySwarm : MonoBehaviour {
             
         }
 
-        if (GoalFactor > 0)
-        {
-            Acceleration = Acceleration / GoalFactor;
-        }
+        
         
         // Update Velocity:
         Velocity += Acceleration * Time.deltaTime * 10;
@@ -643,6 +1092,14 @@ public class EnemySwarm : MonoBehaviour {
         {
             EnemiesInRange[i].RemoveFromEnemiesInRange(this);
         }
+
+    }
+
+    private void OnApplicationQuit()
+    {
+        AccelerationNA.Dispose();
+        GoalFactorNA.Dispose();
+
     }
 
     // =================================================/ NEARBY LISTS /=================================================
