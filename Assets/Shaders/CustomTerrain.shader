@@ -17,14 +17,24 @@ Shader "Custom/CustomTerrain" {
 	[HideInInspector] _Color("Main Color", Color) = (1,1,1,1)
 
 	_HeightFactor("HeightFactor",Range(0, 10)) = 1
+	_Smoothness("smoothness",Range(0, 1)) = 0
 	}
 
 		CGINCLUDE
-#pragma surface surf Lambert vertex:SplatmapVert finalcolor:SplatmapFinalColor finalprepass:SplatmapFinalPrepass finalgbuffer:SplatmapFinalGBuffer noinstancing
+//#pragma surface surf Lambert vertex:SplatmapVert finalcolor:SplatmapFinalColor finalprepass:SplatmapFinalPrepass finalgbuffer:SplatmapFinalGBuffer noinstancing
+#pragma surface surf Standard vertex:SplatmapVert finalcolor:SplatmapFinalColor finalprepass:SplatmapFinalPrepass finalgbuffer:SplatmapFinalGBuffer noinstancing
 #pragma multi_compile_fog
+
+//not totally sure why but those lines are needed to use the standart (pbr) approach and add smoothness to material
+#include "UnityPBSLighting.cginc"
+//#define TERRAIN_SPLAT_ADDPASS
+//#define TERRAIN_STANDARD_SHADER
+#define TERRAIN_SURFACE_OUTPUT SurfaceOutputStandard
 #include "TerrainSplatmapCommon.cginc"
 
+
 half _HeightFactor;
+half _Smoothness;
 
 inline float heightblend(float heightSelf, float height0, float height1, float height2)
 {
@@ -58,7 +68,7 @@ void SplatmapMixTest(Input IN, out half4 splat_control, out half weight, out fix
     #if !defined(SHADER_API_MOBILE) && defined(TERRAIN_SPLAT_ADDPASS)
         clip(weight - 0.0039 /*1/255*/);
     #endif
- 
+
 	//TODO: extract the height value from the alpha value of the texture.
 	//-> adjust splat_control with heightblending
 	fixed4 albedo0 = tex2D(_Splat0, IN.uv_Splat0);
@@ -70,7 +80,7 @@ void SplatmapMixTest(Input IN, out half4 splat_control, out half weight, out fix
 	float height0 = albedo0.a  * splat_control.r;
 	float height1 = albedo1.a  * splat_control.g;
 	float height2 = albedo2.a  * splat_control.b;
-	float height3 = albedo3.a  * splat_control.a;
+	float height3 = albedo3.a * splat_control.a;
 	//float height0 = albedo0.a;
 	//float height1 = albedo1.a;
 	//float height2 = albedo2.a;
@@ -95,10 +105,12 @@ void SplatmapMixTest(Input IN, out half4 splat_control, out half weight, out fix
     //mixedDiffuse += splat_control.g * tex2D(_Splat1, IN.uv_Splat1) * tex2D(_Splat1, IN.uv_Splat1 * -0.25) * 4;
     //mixedDiffuse += splat_control.b * tex2D(_Splat2, IN.uv_Splat2) * tex2D(_Splat2, IN.uv_Splat2 * -0.25) * 4;
     //mixedDiffuse += splat_control.a * tex2D(_Splat3, IN.uv_Splat3) * tex2D(_Splat3, IN.uv_Splat3 * -0.25) * 4;
-	mixedDiffuse += splat_control.r * tex2D(_Splat0, IN.uv_Splat0);
-	mixedDiffuse += splat_control.g * tex2D(_Splat1, IN.uv_Splat1);
-	mixedDiffuse += splat_control.b * tex2D(_Splat2, IN.uv_Splat2);
-	mixedDiffuse += splat_control.a * tex2D(_Splat3, IN.uv_Splat3);
+
+	//we dont use a, but ... doesnt matter here
+	mixedDiffuse += splat_control.r * albedo0.rgba;
+	mixedDiffuse += splat_control.g * albedo1.rgba;
+	mixedDiffuse += splat_control.b * albedo2.rgba;
+	mixedDiffuse += splat_control.a * albedo3.rgba;
  
 	
     #ifdef _TERRAIN_NORMAL_MAP
@@ -106,24 +118,25 @@ void SplatmapMixTest(Input IN, out half4 splat_control, out half weight, out fix
         nrm += splat_control.r * tex2D(_Normal0, IN.uv_Splat0);
         nrm += splat_control.g * tex2D(_Normal1, IN.uv_Splat1);
         nrm += splat_control.b * tex2D(_Normal2, IN.uv_Splat2);
-        nrm += splat_control.a * tex2D(_Normal3, IN.uv_Splat3);
+		nrm += splat_control.a * tex2D(_Normal3, IN.uv_Splat3);
         mixedNormal = UnpackNormal(nrm);
     #endif
 }
 
-		void surf(Input IN, inout SurfaceOutput o)
+void surf(Input IN, inout SurfaceOutputStandard o)
 	{
 		half4 splat_control;
 		half weight;
-		fixed4 mixedDiffuse;
+		half4 mixedDiffuse;
 
 		//SplatmapMix(IN, splat_control, weight, mixedDiffuse, o.Normal);
 		SplatmapMixTest(IN, splat_control, weight, mixedDiffuse, o.Normal);
 		o.Albedo = mixedDiffuse.rgb;
 		o.Alpha = weight;
+		o.Smoothness = _Smoothness;
 	}
 	ENDCG
-
+	
 		Category{
 		Tags{
 		"Queue" = "Geometry-99"
