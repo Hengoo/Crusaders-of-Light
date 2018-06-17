@@ -493,68 +493,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   NeighbourCount: 0
   NeighbourLayerMask: 17
   CurrentSwarmling: {fileID: 0}
   CohesionVec: {x: 0, y: 0, z: 0}
   SeperationVec: {x: 0, y: 0, z: 0}
   AlignmentVec: {x: 0, y: 0, z: 0}
-  CohesionNumber: 0
-  SeperationNumber: 0
-  AlignmentNumber: 0
   DistanceVec: {x: 0, y: 0, z: 0}
-  DistanceVecMag: 0
-  NewNeighbourTimer: 1
-  NewNeighbourCounter: 0
-  SwarmlingID: -1
-  NeighbourMax: 30
-  NeighbourSwarmlings:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  NJobCurrentlyRunning: 0
 --- !u!135 &135701834841169246
 SphereCollider:
   m_ObjectHideFlags: 1
