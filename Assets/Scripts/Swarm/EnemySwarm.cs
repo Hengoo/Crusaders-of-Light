@@ -75,7 +75,11 @@ public class EnemySwarm : MonoBehaviour {
 
     [Header("New Variables:")]
     public Transform SwarmlingTransform;
-    public int NeighbourRadius = 7;
+    public int NeighbourRadiusBase = 7;
+    public float NeighbourRadiusCurrent = 7;
+    public float NeighbourRadiusMin = 2f;
+    public float NeighbourRadiusMax = 7f;
+    public float NeighbourRadiusStep = 1;
     public Collider[] NeighbourColliders = new Collider[6];
     public int NeighbourCount = 0;
     public int NeighbourLayerMask = 0;
@@ -98,23 +102,9 @@ public class EnemySwarm : MonoBehaviour {
 
     // ================================================================================================================
 
-    public void UpdateSwarmling()
+    public void SwarmlingRulesCalculation()
     {
-
-        // Get List of Neighbours:
-        if (NewNeighbourCounter <= 0)
-        {
-            NeighbourCount = Physics.OverlapSphereNonAlloc(SwarmlingTransform.position, NeighbourRadius, NeighbourColliders, NeighbourLayerMask);
-            NewNeighbourCounter = NewNeighbourTimer;
-        }
-        else
-        {
-            NewNeighbourCounter -= Time.deltaTime;
-        }
-        
-       
-
-       // NeighbourColliders = Physics.OverlapSphere(SwarmlingTransform.position, NeighbourRadius, NeighbourLayerMask);
+        // NeighbourColliders = Physics.OverlapSphere(SwarmlingTransform.position, NeighbourRadius, NeighbourLayerMask);
         // Stop if not enough Neighbours:
         if (NeighbourCount < 2) return;
 
@@ -222,9 +212,38 @@ public class EnemySwarm : MonoBehaviour {
         NeighbourLayerMask = 1 << NeighbourLayerMask;
     }
 
-    private void FixedUpdate()
+    public void SwarmlingUpdate()
     {
         GoalFactor = 0;
+
+        // Get List of Neighbours:
+        if (NewNeighbourCounter <= 0)
+        {
+            //NeighbourRadiusCurrent = NeighbourRadiusBase + NeighbourCount * -0.3f;
+
+            if (NeighbourCount == NeighbourColliders.Length)
+            {
+                NeighbourRadiusCurrent = Mathf.Max(NeighbourRadiusCurrent - NeighbourRadiusStep, NeighbourRadiusMin);
+            }
+            else
+            {
+                NeighbourRadiusCurrent = Mathf.Min(NeighbourRadiusCurrent + NeighbourRadiusStep, NeighbourRadiusMax);
+            }
+
+            NeighbourCount = Physics.OverlapSphereNonAlloc(SwarmlingTransform.position, NeighbourRadiusCurrent, NeighbourColliders, NeighbourLayerMask);
+
+            for (int i = NeighbourColliders.Length - 1; i > NeighbourCount - 1; i--)
+            {
+                NeighbourColliders[i] = null;
+            }
+
+            NewNeighbourCounter = Random.Range(0, NewNeighbourTimer) + Mathf.Pow(NeighbourCount * 0.3f, 2);
+        }
+        else
+        {
+            NewNeighbourCounter -= Time.deltaTime;
+        }
+
 
         UpdateCounter += Time.deltaTime;
 
@@ -235,7 +254,7 @@ public class EnemySwarm : MonoBehaviour {
             // Reset Acceleration:
             Acceleration = Vector3.zero;
 
-            UpdateSwarmling();
+            SwarmlingRulesCalculation();
 
             /*if (BorderOn)
             {
