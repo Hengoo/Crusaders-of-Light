@@ -11,13 +11,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4e819ae4bc60ed4ca7534a7a76af0f8, type: 3}
   m_Name: ForestBossArenaFactory
   m_EditorClassIdentifier: 
-  WallPrefab: {fileID: 1055983341240014, guid: 30c1958176ed413489db99365c9b3ad4, type: 2}
-  WallLenght: 7
-  WallAngleLimit: 5
+  WallPrefab: {fileID: 100000, guid: d554421290ac96f498804985e06e0c78, type: 3}
+  WallLenght: 17
+  WallAngleLimit: 10
   WallPositionNoise: {x: 0, y: 0, z: 0}
   WallScaleNoise: {x: 0.1, y: 0, z: 0}
   GatePrefab: {fileID: 0}
-  TowerPrefab: {fileID: 1624022019104524, guid: f6cdbb3f66ff82a4a9f211ea66b02128,
+  TowerPrefab: {fileID: 1107711886561300, guid: 0975c5827ee55a4469ffc5cf7b01d1cb,
     type: 2}
   RewardPedestalPrefab: {fileID: 0}
   BuildingPrefabs: []

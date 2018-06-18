@@ -1,0 +1,231 @@
+fileFormatVersion: 2
+guid: 43ad71fec65b83b4b912ad5aef710f5e
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Cube
+    100004: Cube_001
+    100006: Cube_002
+    100008: Cube_003
+    100010: Pillar
+    100012: Pillar_001
+    100014: Pillar_002
+    100016: Roof
+    100018: Walls
+    100020: Door
+    100022: Foundation
+    100024: Window_000
+    100026: Window_001
+    100028: Window_011
+    100030: Plank
+    100032: Plank_001
+    100034: Plank_002
+    100036: Plank_003
+    100038: Plank_004
+    100040: Plank_005
+    100042: Plank_006
+    100044: Plank_007
+    100046: Plank_008
+    100048: Plank_009
+    100050: Plank_010
+    100052: Ramp
+    400000: //RootNode
+    400002: Cube
+    400004: Cube_001
+    400006: Cube_002
+    400008: Cube_003
+    400010: Pillar
+    400012: Pillar_001
+    400014: Pillar_002
+    400016: Roof
+    400018: Walls
+    400020: Door
+    400022: Foundation
+    400024: Window_000
+    400026: Window_001
+    400028: Window_011
+    400030: Plank
+    400032: Plank_001
+    400034: Plank_002
+    400036: Plank_003
+    400038: Plank_004
+    400040: Plank_005
+    400042: Plank_006
+    400044: Plank_007
+    400046: Plank_008
+    400048: Plank_009
+    400050: Plank_010
+    400052: Ramp
+    2100000: Material
+    2100002: unnamed
+    2100004: Walls
+    2100006: Roof
+    2100008: Wood_001
+    2100010: Glass
+    2100012: Wood
+    2100014: Wood_002
+    2100016: Metal
+    2300000: //RootNode
+    2300002: Cube
+    2300004: Cube_001
+    2300006: Cube_002
+    2300008: Cube_003
+    2300010: Pillar
+    2300012: Pillar_001
+    2300014: Pillar_002
+    2300016: Roof
+    2300018: Walls
+    2300020: Door
+    2300022: Foundation
+    2300024: Window_000
+    2300026: Window_001
+    2300028: Window_011
+    2300030: Plank
+    2300032: Plank_001
+    2300034: Plank_002
+    2300036: Plank_003
+    2300038: Plank_004
+    2300040: Plank_005
+    2300042: Plank_006
+    2300044: Plank_007
+    2300046: Plank_008
+    2300048: Plank_009
+    2300050: Plank_010
+    2300052: Ramp
+    3300000: //RootNode
+    3300002: Cube
+    3300004: Cube_001
+    3300006: Cube_002
+    3300008: Cube_003
+    3300010: Pillar
+    3300012: Pillar_001
+    3300014: Pillar_002
+    3300016: Roof
+    3300018: Walls
+    3300020: Door
+    3300022: Foundation
+    3300024: Window_000
+    3300026: Window_001
+    3300028: Window_011
+    3300030: Plank
+    3300032: Plank_001
+    3300034: Plank_002
+    3300036: Plank_003
+    3300038: Plank_004
+    3300040: Plank_005
+    3300042: Plank_006
+    3300044: Plank_007
+    3300046: Plank_008
+    3300048: Plank_009
+    3300050: Plank_010
+    3300052: Ramp
+    4300000: Cube
+    4300002: Cube_003
+    4300004: Cube_002
+    4300006: Cube_001
+    4300008: Walls
+    4300010: Pillar_002
+    4300012: Pillar_001
+    4300014: Pillar
+    4300016: Roof
+    4300018: Window_001
+    4300020: Window_000
+    4300022: Foundation
+    4300024: Door
+    4300026: Window_011
+    4300028: Plank
+    4300030: Plank_001
+    4300032: Plank_002
+    4300034: Plank_003
+    4300036: Plank_004
+    4300038: Plank_005
+    4300040: Plank_006
+    4300042: Plank_007
+    4300044: Plank_008
+    4300046: Plank_009
+    4300048: Plank_010
+    4300050: Ramp
+    7400000: Default Take
+    9500000: //RootNode
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
