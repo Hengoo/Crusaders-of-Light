@@ -5,16 +5,21 @@ ModelImporter:
   fileIDToRecycleName:
     100000: //RootNode
     100002: RoundTombstone
+    100004: RoundTombstone_001
     400000: //RootNode
     400002: RoundTombstone
+    400004: RoundTombstone_001
     2100000: Material
     2100002: Tombstone
     2300000: //RootNode
     2300002: RoundTombstone
+    2300004: RoundTombstone_001
     3300000: //RootNode
     3300002: RoundTombstone
+    3300004: RoundTombstone_001
     4300000: Cube
     4300002: RoundTombstone
+    4300004: RoundTombstone_001
     7400000: Default Take
     9500000: //RootNode
   externalObjects: {}
