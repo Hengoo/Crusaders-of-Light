@@ -12,6 +12,7 @@ public class BiomeSettings : ScriptableObject
 {
     public string UniqueName;
     public BiomeHeightParameters HeightParameters;
+    public Material TerrainMaterial;
     public SplatPrototypeSerializable Splat;
     public GameObject Blocker;
     public GameObject BlockerPole;

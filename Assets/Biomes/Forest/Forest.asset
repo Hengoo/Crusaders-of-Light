@@ -18,6 +18,7 @@ MonoBehaviour:
     LocalMin: 0.256
     Lacunarity: 20
     Scale: 12.5
+  TerrainMaterial: {fileID: 2100000, guid: 0e6511feae21ce44799a21eaea44610f, type: 2}
   Splat:
     texture: {fileID: 2800000, guid: db31999e40687b347bde909b309d6502, type: 3}
     normalMap: {fileID: 2800000, guid: 85bcb8e34a247014bb11be4c7fe4da99, type: 3}

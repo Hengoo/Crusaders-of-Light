@@ -39,8 +39,6 @@ public class LevelCreator : Singleton<LevelCreator>
     [Range(0, 100)] public int LloydRelaxation = 20;
     [Range(1, 8)] public int Octaves = 3;
     [Range(0, 1f)] public float WaterHeight = 0.15f;
-    public Material WaterMaterial;
-    public Material TerrainMaterial;
 
     [Header("Terrain Smooth Settings")]
     [Range(0, 5)] public int OverallSmoothPasses = 1;
@@ -176,26 +174,26 @@ public class LevelCreator : Singleton<LevelCreator>
         Terrain.transform.parent = transform;
         Terrain.transform.position = Vector3.zero;
         Terrain.GetComponent<Terrain>().terrainData.SetHeights(0, 0, _heightMap);
-        if (TerrainMaterial)
+        if (MyTerrainStructure.BiomeSettings.TerrainMaterial)
         {
             Terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
-            Terrain.GetComponent<Terrain>().materialTemplate = TerrainMaterial;
+            Terrain.GetComponent<Terrain>().materialTemplate = MyTerrainStructure.BiomeSettings.TerrainMaterial;
         }
         
     }
 
-    // Water Plane Placement
-    private void GenerateWaterPlane()
-    {
-        var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        water.name = "Water";
-        water.GetComponent<Collider>().enabled = false;
-        water.GetComponent<Renderer>().material = WaterMaterial;
-        water.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
-        water.transform.localScale = new Vector3(Terrain.terrainData.size.x / 5f, 1, Terrain.terrainData.size.z / 5f);
-        water.transform.parent = transform;
-        water.transform.localPosition = new Vector3(Terrain.terrainData.size.x / 2f, (WaterHeight + 0.01f) * Terrain.terrainData.size.y, Terrain.terrainData.size.z / 2f);
-    }
+    //// Water Plane Placement
+    //private void GenerateWaterPlane()
+    //{
+    //    var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
+    //    water.name = "Water";
+    //    water.GetComponent<Collider>().enabled = false;
+    //    water.GetComponent<Renderer>().material = WaterMaterial;
+    //    water.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+    //    water.transform.localScale = new Vector3(Terrain.terrainData.size.x / 5f, 1, Terrain.terrainData.size.z / 5f);
+    //    water.transform.parent = transform;
+    //    water.transform.localPosition = new Vector3(Terrain.terrainData.size.x / 2f, (WaterHeight + 0.01f) * Terrain.terrainData.size.y, Terrain.terrainData.size.z / 2f);
+    //}
 
     // Add fences to coast and walls between non crossable area segment borders
     private void GenerateBlockers()
