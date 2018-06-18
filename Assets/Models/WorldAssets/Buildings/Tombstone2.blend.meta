@@ -4,11 +4,15 @@ ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
+    100002: RoundTombstone
     400000: //RootNode
+    400002: RoundTombstone
     2100000: Material
     2100002: Tombstone
     2300000: //RootNode
+    2300002: RoundTombstone
     3300000: //RootNode
+    3300002: RoundTombstone
     4300000: Cube
     4300002: RoundTombstone
     7400000: Default Take
@@ -85,10 +89,10 @@ ModelImporter:
     rootMotionBoneName: 
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
