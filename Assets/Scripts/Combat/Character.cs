@@ -959,22 +959,22 @@ public class Character : MonoBehaviour
 
     // =========================================== ATTENTION ==========================================
 
-    public CharacterAttention GetAttention()
+    public virtual CharacterAttention GetAttention()
     {
         return CharAttention;
     }
 
-    public void AttentionThisCharacterDied()
+    public virtual void AttentionThisCharacterDied()
     {
         CharAttention.OwnerDied();
     }
 
-    public void AttentionCharacterDied(Character CharDied)
+    public virtual void AttentionCharacterDied(Character CharDied)
     {
         CharAttention.CharacterDied(CharDied);
     }
 
-    public void AttentionPlayerRespawned(Character CharRespawned)
+    public virtual void AttentionPlayerRespawned(Character CharRespawned)
     {
         CharAttention.PlayerEntersAttentionRange(CharRespawned);
     }

@@ -58,6 +58,28 @@ public class CharacterSwarm : Character {
         base.FinishedCurrentSkillActivation(WeaponSlotID, Hindrance);
     }
 
+    // Attention Stuff: Used by Player and old Enemies, not used by the Swarm.
+    // Could be optimized by changing inheritance. For now, basically ignore these calls for Swarmlings:
+    public override void AttentionCharacterDied(Character CharDied)
+    {
+
+    }
+
+    public override void AttentionPlayerRespawned(Character CharRespawned)
+    {
+
+    }
+
+    public override void AttentionThisCharacterDied()
+    {
+
+    }
+
+    public override CharacterAttention GetAttention()
+    {
+        return null;
+    }
+
     // ====================================/ Override Functions /====================================
 
 

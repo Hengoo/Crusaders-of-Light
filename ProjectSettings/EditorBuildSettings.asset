@@ -14,10 +14,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/TerrainGenerationTest.unity
     guid: 40b067a529d88d246a83770145630a4f
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/TerrainGenerationTestTwo.unity
     guid: e7178203905f59a4d98cc4a9e572aab1
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/ModelTests.unity
     guid: 635fc82822520bc41b552d2bab982225
   m_configObjects: {}
