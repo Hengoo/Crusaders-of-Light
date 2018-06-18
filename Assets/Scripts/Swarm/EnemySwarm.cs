@@ -68,7 +68,7 @@ public class EnemySwarm : MonoBehaviour {
     public CharacterAttention CAttention;
     public List<EnemySwarm> EnemiesInRange = new List<EnemySwarm>();
     public List<GameObject> DangerInRange = new List<GameObject>();
-    public List<Character> PlayersInRange = new List<Character>();
+    public Character[] Players;
 
     [Header("FOR TESTING:")]
     public bool PlayerDanger = true;
@@ -100,9 +100,90 @@ public class EnemySwarm : MonoBehaviour {
     public float NewNeighbourTimer = 0f;
     public float NewNeighbourCounter = 1f;
 
+
+    public Vector3 DangerAvoidanceVec = Vector3.zero;
+    public Vector3 PlayerAttractionVec = Vector3.zero;
+
+    public int AttractionNumber = 0;
+    public int DangerNumber = 0;
+
+    public float PlayerDangerDistance = 2;  // Must be smaller than Player Attraction Range for optimization reasons!
+    public int PlayerDangerThreatLevelCheck = 2;
+    public float PlayerDangerAngle = 0.3f;
+
     // ================================================================================================================
 
-    public void SwarmlingRulesCalculation()
+    public void SwarmlingAttractionAndDangerRuleCalculation()
+    {
+        // Go through all Players for Attraction and Player Danger Avoidance:
+
+        PlayerAttractionVec = Vector3.zero;
+        DangerAvoidanceVec = Vector3.zero;
+
+        // Go through all Players:
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i].GetCharacterIsDead())
+            {
+                continue;
+            }
+
+            // Player Attraction:
+            DistanceVec = Players[i].transform.position - transform.position;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            if (DistanceVecMag <= Mathf.Pow(AttractionDistance, 2))
+            {
+                PlayerAttractionVec = DistanceVec;
+                AttractionNumber++;
+
+                // If in Player Attraction Range, check if in Player Danger Range:
+                if (DistanceVecMag <= Mathf.Pow(PlayerDangerDistance, 2)
+                && Players[i].GetCurrentThreatLevel(true, false) >= PlayerDangerThreatLevelCheck
+                && (Vector3.Dot(Players[i].transform.forward, (Players[i].transform.position - transform.position).normalized) < PlayerDangerAngle))
+                {
+                    DangerAvoidanceVec += DistanceVec / DistanceVecMag;
+                    DangerNumber++;
+                }
+            }
+        }
+
+        // Go through all Danger Objects:
+        for (int i = 0; i < DangerInRange.Count; i++)
+        {
+            // Danger Avoidance:
+            DistanceVec = transform.position - DangerInRange[i].transform.position;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            if (DistanceVecMag <= Mathf.Pow(DangerDistance, 2))
+            {
+                DangerAvoidanceVec += DistanceVec / DistanceVecMag;
+                DangerNumber++;
+            }
+        }
+
+        // Player Attraction:
+        if (AttractionNumber > 0)
+        {
+            PlayerAttractionVec = PlayerAttractionVec.normalized * GetDesiredSpeed();
+
+            PlayerAttractionVec = Steer(PlayerAttractionVec);
+            Acceleration += PlayerAttractionVec * AttractionFactor;
+            GoalFactor += AttractionFactor;
+        }
+
+        // Total Danger:
+        if (DangerNumber > 0)
+        {
+            DangerAvoidanceVec = DangerAvoidanceVec.normalized * GetDesiredRunSpeed();
+
+            DangerAvoidanceVec = Steer(DangerAvoidanceVec);
+            Acceleration += DangerAvoidanceVec * DangerFactor;
+            GoalFactor += DangerFactor;
+        }
+    }
+
+    public void SwarmlingBaseRulesCalculation()
     {
         // NeighbourColliders = Physics.OverlapSphere(SwarmlingTransform.position, NeighbourRadius, NeighbourLayerMask);
         // Stop if not enough Neighbours:
@@ -138,8 +219,7 @@ public class EnemySwarm : MonoBehaviour {
             // Seperation:
             if (DistanceVecMag <= Mathf.Pow(SeperationDistance, 2)) // Could be optimized by storing the pow2 distance!
             {
-                SeperationVec += DistanceVec / DistanceVecMag;
-                
+                SeperationVec += DistanceVec / DistanceVecMag;               
                 SeperationNumber++;
             }
 
@@ -210,6 +290,8 @@ public class EnemySwarm : MonoBehaviour {
         UpdateCounter = Random.Range(0, UpdateTimer);
         NewNeighbourCounter = Random.Range(0, NewNeighbourTimer);
         NeighbourLayerMask = 1 << NeighbourLayerMask;
+
+        Players = EnemyTestSwarm.Instance.PlayerCharacters;
     }
 
     public void SwarmlingUpdate()
@@ -254,8 +336,8 @@ public class EnemySwarm : MonoBehaviour {
             // Reset Acceleration:
             Acceleration = Vector3.zero;
 
-            SwarmlingRulesCalculation();
-
+            SwarmlingBaseRulesCalculation();
+            SwarmlingAttractionAndDangerRuleCalculation();
             /*if (BorderOn)
             {
                 RuleGoToBorder();
@@ -468,7 +550,7 @@ public class EnemySwarm : MonoBehaviour {
             GoalFactor += EnemyTestSwarm.Instance.DangerFactor;
         }
     }
-
+/*
     private void RuleDangerAvoidanceEnhanced()
     {
         // Dangers in Range:
@@ -536,13 +618,13 @@ public class EnemySwarm : MonoBehaviour {
             Acceleration += DangerVec * EnemyTestSwarm.Instance.DangerFactor;
             GoalFactor += EnemyTestSwarm.Instance.DangerFactor;
         }
-    }
+    }*/
 
     // ===========================================/ RULE: DANGER AVOIDANCE /============================================
 
     // =============================================== RULE: ATTRACTION ================================================
     // Enemies steer towards the nearest attraction (in this case Player Characters, so far).
-
+/*
     private void RuleAttraction()
     {
         int NumberOfOthers = PlayersInRange.Count;
@@ -575,7 +657,7 @@ public class EnemySwarm : MonoBehaviour {
             GoalFactor += AttractionFactor;
         }
     }
-
+    */
     // ==============================================/ RULE: ATTRACTION /===============================================
 
     // ============================================== RULE: GO TO BORDER ===============================================
@@ -645,7 +727,7 @@ public class EnemySwarm : MonoBehaviour {
     {
         DangerInRange.Remove(RemoveDanger);
     }
-
+/*
     public void AddToPlayersInRange(GameObject AddPlayer)
     {
         PlayersInRange.Add(AddPlayer.GetComponent<CharacterAttention>().GetOwner());
@@ -655,7 +737,7 @@ public class EnemySwarm : MonoBehaviour {
     {
         PlayersInRange.Remove(RemovePlayer.GetComponent<CharacterAttention>().GetOwner());
     }
-
+    */
     public void OnDestroy()
     {
         for (int i = 0; i < EnemiesInRange.Count; i++)

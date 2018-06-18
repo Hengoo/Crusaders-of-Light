@@ -155,6 +155,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1990773574501798
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4959757491170298}
+  - component: {fileID: 54470463116342998}
+  - component: {fileID: 135366927918389910}
+  - component: {fileID: 114838948669138384}
+  m_Layer: 18
+  m_Name: SwarmAttention
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &4034672810323004
 Transform:
   m_ObjectHideFlags: 1
@@ -181,6 +199,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4581259315184810}
+  - {fileID: 4959757491170298}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -280,6 +299,34 @@ Transform:
   m_Father: {fileID: 4034672810323004}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4959757491170298
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1990773574501798}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4221174462559796}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &54470463116342998
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1990773574501798}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!54 &54903624502897256
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -455,7 +502,7 @@ MonoBehaviour:
   CohesionDistance: 3
   CohesionFactor: 0.35
   DangerDistance: 6
-  DangerFactor: 1
+  DangerFactor: 10
   AttractionDistance: 20
   AttractionFactor: 0.4
   BorderOn: 0
@@ -473,7 +520,7 @@ MonoBehaviour:
   CAttention: {fileID: 0}
   EnemiesInRange: []
   DangerInRange: []
-  PlayersInRange: []
+  Players: []
   PlayerDanger: 0
   SwarmlingTransform: {fileID: 4221174462559796}
   NeighbourRadiusBase: 7
@@ -502,6 +549,37 @@ MonoBehaviour:
   DistanceVecMag: 0
   NewNeighbourTimer: 1
   NewNeighbourCounter: 0
+  DangerAvoidanceVec: {x: 0, y: 0, z: 0}
+  PlayerAttractionVec: {x: 0, y: 0, z: 0}
+  AttractionNumber: 0
+  DangerNumber: 0
+  PlayerDangerDistance: 2
+  PlayerDangerThreatLevelCheck: 2
+  PlayerDangerAngle: 0.3
+--- !u!114 &114838948669138384
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1990773574501798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f84621dab2e7f9d438652202cb05c318, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: {fileID: 114104079446479296}
+--- !u!135 &135366927918389910
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1990773574501798}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &135701834841169246
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -11,6 +11,7 @@ TagManager:
   - Skills
   - EnemySwarm
   - SwarmDanger
+  - SkillsPlayer
   layers:
   - Default
   - TransparentFX
@@ -30,8 +31,8 @@ TagManager:
   - EnemySwarm
   - AttentionEnemy
   - CharacterEnemy
-  - 
-  - 
+  - AttentionSwarm
+  - SwarmDanger
   - PostProcessing
   - 
   - 

@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 114776096801051330}
   m_Layer: 11
   m_Name: Element_Fire_BE_Fireball_HitObject
-  m_TagString: Skills
+  m_TagString: SkillsPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

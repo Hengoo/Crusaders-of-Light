@@ -26,6 +26,8 @@ public class EnemyTestSwarm : Singleton<EnemyTestSwarm> {
 
     public EnemySwarm[] Swarmlings;
 
+    public CharacterPlayer[] PlayerCharacters;
+
     // Use this for initialization
     void Start () {
         if (!Spawn)

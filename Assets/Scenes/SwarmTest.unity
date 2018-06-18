@@ -238,7 +238,7 @@ GameObject:
   m_Component:
   - component: {fileID: 88845692}
   - component: {fileID: 88845691}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (1)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -280,7 +280,7 @@ GameObject:
   m_Component:
   - component: {fileID: 91902376}
   - component: {fileID: 91902375}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (23)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -380,7 +380,7 @@ GameObject:
   m_Component:
   - component: {fileID: 98280684}
   - component: {fileID: 98280683}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (25)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -612,7 +612,7 @@ GameObject:
   m_Component:
   - component: {fileID: 171594453}
   - component: {fileID: 171594452}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (43)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -770,7 +770,7 @@ GameObject:
   m_Component:
   - component: {fileID: 203145218}
   - component: {fileID: 203145217}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (39)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -841,7 +841,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224557202}
   - component: {fileID: 224557201}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (26)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -937,7 +937,7 @@ GameObject:
   m_Component:
   - component: {fileID: 272795647}
   - component: {fileID: 272795646}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (8)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -1049,7 +1049,7 @@ GameObject:
   m_Component:
   - component: {fileID: 351425604}
   - component: {fileID: 351425603}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (34)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -1120,7 +1120,7 @@ GameObject:
   m_Component:
   - component: {fileID: 356673724}
   - component: {fileID: 356673723}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (14)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -1162,7 +1162,7 @@ GameObject:
   m_Component:
   - component: {fileID: 365873614}
   - component: {fileID: 365873613}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (37)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -1204,7 +1204,7 @@ GameObject:
   m_Component:
   - component: {fileID: 454393901}
   - component: {fileID: 454393900}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (19)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -1618,7 +1618,7 @@ GameObject:
   m_Component:
   - component: {fileID: 544561318}
   - component: {fileID: 544561317}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (18)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -1722,7 +1722,7 @@ GameObject:
   m_Component:
   - component: {fileID: 576312951}
   - component: {fileID: 576312950}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (29)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -1764,7 +1764,7 @@ GameObject:
   m_Component:
   - component: {fileID: 583755301}
   - component: {fileID: 583755300}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (12)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -1810,7 +1810,7 @@ GameObject:
   m_Component:
   - component: {fileID: 618194645}
   - component: {fileID: 618194644}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (10)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -1852,7 +1852,7 @@ GameObject:
   m_Component:
   - component: {fileID: 621540548}
   - component: {fileID: 621540547}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (38)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -1952,7 +1952,7 @@ GameObject:
   m_Component:
   - component: {fileID: 642958581}
   - component: {fileID: 642958580}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (41)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -2056,7 +2056,7 @@ GameObject:
   m_Component:
   - component: {fileID: 723553126}
   - component: {fileID: 723553125}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (27)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -2164,7 +2164,7 @@ GameObject:
   m_Component:
   - component: {fileID: 767581716}
   - component: {fileID: 767581715}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (32)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -2210,7 +2210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 797890291}
   - component: {fileID: 797890290}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (11)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -2368,7 +2368,7 @@ GameObject:
   m_Component:
   - component: {fileID: 945054976}
   - component: {fileID: 945054975}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (17)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -2610,7 +2610,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1022151919}
   - component: {fileID: 1022151918}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (36)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -2714,7 +2714,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1043864647}
   - component: {fileID: 1043864646}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (4)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -2756,7 +2756,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1066578261}
   - component: {fileID: 1066578260}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (22)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -3009,7 +3009,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1124212154}
   - component: {fileID: 1124212153}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (3)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -3051,7 +3051,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1153438984}
   - component: {fileID: 1153438983}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (30)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -3093,7 +3093,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1159532117}
   - component: {fileID: 1159532116}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (6)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -3139,7 +3139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1196635811}
   - component: {fileID: 1196635810}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (21)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -3185,7 +3185,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1220561685}
   - component: {fileID: 1220561684}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (20)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -3227,7 +3227,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1225266727}
   - component: {fileID: 1225266726}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (15)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -3269,7 +3269,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1235172974}
   - component: {fileID: 1235172973}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (13)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -3427,7 +3427,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1256835658}
   - component: {fileID: 1256835657}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (7)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -3469,7 +3469,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1260611404}
   - component: {fileID: 1260611403}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (45)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -3532,7 +3532,7 @@ MonoBehaviour:
   Spawn: 1
   BoidPrefab1: {fileID: 114104079446479296, guid: 40ccada09f73a684197eda1e831f0bc5,
     type: 2}
-  SpawnNumber1: 1000
+  SpawnNumber1: 500
   BoidPrefab2: {fileID: 1977362748234288, guid: 6baaa80a0a4e56d458bccea21de0c8ae,
     type: 2}
   SpawnNumber2: 0
@@ -3546,6 +3546,7 @@ MonoBehaviour:
   GlobalAttractionTarget: {fileID: 504836233}
   Terr: {fileID: 519949168}
   Swarmlings: []
+  PlayerCharacters: []
 --- !u!4 &1270035517
 Transform:
   m_ObjectHideFlags: 0
@@ -3688,7 +3689,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1416604822}
   - component: {fileID: 1416604821}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (40)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -3858,7 +3859,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1617587790}
   - component: {fileID: 1617587789}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (16)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -4214,7 +4215,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1710131603}
   - component: {fileID: 1710131602}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (28)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -4369,7 +4370,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1758679952}
   - component: {fileID: 1758679951}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (44)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -4411,7 +4412,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1774140310}
   - component: {fileID: 1774140309}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (24)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -4519,7 +4520,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1806105484}
   - component: {fileID: 1806105483}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (31)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -4561,7 +4562,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1856311474}
   - component: {fileID: 1856311473}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (35)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -4723,7 +4724,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1918391847}
   - component: {fileID: 1918391846}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (5)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -4893,7 +4894,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1977308392}
   - component: {fileID: 1977308391}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (9)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -4939,7 +4940,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1989932127}
   - component: {fileID: 1989932126}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (42)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -4981,7 +4982,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1997631419}
   - component: {fileID: 1997631418}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (33)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
@@ -5081,7 +5082,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2041000363}
   - component: {fileID: 2041000362}
-  m_Layer: 9
+  m_Layer: 19
   m_Name: Danger (2)
   m_TagString: SwarmDanger
   m_Icon: {fileID: 0}
