@@ -1,0 +1,222 @@
+fileFormatVersion: 2
+guid: e0877beefe0f4bf4bbe082dce306dcbb
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Chimney
+    100004: Door
+    100006: Foundation
+    100008: Plank
+    100010: Plank_001
+    100012: Plank_002
+    100014: Plank_003
+    100016: Plank_004
+    100018: Plank_005
+    100020: Plank_006
+    100022: Plank_007
+    100024: Plank_008
+    100026: Plank_009
+    100028: Plank_010
+    100030: Ramp
+    100032: Roof
+    100034: TopWalls
+    100036: Walls
+    100038: Window
+    100040: Window_001
+    100042: Window_002
+    100044: Window_003
+    100046: Window_010
+    100048: Window_011
+    100050: Wood_Deco
+    400000: //RootNode
+    400002: Chimney
+    400004: Door
+    400006: Foundation
+    400008: Plank
+    400010: Plank_001
+    400012: Plank_002
+    400014: Plank_003
+    400016: Plank_004
+    400018: Plank_005
+    400020: Plank_006
+    400022: Plank_007
+    400024: Plank_008
+    400026: Plank_009
+    400028: Plank_010
+    400030: Ramp
+    400032: Roof
+    400034: TopWalls
+    400036: Walls
+    400038: Window
+    400040: Window_001
+    400042: Window_002
+    400044: Window_003
+    400046: Window_010
+    400048: Window_011
+    400050: Wood_Deco
+    2100000: Wood
+    2100002: Glass
+    2100004: Metal
+    2100006: Walls
+    2100008: Stone
+    2100010: TopWalls
+    2100012: Roof
+    2300000: Chimney
+    2300002: Door
+    2300004: Foundation
+    2300006: Plank
+    2300008: Plank_001
+    2300010: Plank_002
+    2300012: Plank_003
+    2300014: Plank_004
+    2300016: Plank_005
+    2300018: Plank_006
+    2300020: Plank_007
+    2300022: Plank_008
+    2300024: Plank_009
+    2300026: Plank_010
+    2300028: Ramp
+    2300030: Roof
+    2300032: TopWalls
+    2300034: Walls
+    2300036: Window
+    2300038: Window_001
+    2300040: Window_002
+    2300042: Window_003
+    2300044: Window_010
+    2300046: Window_011
+    2300048: Wood_Deco
+    3300000: Chimney
+    3300002: Door
+    3300004: Foundation
+    3300006: Plank
+    3300008: Plank_001
+    3300010: Plank_002
+    3300012: Plank_003
+    3300014: Plank_004
+    3300016: Plank_005
+    3300018: Plank_006
+    3300020: Plank_007
+    3300022: Plank_008
+    3300024: Plank_009
+    3300026: Plank_010
+    3300028: Ramp
+    3300030: Roof
+    3300032: TopWalls
+    3300034: Walls
+    3300036: Window
+    3300038: Window_001
+    3300040: Window_002
+    3300042: Window_003
+    3300044: Window_010
+    3300046: Window_011
+    3300048: Wood_Deco
+    4300000: Window_003
+    4300002: Plank_010
+    4300004: Plank_009
+    4300006: Plank_008
+    4300008: Plank_007
+    4300010: Plank_006
+    4300012: Plank_005
+    4300014: Plank_004
+    4300016: Plank_003
+    4300018: Plank_002
+    4300020: Plank_001
+    4300022: Plank
+    4300024: Ramp
+    4300026: Chimney
+    4300028: Walls
+    4300030: Foundation
+    4300032: TopWalls
+    4300034: Window_011
+    4300036: Window_010
+    4300038: Door
+    4300040: Window_002
+    4300042: Window_001
+    4300044: Window
+    4300046: Wood_Deco
+    4300048: Roof
+    7400000: Default Take
+    9500000: //RootNode
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
