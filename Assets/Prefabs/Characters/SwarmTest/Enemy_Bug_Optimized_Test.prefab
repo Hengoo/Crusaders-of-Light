@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 114104079446479296}
   - component: {fileID: 195876639915494898}
   - component: {fileID: 135701834841169246}
+  - component: {fileID: 114047906234428190}
   m_Layer: 17
   m_Name: Enemy_Bug_Optimized_Test
   m_TagString: Character
@@ -482,6 +483,66 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114047906234428190
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1198837369056032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 847401a9556d47940a4dfd0459523db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthCurrent: 100
+  HealthMax: 100
+  HealthHealingMin: 0
+  HealthHealingMax: 100
+  HealthHealingLostPerCount: 10
+  HealthHealingCounter: 0
+  EnergyCurrent: 100
+  EnergyMax: 100
+  Resistances:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  Defenses:
+  - 0
+  - 0
+  - 0
+  CharacterHands:
+  - {fileID: 4221174462559796}
+  - {fileID: 4221174462559796}
+  StartingWeapons:
+  - {fileID: 114066496244682900, guid: 2f3dd14cae8e5064a80efb3a5d5da0fd, type: 2}
+  SkillsPerWeapon: 8
+  WeaponSlots:
+  - {fileID: 0}
+  - {fileID: 0}
+  ItemSkillSlots:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  EquippedElement: {fileID: 0}
+  StartingElement: {fileID: 0}
+  MovementRateModfier: 1
+  HandAnimators:
+  - {fileID: 0}
+  - {fileID: 0}
+  BodyAnimator: {fileID: 0}
+  Anim_StartWalking: StartWalking
+  Anim_EndWalking: EndWalking
+  CharAttention: {fileID: 0}
+  Alignment: 2
+  SpawnStartingWeaponsOnStart: 1
 --- !u!114 &114104079446479296
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -503,7 +564,7 @@ MonoBehaviour:
   CohesionFactor: 0.35
   DangerDistance: 6
   DangerFactor: 10
-  AttractionDistance: 20
+  AttractionDistance: 10
   AttractionFactor: 0.4
   BorderOn: 0
   BorderDistance: 3

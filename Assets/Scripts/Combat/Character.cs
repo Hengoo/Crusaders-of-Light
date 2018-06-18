@@ -38,6 +38,7 @@ public class Character : MonoBehaviour
     public static float HealthHealingLostPerCountMaxPerc = 0.01f;
 
     [Header("Character Attributes:")]
+    [Header("Health and Healing:")]
     public int HealthCurrent = 100;
     public int HealthMax = 100;
     protected bool CharacterIsDead = false;     // To Check if the Character already died, but was not removed yet. (Happened with GUI).
@@ -48,13 +49,15 @@ public class Character : MonoBehaviour
     public float HealthHealingCounter = 0f;
     protected float HealthHealingCounterTimer = 1f;
 
+    [Header("Energy (Currently Unused!)")]
     public int EnergyCurrent = 100;
     public int EnergyMax = 100;
 
+    [Header("Defenses and Resistances:")]
     public float[] Resistances = new float[6]; // Resistances[Enum Resistance], Check for Resistance.NONE!
     public float[] Defenses = new float[3];     // Defenses[Enum Defense], Check for Defense.NONE!
-
-    public int SkillLevelModifier = 0;
+   
+    private int SkillLevelModifier = 0;
 
     [Header("Equipment:")]
     public Transform[] CharacterHands = new Transform[2]; // Note: 0 : Left Hand, 1 : Right Hand
@@ -80,18 +83,19 @@ public class Character : MonoBehaviour
     protected int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
     protected int LastSkillActivated = -1;
     protected float LastSkillActivatedTimer = 0.0f;
-    public float LastSkillActivatedStartTime = 1f;
+    protected float LastSkillActivatedStartTime = 1f;
 
     //public float SkillActivationTimer = 0.0f;
 
     protected int HindranceLevel = 0;
 
     [Header("Active Conditions:")]
-    public List<ActiveCondition> ActiveConditions = new List<ActiveCondition>();
+    protected List<ActiveCondition> ActiveConditions = new List<ActiveCondition>();
 
     [Header("Physics Controller:")]
-    protected PhysicsController PhysCont;
     public float MovementRateModfier = 1.0f;
+    protected PhysicsController PhysCont;
+
 
     [Header("Animation:")]
     public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand

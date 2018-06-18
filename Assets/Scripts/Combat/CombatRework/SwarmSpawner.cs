@@ -32,12 +32,22 @@ public class SwarmSpawner : MonoBehaviour {
     public float SpawnAreaRadius = 3f;  // Max Distance of spawn position from the AreaMarker
 
     [Header("Enemies To Spawn:")]
-    public GameObject[] EnemyPrefabs = new GameObject[3];
+    public EnemySwarm[] EnemyPrefabs = new EnemySwarm[3];
     public float[] EnemyWeight = new float[3];
     private float EnemyWeightTotal = 0;
     private float RolledEnemyWeight = 0;
     private float EnemyWeightCounter = 0;
     private int CurrentEnemyPrefabID = 0;
+
+    [Header("Spawned Enemies:")]
+    public int SpawnedEnemiesMaxNumber = 300;
+    private EnemySwarm[] SpawnedEnemies;
+    private int SpawnedEnemiesCounter = 0;
+    private int SpawnedEnemiesIDCounter = 0;
+    public int LayerMask = 0;
+
+    [Header("Player Characters:")]
+    public Character[] Players = new Character[0];
 
     [Header("Terrain and Navmesh:")]
     public Terrain Terr;
@@ -55,12 +65,16 @@ public class SwarmSpawner : MonoBehaviour {
     private void Start()
     {
         CalculateTotalWeight();
+
+        SpawnedEnemies = new EnemySwarm[SpawnedEnemiesMaxNumber];
+        LayerMask = 1 << LayerMask;
     }
 
     private void Update()
     {
         UpdateSpawningCooldown();
         SpawnEnemy();
+        UpdateAllSwarmlings();
     }
 
     private void SpawnEnemy()
@@ -76,6 +90,11 @@ public class SwarmSpawner : MonoBehaviour {
             return;
         }
 
+        if (SpawnedEnemiesCounter >= SpawnedEnemiesMaxNumber)
+        {
+            return;
+        }
+
         // Decide the next enemy type to spawn:
         RandomlyDecideNextEnemyType();
 
@@ -85,9 +104,16 @@ public class SwarmSpawner : MonoBehaviour {
             return;
         }
 
-        Instantiate(EnemyPrefabs[CurrentEnemyPrefabID], spawnPos, EnemyPrefabs[CurrentEnemyPrefabID].transform.rotation);
+        if (!CalculateNextSpawnNumber())
+        {
+            return;
+        }
+
+        SpawnedEnemies[SpawnedEnemiesIDCounter] = Instantiate(EnemyPrefabs[CurrentEnemyPrefabID], spawnPos, EnemyPrefabs[CurrentEnemyPrefabID].transform.rotation);
+        SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask);
 
         // At this point an enemy was succesfully spawned:
+        SpawnedEnemiesCounter++;
         FrequencyTimerCounter = 0;
         FrequencyTimerCurrent = Random.Range(FrequencyTimerMin, FrequencyTimerMax);
     }
@@ -206,6 +232,41 @@ public class SwarmSpawner : MonoBehaviour {
         if (SpawningCooldownCounter > 0)
         {
             SpawningCooldownCounter -= Time.deltaTime;
+        }
+    }
+
+    // Searches the next free slot in the Spawned Enemies array and returns true if a slot was found.
+    // Does no search if no slot is free.
+    // Worst Case: Search the entire array once.
+    public bool CalculateNextSpawnNumber()
+    {
+        if (SpawnedEnemiesCounter >= SpawnedEnemiesMaxNumber)
+        {
+            return false;
+        }
+
+        while(SpawnedEnemies[SpawnedEnemiesIDCounter] != null)
+        {
+            SpawnedEnemiesIDCounter = SpawnedEnemiesIDCounter + 1 % SpawnedEnemiesMaxNumber;
+        }
+
+        return true;
+    }
+
+    public void SwarmlingDied(int SwarmlingID)
+    {
+        SpawnedEnemies[SwarmlingID] = null;
+        SpawnedEnemiesCounter--;
+    }
+
+    private void UpdateAllSwarmlings()
+    {
+        for (int i = 0; i < SpawnedEnemies.Length; i++)
+        {
+            if (SpawnedEnemies[i])
+            {
+                SpawnedEnemies[i].SwarmlingUpdate();
+            }
         }
     }
 }

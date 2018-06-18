@@ -111,6 +111,9 @@ public class EnemySwarm : MonoBehaviour {
     public int PlayerDangerThreatLevelCheck = 2;
     public float PlayerDangerAngle = 0.3f;
 
+    public int SwarmlingID = -1;
+    public SwarmSpawner SpawnedBy;
+
     // ================================================================================================================
 
     public void SwarmlingAttractionAndDangerRuleCalculation()
@@ -202,7 +205,17 @@ public class EnemySwarm : MonoBehaviour {
 
         for (int i = 0; i < NeighbourCount; i++)
         {
+            if (!NeighbourColliders[i])
+            {
+                continue;
+            }
+
             CurrentSwarmling = NeighbourColliders[i].GetComponent<EnemySwarm>();
+
+            if (!CurrentSwarmling)
+            {
+                Debug.Log("STOP!");
+            }
 
             DistanceVec = SwarmlingTransform.position - CurrentSwarmling.SwarmlingTransform.position;
             DistanceVecMag = DistanceVec.sqrMagnitude;
@@ -289,9 +302,16 @@ public class EnemySwarm : MonoBehaviour {
     {
         UpdateCounter = Random.Range(0, UpdateTimer);
         NewNeighbourCounter = Random.Range(0, NewNeighbourTimer);
-        NeighbourLayerMask = 1 << NeighbourLayerMask;
 
-        Players = EnemyTestSwarm.Instance.PlayerCharacters;
+        //Players = EnemyTestSwarm.Instance.PlayerCharacters;
+    }
+
+    public void InitializeSwarmling(SwarmSpawner _SpawnedBy, int _SwarmlingID, Character[] _Players, int _NeighbourLayerMask)
+    {
+        SpawnedBy = _SpawnedBy;
+        Players = _Players;
+        SwarmlingID = _SwarmlingID;
+        NeighbourLayerMask = _NeighbourLayerMask;
     }
 
     public void SwarmlingUpdate()
@@ -740,10 +760,11 @@ public class EnemySwarm : MonoBehaviour {
     */
     public void OnDestroy()
     {
-        for (int i = 0; i < EnemiesInRange.Count; i++)
+        /*for (int i = 0; i < EnemiesInRange.Count; i++)
         {
             EnemiesInRange[i].RemoveFromEnemiesInRange(this);
-        }
+        }*/
+        SpawnedBy.SwarmlingDied(SwarmlingID);
     }
 
     // =================================================/ NEARBY LISTS /=================================================
