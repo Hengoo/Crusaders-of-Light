@@ -574,7 +574,7 @@ MonoBehaviour:
   Friction: 0.1
   GoalFactor: 0
   DesiredBaseSpeed: 6
-  DesiredRunSpeed: 12
+  DesiredRunSpeed: 10
   UpdateTimer: 0.06
   UpdateCounter: 0
   SAttention: {fileID: 0}
@@ -614,9 +614,11 @@ MonoBehaviour:
   PlayerAttractionVec: {x: 0, y: 0, z: 0}
   AttractionNumber: 0
   DangerNumber: 0
-  PlayerDangerDistance: 2
+  PlayerDangerDistance: 4
   PlayerDangerThreatLevelCheck: 2
   PlayerDangerAngle: 0.3
+  SwarmlingID: -1
+  SpawnedBy: {fileID: 0}
 --- !u!114 &114838948669138384
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -639,7 +641,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 6
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &135701834841169246
 SphereCollider:

@@ -123,6 +123,12 @@ public class EnemySwarm : MonoBehaviour {
         PlayerAttractionVec = Vector3.zero;
         DangerAvoidanceVec = Vector3.zero;
 
+        AttractionNumber = 0;
+        DangerNumber = 0;
+
+        DistanceVec = Vector3.zero;
+        DistanceVecMag = 0;
+
         // Go through all Players:
         for (int i = 0; i < Players.Length; i++)
         {
@@ -145,7 +151,7 @@ public class EnemySwarm : MonoBehaviour {
                 && Players[i].GetCurrentThreatLevel(true, false) >= PlayerDangerThreatLevelCheck
                 && (Vector3.Dot(Players[i].transform.forward, (Players[i].transform.position - transform.position).normalized) < PlayerDangerAngle))
                 {
-                    DangerAvoidanceVec += DistanceVec / DistanceVecMag;
+                    DangerAvoidanceVec += -1 * DistanceVec / DistanceVecMag;
                     DangerNumber++;
                 }
             }
@@ -154,6 +160,11 @@ public class EnemySwarm : MonoBehaviour {
         // Go through all Danger Objects:
         for (int i = 0; i < DangerInRange.Count; i++)
         {
+            if (!DangerInRange[i])
+            {
+                continue;
+            }
+
             // Danger Avoidance:
             DistanceVec = transform.position - DangerInRange[i].transform.position;
             DistanceVecMag = DistanceVec.sqrMagnitude;
