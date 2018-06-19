@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Skill_Swarmling_SelfExplode
   m_EditorClassIdentifier: 
   Cost: 0
-  ActivationTime: 1.5
+  ActivationTime: 0.1
   ActivationIntervall: -1
   Cooldown: -1
   ActivationMovementModifier: 0

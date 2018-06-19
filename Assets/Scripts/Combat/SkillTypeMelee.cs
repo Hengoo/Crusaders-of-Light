@@ -35,6 +35,7 @@ public class SkillTypeMelee : SkillType {
                 SourceItemSkill.SetCurrentCooldown(Cooldown);
             }
             RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+            SourceItemSkill.EndSkillCurrentlyUsingItemHitBox();
             SourceItemSkill.StoppedActivatingSkillWithHitObjects(this);
             SourceItemSkill.FinishedSkillActivation();
         }
