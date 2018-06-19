@@ -33,6 +33,9 @@ public class Item : MonoBehaviour {
     public List<Character> AlreadyHitCharacters = new List<Character>();
     public Character.TeamAlignment CurrentItemHitBoxAlignment = Character.TeamAlignment.NONE;
 
+    public int MaxHittableCharacters = -1;
+    private int MaxHittableCharactersCounter = -2;
+
     public int EquippedSlotID = -1;
 
     [Header("Item AI:")]
@@ -185,11 +188,20 @@ public class Item : MonoBehaviour {
         }
     }
 
+    public void StartSkillCurrentlyUsingItemHitBox(ItemSkill SourceItemSkill, SkillType SourceSkill, bool HitEachCharacterOnce, int MaxNumberOfCharactersHittable)
+    {
+        MaxHittableCharacters = MaxNumberOfCharactersHittable;
+        MaxHittableCharactersCounter = 0;
+        StartSkillCurrentlyUsingItemHitBox(SourceItemSkill, SourceSkill, HitEachCharacterOnce);
+    }
+
     public void EndSkillCurrentlyUsingItemHitBox()
     {
         SkillCurrentlyUsingItemHitBox = null;
         ItemSkillCurrentlyUsingItemHitBox = null;
         AlreadyHitCharacters = new List<Character>();
+        MaxHittableCharacters = -1;
+        MaxHittableCharactersCounter = -2;
     }
 
     public bool CheckIfSkillIsUsingHitBox(ItemSkill SkillToCheck)
@@ -223,9 +235,15 @@ public class Item : MonoBehaviour {
 
     private void ApplyCurrentSkillEffectsToCharacter(Character HitCharacter)
     {
+        if (MaxHittableCharactersCounter >= MaxHittableCharacters)
+        {
+            return;
+        }
+
         if (CurrentItemHitBoxAlignment == Character.TeamAlignment.ALL
                     || CurrentItemHitBoxAlignment == HitCharacter.GetAlignment())
         {
+            MaxHittableCharactersCounter++;
             SkillCurrentlyUsingItemHitBox.ApplyEffects(CurrentOwner, ItemSkillCurrentlyUsingItemHitBox, HitCharacter);
         }
     }

@@ -11,13 +11,15 @@ public class SkillTypeMelee : SkillType {
 
     public bool HitEachCharacterOnlyOnce = true;
 
+    public int MaxHittableCharacters = -1;
+
     public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime >= HitTimeStart && CurrentActivationTime <= HitTimeStop)
         {
             if (!SourceItemSkill.CheckIfSkillIsUsingHitBox(SourceItemSkill))
             {
-                SourceItemSkill.StartSkillCurrentlyUsingItemHitBox(HitEachCharacterOnlyOnce);
+                SourceItemSkill.StartSkillCurrentlyUsingItemHitBox(HitEachCharacterOnlyOnce, MaxHittableCharacters);
             }
         }
         else if (SourceItemSkill.CheckIfSkillIsUsingHitBox(SourceItemSkill))

@@ -350,6 +350,7 @@ public class EnemySwarm : MonoBehaviour {
 
     public void SwarmlingUpdate()
     {
+
         GoalFactor = 0;
 
         // Get List of Neighbours:

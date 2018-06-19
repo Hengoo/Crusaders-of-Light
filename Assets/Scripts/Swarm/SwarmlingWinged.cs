@@ -2,15 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwarmlingWinged : MonoBehaviour {
+public class SwarmlingWinged : EnemySwarm {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    [Header("Swarmling Wings:")]
+    public float AttackDistance = 1;
+
+    public override void SwarmlingAttackRuleCalculation()
+    {
+        if (!DoNotMove && ClosestPlayer && ClosestPlayerSqrDistance < Mathf.Pow(AttackDistance, 2))
+        {
+            DoNotMove = true;
+
+            ThisSwarmlingCharacter.SwarmlingStartSkillActivation();
+
+            SwarmlingTransform.rotation = Quaternion.LookRotation(ClosestPlayer.transform.position - SwarmlingTransform.position);
+        }
+    }
+
+    public override void SwarmlingFinishedAttack()
+    {
+        DoNotMove = false;
+    }
 }

@@ -161,6 +161,11 @@ public class ItemSkill : MonoBehaviour {
         ParentItem.StartSkillCurrentlyUsingItemHitBox(this, SkillObject, HitEachCharacterOnce);
     }
 
+    public void StartSkillCurrentlyUsingItemHitBox(bool HitEachCharacterOnce, int MaxNumberHittableCharacters)
+    {
+        ParentItem.StartSkillCurrentlyUsingItemHitBox(this, SkillObject, HitEachCharacterOnce, MaxNumberHittableCharacters);
+    }
+
     public void EndSkillCurrentlyUsingItemHitBox()
     {
         ParentItem.EndSkillCurrentlyUsingItemHitBox();

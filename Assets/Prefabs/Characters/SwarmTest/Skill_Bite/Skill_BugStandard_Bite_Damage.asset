@@ -15,8 +15,7 @@ MonoBehaviour:
   DamageValuePerLevel: 30
   DefenseType: 0
   DamageType: 0
-  DamageValueModifiers:
-  - {fileID: 11400000, guid: d3c8e8c282513b94b858a2358ac5b86b, type: 2}
+  DamageValueModifiers: []
   IgnoreDefenseValueBase: 0
   IgnoreDefenseValuePerLevel: 0
   IgnoreResistanceValueBase: 0
