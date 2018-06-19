@@ -563,8 +563,8 @@ MonoBehaviour:
   AlignmentNumber: 0
   DistanceVec: {x: 0, y: 0, z: 0}
   DistanceVecMag: 0
-  NewNeighbourTimer: 0
-  NewNeighbourCounter: 1
+  NewNeighbourTimer: 1
+  NewNeighbourCounter: 0
   DangerAvoidanceVec: {x: 0, y: 0, z: 0}
   PlayerAttractionVec: {x: 0, y: 0, z: 0}
   AttractionNumber: 0

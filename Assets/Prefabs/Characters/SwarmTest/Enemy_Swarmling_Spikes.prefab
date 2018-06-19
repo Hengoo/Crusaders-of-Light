@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 195714113652197856}
   - component: {fileID: 135504519851790886}
   - component: {fileID: 114386686729236478}
-  - component: {fileID: 114951134513194738}
+  - component: {fileID: 114583063258284340}
   m_Layer: 17
   m_Name: Enemy_Swarmling_Spikes
   m_TagString: Character
@@ -494,7 +494,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f84621dab2e7f9d438652202cb05c318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Owner: {fileID: 114951134513194738}
+  Owner: {fileID: 114583063258284340}
 --- !u!114 &114386686729236478
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -555,8 +555,8 @@ MonoBehaviour:
   CharAttention: {fileID: 0}
   Alignment: 2
   SpawnStartingWeaponsOnStart: 1
-  Swarmling: {fileID: 114951134513194738}
---- !u!114 &114951134513194738
+  Swarmling: {fileID: 114583063258284340}
+--- !u!114 &114583063258284340
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -564,11 +564,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1515718046562690}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afad6cb8de380dd46aa3512a5328c6bf, type: 3}
+  m_Script: {fileID: 11500000, guid: e2efd5298c2f9a243a0190368bae055a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   NMAgent: {fileID: 195714113652197856}
-  SType: 1
+  SType: 2
   ThisSwarmlingCharacter: {fileID: 114386686729236478}
   SeperationDistance: 2
   SeperationFactor: 4
@@ -596,7 +596,7 @@ MonoBehaviour:
   EnemiesInRange: []
   DangerInRange: []
   Players: []
-  PlayerDanger: 0
+  PlayerDanger: 1
   SwarmlingTransform: {fileID: 4346018701663890}
   NeighbourRadiusBase: 7
   NeighbourRadiusCurrent: 2
@@ -604,7 +604,6 @@ MonoBehaviour:
   NeighbourRadiusMax: 7
   NeighbourRadiusStep: 1
   NeighbourColliders:
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -622,8 +621,8 @@ MonoBehaviour:
   AlignmentNumber: 0
   DistanceVec: {x: 0, y: 0, z: 0}
   DistanceVecMag: 0
-  NewNeighbourTimer: 0
-  NewNeighbourCounter: 1
+  NewNeighbourTimer: 1
+  NewNeighbourCounter: 0
   DangerAvoidanceVec: {x: 0, y: 0, z: 0}
   PlayerAttractionVec: {x: 0, y: 0, z: 0}
   AttractionNumber: 0

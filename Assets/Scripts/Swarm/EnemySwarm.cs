@@ -21,32 +21,32 @@ public class EnemySwarm : MonoBehaviour {
     // Note: Seperation, Alignment, Cohesion, and Danger Factors are currently pulled from EnemyTestSwarm for at runtime testing.
     // Thus, the Factors here for these 4 rules are currently unused, but should be used later!
     [Header("Seperation:")]
-    public float SeperationDistance = 3;
-    public float SeperationFactor = 1;
+    public float SeperationDistance = 2;
+    public float SeperationFactor = 4;
     private bool NoSeperationThisUpdate = false;
 
     [Header("Alignment:")]
-    public float AlignmentDistance = 3;
-    public float AlignmentFactor = 1;
+    public float AlignmentDistance = 4;
+    public float AlignmentFactor = 0.75f;
 
     [Header("Cohesion:")]
     public float CohesionDistance = 3;
-    public float CohesionFactor = 1;
+    public float CohesionFactor = 0.35f;
 
     [Header("Advanced Rules:")]
     [Header("Danger Avoidance:")]
-    public float DangerDistance = 3;
-    public float DangerFactor = 1;
+    public float DangerDistance = 6;
+    public float DangerFactor = 10;
 
     [Header("Attraction:")]
-    public float AttractionDistance = 4;
-    public float AttractionFactor = 1;
+    public float AttractionDistance = 10;
+    public float AttractionFactor = 0.6f;
 
     [Header("Go To Border:")]
     public bool BorderOn = false;
     //public float OutsideAcceleration = 1;
-    public float BorderDistance = 3;
-    public float BorderFactor = 1;
+    public float BorderDistance = 10;
+    public float BorderFactor = 0.4f;
 
     [Header("Movement:")]
     public Vector3 Velocity = Vector3.zero;
@@ -58,10 +58,10 @@ public class EnemySwarm : MonoBehaviour {
 
     [Header("Speed::")]
     public float DesiredBaseSpeed = 6;
-    public float DesiredRunSpeed = 12;
+    public float DesiredRunSpeed = 8;
 
     [Header("Optimization:")]
-    public float UpdateTimer = 0.5f;
+    public float UpdateTimer = 0.06f;
     public float UpdateCounter = 0;
 
     [Header("Lists:")]
@@ -77,13 +77,13 @@ public class EnemySwarm : MonoBehaviour {
     [Header("New Variables:")]
     public Transform SwarmlingTransform;
     public int NeighbourRadiusBase = 7;
-    public float NeighbourRadiusCurrent = 7;
+    public float NeighbourRadiusCurrent = 2f;
     public float NeighbourRadiusMin = 2f;
     public float NeighbourRadiusMax = 7f;
     public float NeighbourRadiusStep = 1;
     public Collider[] NeighbourColliders = new Collider[6];
     public int NeighbourCount = 0;
-    public int NeighbourLayerMask = 0;
+    public int NeighbourLayerMask = 17;
 
     public EnemySwarm CurrentSwarmling;
 
@@ -100,8 +100,8 @@ public class EnemySwarm : MonoBehaviour {
     public Vector3 DistanceVec = Vector3.zero;
     public float DistanceVecMag = 0;
 
-    public float NewNeighbourTimer = 0f;
-    public float NewNeighbourCounter = 1f;
+    public float NewNeighbourTimer = 1f;
+    public float NewNeighbourCounter = 0f;
 
 
     public Vector3 DangerAvoidanceVec = Vector3.zero;
@@ -110,7 +110,7 @@ public class EnemySwarm : MonoBehaviour {
     public int AttractionNumber = 0;
     public int DangerNumber = 0;
 
-    public float PlayerDangerDistance = 2;  // Must be smaller than Player Attraction Range for optimization reasons!
+    public float PlayerDangerDistance = 4;  // Must be smaller than Player Attraction Range for optimization reasons!
     public int PlayerDangerThreatLevelCheck = 2;
     public float PlayerDangerAngle = 0.3f;
 
@@ -119,7 +119,7 @@ public class EnemySwarm : MonoBehaviour {
 
     public bool DoNotMove = false;
     public Character ClosestPlayer;
-    public float ClosestPlayerSqrDistance = 0;
+    public float ClosestPlayerSqrDistance = 9;
     public float ClosestPlayerSqrDistanceBase = 9;
 
     // ================================================================================================================
