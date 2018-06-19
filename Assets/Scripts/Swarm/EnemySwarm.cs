@@ -313,6 +313,7 @@ public class EnemySwarm : MonoBehaviour {
     {
         UpdateCounter = Random.Range(0, UpdateTimer);
         NewNeighbourCounter = Random.Range(0, NewNeighbourTimer);
+        NMAgent.updateRotation = false;
 
         //Players = EnemyTestSwarm.Instance.PlayerCharacters;
     }
@@ -405,7 +406,7 @@ public class EnemySwarm : MonoBehaviour {
         // Rotate towards Velocity Direction:
         if (Velocity.sqrMagnitude > 0)
         {
-            transform.rotation = Quaternion.LookRotation(Velocity);
+            SwarmlingTransform.rotation = Quaternion.Slerp(SwarmlingTransform.rotation, Quaternion.LookRotation(Velocity), 5f * Time.deltaTime);
         }
     }
 
