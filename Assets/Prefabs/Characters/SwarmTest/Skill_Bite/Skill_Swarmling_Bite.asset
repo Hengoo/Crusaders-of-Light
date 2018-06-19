@@ -21,7 +21,7 @@ MonoBehaviour:
   Effects:
   - {fileID: 11400000, guid: f005ee7ea5e9cc343a5c37ab319f50f1, type: 2}
   HindranceLevel: 0
-  AnimationName: no_animation
+  AnimationName: Normal_Attack
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 0}
   PowerLevel: 0

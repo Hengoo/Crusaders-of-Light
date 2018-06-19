@@ -14,6 +14,8 @@ public class SwarmlingNormal : EnemySwarm {
             DoNotMove = true;
 
             ThisSwarmlingCharacter.SwarmlingStartSkillActivation();
+
+            SwarmlingTransform.rotation = Quaternion.LookRotation(ClosestPlayer.transform.position - SwarmlingTransform.position);
         }
     }
 

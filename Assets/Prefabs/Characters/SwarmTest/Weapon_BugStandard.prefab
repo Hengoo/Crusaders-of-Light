@@ -25,8 +25,8 @@ GameObject:
   - component: {fileID: 114066496244682900}
   - component: {fileID: 114636584848807780}
   - component: {fileID: 54605769073419004}
-  - component: {fileID: 64088764270323392}
   - component: {fileID: 82578410785025284}
+  - component: {fileID: 135551135009794474}
   m_Layer: 22
   m_Name: Weapon_BugStandard
   m_TagString: Weapon
@@ -88,7 +88,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1462748279215140}
-  m_Mesh: {fileID: 4300000, guid: a1713b5de5b462a498cac84ef4330bac, type: 3}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!54 &54605769073419004
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -104,20 +104,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!64 &64088764270323392
-MeshCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1462748279215140}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 1
-  m_CookingOptions: 15
-  m_SkinWidth: 0.02
-  m_Mesh: {fileID: 4300000, guid: a1713b5de5b462a498cac84ef4330bac, type: 3}
 --- !u!82 &82578410785025284
 AudioSource:
   m_ObjectHideFlags: 1
@@ -257,10 +243,10 @@ MonoBehaviour:
   - {fileID: 114636584848807780}
   SkillActivationTimer: 0
   ItemRidgidBody: {fileID: 54605769073419004}
-  ItemCollider: {fileID: 64088764270323392}
+  ItemCollider: {fileID: 135551135009794474}
   IgnoreCurrentOwnerForCollisionChecks: 1
-  EquippedPosition: {x: 0, y: 0, z: 0.7}
-  EquippedRotation: {x: 0, y: 0, z: 90}
+  EquippedPosition: {x: 0, y: 0, z: 0}
+  EquippedRotation: {x: 0, y: 0, z: 0}
   CurrentlyCollidingCharacters: []
   CanHitCharactersOnlyOnce: 0
   SkillCurrentlyUsingItemHitBox: {fileID: 0}
@@ -297,3 +283,15 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!135 &135551135009794474
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1462748279215140}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
