@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 54605769073419004}
   - component: {fileID: 64088764270323392}
   - component: {fileID: 82578410785025284}
-  m_Layer: 13
+  m_Layer: 22
   m_Name: Weapon_BugStandard
   m_TagString: Weapon
   m_Icon: {fileID: 0}
@@ -284,10 +284,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114066496244682900}
-  SkillObject: {fileID: 11400000, guid: 0b8b8843e80bb5f4899ab9eaa842c3b5, type: 2}
+  SkillObject: {fileID: 11400000, guid: f0393c73e724e3e478a7179c8723def6, type: 2}
   Level: 1
   CurrentCooldown: 0
   ActivationIntervallTimer: 0
   EffectOnlyOnceBool: 0000
   EffectFloat: 0
   EffectSkillHitObjects: []
+  ItemSkillID: -1
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

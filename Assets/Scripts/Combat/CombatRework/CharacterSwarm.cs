@@ -10,7 +10,9 @@ public class CharacterSwarm : Character {
     [Header("Enemy Testing:")]
     public bool SpawnStartingWeaponsOnStart = false;
 
-   
+    [Header("Swarmling:")]
+    public EnemySwarm Swarmling;
+
     // ===================================== Override Functions =====================================
 
     protected override void Start()
@@ -49,13 +51,18 @@ public class CharacterSwarm : Character {
     {
         // CharacterEnemy updates Activation here and re-evaluates it.
         // For Swarm enemies that have only one attack, the re-evaluation is mostly pointless.
-        base.UpdateCurrentSkillActivation();
+        if (SkillCurrentlyActivating[0] >= 0)
+        {
+            ItemSkillSlots[SkillCurrentlyActivating[0]].UpdateSkillActivation(true);
+        }
     }
 
     public override void FinishedCurrentSkillActivation(int WeaponSlotID, int Hindrance)
     {
         // CharacterEnemy overrode this for AI reasons.
         base.FinishedCurrentSkillActivation(WeaponSlotID, Hindrance);
+
+        Swarmling.SwarmlingFinishedAttack();
     }
 
     // Attention Stuff: Used by Player and old Enemies, not used by the Swarm.
@@ -89,6 +96,11 @@ public class CharacterSwarm : Character {
     //      Melee: Attack Closest Player if in Range.
     //      Ranged: Wait for good attack oportunity, then Attack if in range.
     //      Tank: Attack Closest if in Range.
+
+    public void SwarmlingStartSkillActivation()
+    {
+        StartSkillActivation(0); // Since Swarmlings are only supposed to have 1 Skill, it should always be in Slot 0!
+    }
 
     // ============================================/ AI /============================================
 }

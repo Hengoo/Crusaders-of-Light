@@ -15,6 +15,7 @@ public class EnemySwarm : MonoBehaviour {
     [Header("Enemy Swarm:")]
     public NavMeshAgent NMAgent;
     public SwarmType SType = SwarmType.STANDARD;
+    public CharacterSwarm ThisSwarmlingCharacter;
 
     [Header("Core Rules:")]
     // Note: Seperation, Alignment, Cohesion, and Danger Factors are currently pulled from EnemyTestSwarm for at runtime testing.
@@ -86,6 +87,8 @@ public class EnemySwarm : MonoBehaviour {
 
     public EnemySwarm CurrentSwarmling;
 
+
+
     public Vector3 CohesionVec = Vector3.zero;
     public Vector3 SeperationVec = Vector3.zero;
     public Vector3 AlignmentVec = Vector3.zero;
@@ -114,6 +117,11 @@ public class EnemySwarm : MonoBehaviour {
     public int SwarmlingID = -1;
     public SwarmSpawner SpawnedBy;
 
+    public bool DoNotMove = false;
+    public Character ClosestPlayer;
+    public float ClosestPlayerSqrDistance = 0;
+    public float ClosestPlayerSqrDistanceBase = 9;
+
     // ================================================================================================================
 
     public void SwarmlingAttractionAndDangerRuleCalculation()
@@ -129,6 +137,9 @@ public class EnemySwarm : MonoBehaviour {
         DistanceVec = Vector3.zero;
         DistanceVecMag = 0;
 
+        ClosestPlayer = null;
+        ClosestPlayerSqrDistance = ClosestPlayerSqrDistanceBase;
+
         // Go through all Players:
         for (int i = 0; i < Players.Length; i++)
         {
@@ -140,6 +151,13 @@ public class EnemySwarm : MonoBehaviour {
             // Player Attraction:
             DistanceVec = Players[i].transform.position - transform.position;
             DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            // Save Closest Player for Attack Rule later:
+            if (ClosestPlayerSqrDistance > DistanceVecMag)
+            {
+                ClosestPlayerSqrDistance = DistanceVecMag;
+                ClosestPlayer = Players[i];
+            }
 
             if (DistanceVecMag <= Mathf.Pow(AttractionDistance, 2))
             {
@@ -307,6 +325,10 @@ public class EnemySwarm : MonoBehaviour {
 
     }
 
+    public virtual void SwarmlingAttackRuleCalculation() { }
+
+    public virtual void SwarmlingFinishedAttack() { }
+
     // ================================================================================================================
 
     private void Start()
@@ -368,8 +390,14 @@ public class EnemySwarm : MonoBehaviour {
             // Reset Acceleration:
             Acceleration = Vector3.zero;
 
-            SwarmlingBaseRulesCalculation();
-            SwarmlingAttractionAndDangerRuleCalculation();
+            if (!DoNotMove)
+            {
+                SwarmlingBaseRulesCalculation();
+                SwarmlingAttractionAndDangerRuleCalculation();
+            }
+
+            SwarmlingAttackRuleCalculation();
+            
             /*if (BorderOn)
             {
                 RuleGoToBorder();
@@ -391,11 +419,16 @@ public class EnemySwarm : MonoBehaviour {
             
         }
 
+        if (DoNotMove)
+        {
+            return;
+        }
+
         if (GoalFactor > 0)
         {
             Acceleration = Acceleration / GoalFactor;
         }
-        
+       
         // Update Velocity:
         Velocity += Acceleration * Time.deltaTime * 10;
         Velocity *= (1 - Friction * Time.deltaTime);
