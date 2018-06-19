@@ -24,7 +24,7 @@ public class BossArenaSettings : AreaSettings
         Name = "Boss Arena";
         AreaDataGraph = areaDataGraph;
         ClearPolygons = clearPolygons != null ? clearPolygons.ToList() : new List<Vector2[]>();
-        BorderPolygon = borderPolygon;
+        BorderPolygon = borderPolygon.ToList();
 
         _wallPrefab = wallPrefab;
         _wallPositionNoise = wallPositionNoise;
@@ -50,35 +50,47 @@ public class BossArenaSettings : AreaSettings
         }
         center /= allData.Length;
 
-        // Generate Walls
-        BorderPolygon.OffsetToCenter(center, 8);
-        var lines = BorderPolygon.PolygonToLines();
-        SplitEntranceLine(lines);
-        var walls = LevelDataGenerator.GenerateBlockerLine(terrain, lines, _wallLenght, _wallPositionNoise,
-            _wallScaleNoise, _wallPrefab, false, _towerPrefab, _wallAngleLimit);
-        walls.transform.parent = arena.transform;
+        // Split gate line
+        var skip = SplitEntranceLine(BorderPolygon);
+        BorderPolygon = BorderPolygon.OffsetToCenter(center, 8, skip).ToList();
 
         // Generate gate
         var line = _gateLine[0] - _gateLine[1];
-        var position2D = (_gateLine[0] + _gateLine[1]) / 2;
-        var position = new Vector3(position2D.x, 0, position2D.y);
+        var gatePosition2D = (_gateLine[0] + _gateLine[1]) / 2;
+        var gatePosition = new Vector3(gatePosition2D.x, 0, gatePosition2D.y);
         var gate = Object.Instantiate(_gatePrefab);
         var shape = gate.GetComponent<ParticleSystem>().shape;
         shape.scale += new Vector3(0, 0, line.magnitude - 1);
         gate.GetComponent<NavMeshObstacle>().size += new Vector3(0, 0, line.magnitude - 1);
-        gate.transform.position = new Vector3(position.x, terrain.SampleHeight(position), position.z);
+        gate.transform.position = new Vector3(gatePosition.x, terrain.SampleHeight(gatePosition), gatePosition.z);
         gate.transform.rotation = Quaternion.LookRotation(new Vector3(line.x, 0, line.y), Vector3.up);
         gate.transform.parent = arena.transform;
+
+        // Generate Walls
+        var lines = BorderPolygon.PolygonToLines(skip);
+        var walls = LevelDataGenerator.GenerateBlockerLine(terrain, lines, _wallLenght, _wallPositionNoise,
+            _wallScaleNoise, _wallPrefab, false, _towerPrefab, _wallAngleLimit);
+        walls.transform.parent = arena.transform;
+
+        // Generate last tower next to the gate
+        var gateTower = Object.Instantiate(_towerPrefab);
+        gateTower.transform.position = gatePosition + gate.transform.rotation * new Vector3(0, 0, gate.GetComponent<NavMeshObstacle>().size.z / 2);
+        gateTower.transform.position += new Vector3(0, terrain.SampleHeight(gateTower.transform.position), 0);
+        gateTower.transform.rotation = terrain.GetNormalRotation(gateTower.transform.position);
+        gateTower.CorrectAngleTolerance(_wallAngleLimit);
+        gateTower.transform.parent = arena.transform;
+
 
         return arena;
     }
 
-    private void SplitEntranceLine(List<Vector2[]> lines)
+    private List<int> SplitEntranceLine(List<Vector2> points)
     {
-        for (int i = 0; i < lines.Count; i++)
+
+        for (int i = 0; i < points.Count; i++)
         {
-            var p0 = lines[i][0];
-            var p1 = lines[i][1];
+            var p0 = points[i];
+            var p1 = points[i != points.Count - 1 ? i + 1 : 0];
             var center = (p1 + p0) / 2;
 
             foreach (var clearPolygon in ClearPolygons)
@@ -87,19 +99,16 @@ public class BossArenaSettings : AreaSettings
                 {
                     var p00 = clearPolygon.ClosestPoint(p0);
                     p00 += (p0 - p00) * .2f;
-                    lines.Add(new[] { p00, p0 });
-                    lines.Add(new[] { p0, p00 });
-
                     var p10 = clearPolygon.ClosestPoint(p1);
                     p10 += (p1 - p10) * .2f;
-                    lines.Add(new[] { p10, p1 });
+                    points.Insert(i + 1, p00);
+                    points.Insert(i + 2, p10);
 
                     _gateLine = new[] { p00, p10 };
-
-                    lines.Remove(lines[i]);
-                    return; // RETURN
+                    return new List<int> { i + 1, i + 2 }; // RETURN
                 }
             }
         }
+        return null;
     }
 }

@@ -11,7 +11,7 @@ public abstract class AreaSettings
 
     public Graph<AreaData> AreaDataGraph { get; protected set; }
     public List<Vector2[]> ClearPolygons { get; protected set; }
-    public Vector2[] BorderPolygon { get; protected set; }
+    public List<Vector2> BorderPolygon { get; protected set; }
 
     public abstract GameObject GenerateAreaScenery(Terrain terrain);
 }

@@ -244,6 +244,7 @@ public class LevelCreator : Singleton<LevelCreator>
     private void DrawCompleteLevel()
     {
         DrawTerrainAndScenery();
+        GenerateNavMesh();
         StartPostion = MyTerrainStructure.Start.Key;
     }
 
@@ -287,7 +288,6 @@ public class LevelCreator : Singleton<LevelCreator>
     {
         DrawTerrain();
         GenerateScenery();
-        GenerateNavMesh();
     }
 
     private void ClearDisplay()

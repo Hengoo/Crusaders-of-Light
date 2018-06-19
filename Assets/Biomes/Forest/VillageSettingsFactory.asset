@@ -17,7 +17,7 @@ MonoBehaviour:
   - {fileID: 1416991870028746, guid: 1779058632ef43b43bd6744064508dc8, type: 2}
   UniqueBuildings: []
   BuildingAngleTolerance: 15
-  PathOffset: 10
+  PathOffset: 15
   Trees: []
   TreeAngleTolerance: 20
   TreeDistance: 6

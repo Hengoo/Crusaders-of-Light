@@ -19,7 +19,7 @@ public class VillageSettings : AreaSettings
         Name = "Village " + type + " Area";
         AreaDataGraph = areaDataGraph;
         ClearPolygons = clearPolygons != null ? clearPolygons.ToList() : new List<Vector2[]>();
-        BorderPolygon = borderPolygon;
+        BorderPolygon = borderPolygon.ToList();
 
         GenericBuildings = genericBuildings;
         UniqueBuildings = uniqueBuildings.ToList();
@@ -40,7 +40,7 @@ public class VillageSettings : AreaSettings
         buildings.transform.parent = result.transform;
 
         // Generate trees taking buildings into consideration
-        var forestArea = new ForestSettings(AreaDataGraph, ClearPolygons, BorderPolygon, Trees, TreeDistance, TreeAngleTolerance, "Village");
+        var forestArea = new ForestSettings(AreaDataGraph, ClearPolygons, BorderPolygon.ToArray(), Trees, TreeDistance, TreeAngleTolerance, "Village");
         var trees = forestArea.GenerateAreaScenery(terrain);
         trees.transform.parent = result.transform;
 
@@ -119,30 +119,48 @@ public class VillageSettings : AreaSettings
             var rightNormal = -leftNormal;
             var rightPoly = building2DPolygon.Select(vtx => vtx + pathCenter + rightNormal * PathOffset).ToArray();
 
-            // Try to place on both sides side
+            // Try left side placement
+            bool leftInvalid = false;
             foreach (Vector2[] clearPoly in ClearPolygons)
             {
-                // Left side has no collisions
-                if (leftPoly.All(vtx => !vtx.IsInsidePolygon(clearPoly)))
+                if (leftPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)))
                 {
-                    ClearPolygons.Add(leftPoly);
-                    var position2D = pathCenter + leftNormal * PathOffset;
-                    var position = new Vector3(position2D.x, 0, position2D.y);
-                    var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position,
-                        Vector3.up);
-                    return Object.Instantiate(buildingPrefab, position, rotation);
+                    leftInvalid = true;
+                    break;
                 }
+            }
+
+            if (!leftInvalid)
+            {
+                ClearPolygons.Add(leftPoly);
+                var position2D = pathCenter + leftNormal * PathOffset;
+                var position = new Vector3(position2D.x, 0, position2D.y);
+                var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position,
+                    Vector3.up);
+                return Object.Instantiate(buildingPrefab, position, rotation);
+            }
+
+            // Try right side placement
+            bool rightInvalid = false;
+            foreach (Vector2[] clearPoly in ClearPolygons)
+            {
                 // Right side has no collisions
                 if (rightPoly.All(vtx => !vtx.IsInsidePolygon(clearPoly)))
                 {
-                    ClearPolygons.Add(rightPoly);
-                    var position2D = pathCenter + rightNormal * PathOffset;
-                    var position = new Vector3(position2D.x, 0, position2D.y);
-                    var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position,
-                        Vector3.up);
-                    return Object.Instantiate(buildingPrefab, position, rotation);
+                    rightInvalid = true;
+                    break;
                 }
             }
+            if (!rightInvalid)
+            {
+                ClearPolygons.Add(rightPoly);
+                var position2D = pathCenter + rightNormal * PathOffset;
+                var position = new Vector3(position2D.x, 0, position2D.y);
+                var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position,
+                    Vector3.up);
+                return Object.Instantiate(buildingPrefab, position, rotation);
+            }
+
         }
 
         return null;

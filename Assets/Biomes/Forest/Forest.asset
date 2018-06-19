@@ -54,5 +54,5 @@ MonoBehaviour:
     tileSize: {x: 10, y: 10}
   MainPathSplatSize: 2
   SidePathSplatSize: 1
-  PathHalfWidth: 8
+  PathHalfWidth: 6
   PathBezierSegmentSize: 10

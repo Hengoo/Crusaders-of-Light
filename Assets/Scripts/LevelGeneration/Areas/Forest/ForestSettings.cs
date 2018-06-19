@@ -13,7 +13,7 @@ public class ForestSettings : AreaSettings
         Name = "Forest " + type + " Area";
         AreaDataGraph = areaDataGraph;
         ClearPolygons = clearPolygons != null ? clearPolygons.ToList() : new List<Vector2[]> { };
-        BorderPolygon = borderPolygon;
+        BorderPolygon = borderPolygon.ToList();
 
         Trees = trees;
         AngleTolerance = angleTolerance;

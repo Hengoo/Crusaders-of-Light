@@ -51,7 +51,7 @@ public static class ExtensionMethods
         Vector2 p2 = new Vector2(box.center.x - box.size.x / 2f, box.center.z - box.size.z / 2f);
         Vector2 p3 = new Vector2(box.center.x - box.size.x / 2f, box.center.z + box.size.z / 2f);
 
-        return new [] { p0, p1, p2, p3 };
+        return new[] { p0, p1, p2, p3 };
     }
 
     public static void Shuffle<T>(this IList<T> list)
@@ -131,12 +131,9 @@ public static class ExtensionMethods
         return result;
     }
 
-    public static void OffsetToCenter(this Vector2[] polygon, Vector2 center, float amount)
+    public static IEnumerable<Vector2> OffsetToCenter(this IEnumerable<Vector2> reference, Vector2 center, float amount, List<int> skip = null)
     {
-        for (int i = 0; i < polygon.Length; i++)
-        {
-            polygon[i] += (center - polygon[i]).normalized * amount;
-        }
+        return reference.Select(e => e += skip != null && skip.Contains(reference.ToList().IndexOf(e)) ?  Vector2.zero : (center - e).normalized * amount);
     }
 
     public static Vector2 ClosestPoint(this Vector2[] polygon, Vector2 point)
@@ -157,16 +154,19 @@ public static class ExtensionMethods
         return closestPoint;
     }
 
-    public static List<Vector2[]> PolygonToLines(this Vector2[] polygon)
+    public static List<Vector2[]> PolygonToLines(this IEnumerable<Vector2> reference, List<int> skip = null)
     {
         var result = new List<Vector2[]>();
 
         // Create border blocker lines
-        for (int j = 0; j < polygon.Length; j++)
+        for (int j = 0; j < reference.Count(); j++)
         {
-            var p0 = polygon[j];
-            var p1 = j + 1 == polygon.Length ?
-                polygon[0] : polygon[j + 1];
+            var p0 = reference.ElementAt(j);
+            int next = j + 1 == reference.Count() ? 0 : j + 1;
+            if (skip != null && skip.Contains(j) && skip.Contains(next))
+                continue;
+
+            var p1 = reference.ElementAt(next);
 
             // Filter any duplicated vertices
             if ((p0 - p1).magnitude < 0.01f)
