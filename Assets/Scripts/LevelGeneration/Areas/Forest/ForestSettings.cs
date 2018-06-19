@@ -22,10 +22,10 @@ public class ForestSettings : AreaSettings
 
     public override GameObject GenerateAreaScenery(Terrain terrain)
     {
-        var areaData = AreaDataGraph.GetAllNodeData()[0];
-        PoissonDiskFillData poissonData = new PoissonDiskFillData(Trees, areaData.Polygon, TreeDistance, AngleTolerance, true);
+        PoissonDiskFillData poissonData = new PoissonDiskFillData(Trees, BorderPolygon.ToArray(), TreeDistance, AngleTolerance, true);
         poissonData.AddClearPolygons(ClearPolygons);
         PoissonDataList.Add(poissonData);
+
         return new GameObject(Name);
     }
 }

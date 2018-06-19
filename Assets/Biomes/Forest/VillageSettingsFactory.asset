@@ -14,10 +14,17 @@ MonoBehaviour:
   PathLength: 3
   PathType: 1
   GenericBuildings:
-  - {fileID: 1416991870028746, guid: 1779058632ef43b43bd6744064508dc8, type: 2}
-  UniqueBuildings: []
+  - {fileID: 1171213281439940, guid: 4f99d62ae3d1b6b409f8dc81ee3ea9e8, type: 2}
+  - {fileID: 1227310021806302, guid: 1779058632ef43b43bd6744064508dc8, type: 2}
+  UniqueBuildings:
+  - {fileID: 1099745622277562, guid: 2e833398cccc3a44f851640eebe2fc81, type: 2}
+  - {fileID: 1131378545392920, guid: 156d0128ae88d084c9fac76ee9c02b88, type: 2}
+  - {fileID: 1488621717258426, guid: 15df386c1921a17418592a2c0d917f8a, type: 2}
+  - {fileID: 1137608657687628, guid: c9c2be32731c75646ad5520db8f5d797, type: 2}
+  - {fileID: 1573598338289374, guid: bfdb3706663ec7c4bad933ae1622b778, type: 2}
   BuildingAngleTolerance: 15
-  PathOffset: 15
-  Trees: []
+  PathOffset: 17
+  Trees:
+  - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
   TreeAngleTolerance: 20
   TreeDistance: 6

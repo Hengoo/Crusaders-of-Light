@@ -57,6 +57,14 @@ ModelImporter:
     4300012: Pillar_003
     4300014: Cylinder
     4300016: Foundation
+    6400000: Cube
+    6400002: Cylinder
+    6400004: Foundation
+    6400006: Pillar_000
+    6400008: Pillar_001
+    6400010: Pillar_002
+    6400012: Pillar_003
+    6400014: Roof
     7400000: Default Take
     9500000: //RootNode
   externalObjects: {}
@@ -92,7 +100,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
@@ -131,10 +139,10 @@ ModelImporter:
     rootMotionBoneName: 
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

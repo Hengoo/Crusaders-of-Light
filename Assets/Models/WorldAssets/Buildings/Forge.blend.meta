@@ -162,6 +162,29 @@ ModelImporter:
     4300054: Plane
     4300056: Window_003
     4300058: Anchor
+    6400000: Anchor
+    6400002: Cube_cell
+    6400004: Cube_cell_001
+    6400006: Door
+    6400008: Furnace
+    6400010: Plane
+    6400012: Plank
+    6400014: Plank_001
+    6400016: Plank_002
+    6400018: Plank_003
+    6400020: Plank_004
+    6400022: Plank_005
+    6400024: Plank_006
+    6400026: Plank_007
+    6400028: Plank_008
+    6400030: Plank_009
+    6400032: Plank_010
+    6400034: Ramp
+    6400036: Roof
+    6400038: Window_000
+    6400040: Window_001
+    6400042: Window_002
+    6400044: Window_003
     7400000: Default Take
     9500000: //RootNode
     2186277476908879412: ImportLogs
@@ -203,7 +226,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1

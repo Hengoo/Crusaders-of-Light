@@ -19,6 +19,8 @@ ModelImporter:
     3300004: Cube_001
     4300000: Cube
     4300002: Cube_001
+    6400000: Cube
+    6400002: Cube_001
     7400000: Default Take
     9500000: //RootNode
   externalObjects: {}
@@ -54,7 +56,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1

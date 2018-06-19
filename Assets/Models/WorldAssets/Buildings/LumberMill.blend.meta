@@ -146,6 +146,28 @@ ModelImporter:
     4300046: Plank_009
     4300048: Plank_010
     4300050: Ramp
+    6400000: Door
+    6400002: Foundation
+    6400004: Pillar
+    6400006: Pillar_001
+    6400008: Pillar_002
+    6400010: Plank
+    6400012: Plank_001
+    6400014: Plank_002
+    6400016: Plank_003
+    6400018: Plank_004
+    6400020: Plank_005
+    6400022: Plank_006
+    6400024: Plank_007
+    6400026: Plank_008
+    6400028: Plank_009
+    6400030: Plank_010
+    6400032: Ramp
+    6400034: Roof
+    6400036: Walls
+    6400038: Window_000
+    6400040: Window_001
+    6400042: Window_011
     7400000: Default Take
     9500000: //RootNode
   externalObjects:
@@ -186,7 +208,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1

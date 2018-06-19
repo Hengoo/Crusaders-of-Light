@@ -44,7 +44,7 @@ public static class ExtensionMethods
         return Quaternion.FromToRotation(Vector3.up, terrainHit.normal);
     }
 
-    public static Vector2[] GetLocal2DPolygon(this BoxCollider box)
+    public static Vector2[] Get2DPolygon(this BoxCollider box)
     {
         Vector2 p0 = new Vector2(box.center.x + box.size.x / 2f, box.center.z + box.size.z / 2f);
         Vector2 p1 = new Vector2(box.center.x + box.size.x / 2f, box.center.z - box.size.z / 2f);
@@ -87,7 +87,7 @@ public static class ExtensionMethods
         for (var i = 0; i < polyPoints.Length; j = i++)
         {
             if (((polyPoints[i].y <= p.y && p.y < polyPoints[j].y) ||
-                (polyPoints[j].y <= p.y && p.y < polyPoints[i].y)) &&
+                 (polyPoints[j].y <= p.y && p.y < polyPoints[i].y)) &&
                 (p.x < (polyPoints[j].x - polyPoints[i].x) * (p.y - polyPoints[i].y) / (polyPoints[j].y - polyPoints[i].y) + polyPoints[i].x))
                 inside = !inside;
         }

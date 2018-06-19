@@ -113,6 +113,26 @@ ModelImporter:
     4300034: Cube_002
     4300036: Door_001
     4300038: Door_002
+    6400000: Cube
+    6400002: Cube_001
+    6400004: Cube_002
+    6400006: Cube_003
+    6400008: Cube_004
+    6400010: Door
+    6400012: Door_001
+    6400014: Door_002
+    6400016: Plank
+    6400018: Plank_001
+    6400020: Plank_002
+    6400022: Plank_003
+    6400024: Plank_004
+    6400026: Plank_005
+    6400028: Plank_006
+    6400030: Plank_007
+    6400032: Plank_008
+    6400034: Plank_009
+    6400036: Plank_010
+    6400038: Ramp
     7400000: Default Take
     9500000: //RootNode
   externalObjects: {}
@@ -148,7 +168,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importVisibility: 0
     importBlendShapes: 0
     importCameras: 0

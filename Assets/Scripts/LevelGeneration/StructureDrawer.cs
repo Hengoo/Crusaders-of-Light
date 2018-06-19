@@ -210,4 +210,23 @@ public static class StructureDrawer
 
         return line;
     }
+
+    public static GameObject DrawLine(Vector2 start, Vector2 end, float width, Color color)
+    {
+        GameObject line = new GameObject("Line");
+        line.transform.position = start;
+
+        LineRenderer lr = line.AddComponent<LineRenderer>();
+        lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
+
+        lr.SetPosition(0, new Vector3(start.x, 0, start.y));
+        lr.startColor = color;
+        lr.startWidth = width;
+
+        lr.SetPosition(1, new Vector3(end.x, 0, end.y));
+        lr.endColor = color;
+        lr.endWidth = width;
+
+        return line;
+    }
 }

@@ -173,6 +173,38 @@ ModelImporter:
     4300058: Window_005
     4300060: Cube
     4300062: Cube_001
+    6400000: Cube
+    6400002: Cube_001
+    6400004: Door
+    6400006: Foundation
+    6400008: Pillar
+    6400010: Pillar_001
+    6400012: Pillar_002
+    6400014: Pillar_003
+    6400016: Pillar_004
+    6400018: Pillar_005
+    6400020: Pillar_006
+    6400022: Plank
+    6400024: Plank_001
+    6400026: Plank_002
+    6400028: Plank_003
+    6400030: Plank_004
+    6400032: Plank_005
+    6400034: Plank_006
+    6400036: Plank_007
+    6400038: Plank_008
+    6400040: Plank_009
+    6400042: Plank_010
+    6400044: Ramp
+    6400046: Roof
+    6400048: Walls
+    6400050: Window_000
+    6400052: Window_001
+    6400054: Window_002
+    6400056: Window_003
+    6400058: Window_004
+    6400060: Window_005
+    6400062: Window_011
     7400000: Default Take
     9500000: //RootNode
   externalObjects:
@@ -213,7 +245,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
