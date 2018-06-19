@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public abstract class AreaSettings
 {
@@ -36,14 +37,15 @@ public class ForestSettings : AreaSettings
     public readonly float AngleTolerance;
     public readonly float TreeDistance;
 
-    public ForestSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, float treeDistance, float angleTolerance, string type)
+    public ForestSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, float treeDistance, float angleTolerance, string type = "")
     {
         Name = "Forest " + type + " Area";
-        AngleTolerance = angleTolerance;
-        TreeDistance = treeDistance;
         AreaDataGraph = areaDataGraph;
         ClearPolygons = clearPolygons != null ? clearPolygons.ToArray() : new Vector2[][] { };
         BorderPolygon = borderPolygon;
+
+        AngleTolerance = angleTolerance;
+        TreeDistance = treeDistance;
     }
 
     public override GameObject GenerateAreaScenery(Terrain terrain)
@@ -94,6 +96,7 @@ public class BossArenaSettings : AreaSettings
     {
         var arena = new GameObject(Name);
 
+        // Find boos area center
         Vector2 center = Vector2.zero;
         var allData = AreaDataGraph.GetAllNodeData();
         foreach (var areaData in allData)
@@ -102,6 +105,7 @@ public class BossArenaSettings : AreaSettings
         }
         center /= allData.Length;
 
+        // Generate Walls
         BorderPolygon.OffsetToCenter(center, 8);
         var lines = BorderPolygon.PolygonToLines();
         SplitEntranceLine(lines);
@@ -109,13 +113,23 @@ public class BossArenaSettings : AreaSettings
             _wallScaleNoise, _wallPrefab, false, _towerPrefab, _wallAngleLimit);
         walls.transform.parent = arena.transform;
 
+        // Generate gate
+        var line = _gateLine[0] - _gateLine[1];
+        var position2D = (_gateLine[0] + _gateLine[1]) / 2;
+        var position = new Vector3(position2D.x, 0, position2D.y);
+        var gate = Object.Instantiate(_gatePrefab);
+        var shape = gate.GetComponent<ParticleSystem>().shape;
+        shape.scale += new Vector3(0, 0, line.magnitude - 1);
+        gate.GetComponent<NavMeshObstacle>().size += new Vector3(0, 0, line.magnitude - 1);
+        gate.transform.position = new Vector3(position.x, terrain.SampleHeight(position), position.z);
+        gate.transform.rotation = Quaternion.LookRotation(new Vector3(line.x, 0, line.y), Vector3.up);
+        gate.transform.parent = arena.transform;
+
         return arena;
     }
 
-
     private void SplitEntranceLine(List<Vector2[]> lines)
     {
-        bool found = false;
         for (int i = 0; i < lines.Count; i++)
         {
             var p0 = lines[i][0];
@@ -126,26 +140,53 @@ public class BossArenaSettings : AreaSettings
             {
                 if (center.IsInsidePolygon(clearPolygon))
                 {
-                    found = true;
                     var p00 = clearPolygon.ClosestPoint(p0);
-                    p00 += (p0 - p00) * .1f;
+                    p00 += (p0 - p00) * .2f;
                     lines.Add(new[] { p00, p0 });
                     lines.Add(new[] { p0, p00 });
 
                     var p10 = clearPolygon.ClosestPoint(p1);
-                    p10 += (p1 - p10) * .1f;
+                    p10 += (p1 - p10) * .2f;
                     lines.Add(new[] { p10, p1 });
 
-                    _gateLine = new[] {p00, p10};
+                    _gateLine = new[] { p00, p10 };
 
-                    break;
+                    lines.Remove(lines[i]);
+                    return; // RETURN
                 }
             }
-            if (found)
-            {
-                lines.Remove(lines[i]);
-                break;
-            }
         }
+    }
+}
+
+public class VillageSettings : AreaSettings
+{
+    public GameObject[] Buildings;
+    public readonly float BuildingAngleTolerance;
+    public GameObject[] Trees;
+    public readonly float TreeAngleTolerance;
+    public readonly float TreeDistance;
+
+    public VillageSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon,
+        GameObject[] buildings, float buildingAngleTolerance,
+        GameObject[] trees, float treeAngleTolerance, float treeDistance, string type = "")
+    {
+        Name = "Village " + type + " Area";
+        AreaDataGraph = areaDataGraph;
+        ClearPolygons = clearPolygons != null ? clearPolygons.ToArray() : new Vector2[][] { };
+        BorderPolygon = borderPolygon;
+
+        Buildings = buildings;
+        BuildingAngleTolerance = buildingAngleTolerance;
+
+        Trees = trees;
+        TreeAngleTolerance = treeAngleTolerance;
+        TreeDistance = treeDistance;
+    }
+
+
+    public override GameObject GenerateAreaScenery(Terrain terrain)
+    {
+        throw new System.NotImplementedException();
     }
 }
