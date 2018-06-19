@@ -138,7 +138,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4036922809058718}
-  - component: {fileID: 95039174314868926}
+  - component: {fileID: 65682577237568018}
   m_Layer: 0
   m_Name: BHouse
   m_TagString: Untagged
@@ -459,7 +459,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1416991870028746}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 175.29662, y: 26.990328, z: 335.54688}
+  m_LocalPosition: {x: 186.7932, y: 28.787077, z: 399.7219}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4856200373197750}
@@ -1872,21 +1872,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1639760681380590}
   m_Mesh: {fileID: 4300022, guid: e0877beefe0f4bf4bbe082dce306dcbb, type: 3}
---- !u!95 &95039174314868926
-Animator:
-  serializedVersion: 3
+--- !u!65 &65682577237568018
+BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1416991870028746}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: e0877beefe0f4bf4bbe082dce306dcbb, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  serializedVersion: 2
+  m_Size: {x: 16.34, y: 1, z: 10.61}
+  m_Center: {x: 0, y: 0, z: 0}

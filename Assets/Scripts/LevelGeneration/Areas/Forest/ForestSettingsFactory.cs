@@ -21,10 +21,8 @@ public class ForestSettingsFactory : AreaSettingsFactory
 
     public override AreaSettings[] ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
-        AreaSettings forest = new ForestSettings(areaDataGraph, clearPolygons, borderPolygon, TreeDistance, AngleTolerance, SegmentType.ToString())
-        {
-            Trees = Trees
-        };
+        AreaSettings forest = new ForestSettings(areaDataGraph, clearPolygons, borderPolygon,
+            Trees, TreeDistance, AngleTolerance, SegmentType.ToString());
         return new[] {forest};
     }
 }

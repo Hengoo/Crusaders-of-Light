@@ -63,7 +63,7 @@ public class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
         foreach (var patternNode in patternNodes)
         {
             // Get pattern node neighbours
-            int[] patternNeighbours = pattern.GetNeighbours(patternNode);
+            List<int> patternNeighbours = pattern.GetNeighbours(patternNode).ToList();
 
             // Get all nodes with the same data from this graph
             T patternNodeData = pattern.GetNodeData(patternNode);
@@ -76,25 +76,33 @@ public class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
             {
                 // Degree check
                 int[] neighbours = GetNeighbours(match);
-                if (patternNeighbours.Length > GetNeighbours(match).Length)
+                if (patternNeighbours.Count > GetNeighbours(match).Length)
                 {
                     matches.Remove(match);
                     continue;
                 }
 
-                // Check if there are enough neighbours with the same pattern's neighbours data
-                List<T> patternNeighboursData = patternNeighbours.Select(pattern.GetNodeData).ToList();
+                // Check if there are enough neighbours with the same pattern's neighbours data and edge value 
                 foreach (var neighbour in neighbours)
                 {
                     T data = GetNodeData(neighbour);
-                    if (patternNeighboursData.Contains(data))
+                    for (int i = 0; i < patternNeighbours.Count; i++)
                     {
-                        patternNeighboursData.Remove(data);
+                        var patternNeighbour = patternNeighbours[i];
+                        var patternNeighbourData = pattern.GetNodeData(patternNeighbour);
+                        bool sameData = patternNeighbourData.Equals(data);
+                        bool sameEdge = GetEdgeValue(neighbour, match) ==
+                                        pattern.GetEdgeValue(patternNode, patternNeighbour);
+                        if ( sameData && sameEdge )
+                        {
+                            patternNeighbours.Remove(patternNeighbour);
+                            break;
+                        }
                     }
                 }
 
-                // Not enough neighbours with required data
-                if (patternNeighboursData.Count != 0)
+                // Not enough neighbours with required data and edges
+                if (patternNeighbours.Count != 0)
                     matches.Remove(match);
             }
 
@@ -115,7 +123,7 @@ public class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
     //  Helper Functions
     //-----------------------------------------------------------------
 
-        // Recursively assign nodes from pattern to graph
+    // Recursively assign nodes from pattern to graph
     private bool UpdateAssignments(Graph<T> pattern, Dictionary<int, int> assignments, Dictionary<int, List<int>> possibilities)
     {
         if (possibilities.Count == 0)
@@ -155,13 +163,23 @@ public class GrammarGraph<T> : Graph<T> where T : class, IEquatable<T>
 
             // Check if neighborhood is valid
             // i.e. every neighbor of patternNode has at least one possible assignment among neighbors of candidateNode
+            // and edge value is the same
             bool failed = false;
             foreach (var patternNeighbour in pattern.GetNeighbours(patternNode))
             {
                 if (currentPossibilities.ContainsKey(patternNeighbour))
-                    failed = !currentPossibilities[patternNeighbour].Any(a => assignedNeighborhood.Contains(a));
+                {
+                    failed = !currentPossibilities[patternNeighbour].Any(a =>
+                        assignedNeighborhood.Contains(a) &&
+                        pattern.GetEdgeValue(patternNode, patternNeighbour) == GetEdgeValue(assignedNode, a));
+                    
+                }
                 else
-                    failed = !assignedNeighborhood.Contains(assignments[patternNeighbour]);
+                {
+                    bool hasNeighbor = assignedNeighborhood.Contains(assignments[patternNeighbour]);
+                    bool hasNeighborAndEdge = hasNeighbor && GetEdgeValue(assignedNode, assignments[patternNeighbour]) == pattern.GetEdgeValue(patternNode, patternNeighbour);
+                    failed = !hasNeighborAndEdge;
+                }
 
                 if (failed)
                     break;
