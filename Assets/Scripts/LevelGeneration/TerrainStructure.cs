@@ -149,12 +149,14 @@ public class TerrainStructure
         if (!AreNeighbours(areaSegments))
             return null;
 
-        // Build polygons for each site
+        // Build polygons and gather roads for each site
         Dictionary<int, Vector2[]> areaSegmentPolygonMap = new Dictionary<int, Vector2[]>();
+        Dictionary<int, List<Vector2[]>> areaSegmentRoadMap = new Dictionary<int, List<Vector2[]>>();
         foreach (int areaSegment in areaSegments)
         {
             var site = new Vector2f(_areaSegmentCenterMap[areaSegment]);
             areaSegmentPolygonMap.Add(areaSegment, GetSitePolygon(site));
+            areaSegmentRoadMap.Add(areaSegment, GetSitePaths(site));
         }
 
         // Build graph
@@ -166,7 +168,8 @@ public class TerrainStructure
             {
                 Center = _areaSegmentCenterMap[areaSegment],
                 Polygon = areaSegmentPolygonMap[areaSegment],
-                Segment = AreaSegmentGraph.GetNodeData(areaSegment)
+                Segment = AreaSegmentGraph.GetNodeData(areaSegment),
+                Paths = areaSegmentRoadMap[areaSegment]
             };
             int newID = areaDataGraph.AddNode(data);
             graphMap.Add(areaSegment, newID);
@@ -754,6 +757,25 @@ public class TerrainStructure
             edges.Add(edge);
         }
         return edges.EdgesToSortedLines().Select(t => t[0]).ToArray();
+    }
+
+    // Get roads that cross the site
+    private List<Vector2[]> GetSitePaths(Vector2f site)
+    {
+        List<Vector2[]> result = new List<Vector2[]>();
+        var sitePolygon = GetSitePolygon(site);
+        foreach (var pathLine in MainPathLines.Union(SidePathLines))
+        {
+            foreach (var vertex in pathLine)
+            {
+                if (vertex.IsInsidePolygon(sitePolygon))
+                {
+                    result.Add(pathLine);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     // Get closest AreaSegment to specified pos

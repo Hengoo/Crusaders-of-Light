@@ -10,7 +10,7 @@ public abstract class AreaSettings
     public List<PoissonDiskFillData> PoissonDataList = new List<PoissonDiskFillData>();
 
     public Graph<AreaData> AreaDataGraph { get; protected set; }
-    public Vector2[][] ClearPolygons { get; protected set; }
+    public List<Vector2[]> ClearPolygons { get; protected set; }
     public Vector2[] BorderPolygon { get; protected set; }
 
     public abstract GameObject GenerateAreaScenery(Terrain terrain);
@@ -22,6 +22,7 @@ public class AreaData
     public AreaSegment Segment;
     public Vector2[] Polygon;
     public List<Vector2[]> BlockerLines;
+    public List<Vector2[]> Paths;
 }
 
 //-------------------------------------------------------------------------------------
@@ -41,7 +42,7 @@ public class ForestSettings : AreaSettings
     {
         Name = "Forest " + type + " Area";
         AreaDataGraph = areaDataGraph;
-        ClearPolygons = clearPolygons != null ? clearPolygons.ToArray() : new Vector2[][] { };
+        ClearPolygons = clearPolygons != null ? clearPolygons.ToList() : new List<Vector2[]> { };
         BorderPolygon = borderPolygon;
 
         AngleTolerance = angleTolerance;
@@ -78,7 +79,7 @@ public class BossArenaSettings : AreaSettings
 
         Name = "Boss Arena";
         AreaDataGraph = areaDataGraph;
-        ClearPolygons = clearPolygons != null ? clearPolygons.ToArray() : new Vector2[][] { };
+        ClearPolygons = clearPolygons != null ? clearPolygons.ToList() : new List<Vector2[]>();
         BorderPolygon = borderPolygon;
 
         _wallPrefab = wallPrefab;
@@ -161,32 +162,141 @@ public class BossArenaSettings : AreaSettings
 
 public class VillageSettings : AreaSettings
 {
-    public GameObject[] Buildings;
+    public GameObject[] GenericBuildings;
+    public List<GameObject> UniqueBuildings;
     public readonly float BuildingAngleTolerance;
+    public readonly float PathOffset;
     public GameObject[] Trees;
     public readonly float TreeAngleTolerance;
     public readonly float TreeDistance;
 
     public VillageSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon,
-        GameObject[] buildings, float buildingAngleTolerance,
+        GameObject[] genericBuildings, GameObject[] uniqueBuildings, float buildingAngleTolerance, float pathOffset,
         GameObject[] trees, float treeAngleTolerance, float treeDistance, string type = "")
     {
         Name = "Village " + type + " Area";
         AreaDataGraph = areaDataGraph;
-        ClearPolygons = clearPolygons != null ? clearPolygons.ToArray() : new Vector2[][] { };
+        ClearPolygons = clearPolygons != null ? clearPolygons.ToList() : new List<Vector2[]>();
         BorderPolygon = borderPolygon;
 
-        Buildings = buildings;
+        GenericBuildings = genericBuildings;
+        UniqueBuildings = uniqueBuildings.ToList();
         BuildingAngleTolerance = buildingAngleTolerance;
+        PathOffset = pathOffset;
 
         Trees = trees;
         TreeAngleTolerance = treeAngleTolerance;
         TreeDistance = treeDistance;
     }
 
-
     public override GameObject GenerateAreaScenery(Terrain terrain)
     {
-        throw new System.NotImplementedException();
+        var result = new GameObject(Name);
+
+        // Place buildings
+        var buildings = PlaceBuildings(terrain);
+        buildings.transform.parent = result.transform;
+
+        // Generate trees taking buildings into consideration
+        var forestArea = new ForestSettings(AreaDataGraph, ClearPolygons, BorderPolygon, TreeDistance, TreeAngleTolerance, "Village");
+        var trees = forestArea.GenerateAreaScenery(terrain);
+        trees.transform.parent = result.transform;
+
+        return result;
+    }
+
+    private GameObject PlaceBuildings(Terrain terrain)
+    {
+        var result = new GameObject("Buildings");
+
+        // Fill each node with buildings around the roads
+        foreach (var nodeData in AreaDataGraph.GetAllNodeData())
+        {
+            var fill = FillAreaSegment(nodeData, terrain);
+            fill.transform.parent = result.transform;
+        }
+
+        return result;
+    }
+
+    private GameObject FillAreaSegment(AreaData areaData, Terrain terrain)
+    {
+        var result = new GameObject("AreaSegment Fill");
+        var fittable = new List<GameObject>(GenericBuildings).Union(UniqueBuildings).ToList();
+
+        // Try to place as many buildings as possible
+        while (fittable.Count > 0)
+        {
+            var buildingPrefab = fittable[Random.Range(0, fittable.Count)];
+            var instance = FitBuilding(buildingPrefab, areaData);
+
+            // No fit was possible
+            if (!instance)
+            {
+                fittable.Remove(buildingPrefab);
+            }
+            //Found a valid fit
+            else
+            {
+                // Adjust height, orientation and reparent
+                instance.transform.position += new Vector3(0, terrain.SampleHeight(instance.transform.position), 0);
+                instance.transform.rotation = terrain.GetNormalRotation(instance.transform.position) * instance.transform.rotation;
+                instance.CorrectAngleTolerance(BuildingAngleTolerance);
+                instance.transform.parent = result.transform;
+
+                // Remove from the lists if this is a unique building
+                if (UniqueBuildings.Contains(buildingPrefab))
+                {
+                    fittable.Remove(buildingPrefab);
+                    UniqueBuildings.Remove(buildingPrefab);
+                }
+            }
+
+        }
+
+        return result;
+    }
+
+    private GameObject FitBuilding(GameObject buildingPrefab, AreaData areaData)
+    {
+        var building2DPolygon = buildingPrefab.GetComponent<BoxCollider>().GetLocal2DPolygon();
+
+        // Try to place the building on the side of each path
+        foreach (var path in areaData.Paths)
+        {
+
+            var pathCenter = (path[0] + path[1]) / 2f;
+            var leftNormal = (Vector2)Vector3.Cross(path[0] - path[1], Vector3.forward).normalized;
+            var leftPoly = building2DPolygon.Select(vtx => vtx + pathCenter + leftNormal * PathOffset).ToArray();
+            var rightNormal = -leftNormal;
+            var rightPoly = building2DPolygon.Select(vtx => vtx + pathCenter + rightNormal * PathOffset).ToArray();
+
+            // Try to place on both sides side
+            foreach (Vector2[] clearPoly in ClearPolygons)
+            {
+                // Left side has no collisions
+                if (leftPoly.All(vtx => !vtx.IsInsidePolygon(clearPoly)))
+                {
+                    ClearPolygons.Add(leftPoly);
+                    var position2D = pathCenter + leftNormal * PathOffset;
+                    var position = new Vector3(position2D.x, 0, position2D.y);
+                    var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position,
+                        Vector3.up);
+                    return Object.Instantiate(buildingPrefab, position, rotation);
+                }
+                // Right side has no collisions
+                if (rightPoly.All(vtx => !vtx.IsInsidePolygon(clearPoly)))
+                {
+                    ClearPolygons.Add(rightPoly);
+                    var position2D = pathCenter + rightNormal * PathOffset;
+                    var position = new Vector3(position2D.x, 0, position2D.y);
+                    var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position,
+                        Vector3.up);
+                    return Object.Instantiate(buildingPrefab, position, rotation);
+                }
+            }
+        }
+
+        return null;
     }
 }

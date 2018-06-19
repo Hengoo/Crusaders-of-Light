@@ -346,8 +346,6 @@ public static class LevelDataGenerator
             GameObject areaSegmentLine = new GameObject("Blocker Line");
             areaSegmentLine.transform.parent = result.transform;
 
-            //DEBUG
-
             //Instatiate each blocker with correct positions and orientations
             Transform lastTransform = null;
             for (var j = 0; j < numberOfBlockers + 1; j++)
@@ -367,7 +365,7 @@ public static class LevelDataGenerator
                 {
                     go = Object.Instantiate(polePrefab);
                     go.transform.rotation = useTerrainNormal ?
-                        GetTerrainNormalRotation(position) :
+                        terrain.GetNormalRotation(position) :
                         Quaternion.Euler(blocker.transform.eulerAngles + Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y).normalized, Vector3.up).eulerAngles);
                 }
                 else
@@ -376,7 +374,7 @@ public static class LevelDataGenerator
                     go = Object.Instantiate(blocker);
 
                     go.transform.rotation = useTerrainNormal ?
-                        GetTerrainNormalRotation(position) :
+                        terrain.GetNormalRotation(position) :
                         Quaternion.Euler(blocker.transform.eulerAngles + Quaternion.LookRotation(orientation.normalized, Vector3.up).eulerAngles);
 
                     go.transform.localScale = blocker.transform.localScale +
@@ -449,7 +447,7 @@ public static class LevelDataGenerator
 
             var go = Object.Instantiate(poissonDiskFillData.Prefabs[Random.Range(0, poissonDiskFillData.Prefabs.Length)]);
             go.transform.position = new Vector3(point.x, height, point.y) + terrain.transform.position;
-            go.transform.rotation = GetTerrainNormalRotation(go.transform.position) * Quaternion.Euler(go.transform.rotation.eulerAngles.x, Random.Range(0, 360f), go.transform.rotation.eulerAngles.z);
+            go.transform.rotation = terrain.GetNormalRotation(go.transform.position) * Quaternion.Euler(go.transform.rotation.eulerAngles.x, Random.Range(0, 360f), go.transform.rotation.eulerAngles.z);
             go.CorrectAngleTolerance(poissonDiskFillData.AngleTolerance);
             go.transform.parent = result.transform;
 
@@ -462,15 +460,6 @@ public static class LevelDataGenerator
         }
 
         return result;
-    }
-
-    // Get rotation of the terrain normal
-    private static Quaternion GetTerrainNormalRotation(Vector3 position)
-    {
-        Ray ray = new Ray(position + Vector3.up * 30, Vector3.down);
-        var hits = Physics.RaycastAll(ray, Mathf.Infinity);
-        var terrainHit = hits.First(hit => hit.collider.name == "Terrain");
-        return Quaternion.FromToRotation(Vector3.up, terrainHit.normal);
     }
 
     // Smooth cells using a 2*neighborcount + 1 square around each cell

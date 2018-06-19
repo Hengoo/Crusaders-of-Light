@@ -35,6 +35,25 @@ public static class ExtensionMethods
         return new Vector3(u, v, w);
     }
 
+    // Get rotation of the terrain normal
+    public static Quaternion GetNormalRotation(this Terrain terrain, Vector3 position)
+    {
+        Ray ray = new Ray(position + Vector3.up * 30, Vector3.down);
+        var hits = Physics.RaycastAll(ray, Mathf.Infinity);
+        var terrainHit = hits.First(hit => hit.collider.name == terrain.name);
+        return Quaternion.FromToRotation(Vector3.up, terrainHit.normal);
+    }
+
+    public static Vector2[] GetLocal2DPolygon(this BoxCollider box)
+    {
+        Vector2 p0 = new Vector2(box.center.x + box.size.x / 2f, box.center.z + box.size.z / 2f);
+        Vector2 p1 = new Vector2(box.center.x + box.size.x / 2f, box.center.z - box.size.z / 2f);
+        Vector2 p2 = new Vector2(box.center.x - box.size.x / 2f, box.center.z - box.size.z / 2f);
+        Vector2 p3 = new Vector2(box.center.x - box.size.x / 2f, box.center.z + box.size.z / 2f);
+
+        return new [] { p0, p1, p2, p3 };
+    }
+
     public static void Shuffle<T>(this IList<T> list)
     {
         int n = list.Count;

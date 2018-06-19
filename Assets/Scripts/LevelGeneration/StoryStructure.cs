@@ -58,68 +58,59 @@ public class StoryStructure
 
     private void CreateRewrites()
     {
-        int start, bossEntry, t0, t1;
-        int t2;
-        int t3;
         int sidePathMod = SidePathCount > 0 ? (MainPathLength + 1) / SidePathCount : 1;
 
         // Set start and end
-        AreaSegmentRewrite everything = new AreaSegmentRewrite();
-        start = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Start)); // Start node
+        AreaSegmentRewrite areaSegmentRewrite = new AreaSegmentRewrite();
+        int start = areaSegmentRewrite.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Start));
 
         // Boss arena 3 node cluster
-        bossEntry = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Boss)); // Boss entrance node
-        t0 = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Boss)); // Boss adjacent node
-        t1 = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Boss)); // Boss adjacent node
-        everything.AddEdge(bossEntry, t0, (int)AreaSegment.EAreaSegmentEdgeType.BossInnerPath);
-        everything.AddEdge(t0, t1, (int)AreaSegment.EAreaSegmentEdgeType.BossInnerPath);
-        everything.AddEdge(t1, bossEntry, (int)AreaSegment.EAreaSegmentEdgeType.BossInnerPath);
+        int boss0 = areaSegmentRewrite.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
+        int boss1 = areaSegmentRewrite.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Boss)); // Boss adjacent node
+        int boss2 = areaSegmentRewrite.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.Boss)); // Boss adjacent node
+        areaSegmentRewrite.AddEdge(boss0, boss2, (int)AreaSegment.EAreaSegmentEdgeType.BossInnerPath);
+        areaSegmentRewrite.AddEdge(boss2, boss1, (int)AreaSegment.EAreaSegmentEdgeType.BossInnerPath);
+        areaSegmentRewrite.AddEdge(boss1, boss0, (int)AreaSegment.EAreaSegmentEdgeType.BossInnerPath);
 
         // Main Path
-        int count = -1;
-        t0 = start;
-        t2 = -1;
+        var mainPathNodes = new List<int>();
+        var mainPathPrev = start;
         for (int i = 0; i < MainPathLength; i++)
         {
-            t1 = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.MainPath)); // MainPath-MainPath node and edge
-            everything.AddEdge(t0, t1, (int)AreaSegment.EAreaSegmentEdgeType.MainPath);
-
-            // Side Paths
-            if ((i) % sidePathMod == 0 && SidePathCount > 0)
-            {
-                int specialArea = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty),
-                    new AreaSegment(AreaSegment.EAreaSegmentType.Special));
-                t2 = t1;
-                for (int j = 0; j < SidePathLength; j++)
-                {
-                    t3 = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty),
-                        new AreaSegment(AreaSegment.EAreaSegmentType.SidePath));
-                    everything.AddEdge(t2, t3, (int)AreaSegment.EAreaSegmentEdgeType.SidePath);
-                    t2 = t3;
-                }
-                everything.AddEdge(t2, specialArea, (int)AreaSegment.EAreaSegmentEdgeType.SidePath);
-                t2 = specialArea;
-                for (int j = 0; j < SidePathLength; j++)
-                {
-                    t3 = everything.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty),
-                        new AreaSegment(AreaSegment.EAreaSegmentType.SidePath));
-                    everything.AddEdge(t2, t3, (int)AreaSegment.EAreaSegmentEdgeType.SidePath);
-                    t2 = t3;
-                }
-                count = SidePathLength + 2;
-            }
-
-            // Add the connection back from the side path -- this way we remove the need to backtrack :)
-            if (count == 0 && t2 >= 0)
-            {
-                everything.AddEdge(t0, t2, (int)AreaSegment.EAreaSegmentEdgeType.SidePath);
-            }
-            count--; // I know, don't judge me ;)
-
-            t0 = t1;
+            var mainPathCur = areaSegmentRewrite.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty), new AreaSegment(AreaSegment.EAreaSegmentType.MainPath));
+            areaSegmentRewrite.AddEdge(mainPathPrev, mainPathCur, (int)AreaSegment.EAreaSegmentEdgeType.MainPath);
+            mainPathNodes.Add(mainPathCur);
+            mainPathPrev = mainPathCur;
         }
-        everything.AddEdge(t0, bossEntry, (int)AreaSegment.EAreaSegmentEdgeType.MainPath); // MainPath-Boss edge
+        areaSegmentRewrite.AddEdge(mainPathPrev, boss0, (int)AreaSegment.EAreaSegmentEdgeType.MainPath); // MainPath-Boss edge
 
-        Rewrites.Enqueue(everything);
+        // Side Paths
+        int count = 0;
+        while (mainPathNodes.Count > 0 && count < SidePathCount)
+        {
+            // Select random main path node
+            var mainPath = mainPathNodes[Random.Range(0, mainPathNodes.Count)];
+            mainPathNodes.RemoveAll(
+                e => e == mainPath || areaSegmentRewrite.Pattern.GetNeighbours(mainPath).Contains(e));
+
+            // Create side path off the selected Main Path Node
+            var sidePathPrev = mainPath;
+            for (int j = 0; j < SidePathLength; j++)
+            {
+                var sidePathCur = areaSegmentRewrite.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty),
+                    new AreaSegment(AreaSegment.EAreaSegmentType.SidePath));
+                areaSegmentRewrite.AddEdge(sidePathPrev, sidePathCur, (int)AreaSegment.EAreaSegmentEdgeType.SidePath);
+                sidePathPrev = sidePathCur;
+            }
+
+            // Add special area at the end
+            int specialArea = areaSegmentRewrite.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Empty),
+                new AreaSegment(AreaSegment.EAreaSegmentType.Special));
+            areaSegmentRewrite.AddEdge(sidePathPrev, specialArea, (int)AreaSegment.EAreaSegmentEdgeType.SidePath);
+
+            count++;
+        }
+
+        Rewrites.Enqueue(areaSegmentRewrite);
     }
 }

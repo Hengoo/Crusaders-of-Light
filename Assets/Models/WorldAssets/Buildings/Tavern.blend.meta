@@ -175,7 +175,12 @@ ModelImporter:
     4300062: Cube_001
     7400000: Default Take
     9500000: //RootNode
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Glass
+    second: {fileID: 2100000, guid: 116c7699f1ee6f8488dfc163e77112ce, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

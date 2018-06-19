@@ -33,6 +33,7 @@ ModelImporter:
     100054: Furnace
     100056: Plane
     100058: Window_003
+    100060: Anchor
     400000: Door
     400002: //RootNode
     400004: Foundation
@@ -63,6 +64,7 @@ ModelImporter:
     400054: Furnace
     400056: Plane
     400058: Window_003
+    400060: Anchor
     2100000: Wood_001
     2100002: Glass
     2100004: Walls
@@ -99,6 +101,7 @@ ModelImporter:
     2300052: Furnace
     2300054: Plane
     2300056: Window_003
+    2300058: Anchor
     3300000: Door
     3300002: Foundation
     3300004: Pillar
@@ -128,6 +131,7 @@ ModelImporter:
     3300052: Furnace
     3300054: Plane
     3300056: Window_003
+    3300058: Anchor
     4300000: Window_001
     4300002: Window_000
     4300004: Foundation
@@ -157,10 +161,16 @@ ModelImporter:
     4300052: Furnace
     4300054: Plane
     4300056: Window_003
+    4300058: Anchor
     7400000: Default Take
     9500000: //RootNode
     2186277476908879412: ImportLogs
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Glass
+    second: {fileID: 2100000, guid: 116c7699f1ee6f8488dfc163e77112ce, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
