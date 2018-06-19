@@ -11,6 +11,7 @@ public class VillageSettingsFactory : AreaSettingsFactory
 
     public GameObject[] GenericBuildings;
     public GameObject[] UniqueBuildings;
+    [Range(0, 100)] public float UniqueBuildingChance = 15;
     [Range(0, 80)] public float BuildingAngleTolerance = 10;
     [Range(0, 20)] public float PathOffset = 5;
     public GameObject[] Trees;
@@ -55,6 +56,6 @@ public class VillageSettingsFactory : AreaSettingsFactory
 
     public override AreaSettings[] ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
-        return new AreaSettings[] { new VillageSettings(areaDataGraph, clearPolygons, borderPolygon, GenericBuildings, UniqueBuildings, BuildingAngleTolerance, PathOffset, Trees, TreeAngleTolerance, TreeDistance) };
+        return new AreaSettings[] { new VillageSettings(areaDataGraph, clearPolygons, borderPolygon, GenericBuildings, UniqueBuildings, UniqueBuildingChance, BuildingAngleTolerance, PathOffset, Trees, TreeAngleTolerance, TreeDistance) };
     }
 }

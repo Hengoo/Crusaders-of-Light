@@ -6,6 +6,7 @@ public class VillageSettings : AreaSettings
 {
     public GameObject[] GenericBuildings;
     public List<GameObject> UniqueBuildings;
+    public float UniqueBuildingChance;
     public readonly float BuildingAngleTolerance;
     public readonly float PathOffset;
     public GameObject[] Trees;
@@ -13,7 +14,7 @@ public class VillageSettings : AreaSettings
     public readonly float TreeDistance;
 
     public VillageSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon,
-        GameObject[] genericBuildings, GameObject[] uniqueBuildings, float buildingAngleTolerance, float pathOffset,
+        GameObject[] genericBuildings, GameObject[] uniqueBuildings, float uniqueBuildingChance, float buildingAngleTolerance, float pathOffset,
         GameObject[] trees, float treeAngleTolerance, float treeDistance, string type = "")
     {
         Name = "Village " + type + " Area";
@@ -23,6 +24,7 @@ public class VillageSettings : AreaSettings
 
         GenericBuildings = genericBuildings;
         UniqueBuildings = uniqueBuildings.ToList();
+        UniqueBuildingChance = uniqueBuildingChance;
         BuildingAngleTolerance = buildingAngleTolerance;
         PathOffset = pathOffset;
 
@@ -51,11 +53,12 @@ public class VillageSettings : AreaSettings
     private GameObject PlaceBuildings(Terrain terrain)
     {
         GameObject result = new GameObject("Buildings");
+        var unique = new List<GameObject>(UniqueBuildings);
 
         // Fill each node with buildings around the roads
         foreach (var nodeData in AreaDataGraph.GetAllNodeData())
         {
-            var fill = FillAreaSegment(nodeData, terrain);
+            var fill = FillAreaSegment(nodeData, unique, terrain);
             fill.transform.parent = result.transform;
         }
 
@@ -63,21 +66,25 @@ public class VillageSettings : AreaSettings
     }
 
     // Fill an area segment with buildings along the road
-    private GameObject FillAreaSegment(AreaData areaData, Terrain terrain)
+    private GameObject FillAreaSegment(AreaData areaData, List<GameObject> unique, Terrain terrain)
     {
         var result = new GameObject("AreaSegment Fill");
-        var fittable = new List<GameObject>(GenericBuildings).Union(UniqueBuildings).ToList();
+        var generic = new List<GameObject>(GenericBuildings);
 
         // Try to place as many buildings as possible
-        while (fittable.Count > 0)
+        while (generic.Count > 0)
         {
-            var buildingPrefab = fittable[Random.Range(0, fittable.Count)];
+            bool tryUnique = Random.Range(0, 100) < UniqueBuildingChance;
+            var buildingPrefab = tryUnique && unique.Count > 0? unique[Random.Range(0, unique.Count)] : generic[Random.Range(0, generic.Count)];
             var instance = FitBuilding(buildingPrefab, areaData);
 
             // No fit was possible
             if (!instance)
             {
-                fittable.Remove(buildingPrefab);
+                if (tryUnique)
+                    unique.Remove(buildingPrefab);
+                else
+                    generic.Remove(buildingPrefab);
             }
             //Found a valid fit
             else
@@ -88,12 +95,9 @@ public class VillageSettings : AreaSettings
                 instance.CorrectAngleTolerance(BuildingAngleTolerance);
                 instance.transform.parent = result.transform;
 
-                // Remove from the lists if this is a unique building
-                if (UniqueBuildings.Contains(buildingPrefab))
-                {
-                    fittable.Remove(buildingPrefab);
-                    UniqueBuildings.Remove(buildingPrefab);
-                }
+                // Remove from the unique list if this is a unique building
+                if (tryUnique)
+                    unique.Remove(buildingPrefab);
             }
 
         }
@@ -108,6 +112,7 @@ public class VillageSettings : AreaSettings
     private GameObject FitBuilding(GameObject buildingPrefab, AreaData areaData)
     {
         var building2DPolygon = buildingPrefab.GetComponent<BoxCollider>().Get2DPolygon();
+        var border = BorderPolygon.ToArray();
 
         // Try to place the building on the side of each path
         foreach (var path in areaData.Paths)
@@ -117,11 +122,11 @@ public class VillageSettings : AreaSettings
             var rightNormal = -leftNormal;
 
 
-            float angle = Vector2.SignedAngle(Vector2.up, leftNormal);
-            var oriented2DPolygon = building2DPolygon.Select(vtx => (Vector2)(Quaternion.AngleAxis(angle, Vector3.forward) * vtx)).ToList();
-            oriented2DPolygon.SortVertices(Vector2.zero);
-            var leftPoly = oriented2DPolygon.Select(vtx => vtx + pathCenter + leftNormal * PathOffset).ToList();
-            var rightPoly = oriented2DPolygon.Select(vtx => vtx + pathCenter + rightNormal * PathOffset).ToList();
+            float rightAngle = Vector2.SignedAngle(Vector2.up, leftNormal);
+            var rightPoly = building2DPolygon.Select(vtx => (Vector2)(Quaternion.AngleAxis(rightAngle, Vector3.forward) * vtx) + pathCenter + rightNormal * PathOffset).ToList();
+
+            float leftAngle = Vector2.SignedAngle(Vector2.up, rightNormal);
+            var leftPoly = building2DPolygon.Select(vtx => (Vector2)(Quaternion.AngleAxis(leftAngle, Vector3.forward) * vtx) + pathCenter + leftNormal * PathOffset).ToList();
 
             Vector2 leftCenter = Vector2.zero;
             foreach (var p in leftPoly)
@@ -138,16 +143,9 @@ public class VillageSettings : AreaSettings
             rightCenter /= 4;
 
             // Try right side placement
-            bool rightInvalid = false;
-            foreach (Vector2[] clearPoly in ClearPolygons)
-            {
-                // Right side has no collisions
-                if (rightPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)) || rightCenter.IsInsidePolygon(clearPoly))
-                {
-                    rightInvalid = true;
-                    break;
-                }
-            }
+            bool rightInvalid = rightPoly.Any(vtx => !vtx.IsInsidePolygon(border)) ||
+                ClearPolygons.Any(clearPoly => rightPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)) || rightCenter.IsInsidePolygon(clearPoly));
+
             if (!rightInvalid)
             {
                 ClearPolygons.Add(rightPoly.ToArray());
@@ -156,21 +154,14 @@ public class VillageSettings : AreaSettings
                 var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position,
                     Vector3.up);
                 var go = Object.Instantiate(buildingPrefab, position, rotation);
-                StructureDrawer.DrawPolygon(rightPoly, Color.cyan).transform.parent = go.transform;
+                StructureDrawer.DrawPolygon(rightPoly, Color.red).transform.parent = go.transform;
 
                 return go;
             }
 
             // Try left side placement
-            bool leftInvalid = false;
-            foreach (Vector2[] clearPoly in ClearPolygons)
-            {
-                if (leftPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)) || leftCenter.IsInsidePolygon(clearPoly))
-                {
-                    leftInvalid = true;
-                    break;
-                }
-            }
+            bool leftInvalid = leftPoly.Any(vtx => !vtx.IsInsidePolygon(border)) || 
+                ClearPolygons.Any(clearPoly => leftPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)) || leftCenter.IsInsidePolygon(clearPoly));
 
             if (!leftInvalid)
             {
@@ -180,12 +171,9 @@ public class VillageSettings : AreaSettings
                 var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position,
                     Vector3.up);
                 var go = Object.Instantiate(buildingPrefab, position, rotation);
-                StructureDrawer.DrawPolygon(leftPoly, Color.cyan).transform.parent = go.transform;
+                StructureDrawer.DrawPolygon(leftPoly, Color.green).transform.parent = go.transform;
                 return go;
             }
-
-            
-
         }
 
         return null;

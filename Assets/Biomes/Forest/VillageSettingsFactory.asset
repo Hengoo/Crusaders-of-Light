@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1d7b5e72fbb594a8a0fd087183815c, type: 3}
   m_Name: VillageSettingsFactory
   m_EditorClassIdentifier: 
-  PathLength: 3
+  PathLength: 10
   PathType: 1
   GenericBuildings:
   - {fileID: 1171213281439940, guid: 4f99d62ae3d1b6b409f8dc81ee3ea9e8, type: 2}
@@ -22,8 +22,9 @@ MonoBehaviour:
   - {fileID: 1488621717258426, guid: 15df386c1921a17418592a2c0d917f8a, type: 2}
   - {fileID: 1137608657687628, guid: c9c2be32731c75646ad5520db8f5d797, type: 2}
   - {fileID: 1573598338289374, guid: bfdb3706663ec7c4bad933ae1622b778, type: 2}
-  BuildingAngleTolerance: 15
-  PathOffset: 17
+  UniqueBuildingChance: 15
+  BuildingAngleTolerance: 5
+  PathOffset: 10
   Trees:
   - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
   TreeAngleTolerance: 20
