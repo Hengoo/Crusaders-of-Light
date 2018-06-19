@@ -46,10 +46,10 @@ public static class ExtensionMethods
 
     public static Vector2[] Get2DPolygon(this BoxCollider box)
     {
-        Vector2 p0 = new Vector2(box.center.x + box.size.x / 2f, box.center.z + box.size.z / 2f);
-        Vector2 p1 = new Vector2(box.center.x + box.size.x / 2f, box.center.z - box.size.z / 2f);
-        Vector2 p2 = new Vector2(box.center.x - box.size.x / 2f, box.center.z - box.size.z / 2f);
-        Vector2 p3 = new Vector2(box.center.x - box.size.x / 2f, box.center.z + box.size.z / 2f);
+        Vector2 p0 = new Vector2(box.transform.localScale.x * (box.center.x + box.size.x / 2f), box.transform.localScale.z * (box.center.z + box.size.z / 2f));
+        Vector2 p1 = new Vector2(box.transform.localScale.x * (box.center.x + box.size.x / 2f), box.transform.localScale.z * (box.center.z - box.size.z / 2f));
+        Vector2 p2 = new Vector2(box.transform.localScale.x * (box.center.x - box.size.x / 2f), box.transform.localScale.z * (box.center.z - box.size.z / 2f));
+        Vector2 p3 = new Vector2(box.transform.localScale.x * (box.center.x - box.size.x / 2f), box.transform.localScale.z * (box.center.z + box.size.z / 2f));
 
         return new[] { p0, p1, p2, p3 };
     }

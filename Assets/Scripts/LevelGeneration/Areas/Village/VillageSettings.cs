@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class VillageSettings : AreaSettings
 {
@@ -75,7 +76,7 @@ public class VillageSettings : AreaSettings
         while (generic.Count > 0)
         {
             bool tryUnique = Random.Range(0, 100) < UniqueBuildingChance;
-            var buildingPrefab = tryUnique && unique.Count > 0? unique[Random.Range(0, unique.Count)] : generic[Random.Range(0, generic.Count)];
+            var buildingPrefab = tryUnique && unique.Count > 0 ? unique[Random.Range(0, unique.Count)] : generic[Random.Range(0, generic.Count)];
             var instance = FitBuilding(buildingPrefab, areaData);
 
             // No fit was possible
@@ -90,6 +91,10 @@ public class VillageSettings : AreaSettings
             else
             {
                 // Adjust height, orientation and reparent
+                instance.GetComponent<BoxCollider>().enabled = false;
+                var navMesh = instance.AddComponent<NavMeshModifier>();
+                navMesh.overrideArea = true;
+                navMesh.area = NavMesh.GetAreaFromName("Not Walkable");
                 instance.transform.position += new Vector3(0, terrain.SampleHeight(instance.transform.position), 0);
                 instance.transform.rotation = terrain.GetNormalRotation(instance.transform.position) * instance.transform.rotation;
                 instance.CorrectAngleTolerance(BuildingAngleTolerance);
@@ -172,6 +177,7 @@ public class VillageSettings : AreaSettings
                     Vector3.up);
                 var go = Object.Instantiate(buildingPrefab, position, rotation);
                 StructureDrawer.DrawPolygon(leftPoly, Color.green).transform.parent = go.transform;
+
                 return go;
             }
         }
