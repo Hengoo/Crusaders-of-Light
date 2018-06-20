@@ -23,7 +23,7 @@ public class EnemySwarm : MonoBehaviour {
     [Header("Seperation:")]
     public float SeperationDistance = 2;
     public float SeperationFactor = 4;
-    private bool NoSeperationThisUpdate = false;
+    protected bool NoSeperationThisUpdate = false;
 
     [Header("Alignment:")]
     public float AlignmentDistance = 4;
@@ -42,11 +42,7 @@ public class EnemySwarm : MonoBehaviour {
     public float AttractionDistance = 10;
     public float AttractionFactor = 0.6f;
 
-    [Header("Go To Border:")]
-    public bool BorderOn = false;
-    //public float OutsideAcceleration = 1;
-    public float BorderDistance = 10;
-    public float BorderFactor = 0.4f;
+
 
     [Header("Movement:")]
     public Vector3 Velocity = Vector3.zero;
@@ -122,7 +118,9 @@ public class EnemySwarm : MonoBehaviour {
     public float ClosestPlayerSqrDistance = 9;
     public float ClosestPlayerSqrDistanceBase = 9;
 
-    public bool IgnoreThisSwarmlingForAlignment = false;
+    public bool IgnoreThisSwarmlingForOthers = false;
+
+    public bool IgnoreThisSwarmlingForOthersWhenInDanger = false;
 
     // ================================================================================================================
 
@@ -141,6 +139,11 @@ public class EnemySwarm : MonoBehaviour {
 
         ClosestPlayer = null;
         ClosestPlayerSqrDistance = ClosestPlayerSqrDistanceBase;
+
+        if (IgnoreThisSwarmlingForOthersWhenInDanger && IgnoreThisSwarmlingForOthers)
+        {
+            IgnoreThisSwarmlingForOthers = false;
+        }
 
         // Go through all Players:
         for (int i = 0; i < Players.Length; i++)
@@ -173,6 +176,11 @@ public class EnemySwarm : MonoBehaviour {
                 {
                     DangerAvoidanceVec += -1 * DistanceVec / DistanceVecMag;
                     DangerNumber++;
+
+                    if (IgnoreThisSwarmlingForOthersWhenInDanger && !IgnoreThisSwarmlingForOthers)
+                    {
+                        IgnoreThisSwarmlingForOthers = true;
+                    }
                 }
             }
         }
@@ -248,6 +256,11 @@ public class EnemySwarm : MonoBehaviour {
                 Debug.Log("STOP!");
             }
 
+            if (CurrentSwarmling.IgnoreThisSwarmlingForOthers)
+            {
+                continue;
+            }
+
             DistanceVec = SwarmlingTransform.position - CurrentSwarmling.SwarmlingTransform.position;
             DistanceVecMag = DistanceVec.sqrMagnitude;
 
@@ -268,8 +281,7 @@ public class EnemySwarm : MonoBehaviour {
             }
 
             // Alignment:
-            if (DistanceVecMag <= Mathf.Pow(AlignmentDistance, 2)
-                && !CurrentSwarmling.IgnoreThisSwarmlingForAlignment) // Could be optimized by storing the pow2 distance!
+            if (DistanceVecMag <= Mathf.Pow(AlignmentDistance, 2)) // Could be optimized by storing the pow2 distance!
             {
                 AlignmentVec += CurrentSwarmling.Velocity;
                 AlignmentNumber++;
@@ -328,9 +340,12 @@ public class EnemySwarm : MonoBehaviour {
 
     }
 
+    public virtual void SwarmlingSpecialRuleCalculation() { }
+
     public virtual void SwarmlingAttackRuleCalculation() { }
 
     public virtual void SwarmlingFinishedAttack() { }
+
 
     // ================================================================================================================
 
@@ -398,6 +413,7 @@ public class EnemySwarm : MonoBehaviour {
             {
                 SwarmlingBaseRulesCalculation();
                 SwarmlingAttractionAndDangerRuleCalculation();
+                SwarmlingSpecialRuleCalculation();
             }
 
             SwarmlingAttackRuleCalculation();
@@ -731,7 +747,7 @@ public class EnemySwarm : MonoBehaviour {
 
     // ============================================== RULE: GO TO BORDER ===============================================
     // Tank Enemies should steer towards the outside of the swarm.
-
+    /*
     private void RuleGoToBorder()
     {
         int NumberOfOthers = EnemiesInRange.Count;
@@ -769,7 +785,7 @@ public class EnemySwarm : MonoBehaviour {
             NoSeperationThisUpdate = true;
         }
     }
-
+    */
     // =============================================/ RULE: GO TO BORDER /==============================================
 
     // ====================================================/ RULES /====================================================

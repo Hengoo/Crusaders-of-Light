@@ -210,7 +210,7 @@ Transform:
   m_GameObject: {fileID: 1592000477247854}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_Children:
   - {fileID: 4444099791147912}
   m_Father: {fileID: 4089028453286332}
@@ -539,18 +539,15 @@ MonoBehaviour:
   SType: 3
   ThisSwarmlingCharacter: {fileID: 114469027064287144}
   SeperationDistance: 2
-  SeperationFactor: 4
-  AlignmentDistance: 4
+  SeperationFactor: 2
+  AlignmentDistance: 8
   AlignmentFactor: 0.75
-  CohesionDistance: 3
-  CohesionFactor: 0.35
+  CohesionDistance: 10
+  CohesionFactor: 0.6
   DangerDistance: 6
   DangerFactor: 10
-  AttractionDistance: 10
+  AttractionDistance: 20
   AttractionFactor: 0.6
-  BorderOn: 0
-  BorderDistance: 10
-  BorderFactor: 0.4
   Velocity: {x: 0, y: 0, z: 0}
   Acceleration: {x: 0, y: 0, z: 1}
   Friction: 0.1
@@ -566,10 +563,10 @@ MonoBehaviour:
   Players: []
   PlayerDanger: 1
   SwarmlingTransform: {fileID: 4089028453286332}
-  NeighbourRadiusBase: 7
-  NeighbourRadiusCurrent: 2
-  NeighbourRadiusMin: 2
-  NeighbourRadiusMax: 7
+  NeighbourRadiusBase: 8
+  NeighbourRadiusCurrent: 3
+  NeighbourRadiusMin: 3
+  NeighbourRadiusMax: 8
   NeighbourRadiusStep: 1
   NeighbourColliders:
   - {fileID: 0}
@@ -595,7 +592,7 @@ MonoBehaviour:
   PlayerAttractionVec: {x: 0, y: 0, z: 0}
   AttractionNumber: 0
   DangerNumber: 0
-  PlayerDangerDistance: 10
+  PlayerDangerDistance: 15
   PlayerDangerThreatLevelCheck: 0
   PlayerDangerAngle: 1
   SwarmlingID: -1
@@ -604,6 +601,8 @@ MonoBehaviour:
   ClosestPlayer: {fileID: 0}
   ClosestPlayerSqrDistance: 289
   ClosestPlayerSqrDistanceBase: 289
+  IgnoreThisSwarmlingForOthers: 0
+  IgnoreThisSwarmlingForOthersWhenInDanger: 0
   AttackDistance: 17
   AttackDistanceMin: 14
   AttackTargetMoveRadius: 1
@@ -821,7 +820,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1186649906027286}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.8
+  m_Radius: 0.7
   m_Speed: 4
   m_Acceleration: 8
   avoidancePriority: 50

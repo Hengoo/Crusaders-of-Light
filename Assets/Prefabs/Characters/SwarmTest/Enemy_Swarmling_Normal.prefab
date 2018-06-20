@@ -204,7 +204,7 @@ Transform:
   m_GameObject: {fileID: 1381048997237096}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_Children:
   - {fileID: 4740465880215834}
   - {fileID: 4459606942742940}
@@ -512,18 +512,15 @@ MonoBehaviour:
   SType: 1
   ThisSwarmlingCharacter: {fileID: 114510744269287126}
   SeperationDistance: 2
-  SeperationFactor: 4
-  AlignmentDistance: 4
+  SeperationFactor: 2
+  AlignmentDistance: 8
   AlignmentFactor: 0.75
-  CohesionDistance: 3
-  CohesionFactor: 0.35
+  CohesionDistance: 10
+  CohesionFactor: 0.6
   DangerDistance: 6
   DangerFactor: 10
-  AttractionDistance: 10
+  AttractionDistance: 20
   AttractionFactor: 0.6
-  BorderOn: 0
-  BorderDistance: 10
-  BorderFactor: 0.4
   Velocity: {x: 0, y: 0, z: 0}
   Acceleration: {x: 0, y: 0, z: 1}
   Friction: 0.1
@@ -539,13 +536,12 @@ MonoBehaviour:
   Players: []
   PlayerDanger: 0
   SwarmlingTransform: {fileID: 4524426417151766}
-  NeighbourRadiusBase: 7
-  NeighbourRadiusCurrent: 2
-  NeighbourRadiusMin: 2
-  NeighbourRadiusMax: 7
+  NeighbourRadiusBase: 8
+  NeighbourRadiusCurrent: 3
+  NeighbourRadiusMin: 3
+  NeighbourRadiusMax: 8
   NeighbourRadiusStep: 1
   NeighbourColliders:
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -578,6 +574,8 @@ MonoBehaviour:
   ClosestPlayer: {fileID: 0}
   ClosestPlayerSqrDistance: 9
   ClosestPlayerSqrDistanceBase: 9
+  IgnoreThisSwarmlingForOthers: 0
+  IgnoreThisSwarmlingForOthersWhenInDanger: 0
   AttackDistance: 2.5
 --- !u!135 &135006269066896464
 SphereCollider:
@@ -660,7 +658,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1381048997237096}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.8
+  m_Radius: 0.7
   m_Speed: 4
   m_Acceleration: 8
   avoidancePriority: 50

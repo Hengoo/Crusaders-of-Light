@@ -63,7 +63,7 @@ public class SwarmlingWinged : EnemySwarm {
                 TargetSearchTimeCounter = TargetSearchTime;
                 DoNotMove = true;
 
-                IgnoreThisSwarmlingForAlignment = true;
+                IgnoreThisSwarmlingForOthers = true;
             }
         }
         // Observe the current target, and stop if it moves too far away from its original location:
@@ -76,8 +76,8 @@ public class SwarmlingWinged : EnemySwarm {
                 //TargetPoint = Vector3.zero;
                 TargetSearchTimeCounter = -1f;
                 DoNotMove = false;
-
-                IgnoreThisSwarmlingForAlignment = false;
+                SwarmlingBodyTransform.localRotation = Quaternion.identity;
+                IgnoreThisSwarmlingForOthers = false;
             }
         }
     }
@@ -182,6 +182,6 @@ public class SwarmlingWinged : EnemySwarm {
         TargetTransform = null;
         TargetSearchTimeCounter = -1f;
 
-        IgnoreThisSwarmlingForAlignment = false;
+        IgnoreThisSwarmlingForOthers = false;
     }
 }
