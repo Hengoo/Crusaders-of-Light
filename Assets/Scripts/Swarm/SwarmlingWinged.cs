@@ -6,6 +6,10 @@ public class SwarmlingWinged : EnemySwarm {
 
     [Header("Swarmling Wings:")]
     public float AttackDistance = 1;
+    public float AttackDistanceMin = 5;
+
+    public float AttackCooldown = 1f;
+    public float AttackCooldownCounter = -1f;
 
     [Header("Swarmling Wings Special Movement:")]
     public Transform SwarmlingBodyTransform;
@@ -44,7 +48,7 @@ public class SwarmlingWinged : EnemySwarm {
     {
         if (!DoNotMove)
         {
-            if (ClosestPlayer && ClosestPlayerSqrDistance < Mathf.Pow(AttackDistance, 2))
+            if (AttackCooldownCounter <= 0 && ClosestPlayer && ClosestPlayerSqrDistance < Mathf.Pow(AttackDistance, 2) && ClosestPlayerSqrDistance >= Mathf.Pow(AttackDistanceMin, 2))
             {
                 DoNotMove = true;
 
@@ -55,6 +59,8 @@ public class SwarmlingWinged : EnemySwarm {
                 NMAgent.enabled = false;
 
                 ThisSwarmlingCharacter.StartAnimation(AnimFlyUp, SwarmlingFlightUpwardsTimeEnd, 0);
+
+                AttackCooldownCounter = AttackCooldown; // Cooldown only starts counting down if !DoNotMove / Another Attack could be started.
             }
         }
     }
@@ -63,6 +69,11 @@ public class SwarmlingWinged : EnemySwarm {
     {
         if (!DoNotMove)
         {
+            if (AttackCooldownCounter > 0)
+            {
+                AttackCooldownCounter -= Time.deltaTime;
+            }
+
             return;
         }
 
