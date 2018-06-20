@@ -247,7 +247,8 @@ public class SwarmSpawner : MonoBehaviour {
 
         while(SpawnedEnemies[SpawnedEnemiesIDCounter] != null)
         {
-            SpawnedEnemiesIDCounter = SpawnedEnemiesIDCounter + 1 % SpawnedEnemiesMaxNumber;
+            SpawnedEnemiesIDCounter = (SpawnedEnemiesIDCounter + 1) % SpawnedEnemiesMaxNumber;
+            Debug.Log("Modulo: " + SpawnedEnemiesIDCounter);
         }
 
         return true;
