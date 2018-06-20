@@ -122,6 +122,8 @@ public class EnemySwarm : MonoBehaviour {
     public float ClosestPlayerSqrDistance = 9;
     public float ClosestPlayerSqrDistanceBase = 9;
 
+    public bool IgnoreThisSwarmlingForAlignment = false;
+
     // ================================================================================================================
 
     public void SwarmlingAttractionAndDangerRuleCalculation()
@@ -266,7 +268,8 @@ public class EnemySwarm : MonoBehaviour {
             }
 
             // Alignment:
-            if (DistanceVecMag <= Mathf.Pow(AlignmentDistance, 2)) // Could be optimized by storing the pow2 distance!
+            if (DistanceVecMag <= Mathf.Pow(AlignmentDistance, 2)
+                && !CurrentSwarmling.IgnoreThisSwarmlingForAlignment) // Could be optimized by storing the pow2 distance!
             {
                 AlignmentVec += CurrentSwarmling.Velocity;
                 AlignmentNumber++;

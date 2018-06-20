@@ -602,12 +602,15 @@ MonoBehaviour:
   SpawnedBy: {fileID: 0}
   DoNotMove: 0
   ClosestPlayer: {fileID: 0}
-  ClosestPlayerSqrDistance: 196
-  ClosestPlayerSqrDistanceBase: 196
-  AttackDistance: 14
-  AttackDistanceMin: 10
+  ClosestPlayerSqrDistance: 289
+  ClosestPlayerSqrDistanceBase: 289
+  AttackDistance: 17
+  AttackDistanceMin: 14
+  AttackTargetMoveRadius: 1
   AttackCooldown: 0.4
   AttackCooldownCounter: -1
+  TargetSearchTime: 1
+  TargetSearchTimeCounter: -1
   SwarmlingBodyTransform: {fileID: 4444099791147912}
   SwarmlingFlightTimer: 0
   SwarmlingFlightCounter: 0
@@ -619,6 +622,7 @@ MonoBehaviour:
   TargetPointCalculated: 0
   TargetPoint: {x: 0, y: 0, z: 0}
   StartingPoint: {x: 0, y: 0, z: 0}
+  TargetTransform: {fileID: 0}
   HasAttacked: 0
   AnimFlyUp: Fly_Up
   AnimFly: Fly

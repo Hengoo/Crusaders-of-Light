@@ -7,9 +7,13 @@ public class SwarmlingWinged : EnemySwarm {
     [Header("Swarmling Wings:")]
     public float AttackDistance = 1;
     public float AttackDistanceMin = 5;
+    public float AttackTargetMoveRadius = 3;
 
     public float AttackCooldown = 1f;
     public float AttackCooldownCounter = -1f;
+
+    public float TargetSearchTime = 1f;
+    public float TargetSearchTimeCounter = -1f;
 
     [Header("Swarmling Wings Special Movement:")]
     public Transform SwarmlingBodyTransform;
@@ -27,9 +31,11 @@ public class SwarmlingWinged : EnemySwarm {
     public bool TargetPointCalculated = false;
     public Vector3 TargetPoint = Vector3.zero;
     public Vector3 StartingPoint = Vector3.zero;
+    public Transform TargetTransform;
     //public Vector3 FlyingVector = Vector3.zero;
     //public Vector3 FlyingPosition = Vector3.zero;
     //public float FlyingTime = 1f;
+
 
     public bool HasAttacked = false;
 
@@ -44,13 +50,62 @@ public class SwarmlingWinged : EnemySwarm {
         UpdateWingAttack();
     }
 
+    // This is updated every few frames, along with the other basic and special rules:
     public override void SwarmlingAttackRuleCalculation()
     {
+        // Check if normal Movement is allowed (= not currently attacking):
         if (!DoNotMove)
         {
-            if (AttackCooldownCounter <= 0 && ClosestPlayer && ClosestPlayerSqrDistance < Mathf.Pow(AttackDistance, 2) && ClosestPlayerSqrDistance >= Mathf.Pow(AttackDistanceMin, 2))
+            if (!TargetTransform && AttackCooldownCounter <= 0 && ClosestPlayer && ClosestPlayerSqrDistance < Mathf.Pow(AttackDistance, 2) && ClosestPlayerSqrDistance >= Mathf.Pow(AttackDistanceMin, 2))
             {
+                TargetTransform = ClosestPlayer.transform;
+                TargetPoint = TargetTransform.position;
+                TargetSearchTimeCounter = TargetSearchTime;
                 DoNotMove = true;
+
+                IgnoreThisSwarmlingForAlignment = true;
+            }
+        }
+        // Observe the current target, and stop if it moves too far away from its original location:
+        else if (TargetSearchTimeCounter > 0)
+        {
+            //Debug.Log("Radius: " + (TargetTransform.position - TargetPoint).sqrMagnitude);
+            if ((TargetTransform.position - TargetPoint).sqrMagnitude > Mathf.Pow(AttackTargetMoveRadius, 2))
+            {
+                TargetTransform = null;
+                //TargetPoint = Vector3.zero;
+                TargetSearchTimeCounter = -1f;
+                DoNotMove = false;
+
+                IgnoreThisSwarmlingForAlignment = false;
+            }
+        }
+    }
+
+    // This is updated every frame (required, as movement is done through this):
+    private void UpdateWingAttack()
+    {
+        // Check if normal Movement is allowed (= not currently attacking):
+        if (!DoNotMove)
+        {
+            // Count down Attack Cooldown:
+            if (AttackCooldownCounter > 0)
+            {
+                AttackCooldownCounter -= Time.deltaTime;
+            }
+            return;
+        }
+
+        // Count down the Observation Time:
+        if (TargetSearchTimeCounter > 0)
+        {
+            TargetSearchTimeCounter -= Time.deltaTime;
+
+            SwarmlingBodyTransform.rotation = Quaternion.Slerp(SwarmlingBodyTransform.rotation, Quaternion.LookRotation(SwarmlingBodyTransform.position - ClosestPlayer.transform.position), 5f * Time.deltaTime);
+
+            if (TargetSearchTimeCounter <= 0)
+            {            
+                //DoNotMove = true;
 
                 //ThisSwarmlingCharacter.SwarmlingStartSkillActivation();
 
@@ -62,21 +117,10 @@ public class SwarmlingWinged : EnemySwarm {
 
                 AttackCooldownCounter = AttackCooldown; // Cooldown only starts counting down if !DoNotMove / Another Attack could be started.
             }
-        }
-    }
-
-    private void UpdateWingAttack()
-    {
-        if (!DoNotMove)
-        {
-            if (AttackCooldownCounter > 0)
-            {
-                AttackCooldownCounter -= Time.deltaTime;
-            }
 
             return;
         }
-
+        
         SwarmlingFlightCounter += Time.deltaTime;
 
         if (SwarmlingFlightCounter <= SwarmlingFlightUpwardsTimeEnd)
@@ -134,5 +178,10 @@ public class SwarmlingWinged : EnemySwarm {
         NMAgent.Warp(TargetPoint);
         SwarmlingBodyTransform.localPosition = Vector3.zero;
         SwarmlingBodyTransform.localRotation = Quaternion.identity;
+
+        TargetTransform = null;
+        TargetSearchTimeCounter = -1f;
+
+        IgnoreThisSwarmlingForAlignment = false;
     }
 }
