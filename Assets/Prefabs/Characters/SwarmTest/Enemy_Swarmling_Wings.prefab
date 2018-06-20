@@ -608,17 +608,16 @@ MonoBehaviour:
   SwarmlingBodyTransform: {fileID: 4444099791147912}
   SwarmlingFlightTimer: 0
   SwarmlingFlightCounter: 0
-  SwarmlingFlightUpwardsTimeEnd: 0.5
-  SwarmlingFlightUpwardsSpeed: 10
+  SwarmlingFlightUpwardsTimeEnd: 1
+  SwarmlingFlightUpwardsSpeed: 5
   SwarmlingFlightTowardsTargetTimeEnd: 1.5
-  SwarmlingFlightTowardsTargetSpeed: 7
+  SwarmlingFlightTowardsTargetSpeed: 2
   SwarmlingFlightTowardsCounter: 0
   TargetPointCalculated: 0
   TargetPoint: {x: 0, y: 0, z: 0}
   StartingPoint: {x: 0, y: 0, z: 0}
-  FlyingVector: {x: 0, y: 0, z: 0}
-  FlyingPosition: {x: 0, y: 0, z: 0}
-  FlyingTime: 1
+  HasAttacked: 0
+  AnimFlyUp: Fly_Up
 --- !u!114 &114469027064287144
 MonoBehaviour:
   m_ObjectHideFlags: 1

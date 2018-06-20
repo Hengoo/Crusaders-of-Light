@@ -348,7 +348,7 @@ public class EnemySwarm : MonoBehaviour {
         NeighbourLayerMask = _NeighbourLayerMask;
     }
 
-    public void SwarmlingUpdate()
+    public virtual void SwarmlingUpdate()
     {
 
         GoalFactor = 0;

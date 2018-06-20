@@ -278,6 +278,7 @@ MonoBehaviour:
   ItemSkillCurrentlyUsingItemHitBox: {fileID: 0}
   AlreadyHitCharacters: []
   CurrentItemHitBoxAlignment: 0
+  MaxHittableCharacters: -1
   EquippedSlotID: -1
   ItemPowerLevel: 0
   ItemMovePatterns:
@@ -293,5 +294,5 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 3
   m_Center: {x: 0, y: 0.8, z: 0}

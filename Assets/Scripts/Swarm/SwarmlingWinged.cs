@@ -29,6 +29,17 @@ public class SwarmlingWinged : EnemySwarm {
 
     public bool HasAttacked = false;
 
+    [Header("Animation:")]
+    public string AnimFlyUp = "Fly_Up";
+    public string AnimFly = "Fly";
+
+    public override void SwarmlingUpdate()
+    {
+        base.SwarmlingUpdate();
+
+        UpdateWingAttack();
+    }
+
     public override void SwarmlingAttackRuleCalculation()
     {
         if (!DoNotMove)
@@ -40,7 +51,18 @@ public class SwarmlingWinged : EnemySwarm {
                 //ThisSwarmlingCharacter.SwarmlingStartSkillActivation();
 
                 SwarmlingTransform.rotation = Quaternion.LookRotation(ClosestPlayer.transform.position - SwarmlingTransform.position);
+
+                NMAgent.enabled = false;
+
+                ThisSwarmlingCharacter.StartAnimation(AnimFlyUp, SwarmlingFlightUpwardsTimeEnd, 0);
             }
+        }
+    }
+
+    private void UpdateWingAttack()
+    {
+        if (!DoNotMove)
+        {
             return;
         }
 
@@ -50,6 +72,8 @@ public class SwarmlingWinged : EnemySwarm {
         {
             SwarmlingBodyTransform.position += Vector3.up * SwarmlingFlightUpwardsSpeed * Time.deltaTime;
             //SwarmlingTransform.rotation = Quaternion.LookRotation(ClosestPlayer.transform.position - SwarmlingTransform.position);
+
+            SwarmlingBodyTransform.rotation = Quaternion.Slerp(SwarmlingBodyTransform.rotation, Quaternion.LookRotation(SwarmlingBodyTransform.position - ClosestPlayer.transform.position), 5f * Time.deltaTime);
         }
         else if (SwarmlingFlightTowardsCounter <= 1)
         {
@@ -58,12 +82,13 @@ public class SwarmlingWinged : EnemySwarm {
                 TargetPointCalculated = true;
                 TargetPoint = ClosestPlayer.transform.position; // - SwarmlingBodyTransform.position;
                 StartingPoint = SwarmlingBodyTransform.position;
+                ThisSwarmlingCharacter.StartAnimation(AnimFly, 1, 0);
                 //TargetPoint = TargetPoint.normalized * SwarmlingFlightTowardsTargetSpeed;
                 //FlyingVector = TargetPoint - StartingPoint;
                 //FlyingTime = Vector3.Distance(StartingPoint, TargetPoint) / SwarmlingFlightTowardsTargetSpeed;
                 //FlyingPosition = SwarmlingBodyTransform.position;
 
-                SwarmlingTransform.rotation = Quaternion.LookRotation(ClosestPlayer.transform.position - SwarmlingTransform.position);
+                //SwarmlingTransform.rotation = Quaternion.LookRotation(ClosestPlayer.transform.position - SwarmlingTransform.position);
             }
 
             SwarmlingFlightTowardsCounter += Time.deltaTime * SwarmlingFlightTowardsTargetSpeed;
@@ -82,11 +107,12 @@ public class SwarmlingWinged : EnemySwarm {
             HasAttacked = true;
             ThisSwarmlingCharacter.SwarmlingStartSkillActivation();
         }
-
     }
 
     public override void SwarmlingFinishedAttack()
     {
+        NMAgent.enabled = true;
+
         DoNotMove = false;
         HasAttacked = false;
         TargetPointCalculated = false;
@@ -96,5 +122,6 @@ public class SwarmlingWinged : EnemySwarm {
 
         NMAgent.Warp(TargetPoint);
         SwarmlingBodyTransform.localPosition = Vector3.zero;
+        SwarmlingBodyTransform.localRotation = Quaternion.identity;
     }
 }

@@ -985,8 +985,9 @@ public class Character : MonoBehaviour
 
     public void StartAnimation(string AnimationName, float AnimationSpeed, int HandID)
     {
-        HandAnimators[HandID].SetTrigger("Trigger_" + AnimationName);
         HandAnimators[HandID].speed = 1 / AnimationSpeed;
+        HandAnimators[HandID].SetTrigger("Trigger_" + AnimationName);
+       
     }
 
     public void StartBodyAnimation(string AnimationName, float AnimationSpeed)
