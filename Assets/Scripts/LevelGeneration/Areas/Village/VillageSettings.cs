@@ -133,25 +133,15 @@ public class VillageSettings : AreaSettings
             float leftAngle = Vector2.SignedAngle(Vector2.up, rightNormal);
             var leftPoly = building2DPolygon.Select(vtx => (Vector2)(Quaternion.AngleAxis(leftAngle, Vector3.forward) * vtx) + pathCenter + leftNormal * PathOffset).ToList();
 
-            Vector2 leftCenter = Vector2.zero;
-            foreach (var p in leftPoly)
-            {
-                leftCenter += p;
-            }
-            leftCenter /= 4;
-
-            Vector2 rightCenter = Vector2.zero;
-            foreach (var p in rightPoly)
-            {
-                rightCenter += p;
-            }
-            rightCenter /= 4;
+            Vector2 leftCenter = leftPoly.GetPolygonCenter();
+            Vector2 rightCenter = rightPoly.GetPolygonCenter();
 
             // Try right side placement
             bool rightInvalid = rightPoly.Any(vtx => !vtx.IsInsidePolygon(border)) ||
                 ClearPolygons.Any(clearPoly => rightPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)) ||
                                     clearPoly.Any(vtx => vtx.IsInsidePolygon(rightPoly)) ||
-                                    rightCenter.IsInsidePolygon(clearPoly));
+                                    rightCenter.IsInsidePolygon(clearPoly) ||
+                                    clearPoly.GetPolygonCenter().IsInsidePolygon(rightPoly));
 
             if (!rightInvalid)
             {
@@ -170,7 +160,8 @@ public class VillageSettings : AreaSettings
             bool leftInvalid = leftPoly.Any(vtx => !vtx.IsInsidePolygon(border)) || 
                 ClearPolygons.Any(clearPoly => leftPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)) ||
                                     clearPoly.Any(vtx=> vtx.IsInsidePolygon(leftPoly) ||
-                                    leftCenter.IsInsidePolygon(clearPoly)));
+                                    leftCenter.IsInsidePolygon(clearPoly)) ||
+                                    clearPoly.GetPolygonCenter().IsInsidePolygon(leftPoly));
 
             if (!leftInvalid)
             {

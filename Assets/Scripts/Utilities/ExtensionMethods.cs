@@ -94,6 +94,17 @@ public static class ExtensionMethods
         return inside;
     }
 
+    public static Vector2 GetPolygonCenter(this IEnumerable<Vector2> polyPoints)
+    {
+        var count = polyPoints.Count();
+        var center = Vector2.zero;
+        foreach (var p in polyPoints)
+        {
+            center += p;
+        }
+        return center / count;
+    }
+
     public static void SortVertices(this List<Vector2> polygon, Vector2 origin)
     {
         polygon.Sort(new ClockwiseComparer(origin));
