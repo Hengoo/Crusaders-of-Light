@@ -149,7 +149,9 @@ public class VillageSettings : AreaSettings
 
             // Try right side placement
             bool rightInvalid = rightPoly.Any(vtx => !vtx.IsInsidePolygon(border)) ||
-                ClearPolygons.Any(clearPoly => rightPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)) || rightCenter.IsInsidePolygon(clearPoly));
+                ClearPolygons.Any(clearPoly => rightPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)) ||
+                                    clearPoly.Any(vtx => vtx.IsInsidePolygon(rightPoly)) ||
+                                    rightCenter.IsInsidePolygon(clearPoly));
 
             if (!rightInvalid)
             {
@@ -166,7 +168,9 @@ public class VillageSettings : AreaSettings
 
             // Try left side placement
             bool leftInvalid = leftPoly.Any(vtx => !vtx.IsInsidePolygon(border)) || 
-                ClearPolygons.Any(clearPoly => leftPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)) || leftCenter.IsInsidePolygon(clearPoly));
+                ClearPolygons.Any(clearPoly => leftPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)) ||
+                                    clearPoly.Any(vtx=> vtx.IsInsidePolygon(leftPoly) ||
+                                    leftCenter.IsInsidePolygon(clearPoly)));
 
             if (!leftInvalid)
             {
