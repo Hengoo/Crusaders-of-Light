@@ -20,7 +20,6 @@ MonoBehaviour:
   AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: 00396bc85c2ef5b40bc533c70003f6e4, type: 2}
-  - {fileID: 11400000, guid: 4eadca4f919a64f4985a81b0e7879a7a, type: 2}
   HindranceLevel: 0
   AnimationName: S_BaSt
   OverwriteAnimationSpeedScaling: -1
@@ -28,14 +27,15 @@ MonoBehaviour:
   PowerLevel: 0
   Threat:
   - 0
+  - 3
   - 0
-  - 0
-  HitTimeStart: 0.495
-  HitTimeStop: 0.6975
+  HitTimeStart: 0.2475
+  HitTimeStop: 0.495
   HitEachCharacterOnlyOnce: 1
   MaxHittableCharacters: -1
   CheckForAnimationTrigger: 1
   AnimationTrigger: S_LiSw1
-  EffectsOnSelfOnAnimationTrigger: []
+  EffectsOnSelfOnAnimationTrigger:
+  - {fileID: 11400000, guid: 4eadca4f919a64f4985a81b0e7879a7a, type: 2}
   EffectsOnSelfOnAnimationTrigger2:
   - {fileID: 11400000, guid: ab680a3978248874eb427d0a9e4286bc, type: 2}

@@ -27,7 +27,7 @@ MonoBehaviour:
   PowerLevel: 0
   Threat:
   - 0
-  - 0
+  - 3
   - 0
   HitTimeStart: 0.33
   HitTimeStop: 0.7
@@ -37,3 +37,4 @@ MonoBehaviour:
   AnimationTrigger: SEffect_Activate
   EffectsOnSelfOnAnimationTrigger:
   - {fileID: 11400000, guid: a9435e8f67864254580c3a1dc9d95675, type: 2}
+  EffectsOnSelfOnAnimationTrigger2: []

@@ -53,6 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BonusEffects:
   - {fileID: 11400000, guid: 67e22b26429d6144eaf4f252ca986a36, type: 2}
+  - {fileID: 0}
   - {fileID: 11400000, guid: 6b8a9af71487ea84bb06f64b26113c51, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 354734365085fe34cac91f99e7de7037, type: 2}
+  - {fileID: 11400000, guid: 1ce2551572d283a48ae7101e454a1bf0, type: 2}

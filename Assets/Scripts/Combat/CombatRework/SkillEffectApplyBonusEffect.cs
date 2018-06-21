@@ -6,7 +6,7 @@ using UnityEngine;
 public class SkillEffectApplyBonusEffect : SkillEffect {
 
     [Header("Bonus Effect Type:")]
-    public ElementItem.EffectType BonusEffectType = ElementItem.EffectType.LIGHT;
+    public ElementItem.EffectType BonusEffectType = ElementItem.EffectType.BASIC_1;
 
     [Header("Effects: OnApply(true) or OnActivation(false):")]
     public bool OnApply = true;

@@ -20,7 +20,6 @@ MonoBehaviour:
   AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: 53001cbdafca7a749984aa35ae827cbb, type: 2}
-  - {fileID: 11400000, guid: c6864f68bbc20f54c83637f0457d6477, type: 2}
   HindranceLevel: 0
   AnimationName: S_Rip
   OverwriteAnimationSpeedScaling: -1
@@ -36,6 +35,7 @@ MonoBehaviour:
   MaxHittableCharacters: -1
   CheckForAnimationTrigger: 1
   AnimationTrigger: S_LiSw1
-  EffectsOnSelfOnAnimationTrigger: []
+  EffectsOnSelfOnAnimationTrigger:
+  - {fileID: 11400000, guid: c6864f68bbc20f54c83637f0457d6477, type: 2}
   EffectsOnSelfOnAnimationTrigger2:
   - {fileID: 11400000, guid: b7740d3ba1991ea42907cd41a2f66ee6, type: 2}

@@ -28,7 +28,7 @@ MonoBehaviour:
   PowerLevel: 0
   Threat:
   - 0
-  - 0
+  - 3
   - 0
   HitTimeStart: 0.495
   HitTimeStop: 0.6975

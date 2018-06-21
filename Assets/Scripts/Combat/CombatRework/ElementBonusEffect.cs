@@ -6,7 +6,7 @@ using UnityEngine;
 public class ElementBonusEffect : ScriptableObject {
 
     [Header("Element Bonus Effect:")]
-    public ElementItem.EffectType EType = ElementItem.EffectType.LIGHT;
+    public ElementItem.EffectType EType = ElementItem.EffectType.BASIC_1;
 
     [Header("Additional Effects:")]
     public SkillEffect[] AdditionalEffectsOnApply = new SkillEffect[0];

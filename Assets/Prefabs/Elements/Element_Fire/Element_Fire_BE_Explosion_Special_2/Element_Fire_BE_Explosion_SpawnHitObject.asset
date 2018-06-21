@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b7002d963efd5947a3d87e859e9a884, type: 3}
+  m_Name: Element_Fire_BE_Explosion_SpawnHitObject
+  m_EditorClassIdentifier: 
+  HitObjectPrefab: {fileID: 114149983868485702, guid: f9ee3df3318e4f04cb08dc1715d3b3db,
+    type: 2}
+  UseSkillLevelAtActivationMoment: 1
+  Threat:
+  - 0
+  - 3
+  - 0
+  AllowTarget: 0001
+  SkillEffects:
+  - {fileID: 11400000, guid: 4c580b82f602e5f49bfcc8566c489267, type: 2}
+  SpawnSound: {fileID: 0}
+  LoopSound: 0

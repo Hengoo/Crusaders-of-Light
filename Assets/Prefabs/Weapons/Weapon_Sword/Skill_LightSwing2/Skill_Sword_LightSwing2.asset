@@ -28,7 +28,7 @@ MonoBehaviour:
   PowerLevel: 0
   Threat:
   - 0
-  - 0
+  - 3
   - 0
   HitTimeStart: 0.375
   HitTimeStop: 0.6975
@@ -37,3 +37,4 @@ MonoBehaviour:
   CheckForAnimationTrigger: 0
   AnimationTrigger: S_LiSw2
   EffectsOnSelfOnAnimationTrigger: []
+  EffectsOnSelfOnAnimationTrigger2: []
