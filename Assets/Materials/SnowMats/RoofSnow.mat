@@ -85,8 +85,8 @@ Material:
     - _HeightFactor: 2.54
     - _Metallic: 0
     - _Mode: 0
-    - _NoiseAdd: -0.728
-    - _NoiseMulti: 2
+    - _NoiseAdd: -0.8
+    - _NoiseMulti: 1.95
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0

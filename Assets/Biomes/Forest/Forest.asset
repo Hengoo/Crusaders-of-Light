@@ -20,8 +20,8 @@ MonoBehaviour:
     Scale: 12.5
   TerrainMaterial: {fileID: 2100000, guid: 0e6511feae21ce44799a21eaea44610f, type: 2}
   Splat:
-    texture: {fileID: 2800000, guid: db31999e40687b347bde909b309d6502, type: 3}
-    normalMap: {fileID: 2800000, guid: 3dae9479a1b662f4cbbd81d10c056352, type: 3}
+    texture: {fileID: 2800000, guid: ed2c11bdc9c3971479d1399763e24015, type: 3}
+    normalMap: {fileID: 2800000, guid: 7baf6615318c05c44a21ab70e101c30d, type: 3}
     metallic: 0
     smoothness: 0
     tileOffset: {x: 0, y: 0}
