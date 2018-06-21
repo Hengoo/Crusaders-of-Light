@@ -7,6 +7,11 @@ public class SkillHitObjectForEffect : SkillHitObject {
     [Header("Hit Object for Skill Effects:")]
     public SkillEffect[] HitObjectSkillEffects = new SkillEffect[0];
 
+    [Header("Particle Effects:")]
+    public GameObject ParticlesPrefab;
+    public GameObject ParticlesSpawnParent;
+    private GameObject ParticlesInstance;
+
     public void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillEffect[] _SkillEffects, bool[] AllowTargets, float[] SkillThreat, bool UseLevelAtActivationMoment)
     {
         // Link Skill User and Skill:
@@ -69,6 +74,12 @@ public class SkillHitObjectForEffect : SkillHitObject {
         if (UseForceImpulse)
         {
             ApplyForceImpulse();
+        }
+
+        // Spawn Particle System:
+        if (ParticlesPrefab)
+        {
+            ParticlesInstance = Instantiate(ParticlesPrefab, ParticlesSpawnParent.transform);
         }
     }
 

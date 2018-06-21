@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b7002d963efd5947a3d87e859e9a884, type: 3}
   m_Name: Element_Fire_BE_Fireball_SpawnFireball
   m_EditorClassIdentifier: 
-  HitObjectPrefab: {fileID: 114776096801051330, guid: 075f60f4f241c304ab893d7667bc63d3,
+  HitObjectPrefab: {fileID: 114149983868485702, guid: f9ee3df3318e4f04cb08dc1715d3b3db,
     type: 2}
   UseSkillLevelAtActivationMoment: 1
   Threat:
