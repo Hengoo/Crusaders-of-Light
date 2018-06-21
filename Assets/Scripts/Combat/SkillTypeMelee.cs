@@ -17,6 +17,8 @@ public class SkillTypeMelee : SkillType {
     public bool CheckForAnimationTrigger = false;
     public string AnimationTrigger = "no_animation_trigger";
     public SkillEffect[] EffectsOnSelfOnAnimationTrigger;
+    public SkillEffect[] EffectsOnSelfOnAnimationTrigger2;
+
 
     public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
@@ -32,13 +34,26 @@ public class SkillTypeMelee : SkillType {
             SourceItemSkill.EndSkillCurrentlyUsingItemHitBox();
         }
 
-        if (CheckForAnimationTrigger && SourceItemSkill.GetCurrentOwner().GetHand(0).TriggerActivateEffect())
+        if (CheckForAnimationTrigger)
         {
-            for (int i = 0; i < EffectsOnSelfOnAnimationTrigger.Length; i++)
+            if (SourceItemSkill.GetCurrentOwner().GetHand(0).TriggerActivateEffect(0))
             {
-                EffectsOnSelfOnAnimationTrigger[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+                for (int i = 0; i < EffectsOnSelfOnAnimationTrigger.Length; i++)
+                {
+                    EffectsOnSelfOnAnimationTrigger[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+                }
+            }
+
+            if (SourceItemSkill.GetCurrentOwner().GetHand(0).TriggerActivateEffect(1))
+            {
+                for (int i = 0; i < EffectsOnSelfOnAnimationTrigger2.Length; i++)
+                {
+                    EffectsOnSelfOnAnimationTrigger2[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+                }
             }
         }
+
+        
 
 
         if (CurrentActivationTime >= ActivationTime)

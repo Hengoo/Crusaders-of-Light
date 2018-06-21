@@ -29,6 +29,7 @@ GameObject:
   - component: {fileID: 64088764270323392}
   - component: {fileID: 82578410785025284}
   - component: {fileID: 114866554435282642}
+  - component: {fileID: 114476233673897656}
   m_Layer: 13
   m_Name: Weapon_Sword
   m_TagString: Weapon
@@ -279,6 +280,7 @@ MonoBehaviour:
   - {fileID: 114636584848807780}
   - {fileID: 114007886139477950}
   - {fileID: 114866554435282642}
+  - {fileID: 114476233673897656}
   SkillActivationTimer: 0
   ItemRidgidBody: {fileID: 54605769073419004}
   ItemCollider: {fileID: 64088764270323392}
@@ -292,11 +294,32 @@ MonoBehaviour:
   AlreadyHitCharacters: []
   CurrentItemHitBoxAlignment: 0
   MaxHittableCharacters: -1
+  MaxHittableCharactersCounter: -2
   EquippedSlotID: -1
   ItemPowerLevel: 0
   ItemMovePatterns:
   - {fileID: 11400000, guid: b4443c8c6f44e5842aa22f8f45bdce47, type: 2}
   TwoHanded: 0
+--- !u!114 &114476233673897656
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1462748279215140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114066496244682900}
+  SkillObject: {fileID: 11400000, guid: e762c4a79fbfe6f4cae054562bee9626, type: 2}
+  Level: 1
+  ItemSkillID: 3
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114636584848807780
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -309,7 +332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114066496244682900}
-  SkillObject: {fileID: 11400000, guid: 6352e757c7e794b4eb83ae045b3075c6, type: 2}
+  SkillObject: {fileID: 11400000, guid: eb74f77c3e6673e4dbf1375393274bac, type: 2}
   Level: 1
   ItemSkillID: 0
   ComboInput:

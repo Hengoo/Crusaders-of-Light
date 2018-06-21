@@ -97,6 +97,13 @@ public class Character : MonoBehaviour
     public float MovementRateModfier = 1.0f;
     protected PhysicsController PhysCont;
 
+    [Header("Non-Physics Special Movement:")]
+    public bool OverrideMovement = false;
+    public Vector3 OverrideMovementVec = Vector3.zero;
+
+    public bool OverrideRotation = false;
+    public Vector3 OverrideRotationVec = Vector3.zero;
+
 
     [Header("Animation:")]
     public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand
@@ -1113,6 +1120,77 @@ public class Character : MonoBehaviour
     }
 
     // ========================================== /GUI ==========================================
+
+
+    // ==================================== MOVEMENT OVERRIDE ===================================
+
+    public void SetOverrideMovement(bool state)
+    {
+        OverrideMovement = state;
+    }
+
+    public void SetOverrideMovement(Vector3 NewMovement)
+    {
+        OverrideMovementVec = NewMovement;
+    }
+
+    public void SetOverrideMovement(bool state, Vector3 NewMovement)
+    {
+        OverrideMovement = state;
+        OverrideMovementVec = NewMovement;
+    }
+
+    public void SwitchOverrideMovement(bool state, Vector3 NewRotation)
+    {
+        if (OverrideMovement && state)
+        {
+            OverrideMovement = false;
+        }
+        else
+        {
+            SetOverrideMovement(state, NewRotation);
+        }
+    }
+
+    public bool GetOverrideMovement()
+    {
+        return OverrideMovement;
+    }
+
+    public void SetOverrideRotation(bool state)
+    {
+        OverrideRotation = state;
+    }
+
+    public void SetOverrideRotation(Vector3 NewRotation)
+    {
+        OverrideRotationVec = NewRotation;
+    }
+
+    public void SetOverrideRotation(bool state, Vector3 NewRotation)
+    {
+        OverrideRotation = state;
+        OverrideRotationVec = NewRotation;
+    }
+
+    public void SwitchOverrideRotation(bool state, Vector3 NewRotation)
+    {
+        if (OverrideRotation && state)
+        {
+            OverrideRotation = false;
+        }
+        else
+        {
+            SetOverrideRotation(state, NewRotation);
+        }
+    }
+
+    public bool GetOverrideRotation()
+    {
+        return OverrideRotation;
+    }
+
+    // ===================================/ MOVEMENT OVERRIDE /==================================
 
 
     // =========================================== EVENTS ==========================================

@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class CharacterHand : MonoBehaviour {
 
-    public bool ActivateEffect = false;
+    public bool[] ActivateEffect = new bool[2];
 
-    public bool TriggerActivateEffect()
+    public bool TriggerActivateEffect(int ID)
     {
-        bool temp = ActivateEffect;
-        ActivateEffect = false;
+        bool temp = ActivateEffect[ID];
+        ActivateEffect[ID] = false;
         return temp;
     }
 
-    public void StartActivateEffect()
+    public void StartActivateEffect(int ID)
     {
-        ActivateEffect = true;
+        ActivateEffect[ID] = true;
     }
 	
 }

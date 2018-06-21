@@ -36,6 +36,9 @@ public class CharacterPlayer : Character {
     public NavMeshAgent NavAgent;
     public float RotationSpeed = 5;
 
+    Vector3 targetVel = Vector3.zero;
+    Vector3 targetDir = Vector3.zero;
+
     [Header("Orb Input:")]
     public float OrbInputTimer = -1f;
     public float OrbInputReviveTime = 1f;
@@ -66,11 +69,26 @@ public class CharacterPlayer : Character {
     private void FixedUpdate()
     {
         float speedfaktor = 10 * GetMovementRateModifier();
-        //left stick
-        Vector3 targetVel = new Vector3(Input.GetAxisRaw("Horizontal_" + PlayerID), 0, Input.GetAxisRaw("Vertical_" + PlayerID));
+        
+        if (!GetOverrideMovement())
+        {
+            //left stick
+            targetVel = new Vector3(Input.GetAxisRaw("Horizontal_" + PlayerID), 0, Input.GetAxisRaw("Vertical_" + PlayerID));
+        }
+        else
+        {
+            targetVel = OverrideMovementVec;
+        }
 
-        //right stick
-        Vector3 targetDir = new Vector3(Input.GetAxisRaw("Horizontal2_" + PlayerID), 0, -Input.GetAxisRaw("Vertical2_" + PlayerID));
+        if (!GetOverrideRotation())
+        {
+            //right stick
+            targetDir = new Vector3(Input.GetAxisRaw("Horizontal2_" + PlayerID), 0, -Input.GetAxisRaw("Vertical2_" + PlayerID));
+        }
+        else
+        {
+            targetDir = OverrideRotationVec;
+        }
 
         if (Vector3.Magnitude(targetDir) <= 0.3f)
         {
@@ -88,20 +106,23 @@ public class CharacterPlayer : Character {
         //PhysCont.SetVelRot(targetVel, targetDir);
         NavAgent.Move(targetVel);
 
-        if (!IsWalking && (Input.GetAxisRaw("Horizontal_" + PlayerID) >= 0.05f 
+        if (!IsWalking
+            && (GetOverrideMovement()
+            || (Input.GetAxisRaw("Horizontal_" + PlayerID) >= 0.05f 
             || Input.GetAxisRaw("Vertical_" + PlayerID) >= 0.05f
             || Input.GetAxisRaw("Horizontal_" + PlayerID) <= -0.05f
-            || Input.GetAxisRaw("Vertical_" + PlayerID) <= -0.05f))
+            || Input.GetAxisRaw("Vertical_" + PlayerID) <= -0.05f)))
         {
             IsWalking = true;
             StartBodyAnimation(Anim_StartWalking);
         }
         else if (IsWalking)
         {
-            if (Input.GetAxisRaw("Horizontal_" + PlayerID) < 0.05f
+            if (!GetOverrideMovement() 
+            && (Input.GetAxisRaw("Horizontal_" + PlayerID) < 0.05f
             && Input.GetAxisRaw("Vertical_" + PlayerID) < 0.05f
             && Input.GetAxisRaw("Horizontal_" + PlayerID) > -0.05f
-            && Input.GetAxisRaw("Vertical_" + PlayerID) > -0.05f)
+            && Input.GetAxisRaw("Vertical_" + PlayerID) > -0.05f))
             {
                 IsWalking = false;
                 StartBodyAnimation(Anim_EndWalking);
