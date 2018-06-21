@@ -9,14 +9,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4e819ae4bc60ed4ca7534a7a76af0f8, type: 3}
-  m_Name: ForestBossArenaFactory
+  m_Name: SnowForestBossArenaFactory
   m_EditorClassIdentifier: 
-  WallPrefab: {fileID: 100000, guid: d554421290ac96f498804985e06e0c78, type: 3}
+  WallPrefab: {fileID: 1142906075304964, guid: 62b017fc7799e6d40aeaf532b62d3abd, type: 2}
   WallLenght: 17
   WallAngleLimit: 10
   WallPositionNoise: {x: 0, y: 0, z: 0}
   WallScaleNoise: {x: 0.1, y: 0, z: 0}
   GatePrefab: {fileID: 1129564519391044, guid: 90b619f3de93d1e4c9b77df8dcbb9aea, type: 2}
-  TowerPrefab: {fileID: 100000, guid: bef39439d44a74f40b476a7b16219795, type: 3}
+  TowerPrefab: {fileID: 1231192518867186, guid: 5f7070635c8eca94dbfc5623eeb7e6ad,
+    type: 2}
   RewardPedestalPrefab: {fileID: 100000, guid: e5840d48645660843bd38c7a5466ea41, type: 3}
   BuildingPrefabs: []

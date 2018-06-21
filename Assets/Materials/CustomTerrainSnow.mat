@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: CustomTerrain
+  m_Name: CustomTerrainSnow
   m_Shader: {fileID: 4800000, guid: 1d849e7eb88d01344b9fbd62c7a2d787, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -180,7 +180,7 @@ Material:
     - _RimPower: 9.07
     - _Scale: 2
     - _SideScale: 2
-    - _Smoothness: 0.623
+    - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

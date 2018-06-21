@@ -18,6 +18,7 @@ MonoBehaviour:
     LocalMin: 0.256
     Lacunarity: 20
     Scale: 12.5
+  TerrainMaterial: {fileID: 2100000, guid: 91f2afe0cbfccde419a0ccbc057d2c96, type: 2}
   Splat:
     texture: {fileID: 2800000, guid: b35118842dc601d4f96f1b5fb639b932, type: 3}
     normalMap: {fileID: 2800000, guid: 9c012b9d7c8aecd4a91c83d471954bdb, type: 3}
@@ -25,14 +26,14 @@ MonoBehaviour:
     smoothness: 0
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 10, y: 10}
-  Blocker: {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
+  Blocker: {fileID: 1906794642983550, guid: e5a38d585b9dc5f439fbcd5328376c6e, type: 2}
   BlockerPole: {fileID: 0}
   BlockerLength: 3
   BlockerAngleLimit: 15
   BlockerPositionNoise: {x: 1, y: 0, z: 1}
   BlockerScaleNoise: {x: 0.1, y: 0.5, z: 0.1}
   BossAreas:
-  - {fileID: 11400000, guid: c61b14e114f2a4a4b822d3ad05c59e24, type: 2}
+  - {fileID: 11400000, guid: aa62ea351bbe1874aa70855e9cd80f4f, type: 2}
   ChestAreas: []
   PathAreas:
   - {fileID: 11400000, guid: 69ec5d8bfc0bb4b4dac2661c8a4d7a24, type: 2}

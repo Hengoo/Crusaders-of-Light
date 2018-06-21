@@ -13,10 +13,12 @@
 
 //IDEA: decode the heiht into the nromal map alpha??? (doesa athiswork for terrain? does it support norm,al texutre with alpha?)
 
-Shader "Custom/SnowShader" {
+Shader "Custom/SnowShaderColor" {
 	Properties{
-		_MainTex("OriginalTexture", 2D) = "white" {}
-		[NoScaleOffset] _BumpMap("Normal Map", 2D) = "bump" {}
+
+		_Color ("OriginalColor", Color) = (0, 0, 0, 1)
+		//_MainTex("OriginalTexture", 2D) = "white" {}
+		//[NoScaleOffset] _BumpMap("Normal Map", 2D) = "bump" {}
 		//[NoScaleOffset] _HeightMap("HeightMap", 2D) = "white" {}
 
 		_MainTexUp("Up Texture", 2D) = "white" {}
@@ -71,10 +73,12 @@ Shader "Custom/SnowShader" {
 				return n1 * dot(n1, n2) / n1.z - n2;
 			}
 
-			sampler2D _MainTex;
+			half4 _Color;
+
+			//sampler2D _MainTex;
 			//float4 _MainTex_ST;
 
-			sampler2D _BumpMap;
+			//sampler2D _BumpMap;
 			//sampler2D _HeightMap;
 
 
@@ -171,7 +175,7 @@ Shader "Custom/SnowShader" {
 				fixed4 colX = tex2D(_MainTexUp, uvXTop);
 				fixed4 colY = tex2D(_MainTexUp, uvYTop);
 				fixed4 colZ = tex2D(_MainTexUp, uvZTop);
-				fixed4 col = (colX * triblend.x + colY * triblend.y + colZ * triblend.z)*topBlend + tex2D(_MainTex, IN.uv_MainTex) * (1-topBlend);
+				fixed4 col = (colX * triblend.x + colY * triblend.y + colZ * triblend.z)*topBlend + _Color * (1-topBlend);
 
 				//normal of top
 				half3 tnormalX = UnpackNormal(tex2D(_BumpMapUp, uvXTop));
@@ -205,7 +209,8 @@ Shader "Custom/SnowShader" {
 					tnormalZ.xyz * triblend.z
 				);
 				// convert world space normals into tangent normals
-				half3 norm = UnpackNormal (tex2D (_BumpMap, IN.uv_MainTex))* (1-topBlend) + WorldToTangentNormalVector(IN, worldNormal) * topBlend;
+				half3 norm = half3(0.7,0.7,0)* (1-topBlend) + WorldToTangentNormalVector(IN, worldNormal) * topBlend;
+				
 
 				// set surface oUput properties
 				o.Albedo = col.rgb;
