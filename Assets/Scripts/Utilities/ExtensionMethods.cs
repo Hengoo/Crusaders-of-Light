@@ -46,10 +46,10 @@ public static class ExtensionMethods
 
     public static Vector2[] Get2DPolygon(this BoxCollider box)
     {
-        Vector2 p0 = new Vector2(box.center.x + box.size.x / 2f, box.center.z + box.size.z / 2f);
-        Vector2 p1 = new Vector2(box.center.x + box.size.x / 2f, box.center.z - box.size.z / 2f);
-        Vector2 p2 = new Vector2(box.center.x - box.size.x / 2f, box.center.z - box.size.z / 2f);
-        Vector2 p3 = new Vector2(box.center.x - box.size.x / 2f, box.center.z + box.size.z / 2f);
+        Vector2 p0 = new Vector2(box.transform.localScale.x * (box.center.x + box.size.x / 2f), box.transform.localScale.z * (box.center.z + box.size.z / 2f));
+        Vector2 p1 = new Vector2(box.transform.localScale.x * (box.center.x + box.size.x / 2f), box.transform.localScale.z * (box.center.z - box.size.z / 2f));
+        Vector2 p2 = new Vector2(box.transform.localScale.x * (box.center.x - box.size.x / 2f), box.transform.localScale.z * (box.center.z - box.size.z / 2f));
+        Vector2 p3 = new Vector2(box.transform.localScale.x * (box.center.x - box.size.x / 2f), box.transform.localScale.z * (box.center.z + box.size.z / 2f));
 
         return new[] { p0, p1, p2, p3 };
     }
@@ -80,15 +80,15 @@ public static class ExtensionMethods
     }
 
     // Supports both convex and non convex polygons
-    public static bool IsInsidePolygon(this Vector2 p, Vector2[] polyPoints)
+    public static bool IsInsidePolygon(this Vector2 p, IEnumerable<Vector2> polyPoints)
     {
-        var j = polyPoints.Length - 1;
+        var j = polyPoints.Count() - 1;
         var inside = false;
-        for (var i = 0; i < polyPoints.Length; j = i++)
+        for (var i = 0; i < polyPoints.Count(); j = i++)
         {
-            if (((polyPoints[i].y <= p.y && p.y < polyPoints[j].y) ||
-                 (polyPoints[j].y <= p.y && p.y < polyPoints[i].y)) &&
-                (p.x < (polyPoints[j].x - polyPoints[i].x) * (p.y - polyPoints[i].y) / (polyPoints[j].y - polyPoints[i].y) + polyPoints[i].x))
+            if (((polyPoints.ElementAt(i).y <= p.y && p.y < polyPoints.ElementAt(j).y) ||
+                 (polyPoints.ElementAt(j).y <= p.y && p.y < polyPoints.ElementAt(i).y)) &&
+                (p.x < (polyPoints.ElementAt(j).x - polyPoints.ElementAt(i).x) * (p.y - polyPoints.ElementAt(i).y) / (polyPoints.ElementAt(j).y - polyPoints.ElementAt(i).y) + polyPoints.ElementAt(i).x))
                 inside = !inside;
         }
         return inside;
@@ -133,7 +133,7 @@ public static class ExtensionMethods
 
     public static IEnumerable<Vector2> OffsetToCenter(this IEnumerable<Vector2> reference, Vector2 center, float amount, List<int> skip = null)
     {
-        return reference.Select(e => e += skip != null && skip.Contains(reference.ToList().IndexOf(e)) ?  Vector2.zero : (center - e).normalized * amount);
+        return reference.Select(e => e += skip != null && skip.Contains(reference.ToList().IndexOf(e)) ? Vector2.zero : (center - e).normalized * amount);
     }
 
     public static Vector2 ClosestPoint(this Vector2[] polygon, Vector2 point)
