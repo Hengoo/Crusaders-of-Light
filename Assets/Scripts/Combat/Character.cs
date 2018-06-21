@@ -60,7 +60,8 @@ public class Character : MonoBehaviour
     private int SkillLevelModifier = 0;
 
     [Header("Equipment:")]
-    public Transform[] CharacterHands = new Transform[2]; // Note: 0 : Left Hand, 1 : Right Hand
+    public Transform[] CharacterHands = new Transform[2]; // Note: 0 : Left Hand, 1 : Right Hand -> Now reversed!
+    public CharacterHand[] Hands = new CharacterHand[2];
     public Item[] StartingWeapons = new Item[0];    // Note: Slot in Array corresponds to Hand it is holding. Up to 2 Starting Weapons!
 
     [Header("Equipment (for Testing):")]
@@ -82,8 +83,8 @@ public class Character : MonoBehaviour
     [Header("Skill Activation:")]
     protected int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
     protected int LastSkillActivated = -1;
-    protected float LastSkillActivatedTimer = 0.0f;
-    protected float LastSkillActivatedStartTime = 1f;
+    protected float LastSkillActivatedTimer = 0.1f;
+    public float LastSkillActivatedStartTime = 0f;
 
     //public float SkillActivationTimer = 0.0f;
 
@@ -1034,6 +1035,16 @@ public class Character : MonoBehaviour
                 StartBodyAnimation(Anim_EndWalking);
             }
         }
+    }
+
+    public Animator GetHandAnimator(int HandID)
+    {
+        return HandAnimators[HandID];
+    }
+
+    public CharacterHand GetHand(int HandID)
+    {
+        return Hands[HandID];
     }
 
     // ========================================== /ANIMATION ==========================================

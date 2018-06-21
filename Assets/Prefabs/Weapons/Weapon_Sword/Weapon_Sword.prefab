@@ -28,6 +28,7 @@ GameObject:
   - component: {fileID: 54605769073419004}
   - component: {fileID: 64088764270323392}
   - component: {fileID: 82578410785025284}
+  - component: {fileID: 114866554435282642}
   m_Layer: 13
   m_Name: Weapon_Sword
   m_TagString: Weapon
@@ -253,17 +254,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114066496244682900}
-  SkillObject: {fileID: 11400000, guid: 651b6934dacfc2742a853f9ebf3ff56b, type: 2}
+  SkillObject: {fileID: 11400000, guid: ef8b31cc16b80614f8093cc283c5c2c7, type: 2}
   Level: 1
-  CurrentCooldown: 0
-  ActivationIntervallTimer: 0
-  EffectOnlyOnceBool: 0000
-  EffectFloat: 0
-  EffectSkillHitObjects: []
   ItemSkillID: 1
   ComboInput:
-  - {fileID: 114636584848807780}
-  - {fileID: 114007886139477950}
+  - {fileID: 114866554435282642}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
 --- !u!114 &114066496244682900
@@ -282,6 +278,7 @@ MonoBehaviour:
   ItemSkills:
   - {fileID: 114636584848807780}
   - {fileID: 114007886139477950}
+  - {fileID: 114866554435282642}
   SkillActivationTimer: 0
   ItemRidgidBody: {fileID: 54605769073419004}
   ItemCollider: {fileID: 64088764270323392}
@@ -294,6 +291,7 @@ MonoBehaviour:
   ItemSkillCurrentlyUsingItemHitBox: {fileID: 0}
   AlreadyHitCharacters: []
   CurrentItemHitBoxAlignment: 0
+  MaxHittableCharacters: -1
   EquippedSlotID: -1
   ItemPowerLevel: 0
   ItemMovePatterns:
@@ -311,16 +309,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114066496244682900}
-  SkillObject: {fileID: 11400000, guid: e983bcc1043cf4f4b86a182ba34ad557, type: 2}
+  SkillObject: {fileID: 11400000, guid: 6352e757c7e794b4eb83ae045b3075c6, type: 2}
   Level: 1
-  CurrentCooldown: 0
-  ActivationIntervallTimer: 0
-  EffectOnlyOnceBool: 0000
-  EffectFloat: 0
-  EffectSkillHitObjects: []
   ItemSkillID: 0
   ComboInput:
-  - {fileID: 114636584848807780}
   - {fileID: 114007886139477950}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &114866554435282642
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1462748279215140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114066496244682900}
+  SkillObject: {fileID: 11400000, guid: 6275907fc39a5964b881b801ab1dfbfc, type: 2}
+  Level: 1
+  ItemSkillID: 2
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

@@ -12,13 +12,13 @@ public class ItemSkill : MonoBehaviour {
     public int Level;
 
     [Header("Item Skill (Do not set - Shown for testing only):")]
-    public float CurrentCooldown;
+    private float CurrentCooldown;
 
-    public float ActivationIntervallTimer = 0.0f;
+    private float ActivationIntervallTimer = 0.0f;
 
-    public bool[] EffectOnlyOnceBool = { false, false };
-    public float EffectFloat = 0.0f;
-    public List<SkillHitObject> EffectSkillHitObjects = new List<SkillHitObject>();
+    private bool[] EffectOnlyOnceBool = { false, false };
+    private float EffectFloat = 0.0f;
+    private List<SkillHitObject> EffectSkillHitObjects = new List<SkillHitObject>();
 
     [Header("Combo System")]
     public int ItemSkillID = -1;
@@ -296,6 +296,7 @@ public class ItemSkill : MonoBehaviour {
     {
         return ItemSkillID;
     }
+
 
     // ==================================/ COMBO SYSTEM /===================================
 

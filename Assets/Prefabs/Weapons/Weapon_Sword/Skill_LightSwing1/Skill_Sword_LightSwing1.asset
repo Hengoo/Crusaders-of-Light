@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Name: Skill_Sword_LightSwing1
   m_EditorClassIdentifier: 
   Cost: 0
-  ActivationTime: 0
+  ActivationTime: 0.75
   ActivationIntervall: -1
   Cooldown: -1
   ActivationMovementModifier: 0
   AllowTargetFriendly: 0
-  AllowTargetEnemy: 0
+  AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: 3a4bb24c8d956564fa36547b15c4a447, type: 2}
   - {fileID: 11400000, guid: 5e7c21919bddf024ea110a0b5da6db3c, type: 2}
   HindranceLevel: 0
-  AnimationName: no_animation
+  AnimationName: S_LiSw1
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 0}
   PowerLevel: 0
@@ -30,7 +30,10 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  HitTimeStart: 0
-  HitTimeStop: 0
+  HitTimeStart: 0.495
+  HitTimeStop: 0.6975
   HitEachCharacterOnlyOnce: 1
   MaxHittableCharacters: -1
+  CheckForAnimationTrigger: 0
+  AnimationTrigger: S_LiSw1
+  EffectsOnSelfOnAnimationTrigger: []

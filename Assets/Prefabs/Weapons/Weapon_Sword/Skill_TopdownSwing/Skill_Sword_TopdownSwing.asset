@@ -12,17 +12,16 @@ MonoBehaviour:
   m_Name: Skill_Sword_TopdownSwing
   m_EditorClassIdentifier: 
   Cost: 0
-  ActivationTime: 0
+  ActivationTime: 1
   ActivationIntervall: -1
   Cooldown: -1
   ActivationMovementModifier: 0
   AllowTargetFriendly: 0
-  AllowTargetEnemy: 0
+  AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: c3513fb7c829ede478db3a0ad26fa325, type: 2}
-  - {fileID: 11400000, guid: a9435e8f67864254580c3a1dc9d95675, type: 2}
   HindranceLevel: 0
-  AnimationName: no_animation
+  AnimationName: S_ToDoSw
   OverwriteAnimationSpeedScaling: -1
   AIDecisionMaker: {fileID: 0}
   PowerLevel: 0
@@ -30,7 +29,11 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  HitTimeStart: 0
-  HitTimeStop: 0
+  HitTimeStart: 0.33
+  HitTimeStop: 0.7
   HitEachCharacterOnlyOnce: 1
   MaxHittableCharacters: -1
+  CheckForAnimationTrigger: 1
+  AnimationTrigger: SEffect_Activate
+  EffectsOnSelfOnAnimationTrigger:
+  - {fileID: 11400000, guid: a9435e8f67864254580c3a1dc9d95675, type: 2}

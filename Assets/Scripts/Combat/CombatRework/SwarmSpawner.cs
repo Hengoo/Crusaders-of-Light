@@ -147,14 +147,14 @@ public class SwarmSpawner : MonoBehaviour {
         if (GroupingCounter < GroupingCurrent)
         {
             GroupingCounter++;
-            GenerateSpawnPosition();
+            
 
             if (GroupingCounter >= GroupingCurrent)
             {
                 SpawningCooldownCounter = Random.Range(SpawningCooldownMin, SpawningCooldownMax);
             }
 
-            return true;
+            return GenerateSpawnPosition(); 
         }
         else
         {
@@ -162,8 +162,8 @@ public class SwarmSpawner : MonoBehaviour {
             {
                 GroupingCounter = 1;
                 GroupingCurrent = Random.Range(GroupingMin, GroupingMax);
-                GenerateSpawnPosition();
-                return true;
+                
+                return GenerateSpawnPosition();
             }
         }
         return false;
@@ -248,7 +248,7 @@ public class SwarmSpawner : MonoBehaviour {
         while(SpawnedEnemies[SpawnedEnemiesIDCounter] != null)
         {
             SpawnedEnemiesIDCounter = (SpawnedEnemiesIDCounter + 1) % SpawnedEnemiesMaxNumber;
-            Debug.Log("Modulo: " + SpawnedEnemiesIDCounter);
+            //Debug.Log("Modulo: " + SpawnedEnemiesIDCounter);
         }
 
         return true;

@@ -13,6 +13,11 @@ public class SkillTypeMelee : SkillType {
 
     public int MaxHittableCharacters = -1;
 
+    [Header("Skill Effects on Animation Trigger:")]
+    public bool CheckForAnimationTrigger = false;
+    public string AnimationTrigger = "no_animation_trigger";
+    public SkillEffect[] EffectsOnSelfOnAnimationTrigger;
+
     public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime >= HitTimeStart && CurrentActivationTime <= HitTimeStop)
@@ -26,6 +31,15 @@ public class SkillTypeMelee : SkillType {
         {
             SourceItemSkill.EndSkillCurrentlyUsingItemHitBox();
         }
+
+        if (CheckForAnimationTrigger && SourceItemSkill.GetCurrentOwner().GetHand(0).TriggerActivateEffect())
+        {
+            for (int i = 0; i < EffectsOnSelfOnAnimationTrigger.Length; i++)
+            {
+                EffectsOnSelfOnAnimationTrigger[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+            }
+        }
+
 
         if (CurrentActivationTime >= ActivationTime)
         {
