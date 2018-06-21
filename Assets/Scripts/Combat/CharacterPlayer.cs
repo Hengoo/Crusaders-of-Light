@@ -17,6 +17,7 @@ public class CharacterPlayer : Character {
 
     [Header("Input:")]
     public int PlayerID = -1; // Set from 1 to 4!
+    public int HoldDownButtonID = 1; // The button that is checked wether it is held down for skills. If there is time, replace with check depending on skill position in combo tree.
 
     [Header("Respawning:")]
     public CharacterDeathTimer DeathTimer;
@@ -219,7 +220,8 @@ public class CharacterPlayer : Character {
         {
             if (SkillCurrentlyActivating[i] >= 0)
             {
-                ItemSkillSlots[SkillCurrentlyActivating[i]].UpdateSkillActivation(SkillActivationButtonsPressed[SkillCurrentlyActivating[i]]);
+                //ItemSkillSlots[SkillCurrentlyActivating[i]].UpdateSkillActivation(SkillActivationButtonsPressed[SkillCurrentlyActivating[i]]);
+                ItemSkillSlots[SkillCurrentlyActivating[i]].UpdateSkillActivation(SkillActivationButtonsPressed[HoldDownButtonID]); // Should be replaced with check based on current skill position in combo tree if there is time.
             }
         }
     }
@@ -555,9 +557,9 @@ public class CharacterPlayer : Character {
         {
             for (int i = 0; i < SkillActivationButtonsPressed.Length; i++)
             {
-                if (SkillActivationButtonsPressed[i])
+                if (SkillActivationButtonsPressed[i] && WeaponSlots[0] && WeaponSlots[0].GetItemSkillComboStart(i) >= 0)
                 {
-                    StartSkillActivation(i);
+                    StartSkillActivation(WeaponSlots[0].GetItemSkillComboStart(i));
                     return;
                 }
             }
@@ -593,6 +595,20 @@ public class CharacterPlayer : Character {
         }
 
         return LastSkillActivated;
+    }
+
+    public override void UpdateLastSkillActivated()
+    {
+        if (LastSkillActivatedTimer > 0)
+        {
+            LastSkillActivatedTimer -= Time.deltaTime;
+
+            if (LastSkillActivatedTimer <= 0)
+            {
+                HandAnimators[0].SetTrigger(Anim_BreakAnim);
+                LastSkillActivated = -1;
+            }
+        }
     }
 
     // ======================================== /INPUT =========================================

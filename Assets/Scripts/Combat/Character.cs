@@ -83,7 +83,7 @@ public class Character : MonoBehaviour
     [Header("Skill Activation:")]
     protected int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
     protected int LastSkillActivated = -1;
-    protected float LastSkillActivatedTimer = 0.1f;
+    protected float LastSkillActivatedTimer = -1f;
     public float LastSkillActivatedStartTime = 0f;
 
     //public float SkillActivationTimer = 0.0f;
@@ -114,6 +114,7 @@ public class Character : MonoBehaviour
     protected bool IsWalking = false;
     public string Anim_StartWalking = "StartWalking";
     public string Anim_EndWalking = "EndWalking";
+    public string Anim_BreakAnim = "Trigger_BreakAnim";
 
     //[Header("GUI (for Testing Purposes):")]
     [Header("GUI HealthBars:")]
@@ -639,7 +640,7 @@ public class Character : MonoBehaviour
         return true;
     }
 
-    public void UpdateLastSkillActivated()
+    public virtual void UpdateLastSkillActivated()
     {
         if (LastSkillActivatedTimer > 0)
         {

@@ -8,10 +8,6 @@ public class Item : MonoBehaviour {
     public Character CurrentOwner;
     public int CurrentEquipSlot = -1;
 
-    [Header("Item Skills:")]
-    public ItemSkill[] ItemSkills = new ItemSkill[1];
-    private List<ItemSkill> ItemSkillsOnCooldown = new List<ItemSkill>();
-
     [Header("Item Skill Activation (Do not set - for Testing only):")]
     public float SkillActivationTimer;
 
@@ -42,6 +38,11 @@ public class Item : MonoBehaviour {
     public int ItemPowerLevel = 0; // Only for the Item itself, the Skills it grants is already calculated through it's skills.
     public MovePattern[] ItemMovePatterns = new MovePattern[0];
 
+    [Header("Item Skills:")]
+    public ItemSkill[] ItemSkills = new ItemSkill[1];
+    public int[] ItemSkillsComboStart = new int[4];
+    private List<ItemSkill> ItemSkillsOnCooldown = new List<ItemSkill>();
+
     public virtual void EquipItem(Character CharacterToEquipTo, int SlotID)
     {
     }
@@ -65,6 +66,11 @@ public class Item : MonoBehaviour {
     public ItemSkill[] GetItemSkills()
     {
         return ItemSkills;
+    }
+
+    public int GetItemSkillComboStart(int ID)
+    {
+        return ItemSkillsComboStart[ID];
     }
 
     public Character GetOwner()
