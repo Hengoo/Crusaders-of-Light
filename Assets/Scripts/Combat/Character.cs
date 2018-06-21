@@ -104,6 +104,8 @@ public class Character : MonoBehaviour
     public bool OverrideRotation = false;
     public Vector3 OverrideRotationVec = Vector3.zero;
 
+    public float OverrideMovementRateModifier = 0.0f;
+
 
     [Header("Animation:")]
     public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand
@@ -1127,6 +1129,11 @@ public class Character : MonoBehaviour
     public void SetOverrideMovement(bool state)
     {
         OverrideMovement = state;
+
+        if (!OverrideMovement)
+        {
+            UpdateOverrideMovementSpeedModifier(0);
+        }
     }
 
     public void SetOverrideMovement(Vector3 NewMovement)
@@ -1136,7 +1143,7 @@ public class Character : MonoBehaviour
 
     public void SetOverrideMovement(bool state, Vector3 NewMovement)
     {
-        OverrideMovement = state;
+        SetOverrideMovement(state);
         OverrideMovementVec = NewMovement;
     }
 
@@ -1144,7 +1151,7 @@ public class Character : MonoBehaviour
     {
         if (OverrideMovement && state)
         {
-            OverrideMovement = false;
+            SetOverrideMovement(false);
         }
         else
         {
@@ -1169,7 +1176,7 @@ public class Character : MonoBehaviour
 
     public void SetOverrideRotation(bool state, Vector3 NewRotation)
     {
-        OverrideRotation = state;
+        SetOverrideRotation(state);
         OverrideRotationVec = NewRotation;
     }
 
@@ -1177,7 +1184,7 @@ public class Character : MonoBehaviour
     {
         if (OverrideRotation && state)
         {
-            OverrideRotation = false;
+            SetOverrideRotation(false);
         }
         else
         {
@@ -1188,6 +1195,19 @@ public class Character : MonoBehaviour
     public bool GetOverrideRotation()
     {
         return OverrideRotation;
+    }
+
+    public void OverrideMovementAddModifier(float NewModifier)
+    {
+        OverrideMovementRateModifier += NewModifier;
+        ChangeMovementRateModifier(NewModifier);
+    }
+
+    private void UpdateOverrideMovementSpeedModifier(float NewModifier)
+    {
+        ChangeMovementRateModifier(-1 * OverrideMovementRateModifier);
+        OverrideMovementRateModifier = NewModifier;
+        ChangeMovementRateModifier(OverrideMovementRateModifier);
     }
 
     // ===================================/ MOVEMENT OVERRIDE /==================================

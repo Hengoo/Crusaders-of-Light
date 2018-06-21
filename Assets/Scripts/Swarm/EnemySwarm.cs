@@ -368,6 +368,10 @@ public class EnemySwarm : MonoBehaviour {
 
     public virtual void SwarmlingUpdate()
     {
+        if (ThisSwarmlingCharacter.GetCharacterIsDead())
+        {
+            return;
+        }
 
         GoalFactor = 0;
 
@@ -453,8 +457,10 @@ public class EnemySwarm : MonoBehaviour {
         Velocity += Acceleration * Time.deltaTime * 10;
         Velocity *= (1 - Friction * Time.deltaTime);
 
+
         // Move:
         NMAgent.Move(Velocity * Time.deltaTime);
+        
 
         // Rotate towards Velocity Direction:
         if (Velocity.sqrMagnitude > 0)

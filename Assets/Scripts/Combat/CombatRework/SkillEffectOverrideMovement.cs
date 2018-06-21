@@ -10,6 +10,8 @@ public class SkillEffectOverrideMovement : SkillEffect {
     public bool OverrideMovementRelative = true;
     public Vector3 OverrideMovementVec = Vector3.zero;
 
+    public float OverrideMovementRateMod = 0.0f;
+
     [Header("Override Rotation:")]
     public bool OverrideRotation = false;
     public bool OverrideRotationRelative = true;
@@ -45,10 +47,12 @@ public class SkillEffectOverrideMovement : SkillEffect {
             }
 
             Owner.SwitchOverrideMovement(OverrideMovement, NewMovement);
+            Owner.OverrideMovementAddModifier(OverrideMovementRateMod);
         }
         else
         {
             Owner.SwitchOverrideMovement(OverrideMovement, Vector3.zero);
+            Owner.OverrideMovementAddModifier(OverrideMovementRateMod);
         }
     }
 }
