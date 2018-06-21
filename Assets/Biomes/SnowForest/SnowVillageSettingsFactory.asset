@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae1d7b5e72fbb594a8a0fd087183815c, type: 3}
+  m_Name: SnowVillageSettingsFactory
+  m_EditorClassIdentifier: 
+  PathLength: 8
+  PathType: 1
+  GenericBuildings:
+  - {fileID: 1171213281439940, guid: b7a2867e2d85c054aac9875aa46b629d, type: 2}
+  - {fileID: 1227310021806302, guid: a9334b486aa7d34439ec878dfc219f32, type: 2}
+  UniqueBuildings:
+  - {fileID: 1099745622277562, guid: 4cbcb1740bf97ee4e8545113ecf8da71, type: 2}
+  - {fileID: 1131378545392920, guid: 50dd34d12bde328408ae1a618c3c50d3, type: 2}
+  - {fileID: 1488621717258426, guid: 7750ed9ea8fc9c54296247a3954b3bc0, type: 2}
+  - {fileID: 1137608657687628, guid: 9277523e8471957478af1560a6d0f565, type: 2}
+  - {fileID: 1573598338289374, guid: cdde3f7c025109247b67c09690e11d40, type: 2}
+  UniqueBuildingChance: 15
+  BuildingAngleTolerance: 5
+  PathOffset: 10
+  Trees:
+  - {fileID: 1906794642983550, guid: e5a38d585b9dc5f439fbcd5328376c6e, type: 2}
+  TreeAngleTolerance: 20
+  TreeDistance: 6

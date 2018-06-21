@@ -36,8 +36,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: aa62ea351bbe1874aa70855e9cd80f4f, type: 2}
   ChestAreas: []
   PathAreas:
-  - {fileID: 11400000, guid: 69ec5d8bfc0bb4b4dac2661c8a4d7a24, type: 2}
-  - {fileID: 11400000, guid: 2851824dd639f3e49beb2b427e9e2198, type: 2}
+  - {fileID: 11400000, guid: cf55006f5f4bd49489f20a572186cc1f, type: 2}
+  - {fileID: 11400000, guid: 5fecec567a36da5478a8573aaf432497, type: 2}
   MainPathSplatPrototype:
     texture: {fileID: 2800000, guid: d048b4964ec17a640a0543ae79757a34, type: 3}
     normalMap: {fileID: 2800000, guid: 03c6cb46c6faeea4da99c2845000e074, type: 3}
@@ -54,5 +54,5 @@ MonoBehaviour:
     tileSize: {x: 10, y: 10}
   MainPathSplatSize: 2
   SidePathSplatSize: 1
-  PathHalfWidth: 8
+  PathHalfWidth: 6
   PathBezierSegmentSize: 10
