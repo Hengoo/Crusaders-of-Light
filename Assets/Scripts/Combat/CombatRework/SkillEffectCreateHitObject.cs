@@ -22,6 +22,8 @@ public class SkillEffectCreateHitObject : SkillEffect {
     public bool UseRotationOffset = false;
     public Vector3 RotationOffset = Vector3.zero;
 
+    public bool SpawnAtTargetPosition = false;
+
     [Header("Sound:")]
     public AudioClip SpawnSound;
     public bool LoopSound;
@@ -45,13 +47,18 @@ public class SkillEffectCreateHitObject : SkillEffect {
             {
                 SpawnRot = Quaternion.Euler(RotationOffset) * SpawnRot;
             }
-
-
-            SpawnPos = SourceItemSkill.transform.position;
         }
         else
         {
-            SpawnRot = Quaternion.FromToRotation(Owner.transform.position, Target.transform.position);
+            SpawnRot = Quaternion.FromToRotation(Owner.transform.position, Target.transform.position);           
+        }
+
+        if (SpawnAtTargetPosition)
+        {
+            SpawnPos = Target.transform.position;
+        }
+        else
+        {
             SpawnPos = SourceItemSkill.transform.position;
         }
 
