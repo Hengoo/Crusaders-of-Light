@@ -294,8 +294,7 @@ MonoBehaviour:
   MaxHittableCharactersCounter: -2
   EquippedSlotID: -1
   ItemPowerLevel: 0
-  ItemMovePatterns:
-  - {fileID: 11400000, guid: b4443c8c6f44e5842aa22f8f45bdce47, type: 2}
+  ItemMovePatterns: []
   ItemSkills:
   - {fileID: 114636584848807780}
   - {fileID: 114007886139477950}

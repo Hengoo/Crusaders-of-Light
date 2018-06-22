@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b646cdd733c544ea65c7ce4a2ec9a8, type: 3}
+  m_Name: Skill_Mace_GroundSlam1
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 1.25
+  ActivationIntervall: -1
+  Cooldown: -1
+  ActivationMovementModifier: -0.8
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: 4ba71a7b94abfda44b812a8319a1ce90, type: 2}
+  - {fileID: 11400000, guid: aafbd7b28be031443822727769d2dede, type: 2}
+  HindranceLevel: 0
+  AnimationName: M_GrSl1
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 0}
+  PowerLevel: 0
+  Threat:
+  - 0
+  - 3
+  - 0
+  HitTimeStart: 0.495
+  HitTimeStop: 0.6975
+  HitEachCharacterOnlyOnce: 1
+  MaxHittableCharacters: -1
+  CheckForAnimationTrigger: 1
+  AnimationTrigger: S_LiSw1
+  EffectsOnSelfOnAnimationTrigger: []
+  EffectsOnSelfOnAnimationTrigger2:
+  - {fileID: 11400000, guid: 176374a940c650e4bb029f8b3e2baccd, type: 2}
