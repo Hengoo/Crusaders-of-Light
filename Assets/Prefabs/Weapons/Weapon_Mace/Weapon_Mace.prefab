@@ -281,7 +281,7 @@ MonoBehaviour:
   Level: 1
   ItemSkillID: 3
   ComboInput:
-  - {fileID: 0}
+  - {fileID: 114613658672761830}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -301,7 +301,7 @@ MonoBehaviour:
   Level: 1
   ItemSkillID: 2
   ComboInput:
-  - {fileID: 0}
+  - {fileID: 114613658672761830}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
