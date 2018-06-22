@@ -335,7 +335,7 @@ public class Character : MonoBehaviour
         return Mathf.Max(0, MovementRateModfier);
     }
 
-    public void ChangeMovementRateModifier(float Change)
+    public virtual void ChangeMovementRateModifier(float Change)
     {
         MovementRateModfier += Change;
     }

@@ -863,5 +863,11 @@ public class EnemySwarm : MonoBehaviour {
         return SType;
     }
 
+    public void ChangeSwarmlingSpeed(float SpeedChange)
+    {
+        DesiredBaseSpeed += SpeedChange;
+        DesiredRunSpeed += SpeedChange;
+    }
+
     // ===============================================/ GETTERS/SETTERS /================================================
 }

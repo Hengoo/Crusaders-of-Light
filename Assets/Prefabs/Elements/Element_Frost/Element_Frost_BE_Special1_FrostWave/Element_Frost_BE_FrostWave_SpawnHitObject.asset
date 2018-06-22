@@ -21,5 +21,9 @@ MonoBehaviour:
   AllowTarget: 0001
   SkillEffects:
   - {fileID: 11400000, guid: 8e7edc3ab532fe145b1c7edc0dcfb67b, type: 2}
+  - {fileID: 11400000, guid: dcb19f1c8a0d6d7448bc880da659b2d9, type: 2}
+  UseRotationOffset: 0
+  RotationOffset: {x: 0, y: 0, z: 0}
+  SpawnAtTargetPosition: 0
   SpawnSound: {fileID: 0}
   LoopSound: 0

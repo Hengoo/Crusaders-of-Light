@@ -87,6 +87,13 @@ public class CharacterSwarm : Character {
         return null;
     }
 
+    public override void ChangeMovementRateModifier(float Change)
+    {
+        //base.ChangeMovementRateModifier(Change);
+
+        Swarmling.ChangeSwarmlingSpeed(Change);
+    }
+
     // ====================================/ Override Functions /====================================
 
 

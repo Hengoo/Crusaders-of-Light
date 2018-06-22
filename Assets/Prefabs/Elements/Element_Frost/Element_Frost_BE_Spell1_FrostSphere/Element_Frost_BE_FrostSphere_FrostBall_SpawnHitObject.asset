@@ -21,6 +21,7 @@ MonoBehaviour:
   AllowTarget: 0001
   SkillEffects:
   - {fileID: 11400000, guid: ba4c392f7b9b3404fa12c91ab5973a7d, type: 2}
+  - {fileID: 11400000, guid: 142eaa11cd0c52a49bda7e5867a2eb33, type: 2}
   UseRotationOffset: 0
   RotationOffset: {x: 0, y: 0, z: 0}
   SpawnAtTargetPosition: 1
