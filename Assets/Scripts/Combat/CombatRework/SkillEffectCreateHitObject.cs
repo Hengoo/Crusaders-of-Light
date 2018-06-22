@@ -50,7 +50,7 @@ public class SkillEffectCreateHitObject : SkillEffect {
         }
         else
         {
-            SpawnRot = Quaternion.FromToRotation(Owner.transform.position, Target.transform.position);           
+            SpawnRot = Quaternion.LookRotation(Target.transform.position - Owner.transform.position);
         }
 
         if (SpawnAtTargetPosition)

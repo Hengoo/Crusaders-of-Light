@@ -85,6 +85,12 @@ public class SkillHitObjectForEffect : SkillHitObject {
 
     protected override void HitTarget(Character TargetCharacter)
     {
+        if (MaxNumberOfTargets > 0 && MaxNumberOfTargetsCounter >= MaxNumberOfTargets)
+        {
+            return;
+        }
+
+
         if (!CanHitSameTargetMultipleTime && AlreadyHitCharacters.Contains(TargetCharacter))
         {
             return;
@@ -101,10 +107,20 @@ public class SkillHitObjectForEffect : SkillHitObject {
 
         ApplyAllEffects(TargetCharacter);
 
-        if (MaxNumberOfTargets > 0
-            && MaxNumberOfTargets >= AlreadyHitCharacters.Count)
+
+        /*     if (MaxNumberOfTargets > 0
+                 && MaxNumberOfTargets >= AlreadyHitCharacters.Count)
+             {
+                 ReachedMaxNumberOfTargets();
+             }*/
+        if (MaxNumberOfTargets > 0)
         {
-            ReachedMaxNumberOfTargets();
+            MaxNumberOfTargetsCounter++;
+
+            if (MaxNumberOfTargetsCounter >= MaxNumberOfTargets)
+            {
+                ReachedMaxNumberOfTargets();
+            }
         }
     }
 

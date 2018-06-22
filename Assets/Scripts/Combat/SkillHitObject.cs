@@ -14,6 +14,7 @@ public class SkillHitObject : MonoBehaviour {
 
     public bool CanHitSameTargetMultipleTime = false;
     public int MaxNumberOfTargets = -1;
+    protected int MaxNumberOfTargetsCounter = 0;
     public bool HitObjectIsChildOfOwner = false;
 
     public bool AlwaysHitOwner = false;
@@ -198,6 +199,11 @@ public class SkillHitObject : MonoBehaviour {
 
     protected virtual void HitTarget(Character TargetCharacter)
     {
+        if (MaxNumberOfTargets > 0 && MaxNumberOfTargetsCounter >= MaxNumberOfTargets)
+        {
+            return;
+        }
+
         if (!CanHitSameTargetMultipleTime && AlreadyHitCharacters.Contains(TargetCharacter))
         {
             return;
@@ -221,10 +227,21 @@ public class SkillHitObject : MonoBehaviour {
             SourceSkill.ApplyEffects(Owner, SourceItemSkill, TargetCharacter);
         }
 
-        if (MaxNumberOfTargets > 0
+
+
+   /*     if (MaxNumberOfTargets > 0
             && MaxNumberOfTargets >= AlreadyHitCharacters.Count)
         {
             ReachedMaxNumberOfTargets();
+        }*/
+        if (MaxNumberOfTargets > 0)
+        {
+            MaxNumberOfTargetsCounter++;
+
+            if (MaxNumberOfTargetsCounter >= MaxNumberOfTargets)
+            {
+                ReachedMaxNumberOfTargets();
+            }
         }
     }
     
