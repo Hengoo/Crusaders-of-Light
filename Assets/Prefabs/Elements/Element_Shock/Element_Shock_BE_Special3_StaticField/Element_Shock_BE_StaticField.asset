@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15f6c5bdb8cff11488a1c950bf33b120, type: 3}
+  m_Name: Element_Shock_BE_StaticField
+  m_EditorClassIdentifier: 
+  EType: 3
+  AdditionalEffectsOnApply: []
+  AdditionalEffectsOnActivation:
+  - {fileID: 11400000, guid: 7b3f45ad4e3992046b34a1f0c34d04ca, type: 2}

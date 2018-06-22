@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b7002d963efd5947a3d87e859e9a884, type: 3}
+  m_Name: Element_Shock_BE_Multiball_SpawnHitObject_Middle
+  m_EditorClassIdentifier: 
+  HitObjectPrefab: {fileID: 114742876481722018, guid: 6445b51bf9b481941b45c6b39c004f0a,
+    type: 2}
+  UseSkillLevelAtActivationMoment: 1
+  Threat:
+  - 0
+  - 3
+  - 0
+  AllowTarget: 0001
+  SkillEffects:
+  - {fileID: 11400000, guid: 61b38d4cf96f81c4eb42f769aa9b245d, type: 2}
+  UseRotationOffset: 0
+  RotationOffset: {x: 0, y: 0, z: 0}
+  SpawnSound: {fileID: 0}
+  LoopSound: 0

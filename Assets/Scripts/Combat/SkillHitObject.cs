@@ -301,7 +301,9 @@ public class SkillHitObject : MonoBehaviour {
     {
         Vector3 ForceDirection = Vector3.zero;
 
-        ForceDirection = Owner.transform.rotation * Vector3.forward;
+        //ForceDirection = Owner.transform.rotation * Vector3.forward;
+
+        ForceDirection = transform.rotation * Vector3.forward;
 
         float FinalMagnitude = ForceImpulseMagnitude;
 

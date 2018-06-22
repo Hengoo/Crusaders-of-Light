@@ -18,19 +18,44 @@ public class SkillEffectCreateHitObject : SkillEffect {
     [Header("Skill Effects applied by Hit Object:")]
     public SkillEffect[] SkillEffects = new SkillEffect[0];
 
+    [Header("Position and Rotation:")]
+    public bool UseRotationOffset = false;
+    public Vector3 RotationOffset = Vector3.zero;
+
     [Header("Sound:")]
     public AudioClip SpawnSound;
     public bool LoopSound;
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
-        CreateHitObject(Owner, SourceItemSkill);
+        CreateHitObject(Owner, SourceItemSkill, Target);
     }
 
-    public void CreateHitObject(Character Owner, ItemSkill SourceItemSkill)
+    public void CreateHitObject(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
+        Vector3 SpawnPos = Vector3.zero;
+        Quaternion SpawnRot = Quaternion.identity;
+
         // Spawn and Initialize Projectile:
-        SkillHitObjectForEffect SpawnedHitObject = Instantiate(HitObjectPrefab, SourceItemSkill.transform.position, SourceItemSkill.GetCurrentOwner().transform.rotation);
+        if (Target == Owner)
+        {
+            SpawnRot = Owner.transform.rotation;
+
+            if (UseRotationOffset)
+            {
+                SpawnRot = Quaternion.Euler(RotationOffset) * SpawnRot;
+            }
+
+
+            SpawnPos = SourceItemSkill.transform.position;
+        }
+        else
+        {
+            SpawnRot = Quaternion.FromToRotation(Owner.transform.position, Target.transform.position);
+            SpawnPos = SourceItemSkill.transform.position;
+        }
+
+        SkillHitObjectForEffect SpawnedHitObject = Instantiate(HitObjectPrefab, SpawnPos, SpawnRot);
 
         if (SpawnSound)
         {
