@@ -54,6 +54,7 @@ MonoBehaviour:
   BonusEffects:
   - {fileID: 11400000, guid: 91736fbbd3521af4faf54d54b4bbe1df, type: 2}
   - {fileID: 0}
-  - {fileID: 11400000, guid: 26144a897a91c67469b28f379c9a61e0, type: 2}
+  - {fileID: 11400000, guid: 4c97165cbbbab4848a7ce410153512ea, type: 2}
   - {fileID: 11400000, guid: 1222f0efcb91b0a489ba486092169576, type: 2}
   - {fileID: 11400000, guid: 63a6a03286129a24e8345a3a5f079a53, type: 2}
+  - {fileID: 11400000, guid: 26144a897a91c67469b28f379c9a61e0, type: 2}

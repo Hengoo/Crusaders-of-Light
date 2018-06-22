@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15f6c5bdb8cff11488a1c950bf33b120, type: 3}
   m_Name: Element_Shock_BE_Multiball2
   m_EditorClassIdentifier: 
-  EType: 2
+  EType: 5
   AdditionalEffectsOnApply: []
   AdditionalEffectsOnActivation:
   - {fileID: 11400000, guid: a428726cea779594aa2e80ef7587c478, type: 2}

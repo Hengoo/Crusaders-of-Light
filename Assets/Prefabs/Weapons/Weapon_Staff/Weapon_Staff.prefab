@@ -32,6 +32,7 @@ GameObject:
   - component: {fileID: 114704678159327376}
   - component: {fileID: 114627077475524124}
   - component: {fileID: 114123036873269748}
+  - component: {fileID: 114114393772844580}
   m_Layer: 13
   m_Name: Weapon_Staff
   m_TagString: Weapon
@@ -245,6 +246,26 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114114393772844580
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1005816776593156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114126834154076376}
+  SkillObject: {fileID: 11400000, guid: 051c87f113770114db1d87b97d5d4262, type: 2}
+  Level: 1
+  ItemSkillID: 6
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114123036873269748
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -257,7 +278,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114126834154076376}
-  SkillObject: {fileID: 11400000, guid: 9ed298619d4dd9042804d986054b9260, type: 2}
+  SkillObject: {fileID: 11400000, guid: 7e76785f0dcb8014b83d8d1c5b1285c8, type: 2}
   Level: 1
   ItemSkillID: 5
   ComboInput:
@@ -302,6 +323,7 @@ MonoBehaviour:
   - {fileID: 114704678159327376}
   - {fileID: 114627077475524124}
   - {fileID: 114123036873269748}
+  - {fileID: 114114393772844580}
   ItemSkillsComboStart: 0000000003000000ffffffffffffffff
   TwoHanded: 0
 --- !u!114 &114209286195597762
@@ -360,8 +382,8 @@ MonoBehaviour:
   Level: 1
   ItemSkillID: 4
   ComboInput:
+  - {fileID: 114114393772844580}
   - {fileID: 0}
-  - {fileID: 114123036873269748}
   - {fileID: 0}
   - {fileID: 0}
 --- !u!114 &114704678159327376
@@ -380,7 +402,7 @@ MonoBehaviour:
   Level: 1
   ItemSkillID: 3
   ComboInput:
-  - {fileID: 0}
+  - {fileID: 114123036873269748}
   - {fileID: 114627077475524124}
   - {fileID: 0}
   - {fileID: 0}
