@@ -528,6 +528,9 @@ MonoBehaviour:
   CharacterHands:
   - {fileID: 4997374370892538}
   - {fileID: 4997374370892538}
+  Hands:
+  - {fileID: 0}
+  - {fileID: 0}
   StartingWeapons:
   - {fileID: 114000581971207190, guid: e52d3f2925e078c49bf4c256b8965dd2, type: 2}
   SkillsPerWeapon: 8
@@ -545,13 +548,20 @@ MonoBehaviour:
   - {fileID: 0}
   EquippedElement: {fileID: 0}
   StartingElement: {fileID: 0}
+  LastSkillActivatedStartTime: 0
   MovementRateModfier: 1
+  OverrideMovement: 0
+  OverrideMovementVec: {x: 0, y: 0, z: 0}
+  OverrideRotation: 0
+  OverrideRotationVec: {x: 0, y: 0, z: 0}
+  OverrideMovementRateModifier: 0
   HandAnimators:
   - {fileID: 95816578325045314}
   - {fileID: 95816578325045314}
   BodyAnimator: {fileID: 95816578325045314}
   Anim_StartWalking: StartWalking
   Anim_EndWalking: EndWalking
+  Anim_BreakAnim: Trigger_BreakAnim
   CharAttention: {fileID: 0}
   Alignment: 2
   SpawnStartingWeaponsOnStart: 1
@@ -584,8 +594,8 @@ MonoBehaviour:
   Acceleration: {x: 0, y: 0, z: 1}
   Friction: 0.1
   GoalFactor: 0
-  DesiredBaseSpeed: 6
-  DesiredRunSpeed: 8
+  DesiredBaseSpeed: 9
+  DesiredRunSpeed: 12
   UpdateTimer: 0.06
   UpdateCounter: 0
   SAttention: {fileID: 0}

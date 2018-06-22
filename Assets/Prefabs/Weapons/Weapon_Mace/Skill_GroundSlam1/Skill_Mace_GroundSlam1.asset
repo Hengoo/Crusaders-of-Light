@@ -20,7 +20,6 @@ MonoBehaviour:
   AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: 4ba71a7b94abfda44b812a8319a1ce90, type: 2}
-  - {fileID: 11400000, guid: aafbd7b28be031443822727769d2dede, type: 2}
   HindranceLevel: 0
   AnimationName: M_GrSl1
   OverwriteAnimationSpeedScaling: -1
@@ -36,6 +35,7 @@ MonoBehaviour:
   MaxHittableCharacters: -1
   CheckForAnimationTrigger: 1
   AnimationTrigger: S_LiSw1
-  EffectsOnSelfOnAnimationTrigger: []
+  EffectsOnSelfOnAnimationTrigger:
+  - {fileID: 11400000, guid: aafbd7b28be031443822727769d2dede, type: 2}
   EffectsOnSelfOnAnimationTrigger2:
   - {fileID: 11400000, guid: 176374a940c650e4bb029f8b3e2baccd, type: 2}
