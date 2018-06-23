@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PPHelper : MonoBehaviour {
 
-	private const int buffersize = 200;
+	public int buffersize = 200;
 
 	private Vector4[] vec4Array;
 
@@ -38,11 +38,11 @@ public class PPHelper : MonoBehaviour {
 	}
 
 
-	public void UpdateBuffer(List<GameObject> elements)
+	public void UpdateBuffer(GameObject[] elements)
 	{
 
 		Vector3 tmp = Vector3.zero;
-		int len = elements.Count;
+		int len = elements.Length;
 		for(int i =0; i< buffersize; i++)
 		{
 			if(i < len)

@@ -52,12 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9febb28ae94110049bd424f1ac76676d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  computeShader: {fileID: 0}
-  go:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  buffersize: 200
   cam: {fileID: 0}
 --- !u!114 &114398883620960944
 MonoBehaviour:
