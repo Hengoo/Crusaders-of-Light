@@ -38,7 +38,7 @@ public class PPHelper : MonoBehaviour {
 	}
 
 
-	public void UpdateBuffer(GameObject[] elements)
+	public void UpdateBuffer(EnemySwarm[] elements)
 	{
 
 		Vector3 tmp = Vector3.zero;
@@ -47,8 +47,16 @@ public class PPHelper : MonoBehaviour {
 		{
 			if(i < len)
 			{
-				tmp = cam.WorldToViewportPoint(elements[i].transform.position);
-				vec4Array[i] = new Vector4(tmp.x, tmp.y, tmp.z, 0.1f);
+				if(elements[i] != null)
+				{
+					tmp = cam.WorldToViewportPoint(elements[i].transform.position);
+					vec4Array[i] = new Vector4(tmp.x, tmp.y, tmp.z, 0.1f);
+				}
+				else
+				{
+					vec4Array[i] = new Vector4(0, 0, 0, 0);
+				}
+				
 			}else
 			{
 				vec4Array[i] = new Vector4(0, 0, 0, 0);
