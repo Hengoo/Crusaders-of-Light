@@ -17,6 +17,9 @@ public class VillageSettingsFactory : AreaSettingsFactory
     public GameObject[] Trees;
     [Range(0, 80)] public float TreeAngleTolerance = 20;
     [Range(0.1f, 20)] public float TreeDistance = 6;
+    public GameObject StreetLamp;
+    [Range(0, 80)] public float LampAngleTolerance = 15;
+    [Range(0.1f, 20)] public float LampPathOffset = 4;
 
     public override Graph<AreaSegment> GetPatternGraph()
     {
@@ -56,6 +59,6 @@ public class VillageSettingsFactory : AreaSettingsFactory
 
     public override AreaSettings[] ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
-        return new AreaSettings[] { new VillageSettings(areaDataGraph, clearPolygons, borderPolygon, GenericBuildings, UniqueBuildings, UniqueBuildingChance, BuildingAngleTolerance, PathOffset, Trees, TreeAngleTolerance, TreeDistance) };
+        return new AreaSettings[] { new VillageSettings(areaDataGraph, clearPolygons, borderPolygon, GenericBuildings, UniqueBuildings, UniqueBuildingChance, BuildingAngleTolerance, PathOffset, Trees, TreeAngleTolerance, TreeDistance, StreetLamp, LampAngleTolerance, LampPathOffset) };
     }
 }

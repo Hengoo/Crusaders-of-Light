@@ -179,8 +179,6 @@ public class LevelCreator : Singleton<LevelCreator>
             Terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
             Terrain.GetComponent<Terrain>().materialTemplate = MyTerrainStructure.BiomeSettings.TerrainMaterial;
         }
-
-        LevelController.Instance.TerrainChanged(Terrain);
     }
 
     //// Water Plane Placement

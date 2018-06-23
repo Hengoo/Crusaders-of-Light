@@ -63,6 +63,9 @@ public class LevelController : Singleton<LevelController>
             LightWisp.GetComponent<LightOrbEffects>().InitializeLightOrb(PlayerCharacters, GameController.Instance.ActivePlayers);
         }
 
+        //Set reference to terrain;
+        SwarmlingSpawner.SetTerrain(LevelCreator.Terrain);
+
         //Initialize SwarmSpawner
         if (SwarmlingSpawner)
             SwarmlingSpawner.InitializeSwarmSpawner(PlayerCharacters, GameController.Instance.ActivePlayers);
@@ -128,11 +131,5 @@ public class LevelController : Singleton<LevelController>
             result[i] = PlayerCharacters[i].gameObject;
 
         return result;
-    }
-
-    // This is called by the Level Creator every time a new Terrain is generated:
-    public void TerrainChanged(Terrain NewTerrain)
-    {
-        SwarmlingSpawner.SetTerrain(NewTerrain);
     }
 }

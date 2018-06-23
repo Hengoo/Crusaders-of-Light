@@ -13,10 +13,13 @@ public class VillageSettings : AreaSettings
     public GameObject[] Trees;
     public readonly float TreeAngleTolerance;
     public readonly float TreeDistance;
+    public GameObject StreetLamp;
+    public readonly float LampAngleTolerance;
+    public readonly float LampPathOffset;
 
     public VillageSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon,
         GameObject[] genericBuildings, GameObject[] uniqueBuildings, float uniqueBuildingChance, float buildingAngleTolerance, float pathOffset,
-        GameObject[] trees, float treeAngleTolerance, float treeDistance, string type = "")
+        GameObject[] trees, float treeAngleTolerance, float treeDistance, GameObject streetLamp, float lampAngleTolerance, float lampPathOffset, string type = "")
     {
         Name = "Village " + type + " Area";
         AreaDataGraph = areaDataGraph;
@@ -32,11 +35,19 @@ public class VillageSettings : AreaSettings
         Trees = trees;
         TreeAngleTolerance = treeAngleTolerance;
         TreeDistance = treeDistance;
+
+        StreetLamp = streetLamp;
+        LampAngleTolerance = lampAngleTolerance;
+        LampPathOffset = lampPathOffset;
     }
 
     public override GameObject GenerateAreaScenery(Terrain terrain)
     {
         var result = new GameObject(Name);
+
+        // Place lamps
+        var lamps = PlaceStreetLamps(terrain);
+        lamps.transform.parent = result.transform;
 
         // Place buildings
         var buildings = PlaceBuildings(terrain);
@@ -46,6 +57,46 @@ public class VillageSettings : AreaSettings
         PoissonDiskFillData poissonData = new PoissonDiskFillData(Trees, BorderPolygon.ToArray(), TreeDistance, TreeAngleTolerance, true);
         poissonData.AddClearPolygons(ClearPolygons);
         PoissonDataList.Add(poissonData);
+
+        return result;
+    }
+
+    private GameObject PlaceStreetLamps(Terrain terrain)
+    {
+        var result = new GameObject("Lamps");
+
+        List<Vector2[]> pathLines = new List<Vector2[]>();
+
+        // Collect all roads
+        foreach (var areaData in AreaDataGraph.GetAllNodeData())
+        {
+            pathLines = pathLines.Union(areaData.Paths).ToList();
+        }
+
+        // Place lamps along the paths, alternating side and skipping one
+        bool spawnRight = true;
+        bool skip = true;
+        foreach (var line in pathLines)
+        {
+            skip = !skip;
+            if (skip)
+                continue;
+
+            var pathCenter = (line[0] + line[1]) / 2f;
+            var normal = spawnRight ? (Vector2)Vector3.Cross(line[0] - line[1], Vector3.back).normalized  :  (Vector2)Vector3.Cross(line[0] - line[1], Vector3.forward).normalized;
+            var position2D = pathCenter + normal * LampPathOffset;
+            var position = new Vector3(position2D.x, 0, position2D.y);
+            var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position, Vector3.up);
+
+            position += new Vector3(0, terrain.SampleHeight(position), 0);
+
+            var lamp = Object.Instantiate(StreetLamp, position, rotation);
+            lamp.CorrectAngleTolerance(LampAngleTolerance);
+            lamp.transform.parent = result.transform;
+
+            // Flip side
+            spawnRight = !spawnRight;
+        }
 
         return result;
     }

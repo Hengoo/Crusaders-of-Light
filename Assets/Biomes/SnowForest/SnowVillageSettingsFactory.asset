@@ -29,3 +29,6 @@ MonoBehaviour:
   - {fileID: 1906794642983550, guid: e5a38d585b9dc5f439fbcd5328376c6e, type: 2}
   TreeAngleTolerance: 20
   TreeDistance: 6
+  StreetLamp: {fileID: 1814071266581336, guid: 7c846626bd72df947a4e0b1ca3f9c022, type: 2}
+  LampAngleTolerance: 15
+  LampPathOffset: 4
