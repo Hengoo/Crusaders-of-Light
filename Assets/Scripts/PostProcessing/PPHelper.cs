@@ -13,9 +13,7 @@ public class PPHelper : MonoBehaviour {
 
 	public ComputeBuffer buffer;
 
-	public ComputeShader computeShader;
-
-	public List<GameObject> go;
+//	public ComputeShader computeShader;
 
 	public Camera cam;
 
@@ -58,12 +56,6 @@ public class PPHelper : MonoBehaviour {
 			
 		}
 		buffer.SetData(vec4Array);
-	}
-
-	private void Update()
-	{
-		//update buffer with the gameObject list 
-		UpdateBuffer(go);
 	}
 
 

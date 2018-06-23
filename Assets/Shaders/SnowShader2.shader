@@ -209,7 +209,7 @@ Shader "Custom/SnowShaderColor" {
 					tnormalZ.xyz * triblend.z
 				);
 				// convert world space normals into tangent normals
-				half3 norm = half3(0.7,0.7,0)* (1-topBlend) + WorldToTangentNormalVector(IN, worldNormal) * topBlend;
+				half3 norm = half3(0,0,1)* (1-topBlend) + WorldToTangentNormalVector(IN, worldNormal) * topBlend;
 				
 
 				// set surface oUput properties
