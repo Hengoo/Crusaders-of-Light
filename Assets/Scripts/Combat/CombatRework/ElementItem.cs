@@ -17,8 +17,16 @@ public class ElementItem : MonoBehaviour {
     [Header("Bonus Effects:")]
     public ElementBonusEffect[] BonusEffects = new ElementBonusEffect[6];   // Needs to be exactly as big as there are effectTypes!
 
+    [Header("Weapon Particle Effects:")]
+    public GameObject ParticleEffectPrefab;
+
     public ElementBonusEffect GetBonusEffectOfType(EffectType EType)
     {
         return BonusEffects[(int)EType];
+    }
+
+    public GameObject GetParticleEffectPrefab()
+    {
+        return ParticleEffectPrefab;
     }
 }
