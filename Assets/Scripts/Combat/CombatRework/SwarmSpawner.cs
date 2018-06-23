@@ -283,4 +283,9 @@ public class SwarmSpawner : MonoBehaviour {
             }
         }
     }
+
+    public void SetTerrain(Terrain NewTerrain)
+    {
+        Terr = NewTerrain;
+    }
 }

@@ -129,4 +129,10 @@ public class LevelController : Singleton<LevelController>
 
         return result;
     }
+
+    // This is called by the Level Creator every time a new Terrain is generated:
+    public void TerrainChanged(Terrain NewTerrain)
+    {
+        SwarmlingSpawner.SetTerrain(NewTerrain);
+    }
 }
