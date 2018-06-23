@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b7002d963efd5947a3d87e859e9a884, type: 3}
+  m_Name: Skill_IceWizard_IceWall_SpawnHitObject 1
+  m_EditorClassIdentifier: 
+  HitObjectPrefab: {fileID: 114273024598516262, guid: d8e8027f7431ffc4cae6c7a240546bfd,
+    type: 2}
+  UseSkillLevelAtActivationMoment: 1
+  Threat:
+  - 0
+  - 3
+  - 0
+  AllowTarget: 0001
+  SkillEffects:
+  - {fileID: 11400000, guid: 267307bd368b92149b2e856e1ce30563, type: 2}
+  - {fileID: 11400000, guid: f54ac79279e5d0743b1519681c3915c0, type: 2}
+  UseRotationOffset: 1
+  RotationOffset: {x: 0, y: 0, z: 0}
+  SpawnAtTargetPosition: 0
+  SpawnSound: {fileID: 0}
+  LoopSound: 0
