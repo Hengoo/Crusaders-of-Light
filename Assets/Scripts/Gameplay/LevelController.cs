@@ -128,4 +128,9 @@ public class LevelController : Singleton<LevelController>
 
         return result;
     }
+
+    public SwarmSpawner GetSwarmSpawner()
+    {
+        return SwarmlingSpawner;
+    }
 }

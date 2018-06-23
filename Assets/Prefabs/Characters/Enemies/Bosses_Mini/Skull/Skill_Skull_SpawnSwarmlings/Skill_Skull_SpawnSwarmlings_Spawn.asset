@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5405addbbc910b64994d732def4eacb8, type: 3}
+  m_Name: Skill_Skull_SpawnSwarmlings_Spawn
+  m_EditorClassIdentifier: 
+  SwarmlingPrefab: {fileID: 114819738713999842, guid: cdc24834d1e16dd44b990f8f85e1fdd1,
+    type: 2}
+  NumberToSpawn: 6
+  SpawnRadius: 10
