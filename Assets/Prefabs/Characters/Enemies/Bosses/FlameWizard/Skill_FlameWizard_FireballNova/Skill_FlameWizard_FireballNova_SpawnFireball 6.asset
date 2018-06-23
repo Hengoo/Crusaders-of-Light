@@ -22,7 +22,7 @@ MonoBehaviour:
   SkillEffects:
   - {fileID: 11400000, guid: 6d1fbce15fa6c8b4685bf664708c5627, type: 2}
   - {fileID: 11400000, guid: 6b869cb6417091d49829a2d7d5e35e8f, type: 2}
-  UseRotationOffset: 0
+  UseRotationOffset: 1
   RotationOffset: {x: 0, y: 270, z: 0}
   SpawnAtTargetPosition: 0
   SpawnSound: {fileID: 0}

@@ -275,8 +275,11 @@ public class CharacterPlayer : Character {
         gameObject.layer = CharacterLayerID;
         CharAttention.OwnerPlayerRespawned();
         SwitchActiveStateCharacterFollowGUI(true);
-        GUIChar.UpdateHealthHealingBar(GetHealthHealingPercentage());
-        GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
+        if (GUIChar)
+        {
+            GUIChar.UpdateHealthHealingBar(GetHealthHealingPercentage());
+            GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
+        }
         MovementRateModfier = 1f;
         HindranceLevel = 0;
         CharacterIsDead = false;

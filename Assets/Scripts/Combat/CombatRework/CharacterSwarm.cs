@@ -94,6 +94,15 @@ public class CharacterSwarm : Character {
         Swarmling.ChangeSwarmlingSpeed(Change);
     }
 
+    protected override void CreateCharacterFollowGUI()
+    {
+        /*if (!GUIChar)
+        {
+            GUIChar = GUIController.Instance.GenerateGUICharacterFollow();
+            GUIChar.Initialize(this);
+        }*/
+    }
+
     // ====================================/ Override Functions /====================================
 
 

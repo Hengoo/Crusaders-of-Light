@@ -18,6 +18,13 @@ public class GUICharacterFollow : MonoBehaviour {
     {
         Character = Char;
 
+        HealthBarCurrent.sprite = HealthBarPlayerSprite;
+
+        if (Character.GetAlignment() == Character.TeamAlignment.PLAYERS)
+        {
+            HealthBarCurrent.sprite = HealthBarPlayerSprite;
+        }
+        /*
         if (Character.GetAlignment() == Character.TeamAlignment.PLAYERS)
         {
             HealthBarCurrent.sprite = HealthBarPlayerSprite;
@@ -26,7 +33,7 @@ public class GUICharacterFollow : MonoBehaviour {
         {
             HealthHealingBarCurrent.enabled = false;
             gameObject.SetActive(false);
-        }
+        }*/
     }
 
     public void UpdateHealthBar(float NormalizedHealthValue)

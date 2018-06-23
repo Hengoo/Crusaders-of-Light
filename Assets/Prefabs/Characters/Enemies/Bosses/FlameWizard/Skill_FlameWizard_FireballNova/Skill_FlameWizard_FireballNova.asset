@@ -14,7 +14,7 @@ MonoBehaviour:
   Cost: 0
   ActivationTime: 1
   ActivationIntervall: -1
-  Cooldown: 5
+  Cooldown: 0
   ActivationMovementModifier: -1
   AllowTargetFriendly: 0
   AllowTargetEnemy: 1

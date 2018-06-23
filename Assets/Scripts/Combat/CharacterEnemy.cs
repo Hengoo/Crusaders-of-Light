@@ -382,7 +382,7 @@ public class CharacterEnemy : Character {
     public override void FinishedCurrentSkillActivation(int WeaponSlotID, int Hindrance)
     {
         SkillContinueActivation[WeaponSlotID] = false;
-
+        HandAnimators[0].SetTrigger(Anim_BreakAnim);
         base.FinishedCurrentSkillActivation(WeaponSlotID, Hindrance);
     }
 
@@ -422,7 +422,6 @@ public class CharacterEnemy : Character {
 
         return true;
     }
-
 
     // =================================== /SKILL ACTIVATION ====================================
 
