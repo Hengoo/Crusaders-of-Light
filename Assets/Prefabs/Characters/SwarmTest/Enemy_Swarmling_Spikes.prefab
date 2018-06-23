@@ -645,6 +645,12 @@ MonoBehaviour:
   ClosestPlayerSqrDistanceBase: 9
   IgnoreThisSwarmlingForOthers: 0
   IgnoreThisSwarmlingForOthersWhenInDanger: 0
+  MinLightOrbAttractionDistance: 40
+  LightOrbAttractionReachDistance: 30
+  LightOrbAttractionSelfDestroyDistance: 50
+  LightOrbAttractionMode: 0
+  LightOrbAttractionTimer: 8
+  LightOrbAttractionCounter: -1
   AttackDistance: 2.5
   BorderOn: 0
   BorderDistance: 3
