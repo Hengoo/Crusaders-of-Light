@@ -12,6 +12,7 @@ public class LevelController : Singleton<LevelController>
 
     public CharacterPlayer[] PlayerCharacters;
     public GameObject LightWisp;
+    public SwarmSpawner SwarmlingSpawner;
 
     public Canvas Instructions;
 
@@ -55,6 +56,13 @@ public class LevelController : Singleton<LevelController>
         //Destroy inactive players
         for (int i = GameController.Instance.ActivePlayers; i < PlayerCharacters.Length; i++)
             Destroy(PlayerCharacters[i].gameObject);
+
+        //Initialize Light Wisp
+        LightWisp.GetComponent<LightOrbEffects>().InitializeLightOrb(PlayerCharacters, GameController.Instance.ActivePlayers);
+
+        //Initialize SwarmSpawner
+        if (SwarmlingSpawner)
+            SwarmlingSpawner.InitializeSwarmSpawner(PlayerCharacters, GameController.Instance.ActivePlayers);
     }
 
     public void FinalizeLevel()

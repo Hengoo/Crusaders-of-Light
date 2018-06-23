@@ -185,10 +185,13 @@ public class CharacterPlayer : Character {
         SwitchActiveStateCharacterFollowGUI(false);
         //gameObject.SetActive(false);
         //DyingPhysicsTimer = 0f;
-        // DyingPhysicsTimerRunning = true;
+        //DyingPhysicsTimerRunning = true;
         //GetComponent<Rigidbody>().isKinematic = true;
         DeathTimer.StartDeathTimer();
         gameObject.layer = DeadCharacterLayerID;
+
+        // Disable NavMeshAgent:
+        NavAgent.enabled = false;
 
         CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerDeath(this.gameObject);
         LevelController.Instance.CheckIfAllDead();
@@ -283,6 +286,7 @@ public class CharacterPlayer : Character {
         CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerRespawn(this.gameObject);
         //GetComponent<Rigidbody>().isKinematic = false;
         LightOrbEffects.Instance.CharacterRevived(this);
+        NavAgent.enabled = true;
         this.enabled = true;
     }
 
