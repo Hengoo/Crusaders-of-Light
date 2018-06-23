@@ -58,7 +58,10 @@ public class LevelController : Singleton<LevelController>
             Destroy(PlayerCharacters[i].gameObject);
 
         //Initialize Light Wisp
-        LightWisp.GetComponent<LightOrbEffects>().InitializeLightOrb(PlayerCharacters, GameController.Instance.ActivePlayers);
+        if (LightWisp && LightWisp.GetComponent<LightOrbEffects>())
+        {
+            LightWisp.GetComponent<LightOrbEffects>().InitializeLightOrb(PlayerCharacters, GameController.Instance.ActivePlayers);
+        }
 
         //Initialize SwarmSpawner
         if (SwarmlingSpawner)
