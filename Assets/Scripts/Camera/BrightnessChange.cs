@@ -6,7 +6,7 @@ using UnityEngine.PostProcessing;
 
 public class BrightnessChange : MonoBehaviour
 {
-	void OnEnable()
+	void Start()
 	{
 		//PS: when changing this remember to also change it in MenuLivePreview
 

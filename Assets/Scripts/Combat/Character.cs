@@ -1098,7 +1098,7 @@ public class Character : MonoBehaviour
 
     protected virtual void CreateCharacterFollowGUI()
     {
-        if (!GUIChar)
+        if (!GUIChar && GUIController.Instance)
         {
             GUIChar = GUIController.Instance.GenerateGUICharacterFollow();
             GUIChar.Initialize(this);

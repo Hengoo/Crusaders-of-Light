@@ -55,16 +55,20 @@ public class BossArenaSettings : AreaSettings
         BorderPolygon = BorderPolygon.OffsetToCenter(center, 8, skip).ToList();
 
         // Generate gate
+        var arenaCenter2D = BorderPolygon.GetPolygonCenter();
         var line = _gateLine[0] - _gateLine[1];
         var gatePosition2D = (_gateLine[0] + _gateLine[1]) / 2;
         var gatePosition = new Vector3(gatePosition2D.x, 0, gatePosition2D.y);
         var gate = Object.Instantiate(_gatePrefab);
         var shape = gate.GetComponent<ParticleSystem>().shape;
         shape.scale += new Vector3(0, 0, line.magnitude - 1);
+        gate.GetComponent<BoxCollider>().size += new Vector3(0, 0, line.magnitude - 1);
         gate.GetComponent<NavMeshObstacle>().size += new Vector3(0, 0, line.magnitude - 1);
         gate.transform.position = new Vector3(gatePosition.x, terrain.SampleHeight(gatePosition), gatePosition.z);
         gate.transform.rotation = Quaternion.LookRotation(new Vector3(line.x, 0, line.y), Vector3.up);
         gate.transform.parent = arena.transform;
+        gate.GetComponent<ArenaGateTrigger>().ArenaCenter = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y);
+        gate.GetComponent<ArenaGateTrigger>().ArenaCenter += new Vector3(0, terrain.SampleHeight(gate.GetComponent<ArenaGateTrigger>().ArenaCenter), 0);
 
         // Generate Walls
         var lines = BorderPolygon.PolygonToLines(skip);
@@ -79,7 +83,9 @@ public class BossArenaSettings : AreaSettings
         gateTower.transform.rotation = terrain.GetNormalRotation(gateTower.transform.position);
         gateTower.CorrectAngleTolerance(_wallAngleLimit);
         gateTower.transform.parent = arena.transform;
-
+        var navMeshModifier = gateTower.AddComponent<NavMeshModifier>();
+        navMeshModifier.overrideArea = true;
+        navMeshModifier.area = NavMesh.GetAreaFromName("Not Walkable");
 
         return arena;
     }

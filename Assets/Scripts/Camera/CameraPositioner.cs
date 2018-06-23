@@ -13,11 +13,15 @@ public class CameraPositioner : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-        if (LevelController.Instance)
-        {
-            cameraTargets = LevelController.Instance.GetActivePlayers();
-        }    
-	}
+	    if (LevelController.Instance)
+	    {
+	        cameraTargets = LevelController.Instance.GetActivePlayers();
+	    }
+        else if(TransitionLevelController.Instance)
+	    {
+	        cameraTargets = TransitionLevelController.Instance.GetActivePlayers();
+	    }
+    }
 
 	// Update is called once per frame
 	void FixedUpdate()
@@ -40,7 +44,7 @@ public class CameraPositioner : MonoBehaviour
 		distance = distance * distanceMultiplier;
 		distance = Mathf.Min(distanceMax, distance);
 		distance = Mathf.Max(distanceMin, distance);
-	    this.transform.position = Vector3.Slerp(this.transform.position, averagePos + new Vector3(0, 1, -.8f).normalized * distance, 0.1f);
+	    this.transform.position = Vector3.Slerp(this.transform.position, averagePos + new Vector3(0, 1, -.1f).normalized * distance, 0.1f);
 	    AudioListener.transform.position = Vector3.Slerp(AudioListener.transform.position, averagePos + Vector3.up * 7, 0.1f);
     }
 
