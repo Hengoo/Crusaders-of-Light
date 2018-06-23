@@ -293,6 +293,7 @@ GameObject:
   - component: {fileID: 82356569076027020}
   - component: {fileID: 114940849717253604}
   - component: {fileID: 195748863666597162}
+  - component: {fileID: 114381557931656294}
   m_Layer: 8
   m_Name: Player_Character_1_Wizard
   m_TagString: Character
@@ -1721,6 +1722,21 @@ MonoBehaviour:
   OrbInputTimer: -1
   OrbInputReviveTime: 1
   OrbInputHealMaxTime: 0.3
+--- !u!114 &114381557931656294
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1798015743185636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_IgnoreFromBuild: 1
+  m_AffectedAgents: ffffffff
 --- !u!114 &114388898610556366
 MonoBehaviour:
   m_ObjectHideFlags: 1

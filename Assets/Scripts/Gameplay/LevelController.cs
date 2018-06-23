@@ -53,10 +53,6 @@ public class LevelController : Singleton<LevelController>
         foreach (var player in PlayerCharacters)
             player.gameObject.SetActive(false);
 
-        //Destroy inactive players
-        for (int i = GameController.Instance.ActivePlayers; i < PlayerCharacters.Length; i++)
-            Destroy(PlayerCharacters[i].gameObject);
-
         //Initialize Light Wisp
         if (LightWisp && LightWisp.GetComponent<LightOrbEffects>())
         {

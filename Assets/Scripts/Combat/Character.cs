@@ -1095,7 +1095,7 @@ public class Character : MonoBehaviour
 
     private void CreateCharacterFollowGUI()
     {
-        if (!GUIChar)
+        if (!GUIChar && GUIController.Instance)
         {
             GUIChar = GUIController.Instance.GenerateGUICharacterFollow();
             GUIChar.Initialize(this);
@@ -1104,7 +1104,8 @@ public class Character : MonoBehaviour
 
     private void UpdateCharacterFollowGUI()
     {
-        GUIChar.UpdateGUIPosition();
+        if(GUIChar)
+            GUIChar.UpdateGUIPosition();
     }
 
     private void RemoveCharacterFollowGUI()
