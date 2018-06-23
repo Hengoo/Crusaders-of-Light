@@ -79,6 +79,11 @@ public class SwarmSpawner : MonoBehaviour {
         UpdateAllSwarmlings();
     }
 
+    private void FixedUpdate()
+    {
+        PPHelper.T.UpdateBuffer(SpawnedEnemies);
+    }
+
     public void InitializeSwarmSpawner(Character[] PlayerCharacters, int NumberActivePlayers)
     {
         Players = new Character[NumberActivePlayers];
