@@ -12,6 +12,7 @@ public class BossArenaSettingsFactory : AreaSettingsFactory {
     public Vector3 WallScaleNoise;
     public GameObject GatePrefab;
     public GameObject TowerPrefab;
+    public GameObject PortalPrefab;
     public GameObject RewardPedestalPrefab;
     public GameObject[] BuildingPrefabs;
 
@@ -32,7 +33,7 @@ public class BossArenaSettingsFactory : AreaSettingsFactory {
     public override AreaSettings[] ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
         var arenaWalls = new BossArenaSettings(areaDataGraph, clearPolygons, borderPolygon, WallPrefab, WallLenght, WallAngleLimit,
-            WallPositionNoise, WallScaleNoise, GatePrefab, TowerPrefab, RewardPedestalPrefab, BuildingPrefabs);
+            WallPositionNoise, WallScaleNoise, GatePrefab, TowerPrefab, PortalPrefab, RewardPedestalPrefab, BuildingPrefabs);
 
         return new AreaSettings[]{arenaWalls};
     }

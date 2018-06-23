@@ -44,7 +44,7 @@ public class CameraPositioner : MonoBehaviour
 		distance = distance * distanceMultiplier;
 		distance = Mathf.Min(distanceMax, distance);
 		distance = Mathf.Max(distanceMin, distance);
-	    this.transform.position = Vector3.Slerp(this.transform.position, averagePos + new Vector3(0, 1, -.1f).normalized * distance, 0.1f);
+	    this.transform.position = Vector3.Slerp(this.transform.position, averagePos + new Vector3(0, 1, -.3f).normalized * distance, 0.1f);
 	    AudioListener.transform.position = Vector3.Slerp(AudioListener.transform.position, averagePos + Vector3.up * 7, 0.1f);
     }
 

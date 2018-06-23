@@ -218,6 +218,18 @@ public class Character : MonoBehaviour
         return CharacterIsDead;
     }
 
+    void OnDisable()
+    {
+        if (GUIChar)
+            GUIChar.gameObject.SetActive(false);
+    }
+
+    void OnEnable()
+    {
+        if(GUIChar)
+            GUIChar.gameObject.SetActive(true);
+    }
+
     void OnDestroy()
     {
         //Remove GUI
