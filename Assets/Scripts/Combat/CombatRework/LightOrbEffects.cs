@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightOrbEffects : Singleton<LightOrbEffects> {
+public class LightOrbEffects : MonoBehaviour {
 
     public List<CharacterPlayer> PlayerCharacters = new List<CharacterPlayer>();
 
