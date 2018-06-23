@@ -62,6 +62,8 @@ public class SwarmSpawner : MonoBehaviour {
 
     private NavMeshHit hit;
 
+    private NavMeshPath NavPath;
+
     private void Start()
     {
         CalculateTotalWeight();
@@ -88,6 +90,8 @@ public class SwarmSpawner : MonoBehaviour {
                 Players[i] = PlayerCharacters[i];
             }
         }
+
+        NavPath = new NavMeshPath();
     }
 
     private void SpawnEnemy()
@@ -205,10 +209,14 @@ public class SwarmSpawner : MonoBehaviour {
         {
             return GenerateSpawnPosition();           
         }
-        else
+
+        NavMesh.CalculatePath(spawnPos, transform.position, NavMesh.AllAreas, NavPath);
+
+        if (NavPath.status == NavMeshPathStatus.PathInvalid || NavPath.status == NavMeshPathStatus.PathPartial)
         {
-            return true;
+            return GenerateSpawnPosition();
         }
+        return true;
     }
 
     private bool GenerateSpawnMarkerPosition()
