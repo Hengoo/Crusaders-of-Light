@@ -77,6 +77,19 @@ public class SwarmSpawner : MonoBehaviour {
         UpdateAllSwarmlings();
     }
 
+    public void InitializeSwarmSpawner(Character[] PlayerCharacters, int NumberActivePlayers)
+    {
+        Players = new Character[NumberActivePlayers];
+
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (PlayerCharacters[i])
+            {
+                Players[i] = PlayerCharacters[i];
+            }
+        }
+    }
+
     private void SpawnEnemy()
     {
         if (FrequencyTimerCounter < FrequencyTimerCurrent)

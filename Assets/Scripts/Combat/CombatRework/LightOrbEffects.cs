@@ -43,6 +43,17 @@ public class LightOrbEffects : Singleton<LightOrbEffects> {
         DeadPlayerCharacters.Remove(RevivedChar);
     }
 
+    public void InitializeLightOrb(CharacterPlayer[] ActivePlayers, int NumberActivePlayers)
+    {
+        for (int i = 0; i < NumberActivePlayers; i++)
+        {
+            if (ActivePlayers[i])
+            {
+                AddPlayerCharacter(ActivePlayers[i]);
+            }
+        }
+    }
+
     // =============================================== EFFECT: REVIVE ===============================================
 
     private void OrbEffectRevive()
