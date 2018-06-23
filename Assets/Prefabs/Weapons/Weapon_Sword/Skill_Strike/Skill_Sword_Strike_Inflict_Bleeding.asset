@@ -15,4 +15,4 @@ MonoBehaviour:
   DurationBase: 1
   DurationPerLevel: 1
   DurationModifiers:
-  - {fileID: 11400000, guid: bf892fda503b81d43874cff0c2f1b486, type: 2}
+  - {fileID: 11400000, guid: c25852187bc37bc48b7dc93439c8f56d, type: 2}

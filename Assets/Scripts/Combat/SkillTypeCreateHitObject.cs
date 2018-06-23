@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "skill_create_hit_object", menuName = "Combat/SkillArchetypes/SkillCreateHitObject",
-    order = 5)]
+[CreateAssetMenu(fileName = "skill_create_hit_object", menuName = "Combat/SkillArchetypes/SkillCreateHitObject", order = 5)]
 public class SkillTypeCreateHitObject : SkillType
 {
     [Header("Skill Create Hit Object:")] public SkillHitObject HitObjectPrefab;
@@ -12,8 +11,7 @@ public class SkillTypeCreateHitObject : SkillType
     public AudioClip SpawnSound;
     public bool LoopSound;
 
-    public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime,
-        bool StillActivating, bool ActivationIntervallReached)
+    public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime < ActivationTime)
         {
@@ -21,8 +19,8 @@ public class SkillTypeCreateHitObject : SkillType
         }
 
         // Spawn and Initialize Projectile:
-        SkillHitObject SpawnedHitObject = Instantiate(HitObjectPrefab, SourceItemSkill.transform.position,
-            SourceItemSkill.GetCurrentOwner().transform.rotation);
+        SkillHitObject SpawnedHitObject = Instantiate(HitObjectPrefab, SourceItemSkill.transform.position, SourceItemSkill.GetCurrentOwner().transform.rotation);
+
         if (SpawnSound)
         {
             var audioSource = SpawnedHitObject.gameObject.GetComponent<AudioSource>();
@@ -40,8 +38,8 @@ public class SkillTypeCreateHitObject : SkillType
                 audioSource.Play();
             }
         }
-        SpawnedHitObject.InitializeHitObject(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, this,
-            UseSkillLevelAtActivationMoment);
+
+        SpawnedHitObject.InitializeHitObject(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, this, UseSkillLevelAtActivationMoment);
 
         // Stop Skill Activation:
         if (Cooldown > 0)

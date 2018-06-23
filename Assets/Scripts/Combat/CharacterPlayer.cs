@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.AI;
 
 public class CharacterPlayer : Character {
 
@@ -16,12 +17,13 @@ public class CharacterPlayer : Character {
 
     [Header("Input:")]
     public int PlayerID = -1; // Set from 1 to 4!
+    public int HoldDownButtonID = 1; // The button that is checked wether it is held down for skills. If there is time, replace with check depending on skill position in combo tree.
 
     [Header("Respawning:")]
     public CharacterDeathTimer DeathTimer;
 
-    public int CharacterLayerID = 8;
-    public int DeadCharacterLayerID = 12;
+    public static int CharacterLayerID = 8;
+    public static int DeadCharacterLayerID = 12;
 
     public float RespawnMinRange = 2f;
     public float RespawnMaxRange = 5f;
@@ -31,6 +33,20 @@ public class CharacterPlayer : Character {
 
     public string DeathAnimationResetTrigger = "Trigger_DeathReset";
 
+    [Header("Navmesh Movement:")]
+    public NavMeshAgent NavAgent;
+    public float RotationSpeed = 5;
+
+    Vector3 targetVel = Vector3.zero;
+    Vector3 targetDir = Vector3.zero;
+
+    [Header("Orb Input:")]
+    public float OrbInputTimer = -1f;
+    public float OrbInputReviveTime = 1f;
+    public float OrbInputHealMaxTime = 0.3f;
+    private bool OrbInputButtonPressed = false;
+
+
  //   public float DyingPhysicsDuration = 0.8f;
  //   public bool DyingPhysicsTimerRunning = false;
  //   public float DyingPhysicsTimer = 0f;
@@ -38,7 +54,9 @@ public class CharacterPlayer : Character {
     protected override void Start()
     {
         base.Start();
+        NavAgent.updateRotation = false;
         SpawnAndEquipStartingWeapons();
+        
     }
 
     private UnityAction _itemPickupAction;
@@ -52,35 +70,60 @@ public class CharacterPlayer : Character {
     private void FixedUpdate()
     {
         float speedfaktor = 10 * GetMovementRateModifier();
-        //left stick
-        Vector3 targetVel = new Vector3(Input.GetAxisRaw("Horizontal_" + PlayerID), 0, Input.GetAxisRaw("Vertical_" + PlayerID));
+        
+        if (!GetOverrideMovement())
+        {
+            //left stick
+            targetVel = new Vector3(Input.GetAxisRaw("Horizontal_" + PlayerID), 0, Input.GetAxisRaw("Vertical_" + PlayerID));
+        }
+        else
+        {
+            targetVel = OverrideMovementVec;
+        }
 
-        //right stick
-        Vector3 targetDir = new Vector3(Input.GetAxisRaw("Horizontal2_" + PlayerID), 0, -Input.GetAxisRaw("Vertical2_" + PlayerID));
+        if (!GetOverrideRotation())
+        {
+            //right stick
+            targetDir = new Vector3(Input.GetAxisRaw("Horizontal2_" + PlayerID), 0, -Input.GetAxisRaw("Vertical2_" + PlayerID));
+        }
+        else
+        {
+            targetDir = OverrideRotationVec;
+        }
 
         if (Vector3.Magnitude(targetDir) <= 0.3f)
         {
             targetDir = targetVel;
         }
 
-        targetVel *= speedfaktor;
+        targetVel = targetVel.normalized * speedfaktor * Time.deltaTime;
 
-        PhysCont.SetVelRot(targetVel, targetDir);
+        // Rotate towards Velocity Direction:
+        if (targetDir.sqrMagnitude > 0)
+        {
+            transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, Quaternion.LookRotation(targetDir), Time.deltaTime * RotationSpeed);
+        }
 
-        if (!IsWalking && (Input.GetAxisRaw("Horizontal_" + PlayerID) >= 0.05f 
+        //PhysCont.SetVelRot(targetVel, targetDir);
+        NavAgent.Move(targetVel);
+
+        if (!IsWalking
+            && (GetOverrideMovement()
+            || (Input.GetAxisRaw("Horizontal_" + PlayerID) >= 0.05f 
             || Input.GetAxisRaw("Vertical_" + PlayerID) >= 0.05f
             || Input.GetAxisRaw("Horizontal_" + PlayerID) <= -0.05f
-            || Input.GetAxisRaw("Vertical_" + PlayerID) <= -0.05f))
+            || Input.GetAxisRaw("Vertical_" + PlayerID) <= -0.05f)))
         {
             IsWalking = true;
             StartBodyAnimation(Anim_StartWalking);
         }
         else if (IsWalking)
         {
-            if (Input.GetAxisRaw("Horizontal_" + PlayerID) < 0.05f
+            if (!GetOverrideMovement() 
+            && (Input.GetAxisRaw("Horizontal_" + PlayerID) < 0.05f
             && Input.GetAxisRaw("Vertical_" + PlayerID) < 0.05f
             && Input.GetAxisRaw("Horizontal_" + PlayerID) > -0.05f
-            && Input.GetAxisRaw("Vertical_" + PlayerID) > -0.05f)
+            && Input.GetAxisRaw("Vertical_" + PlayerID) > -0.05f))
             {
                 IsWalking = false;
                 StartBodyAnimation(Anim_EndWalking);
@@ -126,6 +169,9 @@ public class CharacterPlayer : Character {
 
         // Update Attention:
         AttentionThisCharacterDied();
+
+        // Update LightOrb:
+        LightOrbEffects.Instance.CharacterDied(this);
 
         //Stop Active Coroutines and Sound
         StopAllCoroutines();
@@ -174,7 +220,8 @@ public class CharacterPlayer : Character {
         {
             if (SkillCurrentlyActivating[i] >= 0)
             {
-                ItemSkillSlots[SkillCurrentlyActivating[i]].UpdateSkillActivation(SkillActivationButtonsPressed[SkillCurrentlyActivating[i]]);
+                //ItemSkillSlots[SkillCurrentlyActivating[i]].UpdateSkillActivation(SkillActivationButtonsPressed[SkillCurrentlyActivating[i]]);
+                ItemSkillSlots[SkillCurrentlyActivating[i]].UpdateSkillActivation(SkillActivationButtonsPressed[HoldDownButtonID]); // Should be replaced with check based on current skill position in combo tree if there is time.
             }
         }
     }
@@ -234,8 +281,20 @@ public class CharacterPlayer : Character {
         DeathTimer.enabled = false;
         IsWalking = false;
         CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerRespawn(this.gameObject);
-        GetComponent<Rigidbody>().isKinematic = false;
+        //GetComponent<Rigidbody>().isKinematic = false;
+        LightOrbEffects.Instance.CharacterRevived(this);
         this.enabled = true;
+    }
+
+    public void RespawnThisCharacter()
+    {
+        RespawnThisCharacter(RespawnHealthGainPerc);
+    }
+
+    public void RespawnThisCharacter(Vector3 AtPosition)
+    {
+        RespawnThisCharacter();
+        NavAgent.Warp(AtPosition);
     }
 
     private void ResetAnimations()
@@ -394,11 +453,11 @@ public class CharacterPlayer : Character {
             SkillActivationButtonsPressed[3] = false;
         }
 
-        // Respawning Players:
+       /* // Respawning Players:
         if (Input.GetButtonDown("RevivePlayer_" + PlayerID))
         {
             RespawnNearestCharacter();
-        }
+        }*/
 
 
         // Weapon PickUp:
@@ -410,12 +469,56 @@ public class CharacterPlayer : Character {
             }
         }
 
+        // Light Orb Interaction:
+        UpdatePlayerOrbInput();
+
         // Skill Activation:
         PlayerInputStartSkillActivation();
     }
 
-    private void PlayerInputStartSkillActivation()
+    private void UpdatePlayerOrbInput()
     {
+        // Light Orb Interaction:
+        if (Input.GetButton("RevivePlayer_" + PlayerID))
+        {
+            // Fresh button press (Timer not running):
+            if (OrbInputTimer <= 0)
+            {
+                OrbInputButtonPressed = true;
+                OrbInputTimer = 0;
+            }
+            // Press Button again after pressing it shortly before (Timer still running):
+            else if (!OrbInputButtonPressed)
+            {
+                if (OrbInputTimer <= OrbInputHealMaxTime)
+                {
+                    LightOrbEffects.Instance.ActivateOrbHeal(this);
+                }
+                OrbInputTimer = -1;
+            }    
+        }
+        else if (OrbInputButtonPressed)
+        {
+            OrbInputButtonPressed = false;
+        }
+
+        if (OrbInputTimer >= 0)
+        {
+            OrbInputTimer += Time.deltaTime;
+
+            if (OrbInputTimer >= OrbInputReviveTime)
+            {
+                if (OrbInputButtonPressed)
+                {
+                    LightOrbEffects.Instance.ActivateOrbRevive(this);
+                }
+                OrbInputTimer = -1;
+            }
+        }
+    }
+
+    private void PlayerInputStartSkillActivation()
+    {/*
         if (SkillCurrentlyActivating[0] < 0)
         {
             if (SkillActivationButtonsPressed[0])
@@ -442,7 +545,36 @@ public class CharacterPlayer : Character {
                 // Try starting Activation of Skill 2 from Weapon 2
                 StartSkillActivation(3);
             }
-        }   
+        }   */
+        
+        if (SkillCurrentlyActivating[0] >= 0)
+        {
+            // A Skill is currently Activating!
+            return;
+        }
+
+        if (LastSkillActivated < 0)
+        {
+            for (int i = 0; i < SkillActivationButtonsPressed.Length; i++)
+            {
+                if (SkillActivationButtonsPressed[i] && WeaponSlots[0] && WeaponSlots[0].GetItemSkillComboStart(i) >= 0)
+                {
+                    StartSkillActivation(WeaponSlots[0].GetItemSkillComboStart(i));
+                    return;
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < SkillActivationButtonsPressed.Length; i++)
+            {
+                if (SkillActivationButtonsPressed[i] && ItemSkillSlots[LastSkillActivated].GetItemSkillIDFromComboInput(i) >= 0)
+                {
+                    StartSkillActivation(ItemSkillSlots[LastSkillActivated].GetItemSkillIDFromComboInput(i));
+                    return;
+                }
+            }
+        }
     }
 
     public void SetPlayerID(int ID)
@@ -453,6 +585,30 @@ public class CharacterPlayer : Character {
     public int GetPlayerID()
     {
         return PlayerID;
+    }
+
+    public int GetCurrentItemSkillIDForInput()
+    {
+        if (SkillCurrentlyActivating[0] >= 0)
+        {
+            return SkillCurrentlyActivating[0];
+        }
+
+        return LastSkillActivated;
+    }
+
+    public override void UpdateLastSkillActivated()
+    {
+        if (LastSkillActivatedTimer > 0)
+        {
+            LastSkillActivatedTimer -= Time.deltaTime;
+
+            if (LastSkillActivatedTimer <= 0)
+            {
+                HandAnimators[0].SetTrigger(Anim_BreakAnim);
+                LastSkillActivated = -1;
+            }
+        }
     }
 
     // ======================================== /INPUT =========================================

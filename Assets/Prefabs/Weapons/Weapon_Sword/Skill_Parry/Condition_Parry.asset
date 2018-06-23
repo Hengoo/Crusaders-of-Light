@@ -13,11 +13,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Parry
   OnApply:
-  - {fileID: 11400000, guid: a32a10cdf7deb984f97774b4b63aae1c, type: 2}
+  - {fileID: 11400000, guid: 56d34c58cbe8ac240b5e16ad4384690a, type: 2}
+  - {fileID: 11400000, guid: 2a538293938616f419aedf2a29fe7774, type: 2}
+  - {fileID: 11400000, guid: ad122deaed1f3e442860c262728475f2, type: 2}
   OnTick: []
   OnEnd:
-  - {fileID: 11400000, guid: f00f221e974101442962ed02b10cbbd8, type: 2}
-  Duration: -1
+  - {fileID: 11400000, guid: 441c68691a80e7840a7677baaaa9eb96, type: 2}
+  - {fileID: 11400000, guid: 1e5fe8ed04f4347478f8e4efd8d6e051, type: 2}
+  - {fileID: 11400000, guid: 4f5477d64d4d1dc47b80f045739a1fb4, type: 2}
   TickTime: -1
-  StackMaximum: 1
   InstanceMaximum: 1
+  VisualEffectObject: {fileID: 0}

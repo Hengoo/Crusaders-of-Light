@@ -8,6 +8,7 @@ public class CharacterAttention : MonoBehaviour {
     public Character Owner;
     public string Tag = "Attention";
     public string TagHitObjects = "Skills";
+    public string TagPlayerHitObjects = "SkillsPlayer";
 
     public List<Character> PlayersInAttentionRange = new List<Character>();
     public List<Character> EnemiesInAttentionRange = new List<Character>();
@@ -73,7 +74,7 @@ public class CharacterAttention : MonoBehaviour {
                 EnemyEntersAttentionRange(OtherAttention.GetOwner());
             }
         }
-        else if (other.tag == TagHitObjects)
+        else if (other.tag == TagHitObjects || other.tag == TagPlayerHitObjects)
         {
             SkillHitObject OtherHitObject = other.gameObject.GetComponent<SkillHitObject>();
 

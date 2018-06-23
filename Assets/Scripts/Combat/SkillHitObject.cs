@@ -6,7 +6,7 @@ public class SkillHitObject : MonoBehaviour {
 
     [Header("Hit Object Attributes:")]
     public float MaxTimeAlive = 0;
-    private float TimeAliveCounter = 0;
+    protected float TimeAliveCounter = 0;
 
     public float TickTime = 0;
     public float CurrentTickTime = 0.0f;
@@ -14,6 +14,7 @@ public class SkillHitObject : MonoBehaviour {
 
     public bool CanHitSameTargetMultipleTime = false;
     public int MaxNumberOfTargets = -1;
+    protected int MaxNumberOfTargetsCounter = 0;
     public bool HitObjectIsChildOfOwner = false;
 
     public bool AlwaysHitOwner = false;
@@ -48,7 +49,7 @@ public class SkillHitObject : MonoBehaviour {
 
     [HideInInspector] public bool FadeSound;
 
-    private AudioSource _audioSource;
+    protected AudioSource _audioSource;
 
     public void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
     {
@@ -113,7 +114,7 @@ public class SkillHitObject : MonoBehaviour {
         {
             ApplyForceImpulse();
         }
-    }
+    }   
 
     public void Update()
     {
@@ -198,6 +199,11 @@ public class SkillHitObject : MonoBehaviour {
 
     protected virtual void HitTarget(Character TargetCharacter)
     {
+        if (MaxNumberOfTargets > 0 && MaxNumberOfTargetsCounter >= MaxNumberOfTargets)
+        {
+            return;
+        }
+
         if (!CanHitSameTargetMultipleTime && AlreadyHitCharacters.Contains(TargetCharacter))
         {
             return;
@@ -221,10 +227,21 @@ public class SkillHitObject : MonoBehaviour {
             SourceSkill.ApplyEffects(Owner, SourceItemSkill, TargetCharacter);
         }
 
-        if (MaxNumberOfTargets > 0
+
+
+   /*     if (MaxNumberOfTargets > 0
             && MaxNumberOfTargets >= AlreadyHitCharacters.Count)
         {
             ReachedMaxNumberOfTargets();
+        }*/
+        if (MaxNumberOfTargets > 0)
+        {
+            MaxNumberOfTargetsCounter++;
+
+            if (MaxNumberOfTargetsCounter >= MaxNumberOfTargets)
+            {
+                ReachedMaxNumberOfTargets();
+            }
         }
     }
     
@@ -247,7 +264,7 @@ public class SkillHitObject : MonoBehaviour {
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    protected void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Character")
         {
@@ -301,7 +318,9 @@ public class SkillHitObject : MonoBehaviour {
     {
         Vector3 ForceDirection = Vector3.zero;
 
-        ForceDirection = Owner.transform.rotation * Vector3.forward;
+        //ForceDirection = Owner.transform.rotation * Vector3.forward;
+
+        ForceDirection = transform.rotation * Vector3.forward;
 
         float FinalMagnitude = ForceImpulseMagnitude;
 

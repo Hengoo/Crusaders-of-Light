@@ -15,37 +15,34 @@ public class EnemySwarm : MonoBehaviour {
     [Header("Enemy Swarm:")]
     public NavMeshAgent NMAgent;
     public SwarmType SType = SwarmType.STANDARD;
+    public CharacterSwarm ThisSwarmlingCharacter;
 
     [Header("Core Rules:")]
     // Note: Seperation, Alignment, Cohesion, and Danger Factors are currently pulled from EnemyTestSwarm for at runtime testing.
     // Thus, the Factors here for these 4 rules are currently unused, but should be used later!
     [Header("Seperation:")]
-    public float SeperationDistance = 3;
-    private float SeperationFactor = 1;
-    private bool NoSeperationThisUpdate = false;
+    public float SeperationDistance = 2;
+    public float SeperationFactor = 4;
+    protected bool NoSeperationThisUpdate = false;
 
     [Header("Alignment:")]
-    public float AlignmentDistance = 3;
-    private float AlignmentFactor = 1;
+    public float AlignmentDistance = 4;
+    public float AlignmentFactor = 0.75f;
 
     [Header("Cohesion:")]
     public float CohesionDistance = 3;
-    private float CohesionFactor = 1;
+    public float CohesionFactor = 0.35f;
 
     [Header("Advanced Rules:")]
     [Header("Danger Avoidance:")]
-    public float DangerDistance = 3;
-    private float DangerFactor = 1;
+    public float DangerDistance = 6;
+    public float DangerFactor = 10;
 
     [Header("Attraction:")]
-    public float AttractionDistance = 4;
-    public float AttractionFactor = 1;
+    public float AttractionDistance = 10;
+    public float AttractionFactor = 0.6f;
 
-    [Header("Go To Border:")]
-    public bool BorderOn = false;
-    //public float OutsideAcceleration = 1;
-    public float BorderDistance = 3;
-    public float BorderFactor = 1;
+
 
     [Header("Movement:")]
     public Vector3 Velocity = Vector3.zero;
@@ -57,10 +54,10 @@ public class EnemySwarm : MonoBehaviour {
 
     [Header("Speed::")]
     public float DesiredBaseSpeed = 6;
-    public float DesiredRunSpeed = 12;
+    public float DesiredRunSpeed = 8;
 
     [Header("Optimization:")]
-    public float UpdateTimer = 0.5f;
+    public float UpdateTimer = 0.06f;
     public float UpdateCounter = 0;
 
     [Header("Lists:")]
@@ -68,19 +65,344 @@ public class EnemySwarm : MonoBehaviour {
     public CharacterAttention CAttention;
     public List<EnemySwarm> EnemiesInRange = new List<EnemySwarm>();
     public List<GameObject> DangerInRange = new List<GameObject>();
-    public List<Character> PlayersInRange = new List<Character>();
+    public Character[] Players;
 
     [Header("FOR TESTING:")]
     public bool PlayerDanger = true;
 
+    [Header("New Variables:")]
+    public Transform SwarmlingTransform;
+    public int NeighbourRadiusBase = 7;
+    public float NeighbourRadiusCurrent = 2f;
+    public float NeighbourRadiusMin = 2f;
+    public float NeighbourRadiusMax = 7f;
+    public float NeighbourRadiusStep = 1;
+    public Collider[] NeighbourColliders = new Collider[6];
+    public int NeighbourCount = 0;
+    public int NeighbourLayerMask = 17;
+
+    public EnemySwarm CurrentSwarmling;
+
+
+
+    public Vector3 CohesionVec = Vector3.zero;
+    public Vector3 SeperationVec = Vector3.zero;
+    public Vector3 AlignmentVec = Vector3.zero;
+
+    public int CohesionNumber = 0;
+    public int SeperationNumber = 0;
+    public int AlignmentNumber = 0;
+
+    public Vector3 DistanceVec = Vector3.zero;
+    public float DistanceVecMag = 0;
+
+    public float NewNeighbourTimer = 1f;
+    public float NewNeighbourCounter = 0f;
+
+
+    public Vector3 DangerAvoidanceVec = Vector3.zero;
+    public Vector3 PlayerAttractionVec = Vector3.zero;
+
+    public int AttractionNumber = 0;
+    public int DangerNumber = 0;
+
+    public float PlayerDangerDistance = 4;  // Must be smaller than Player Attraction Range for optimization reasons!
+    public int PlayerDangerThreatLevelCheck = 2;
+    public float PlayerDangerAngle = 0.3f;
+
+    public int SwarmlingID = -1;
+    public SwarmSpawner SpawnedBy;
+
+    public bool DoNotMove = false;
+    public Character ClosestPlayer;
+    public float ClosestPlayerSqrDistance = 9;
+    public float ClosestPlayerSqrDistanceBase = 9;
+
+    public bool IgnoreThisSwarmlingForOthers = false;
+
+    public bool IgnoreThisSwarmlingForOthersWhenInDanger = false;
+
+    // ================================================================================================================
+
+    public void SwarmlingAttractionAndDangerRuleCalculation()
+    {
+        // Go through all Players for Attraction and Player Danger Avoidance:
+
+        PlayerAttractionVec = Vector3.zero;
+        DangerAvoidanceVec = Vector3.zero;
+
+        AttractionNumber = 0;
+        DangerNumber = 0;
+
+        DistanceVec = Vector3.zero;
+        DistanceVecMag = 0;
+
+        ClosestPlayer = null;
+        ClosestPlayerSqrDistance = ClosestPlayerSqrDistanceBase;
+
+        if (IgnoreThisSwarmlingForOthersWhenInDanger && IgnoreThisSwarmlingForOthers)
+        {
+            IgnoreThisSwarmlingForOthers = false;
+        }
+
+        // Go through all Players:
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i].GetCharacterIsDead())
+            {
+                continue;
+            }
+
+            // Player Attraction:
+            DistanceVec = Players[i].transform.position - transform.position;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            // Save Closest Player for Attack Rule later:
+            if (ClosestPlayerSqrDistance > DistanceVecMag)
+            {
+                ClosestPlayerSqrDistance = DistanceVecMag;
+                ClosestPlayer = Players[i];
+            }
+
+            if (DistanceVecMag <= Mathf.Pow(AttractionDistance, 2))
+            {
+                PlayerAttractionVec = DistanceVec;
+                AttractionNumber++;
+
+                // If in Player Attraction Range, check if in Player Danger Range:
+                if (DistanceVecMag <= Mathf.Pow(PlayerDangerDistance, 2)
+                && Players[i].GetCurrentThreatLevel(true, false) >= PlayerDangerThreatLevelCheck
+                && (Vector3.Dot(Players[i].transform.forward, (Players[i].transform.position - transform.position).normalized) < PlayerDangerAngle))
+                {
+                    DangerAvoidanceVec += -1 * DistanceVec / DistanceVecMag;
+                    DangerNumber++;
+
+                    if (IgnoreThisSwarmlingForOthersWhenInDanger && !IgnoreThisSwarmlingForOthers)
+                    {
+                        IgnoreThisSwarmlingForOthers = true;
+                    }
+                }
+            }
+        }
+
+        // Go through all Danger Objects:
+        for (int i = 0; i < DangerInRange.Count; i++)
+        {
+            if (!DangerInRange[i])
+            {
+                continue;
+            }
+
+            // Danger Avoidance:
+            DistanceVec = transform.position - DangerInRange[i].transform.position;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            if (DistanceVecMag <= Mathf.Pow(DangerDistance, 2))
+            {
+                DangerAvoidanceVec += DistanceVec / DistanceVecMag;
+                DangerNumber++;
+            }
+        }
+
+        // Player Attraction:
+        if (AttractionNumber > 0)
+        {
+            PlayerAttractionVec = PlayerAttractionVec.normalized * GetDesiredSpeed();
+
+            PlayerAttractionVec = Steer(PlayerAttractionVec);
+            Acceleration += PlayerAttractionVec * AttractionFactor;
+            GoalFactor += AttractionFactor;
+        }
+
+        // Total Danger:
+        if (DangerNumber > 0)
+        {
+            DangerAvoidanceVec = DangerAvoidanceVec.normalized * GetDesiredRunSpeed();
+
+            DangerAvoidanceVec = Steer(DangerAvoidanceVec);
+            Acceleration += DangerAvoidanceVec * DangerFactor;
+            GoalFactor += DangerFactor;
+        }
+    }
+
+    public void SwarmlingBaseRulesCalculation()
+    {
+        // NeighbourColliders = Physics.OverlapSphere(SwarmlingTransform.position, NeighbourRadius, NeighbourLayerMask);
+        // Stop if not enough Neighbours:
+        if (NeighbourCount < 2) return;
+
+        CohesionVec = Vector3.zero;
+        SeperationVec = Vector3.zero;
+        AlignmentVec = Vector3.zero;
+
+        CohesionNumber = 0;
+        SeperationNumber = 0;
+        AlignmentNumber = 0;
+
+        DistanceVec = Vector3.zero;
+        DistanceVecMag = 0;
+
+        for (int i = 0; i < NeighbourCount; i++)
+        {
+            if (!NeighbourColliders[i])
+            {
+                continue;
+            }
+
+            CurrentSwarmling = NeighbourColliders[i].GetComponent<EnemySwarm>();
+
+            if (!CurrentSwarmling)
+            {
+                Debug.Log("STOP!");
+            }
+
+            if (CurrentSwarmling.IgnoreThisSwarmlingForOthers)
+            {
+                continue;
+            }
+
+            DistanceVec = SwarmlingTransform.position - CurrentSwarmling.SwarmlingTransform.position;
+            DistanceVecMag = DistanceVec.sqrMagnitude;
+
+            if (DistanceVecMag <= 0) continue;
+
+            // Cohesion:
+            if (DistanceVecMag <= Mathf.Pow(CohesionDistance, 2)) // Could be optimized by storing the pow2 distance!
+            {
+                CohesionVec += CurrentSwarmling.SwarmlingTransform.position;
+                CohesionNumber++;
+            }
+
+            // Seperation:
+            if (DistanceVecMag <= Mathf.Pow(SeperationDistance, 2)) // Could be optimized by storing the pow2 distance!
+            {
+                SeperationVec += DistanceVec / DistanceVecMag;               
+                SeperationNumber++;
+            }
+
+            // Alignment:
+            if (DistanceVecMag <= Mathf.Pow(AlignmentDistance, 2)) // Could be optimized by storing the pow2 distance!
+            {
+                AlignmentVec += CurrentSwarmling.Velocity;
+                AlignmentNumber++;
+            }
+        }
+        // Cohesion:
+        if (CohesionNumber > 0)
+        {
+            //CohesionVec = Vector3.ClampMagnitude(((CohesionVec / CohesionNumber) - SwarmlingTransform.position), DesiredBaseSpeed);
+            //Debug.Log("Cohesion: " + CohesionVec);
+            CohesionVec = CohesionVec / CohesionNumber;
+            CohesionVec = CohesionVec - SwarmlingTransform.position;
+            CohesionVec = CohesionVec.normalized * DesiredBaseSpeed;
+
+            CohesionVec = Steer(CohesionVec);
+            
+            Acceleration += CohesionVec * CohesionFactor;
+            GoalFactor += CohesionFactor;
+        }
+
+        // Seperation:
+        if (SeperationNumber > 0)
+        {
+            if (NoSeperationThisUpdate)
+            {
+                NoSeperationThisUpdate = false;
+            }
+            else
+            {
+                //SeperationVec = Vector3.ClampMagnitude((SeperationVec / SeperationNumber), DesiredBaseSpeed);
+                //Debug.Log("SeperationVec: " + SeperationVec);
+                SeperationVec = SeperationVec.normalized * DesiredBaseSpeed;
+
+                SeperationVec = Steer(SeperationVec);
+                Acceleration += SeperationVec * SeperationFactor;
+                
+                GoalFactor += SeperationFactor;
+            }    
+        }
+
+        // Alignment:
+        if (AlignmentNumber > 0)
+        {
+            //AlignmentVec = Vector3.ClampMagnitude((AlignmentVec/AlignmentNumber), DesiredBaseSpeed);
+            //Debug.Log("AlignmentVec: " + AlignmentVec);
+
+            AlignmentVec = AlignmentVec.normalized * DesiredBaseSpeed;
+
+            //AlignmentVec = AlignmentVec / AlignmentNumber;
+
+            AlignmentVec = Steer(AlignmentVec);
+            
+            Acceleration += AlignmentVec * AlignmentFactor;
+            GoalFactor += AlignmentFactor;
+        }
+
+    }
+
+    public virtual void SwarmlingSpecialRuleCalculation() { }
+
+    public virtual void SwarmlingAttackRuleCalculation() { }
+
+    public virtual void SwarmlingFinishedAttack() { }
+
+
+    // ================================================================================================================
+
     private void Start()
     {
         UpdateCounter = Random.Range(0, UpdateTimer);
+        NewNeighbourCounter = Random.Range(0, NewNeighbourTimer);
+        NMAgent.updateRotation = false;
+
+        //Players = EnemyTestSwarm.Instance.PlayerCharacters;
     }
 
-    private void FixedUpdate()
+    public void InitializeSwarmling(SwarmSpawner _SpawnedBy, int _SwarmlingID, Character[] _Players, int _NeighbourLayerMask)
     {
+        SpawnedBy = _SpawnedBy;
+        Players = _Players;
+        SwarmlingID = _SwarmlingID;
+        NeighbourLayerMask = _NeighbourLayerMask;
+    }
+
+    public virtual void SwarmlingUpdate()
+    {
+        if (ThisSwarmlingCharacter.GetCharacterIsDead())
+        {
+            return;
+        }
+
         GoalFactor = 0;
+
+        // Get List of Neighbours:
+        if (NewNeighbourCounter <= 0)
+        {
+            //NeighbourRadiusCurrent = NeighbourRadiusBase + NeighbourCount * -0.3f;
+
+            if (NeighbourCount == NeighbourColliders.Length)
+            {
+                NeighbourRadiusCurrent = Mathf.Max(NeighbourRadiusCurrent - NeighbourRadiusStep, NeighbourRadiusMin);
+            }
+            else
+            {
+                NeighbourRadiusCurrent = Mathf.Min(NeighbourRadiusCurrent + NeighbourRadiusStep, NeighbourRadiusMax);
+            }
+
+            NeighbourCount = Physics.OverlapSphereNonAlloc(SwarmlingTransform.position, NeighbourRadiusCurrent, NeighbourColliders, NeighbourLayerMask);
+
+            for (int i = NeighbourColliders.Length - 1; i > NeighbourCount - 1; i--)
+            {
+                NeighbourColliders[i] = null;
+            }
+
+            NewNeighbourCounter = Random.Range(0, NewNeighbourTimer) + Mathf.Pow(NeighbourCount * 0.3f, 2);
+        }
+        else
+        {
+            NewNeighbourCounter -= Time.deltaTime;
+        }
+
 
         UpdateCounter += Time.deltaTime;
 
@@ -91,43 +413,59 @@ public class EnemySwarm : MonoBehaviour {
             // Reset Acceleration:
             Acceleration = Vector3.zero;
 
-            if (BorderOn)
+            if (!DoNotMove)
             {
-                RuleGoToBorder();
+                SwarmlingBaseRulesCalculation();
+                SwarmlingAttractionAndDangerRuleCalculation();
+                SwarmlingSpecialRuleCalculation();
             }
 
-            RuleAttraction();
-            RuleCohesion();
-            RuleSeperation();
-            RuleAlignment();
+            SwarmlingAttackRuleCalculation();
+            
+            /*if (BorderOn)
+            {
+                RuleGoToBorder();
+            }*/
 
-            if (PlayerDanger)
+            //RuleAttraction();
+           // RuleCohesion();
+           // RuleSeperation();
+            //RuleAlignment();
+
+            /*if (PlayerDanger)
             {
                 RuleDangerAvoidanceEnhanced();
             }
             else
             {
                 RuleDangerAvoidance();
-            }
+            }*/
             
+        }
+
+        if (DoNotMove)
+        {
+            return;
         }
 
         if (GoalFactor > 0)
         {
             Acceleration = Acceleration / GoalFactor;
         }
-        
+       
         // Update Velocity:
         Velocity += Acceleration * Time.deltaTime * 10;
         Velocity *= (1 - Friction * Time.deltaTime);
 
+
         // Move:
         NMAgent.Move(Velocity * Time.deltaTime);
+        
 
         // Rotate towards Velocity Direction:
         if (Velocity.sqrMagnitude > 0)
         {
-            transform.rotation = Quaternion.LookRotation(Velocity);
+            SwarmlingTransform.rotation = Quaternion.Slerp(SwarmlingTransform.rotation, Quaternion.LookRotation(Velocity), 5f * Time.deltaTime);
         }
     }
 
@@ -135,6 +473,8 @@ public class EnemySwarm : MonoBehaviour {
     {
         return VelDesired - Velocity;
     }
+
+   
 
     // ===================================================== RULES =====================================================
 
@@ -174,6 +514,8 @@ public class EnemySwarm : MonoBehaviour {
             Acceleration += CohesionVec * EnemyTestSwarm.Instance.CohesionFactor;
             GoalFactor += EnemyTestSwarm.Instance.CohesionFactor;
         }
+
+
     }
 
     // ===============================================/ RULE: COHESION /===============================================
@@ -299,7 +641,7 @@ public class EnemySwarm : MonoBehaviour {
             GoalFactor += EnemyTestSwarm.Instance.DangerFactor;
         }
     }
-
+/*
     private void RuleDangerAvoidanceEnhanced()
     {
         // Dangers in Range:
@@ -367,13 +709,13 @@ public class EnemySwarm : MonoBehaviour {
             Acceleration += DangerVec * EnemyTestSwarm.Instance.DangerFactor;
             GoalFactor += EnemyTestSwarm.Instance.DangerFactor;
         }
-    }
+    }*/
 
     // ===========================================/ RULE: DANGER AVOIDANCE /============================================
 
     // =============================================== RULE: ATTRACTION ================================================
     // Enemies steer towards the nearest attraction (in this case Player Characters, so far).
-
+/*
     private void RuleAttraction()
     {
         int NumberOfOthers = PlayersInRange.Count;
@@ -406,12 +748,12 @@ public class EnemySwarm : MonoBehaviour {
             GoalFactor += AttractionFactor;
         }
     }
-
+    */
     // ==============================================/ RULE: ATTRACTION /===============================================
 
     // ============================================== RULE: GO TO BORDER ===============================================
     // Tank Enemies should steer towards the outside of the swarm.
-
+    /*
     private void RuleGoToBorder()
     {
         int NumberOfOthers = EnemiesInRange.Count;
@@ -449,7 +791,7 @@ public class EnemySwarm : MonoBehaviour {
             NoSeperationThisUpdate = true;
         }
     }
-
+    */
     // =============================================/ RULE: GO TO BORDER /==============================================
 
     // ====================================================/ RULES /====================================================
@@ -476,7 +818,7 @@ public class EnemySwarm : MonoBehaviour {
     {
         DangerInRange.Remove(RemoveDanger);
     }
-
+/*
     public void AddToPlayersInRange(GameObject AddPlayer)
     {
         PlayersInRange.Add(AddPlayer.GetComponent<CharacterAttention>().GetOwner());
@@ -486,13 +828,14 @@ public class EnemySwarm : MonoBehaviour {
     {
         PlayersInRange.Remove(RemovePlayer.GetComponent<CharacterAttention>().GetOwner());
     }
-
+    */
     public void OnDestroy()
     {
-        for (int i = 0; i < EnemiesInRange.Count; i++)
+        /*for (int i = 0; i < EnemiesInRange.Count; i++)
         {
             EnemiesInRange[i].RemoveFromEnemiesInRange(this);
-        }
+        }*/
+        SpawnedBy.SwarmlingDied(SwarmlingID);
     }
 
     // =================================================/ NEARBY LISTS /=================================================
@@ -518,6 +861,12 @@ public class EnemySwarm : MonoBehaviour {
     public SwarmType GetSwarmType()
     {
         return SType;
+    }
+
+    public void ChangeSwarmlingSpeed(float SpeedChange)
+    {
+        DesiredBaseSpeed += SpeedChange;
+        DesiredRunSpeed += SpeedChange;
     }
 
     // ===============================================/ GETTERS/SETTERS /================================================

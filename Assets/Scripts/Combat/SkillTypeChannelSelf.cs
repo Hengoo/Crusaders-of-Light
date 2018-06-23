@@ -67,6 +67,7 @@ public class SkillTypeChannelSelf : SkillType
                     SourceItemSkill.GetComponent<AudioSource>().Stop();
             }
             RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+            SourceItemSkill.StoppedActivatingSkillWithHitObjects(this);
             SourceItemSkill.FinishedSkillActivation();
         }
     }

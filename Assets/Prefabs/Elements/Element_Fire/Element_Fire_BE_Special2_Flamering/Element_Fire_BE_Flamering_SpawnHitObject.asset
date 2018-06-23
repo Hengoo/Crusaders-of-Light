@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b7002d963efd5947a3d87e859e9a884, type: 3}
+  m_Name: Element_Fire_BE_Flamering_SpawnHitObject
+  m_EditorClassIdentifier: 
+  HitObjectPrefab: {fileID: 114517662830725728, guid: 815dafa5bd8b6c441b6da5bf5a980c2b,
+    type: 2}
+  UseSkillLevelAtActivationMoment: 1
+  Threat:
+  - 0
+  - 3
+  - 0
+  AllowTarget: 0001
+  SkillEffects:
+  - {fileID: 11400000, guid: eb000a104b6a730478eee72c8604087a, type: 2}
+  UseRotationOffset: 0
+  RotationOffset: {x: 0, y: 0, z: 0}
+  SpawnAtTargetPosition: 1
+  SpawnSound: {fileID: 0}
+  LoopSound: 0

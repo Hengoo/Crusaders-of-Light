@@ -9,25 +9,29 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1268668626314374}
+  m_RootGameObject: {fileID: 1890396557792036}
   m_IsPrefabParent: 1
---- !u!1 &1268668626314374
+--- !u!1 &1890396557792036
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4961672988027004}
-  - component: {fileID: 33316211999590006}
-  - component: {fileID: 23014674691197512}
-  - component: {fileID: 95988931245939272}
-  - component: {fileID: 114010287845431416}
-  - component: {fileID: 114479299295380652}
-  - component: {fileID: 114139966644825928}
-  - component: {fileID: 54720770140348264}
-  - component: {fileID: 64869579907803110}
-  - component: {fileID: 82880583195187628}
+  - component: {fileID: 4770099076567762}
+  - component: {fileID: 33709785303126002}
+  - component: {fileID: 23136040225942618}
+  - component: {fileID: 95911328793641888}
+  - component: {fileID: 114329243195837850}
+  - component: {fileID: 114997423074573492}
+  - component: {fileID: 114613658672761830}
+  - component: {fileID: 54408240246652918}
+  - component: {fileID: 64081914957071208}
+  - component: {fileID: 82642021264837466}
+  - component: {fileID: 114132575342734104}
+  - component: {fileID: 114116254174555878}
+  - component: {fileID: 114267028379617794}
+  - component: {fileID: 114103260446828130}
   m_Layer: 13
   m_Name: Weapon_Mace
   m_TagString: Weapon
@@ -35,25 +39,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4961672988027004
+--- !u!4 &4770099076567762
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1268668626314374}
+  m_GameObject: {fileID: 1890396557792036}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.20000003, y: 0.2, z: 0.20000002}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23014674691197512
+--- !u!23 &23136040225942618
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1268668626314374}
+  m_GameObject: {fileID: 1890396557792036}
   m_Enabled: 1
   m_CastShadows: 2
   m_ReceiveShadows: 1
@@ -61,8 +65,9 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 3196d78b9db4f5b4b89cbe4f5a9b15b7, type: 2}
+  - {fileID: 2100000, guid: 91afd9b96d111284bbcd8d170d961341, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -82,19 +87,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33316211999590006
+--- !u!33 &33709785303126002
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1268668626314374}
+  m_GameObject: {fileID: 1890396557792036}
   m_Mesh: {fileID: 4300000, guid: dcaef2aeb3b66d64b8cb64c5415c5c88, type: 3}
---- !u!54 &54720770140348264
+--- !u!54 &54408240246652918
 Rigidbody:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1268668626314374}
+  m_GameObject: {fileID: 1890396557792036}
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
@@ -104,26 +109,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!64 &64869579907803110
+--- !u!64 &64081914957071208
 MeshCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1268668626314374}
+  m_GameObject: {fileID: 1890396557792036}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Convex: 1
-  m_InflateMesh: 1
+  m_CookingOptions: 15
   m_SkinWidth: 0.02
   m_Mesh: {fileID: 4300000, guid: dcaef2aeb3b66d64b8cb64c5415c5c88, type: 3}
---- !u!82 &82880583195187628
+--- !u!82 &82642021264837466
 AudioSource:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1268668626314374}
+  m_GameObject: {fileID: 1890396557792036}
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
@@ -147,72 +152,90 @@ AudioSource:
   rolloffCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
+    - serializedVersion: 3
       time: 0.41666666
       value: 1.0039062
       inSlope: -4.7147455
       outSlope: -4.7147455
       tangentMode: 0
-    - serializedVersion: 2
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
       time: 0.8333333
       value: 0.0748291
       inSlope: -0.8747611
       outSlope: -0.8747611
       tangentMode: 0
-    - serializedVersion: 2
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
       time: 1
       value: 0
       inSlope: -0.41683316
       outSlope: -0.41683316
       tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
   panLevelCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
+    - serializedVersion: 3
       time: 0
       value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
+    - serializedVersion: 3
       time: 0
       value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
+    - serializedVersion: 3
       time: 0
       value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!95 &95988931245939272
+--- !u!95 &95911328793641888
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1268668626314374}
+  m_GameObject: {fileID: 1890396557792036}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 62dfc03ead91a2d4da059bab4c8c5be6, type: 3}
+  m_Avatar: {fileID: 9000000, guid: ac7708e7c258d3d4cbe15fe52db5adfc, type: 3}
   m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -221,12 +244,93 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114010287845431416
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114103260446828130
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1268668626314374}
+  m_GameObject: {fileID: 1890396557792036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114329243195837850}
+  SkillObject: {fileID: 11400000, guid: 427c28a9070a2b94c9280223e2cb3529, type: 2}
+  Level: 1
+  ItemSkillID: 5
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &114116254174555878
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1890396557792036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114329243195837850}
+  SkillObject: {fileID: 11400000, guid: 4f2af12799e4c1148b5c246acacc9f7f, type: 2}
+  Level: 1
+  ItemSkillID: 3
+  ComboInput:
+  - {fileID: 114613658672761830}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &114132575342734104
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1890396557792036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114329243195837850}
+  SkillObject: {fileID: 11400000, guid: 7f2433d31ca3bc5498aee48536a1bf11, type: 2}
+  Level: 1
+  ItemSkillID: 2
+  ComboInput:
+  - {fileID: 114613658672761830}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &114267028379617794
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1890396557792036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114329243195837850}
+  SkillObject: {fileID: 11400000, guid: eb74f77c3e6673e4dbf1375393274bac, type: 2}
+  Level: 1
+  ItemSkillID: 4
+  ComboInput:
+  - {fileID: 114132575342734104}
+  - {fileID: 114103260446828130}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &114329243195837850
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1890396557792036}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed1481445385c1e40ae6bc42ca32a7d1, type: 3}
@@ -234,12 +338,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CurrentOwner: {fileID: 0}
   CurrentEquipSlot: -1
-  ItemSkills:
-  - {fileID: 114479299295380652}
-  - {fileID: 114139966644825928}
   SkillActivationTimer: 0
-  ItemRidgidBody: {fileID: 54720770140348264}
-  ItemCollider: {fileID: 64869579907803110}
+  ItemRidgidBody: {fileID: 54408240246652918}
+  ItemCollider: {fileID: 64081914957071208}
   IgnoreCurrentOwnerForCollisionChecks: 1
   EquippedPosition: {x: 0, y: 0, z: -0.171}
   EquippedRotation: {x: 14.485, y: 6.5, z: 1.54}
@@ -249,46 +350,55 @@ MonoBehaviour:
   ItemSkillCurrentlyUsingItemHitBox: {fileID: 0}
   AlreadyHitCharacters: []
   CurrentItemHitBoxAlignment: 0
+  MaxHittableCharacters: -1
+  MaxHittableCharactersCounter: -2
   EquippedSlotID: -1
   ItemPowerLevel: 0
-  ItemMovePatterns:
-  - {fileID: 11400000, guid: b4443c8c6f44e5842aa22f8f45bdce47, type: 2}
+  ItemMovePatterns: []
+  ItemSkills:
+  - {fileID: 114997423074573492}
+  - {fileID: 114613658672761830}
+  - {fileID: 114132575342734104}
+  - {fileID: 114116254174555878}
+  ItemSkillsComboStart: 0000000003000000ffffffffffffffff
   TwoHanded: 0
---- !u!114 &114139966644825928
+--- !u!114 &114613658672761830
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1268668626314374}
+  m_GameObject: {fileID: 1890396557792036}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ParentItem: {fileID: 114010287845431416}
-  SkillObject: {fileID: 11400000, guid: 582b04ef74877e141b9f27fad505dbb7, type: 2}
+  ParentItem: {fileID: 114329243195837850}
+  SkillObject: {fileID: 11400000, guid: 1a7505f4da77f6e4985d6aa773e4a694, type: 2}
   Level: 1
-  CurrentCooldown: 0
-  ActivationIntervallTimer: 0
-  EffectOnlyOnceBool: 0000
-  EffectFloat: 0
-  EffectSkillHitObjects: []
---- !u!114 &114479299295380652
+  ItemSkillID: 1
+  ComboInput:
+  - {fileID: 114132575342734104}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &114997423074573492
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1268668626314374}
+  m_GameObject: {fileID: 1890396557792036}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ParentItem: {fileID: 114010287845431416}
-  SkillObject: {fileID: 11400000, guid: a14eaa12df37e7b4183821b16906aa22, type: 2}
+  ParentItem: {fileID: 114329243195837850}
+  SkillObject: {fileID: 11400000, guid: dc35460589ce0c84d9d9e1988453ab8d, type: 2}
   Level: 1
-  CurrentCooldown: 0
-  ActivationIntervallTimer: 0
-  EffectOnlyOnceBool: 0000
-  EffectFloat: 0
-  EffectSkillHitObjects: []
+  ItemSkillID: 0
+  ComboInput:
+  - {fileID: 114613658672761830}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
