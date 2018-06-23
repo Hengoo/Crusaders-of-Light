@@ -15,7 +15,7 @@ public class CharacterHand : MonoBehaviour {
 
     public void StartActivateEffect(int ID)
     {
-        Debug.Log("startActivationeffect");
+        //Debug.Log("startActivationeffect");
         ActivateEffect[ID] = true;
     }
 	

@@ -66,6 +66,8 @@ public class SkillEffectDamage : SkillEffect
 
     private void playSound(AudioSource source, int damageAmount)
     {
+        if (!source.enabled) return;
+
         if(!(HitSound && BlockedSound)) return;
 
         source.clip = damageAmount > 60 ? HitSound : BlockedSound;
