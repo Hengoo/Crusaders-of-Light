@@ -28,6 +28,8 @@ GameObject:
   - component: {fileID: 23711973652458286}
   - component: {fileID: 64449794596136708}
   - component: {fileID: 82965436351725322}
+  - component: {fileID: 114503251415346812}
+  - component: {fileID: 114409341786529680}
   m_Layer: 13
   m_Name: Weapon_Boss_FlameWizard
   m_TagString: Weapon
@@ -275,6 +277,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7cfe2d763838b2d47a013f0ba20e72d6, type: 2}
   ItemSkills:
   - {fileID: 114713643813734902}
+  - {fileID: 114363835929144508}
+  - {fileID: 114503251415346812}
+  - {fileID: 114409341786529680}
   ItemSkillsComboStart: 00000000000000000000000000000000
   TwoHanded: 0
 --- !u!114 &114363835929144508
@@ -289,7 +294,47 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114144670631923840}
-  SkillObject: {fileID: 11400000, guid: cbd8c01039f48bd47bfed0b42792cc7c, type: 2}
+  SkillObject: {fileID: 11400000, guid: 079b363bf20719745a25736d6a65852f, type: 2}
+  Level: 1
+  ItemSkillID: -1
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &114409341786529680
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1275348383016498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114144670631923840}
+  SkillObject: {fileID: 11400000, guid: a791586c20a9bfc49ae04023ac67a136, type: 2}
+  Level: 1
+  ItemSkillID: -1
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &114503251415346812
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1275348383016498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114144670631923840}
+  SkillObject: {fileID: 11400000, guid: f119af3ad66fab441bd8abd6fd557dd1, type: 2}
   Level: 1
   ItemSkillID: -1
   ComboInput:

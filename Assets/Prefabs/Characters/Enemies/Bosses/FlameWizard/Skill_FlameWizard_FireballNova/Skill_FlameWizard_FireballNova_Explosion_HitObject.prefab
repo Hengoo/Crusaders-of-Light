@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 114834862812820494}
   m_Layer: 11
   m_Name: Skill_FlameWizard_FireballNova_Explosion_HitObject
-  m_TagString: SkillsPlayer
+  m_TagString: Skills
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

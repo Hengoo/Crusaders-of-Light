@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ce3e478a8bddd84a9fe9446d8d9c93a, type: 3}
   m_Name: Com_MovPat_BackwardsFromPlayer_DecisionMaker
   m_EditorClassIdentifier: 
-  Weight: 1.5
+  Weight: 1.9
   ConsiderationsTargeted:
   - {fileID: 11400000, guid: f7b9ccb80bc14bc4c84451f97191f6ca, type: 2}
   ConsiderationsSelf: []
