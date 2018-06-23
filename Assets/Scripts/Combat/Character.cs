@@ -159,7 +159,7 @@ public class Character : MonoBehaviour
     public void SetHealthCurrent(int NewValue)
     {
         HealthCurrent = Mathf.Clamp(NewValue, 0, HealthMax);
-        if (!CheckIfCharacterDied())
+        if (!CheckIfCharacterDied() && GUIChar)
         {
             GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
         }
@@ -168,7 +168,7 @@ public class Character : MonoBehaviour
     public void ChangeHealthCurrent(int Value)
     {
         HealthCurrent = Mathf.Clamp(HealthCurrent + Value, 0, HealthMax);
-        if (!CheckIfCharacterDied())
+        if (!CheckIfCharacterDied() && GUIChar)
         {
             GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
         }
@@ -280,7 +280,10 @@ public class Character : MonoBehaviour
             HealthHealingCounter -= HealthHealingCounterTimer;
 
             HealthHealingMax = Mathf.Max(HealthHealingMin, HealthHealingMax - HealthHealingLostPerCount, HealthCurrent);
-            GUIChar.UpdateHealthHealingBar(GetHealthHealingPercentage());
+            if (GUIChar)
+            {
+                GUIChar.UpdateHealthHealingBar(GetHealthHealingPercentage());
+            }
         }
     }
 
@@ -1093,7 +1096,7 @@ public class Character : MonoBehaviour
 
     // =========================================== GUI ==========================================
 
-    private void CreateCharacterFollowGUI()
+    protected virtual void CreateCharacterFollowGUI()
     {
         if (!GUIChar)
         {
@@ -1104,7 +1107,10 @@ public class Character : MonoBehaviour
 
     private void UpdateCharacterFollowGUI()
     {
-        GUIChar.UpdateGUIPosition();
+        if (GUIChar)
+        {
+            GUIChar.UpdateGUIPosition();
+        }
     }
 
     private void RemoveCharacterFollowGUI()

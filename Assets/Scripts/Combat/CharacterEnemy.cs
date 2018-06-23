@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CharacterEnemy : Character {
 
@@ -39,6 +40,9 @@ public class CharacterEnemy : Character {
 
     public Spawner SpawnedBy;
 
+    [Header("Enemy Nav Mesh Movement:")]
+    public NavMeshAgent NavAgent;
+
     [Header("Enemy Testing:")]
     public bool SpawnStartingWeaponsOnStart = false;
 
@@ -69,7 +73,8 @@ public class CharacterEnemy : Character {
 
     private void FixedUpdate()
     {
-        ActiveMovePattern.UpdateMovePattern(PhysCont, this, TargetCharacter);
+        //ActiveMovePattern.UpdateMovePattern(PhysCont, this, TargetCharacter);
+        ActiveMovePattern.UpdateMovePattern(NavAgent, this, TargetCharacter);
     }
 
     public override TeamAlignment GetAlignment()
@@ -377,7 +382,7 @@ public class CharacterEnemy : Character {
     public override void FinishedCurrentSkillActivation(int WeaponSlotID, int Hindrance)
     {
         SkillContinueActivation[WeaponSlotID] = false;
-
+        HandAnimators[0].SetTrigger(Anim_BreakAnim);
         base.FinishedCurrentSkillActivation(WeaponSlotID, Hindrance);
     }
 
@@ -417,7 +422,6 @@ public class CharacterEnemy : Character {
 
         return true;
     }
-
 
     // =================================== /SKILL ACTIVATION ====================================
 
