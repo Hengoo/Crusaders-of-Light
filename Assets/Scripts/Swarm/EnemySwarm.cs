@@ -150,6 +150,11 @@ public class EnemySwarm : MonoBehaviour {
             }
         }
 
+        if (!NMAgent.enabled)
+        {
+            return;
+        }
+
         DistanceVec = SpawnedBy.transform.position - SwarmlingTransform.position;
         DistanceVecMag = DistanceVec.sqrMagnitude;
 

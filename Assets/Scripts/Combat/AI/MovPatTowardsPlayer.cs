@@ -51,7 +51,10 @@ public class MovPatTowardsPlayer : MovePattern {
 
         Vector3 targetVel = targetDir * MovementSpeedFactor * Self.GetMovementRateModifier();
 
-        NavAgent.Move(targetVel * Time.deltaTime);
+        //NavAgent.Move(targetVel * Time.deltaTime);
+        NavAgent.speed = MovementSpeedFactor * Self.GetMovementRateModifier();
+        NavAgent.SetDestination(TargetCharacter.transform.position);
+
 
         Self.SwitchWalkingAnimation(true);
         Self.StartBodyAnimation(Self.GetMovementRateModifier());
