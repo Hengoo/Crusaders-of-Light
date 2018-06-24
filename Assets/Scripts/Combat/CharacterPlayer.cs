@@ -337,6 +337,11 @@ public class CharacterPlayer : Character {
         BodyAnimator.SetTrigger(DeathAnimationResetTrigger);
     }
 
+    public void SetLightOrbEffects(LightOrbEffects NewLightOrbEffects)
+    {
+        LightOrbEffects = NewLightOrbEffects;
+    }
+
     // =================================== !RESPAWNING ====================================
 
     // =================================== ITEM PICKUP ====================================

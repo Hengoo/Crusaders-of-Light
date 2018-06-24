@@ -50,6 +50,7 @@ public class LightOrbEffects : MonoBehaviour {
             if (ActivePlayers[i])
             {
                 AddPlayerCharacter(ActivePlayers[i]);
+                ActivePlayers[i].SetLightOrbEffects(this);
             }
         }
     }
@@ -136,7 +137,7 @@ public class LightOrbEffects : MonoBehaviour {
         for (int i = 0; i < PlayerCharacters.Count; i++)
         {
             if (PlayerCharacters[i].gameObject.layer == CharacterPlayer.CharacterLayerID
-                && Vector3.SqrMagnitude(transform.position - PlayerCharacters[i].transform.position) > Mathf.Pow(HealEffectRange, 2))
+                && Vector3.SqrMagnitude(transform.position - PlayerCharacters[i].transform.position) <= Mathf.Pow(HealEffectRange, 2))
             {
                 PlayerCharacters[i].Heal(PlayerCharacters[i].GetHealthPercentageAbsoluteValue(HealPercentage));
             }
