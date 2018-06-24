@@ -52,19 +52,7 @@ public class LevelController : Singleton<LevelController>
         //Deactivate all controllers
         foreach (var player in PlayerCharacters)
             player.gameObject.SetActive(false);
-
-        //Initialize Light Wisp
-        if (LightWisp && LightWisp.GetComponent<LightOrbEffects>())
-        {
-            LightWisp.GetComponent<LightOrbEffects>().InitializeLightOrb(PlayerCharacters, GameController.Instance.ActivePlayers);
-        }
-
-        //Set reference to terrain;
-        SwarmlingSpawner.SetTerrain(LevelCreator.Terrain);
-
-        //Initialize SwarmSpawner
-        if (SwarmlingSpawner)
-            SwarmlingSpawner.InitializeSwarmSpawner(PlayerCharacters, GameController.Instance.ActivePlayers);
+        
     }
 
     public void FinalizeLevel()
@@ -117,6 +105,19 @@ public class LevelController : Singleton<LevelController>
         //Reactivate all controllers
         for (var i = 0; i < GameController.Instance.ActivePlayers; i++)
             PlayerCharacters[i].gameObject.SetActive(true);
+
+        //Initialize Light Wisp
+        if (LightWisp && LightWisp.GetComponent<LightOrbEffects>())
+        {
+            LightWisp.GetComponent<LightOrbEffects>().InitializeLightOrb(PlayerCharacters, GameController.Instance.ActivePlayers);
+        }
+
+        //Set reference to terrain;
+        SwarmlingSpawner.SetTerrain(LevelCreator.Terrain);
+
+        //Initialize SwarmSpawner
+        if (SwarmlingSpawner)
+            SwarmlingSpawner.InitializeSwarmSpawner(PlayerCharacters, GameController.Instance.ActivePlayers);
     }
 
     public GameObject[] GetActivePlayers()

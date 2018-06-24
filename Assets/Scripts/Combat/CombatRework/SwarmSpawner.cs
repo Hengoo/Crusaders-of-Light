@@ -49,9 +49,7 @@ public class SwarmSpawner : MonoBehaviour {
     [Header("Player Characters:")]
     public Character[] Players = new Character[0];
 
-    [Header("Terrain and Navmesh:")]
-    public Terrain Terr;
-
+    private Terrain terrain;
     private Vector3 spawnAreaMarker = Vector3.zero;
     private int spawnAreaMarkerMaxTries = 10;
     private int spawnAreaMarkerTryCounter = 0;
@@ -267,7 +265,7 @@ public class SwarmSpawner : MonoBehaviour {
         spawnPos = Quaternion.Euler(0, Random.Range(0, 360), 0) * spawnPos;
         spawnPos += AreaCenter;
 
-        spawnPos.y = Terr.SampleHeight(spawnPos);
+        spawnPos.y = terrain.SampleHeight(spawnPos);
 
         NavMesh.SamplePosition(spawnPos, out hit, 3, NavMesh.AllAreas);
 
@@ -300,7 +298,7 @@ public class SwarmSpawner : MonoBehaviour {
         spawnAreaMarker = Quaternion.Euler(0, Random.Range(0, 360), 0) * spawnAreaMarker;
         spawnAreaMarker += gameObject.transform.position;
 
-        spawnAreaMarker.y = Terr.SampleHeight(spawnAreaMarker);
+        spawnAreaMarker.y = terrain.SampleHeight(spawnAreaMarker);
 
         NavMesh.SamplePosition(spawnAreaMarker, out hit, 4, NavMesh.AllAreas);
 
@@ -373,6 +371,6 @@ public class SwarmSpawner : MonoBehaviour {
 
     public void SetTerrain(Terrain NewTerrain)
     {
-        Terr = NewTerrain;
+        terrain = NewTerrain;
     }
 }

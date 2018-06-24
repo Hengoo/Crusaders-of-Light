@@ -106,6 +106,8 @@ public class BossArenaSettings : AreaSettings
         bossPosition += new Vector3(0, terrain.SampleHeight(bossPosition), 0);
         var boss = Object.Instantiate(_bossPrefab, bossPosition, Quaternion.identity);
         boss.transform.parent = arena.transform;
+        var bossTrigger = boss.AddComponent<PortalActivateTrigger>();
+        bossTrigger.Portal = portal;
 
         return arena;
     }
