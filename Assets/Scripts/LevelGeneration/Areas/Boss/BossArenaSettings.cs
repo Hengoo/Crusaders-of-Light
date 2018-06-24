@@ -15,11 +15,13 @@ public class BossArenaSettings : AreaSettings
     private readonly GameObject _portalPrefab;
     private readonly GameObject _rewardPedestalPrefab;
     private readonly GameObject[] _buildingPrefabs;
+    private readonly GameObject _bossPrefab;
+
     //TODO boss and reward prefabs
 
     private Vector2[] _gateLine;
 
-    public BossArenaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, GameObject wallPrefab, float wallLength, float wallAngleLimit, Vector3 wallPositionNoise, Vector3 wallScaleNoise, GameObject gatePrefab, GameObject towerPrefab, GameObject portalPrefab, GameObject rewardPedestalPrefab, GameObject[] buildingsPrefabs)
+    public BossArenaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, GameObject wallPrefab, float wallLength, float wallAngleLimit, Vector3 wallPositionNoise, Vector3 wallScaleNoise, GameObject gatePrefab, GameObject towerPrefab, GameObject portalPrefab, GameObject rewardPedestalPrefab, GameObject[] buildingsPrefabs, GameObject bossPrefab)
     {
 
         Name = "Boss Arena";
@@ -37,6 +39,7 @@ public class BossArenaSettings : AreaSettings
         _towerPrefab = towerPrefab;
         _gatePrefab = gatePrefab;
         _portalPrefab = portalPrefab;
+        _bossPrefab = bossPrefab;
     }
 
     public override GameObject GenerateAreaScenery(Terrain terrain)
@@ -76,9 +79,9 @@ public class BossArenaSettings : AreaSettings
         arenaGateTrigger.ArenaCenter += new Vector3(0, terrain.SampleHeight(gate.GetComponent<ArenaGateTrigger>().ArenaCenter), 0);
 
         // Place portal
-        var position = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y + 5);
-        position += new Vector3(0, terrain.SampleHeight(position), 0);
-        var portal = Object.Instantiate(_portalPrefab, position, terrain.GetNormalRotation(position)* Quaternion.Euler(0,180,0));
+        var portalPosition = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y + 5);
+        portalPosition += new Vector3(0, terrain.SampleHeight(portalPosition), 0);
+        var portal = Object.Instantiate(_portalPrefab, portalPosition, terrain.GetNormalRotation(portalPosition)* Quaternion.Euler(0,180,0));
         portal.transform.parent = arena.transform;
 
         // Generate Walls
@@ -97,6 +100,12 @@ public class BossArenaSettings : AreaSettings
         var navMeshModifier = gateTower.AddComponent<NavMeshModifier>();
         navMeshModifier.overrideArea = true;
         navMeshModifier.area = NavMesh.GetAreaFromName("Not Walkable");
+
+        // Spawn boss at the arena center
+        var bossPosition = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y);
+        bossPosition += new Vector3(0, terrain.SampleHeight(bossPosition), 0);
+        var boss = Object.Instantiate(_bossPrefab, bossPosition, Quaternion.identity);
+        boss.transform.parent = arena.transform;
 
         return arena;
     }

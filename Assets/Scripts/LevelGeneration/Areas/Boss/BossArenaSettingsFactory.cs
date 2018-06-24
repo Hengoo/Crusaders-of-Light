@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "BossArenaSettingsFactory", menuName = "Terrain/Areas/Boss Arena")]
@@ -15,6 +16,7 @@ public class BossArenaSettingsFactory : AreaSettingsFactory {
     public GameObject PortalPrefab;
     public GameObject RewardPedestalPrefab;
     public GameObject[] BuildingPrefabs;
+    public GameObject[] BossPrefabs;
 
     public override Graph<AreaSegment> GetPatternGraph()
     {
@@ -33,7 +35,7 @@ public class BossArenaSettingsFactory : AreaSettingsFactory {
     public override AreaSettings[] ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
         var arenaWalls = new BossArenaSettings(areaDataGraph, clearPolygons, borderPolygon, WallPrefab, WallLenght, WallAngleLimit,
-            WallPositionNoise, WallScaleNoise, GatePrefab, TowerPrefab, PortalPrefab, RewardPedestalPrefab, BuildingPrefabs);
+            WallPositionNoise, WallScaleNoise, GatePrefab, TowerPrefab, PortalPrefab, RewardPedestalPrefab, BuildingPrefabs, BossPrefabs[Random.Range(0,BossPrefabs.Length)]);
 
         return new AreaSettings[]{arenaWalls};
     }
