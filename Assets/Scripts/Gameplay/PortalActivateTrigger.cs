@@ -10,15 +10,18 @@ public class PortalActivateTrigger : MonoBehaviour
 
     private Material _material;
 
-    void Awake()
+    public void Initialize()
     {
+        if (!Application.isPlaying) return;
+
         _material = Portal.transform.GetChild(1).gameObject.GetComponent<Renderer>().material;
         SetPortalOff();
     }
 
     void OnDestroy()
     {
-        SetPortalOn();
+        if(_material)
+            SetPortalOn();
     }
 
     private void SetPortalOff()

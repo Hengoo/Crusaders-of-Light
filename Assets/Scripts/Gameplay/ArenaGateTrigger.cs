@@ -41,6 +41,7 @@ public class ArenaGateTrigger : MonoBehaviour
         yield return new WaitUntil(DestinationReached);
         _wispAgent.SetDestination(ArenaCenter);
         yield return new WaitForSeconds(3);
+        LevelController.Instance.SwarmlingSpawner.EnteredBossArena();
         yield return new WaitUntil(DestinationReached);
         _particles.Play(true);
         _obstacle.enabled = true;

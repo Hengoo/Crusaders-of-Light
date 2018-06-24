@@ -108,6 +108,7 @@ public class BossArenaSettings : AreaSettings
         boss.transform.parent = arena.transform;
         var bossTrigger = boss.AddComponent<PortalActivateTrigger>();
         bossTrigger.Portal = portal;
+        bossTrigger.Initialize();
 
         return arena;
     }

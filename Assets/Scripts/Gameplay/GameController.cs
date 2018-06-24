@@ -26,10 +26,7 @@ public class GameController : Singleton<GameController>
     
     public void SetSeed(int value)
     {
-        if (GameState != GameStateEnum.Menu) return;
-
         Seed = value;
-        Random.InitState(value);
     }
 
     public void SetBrightness(float value)

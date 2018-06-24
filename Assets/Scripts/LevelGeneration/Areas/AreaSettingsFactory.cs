@@ -16,6 +16,6 @@ public abstract class AreaSettingsFactory : ScriptableObject, IComparable
 
     public int CompareTo(object obj)
     {
-        return ((AreaSettingsFactory)obj).GetPatternGraph().GetAllNodeIDs().Length - GetPatternGraph().GetAllNodeIDs().Length;
+        return GetPatternGraph().GetAllNodeIDs().Length - ((AreaSettingsFactory)obj).GetPatternGraph().GetAllNodeIDs().Length;
     }
 }
