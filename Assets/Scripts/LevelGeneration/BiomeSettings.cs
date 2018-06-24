@@ -20,6 +20,8 @@ public class BiomeSettings : ScriptableObject
     [Range(0.01f, 80f)]  public float BlockerAngleLimit = 80;
     public Vector3 BlockerPositionNoise = Vector3.zero;
     public Vector3 BlockerScaleNoise = Vector3.zero;
+    public BiomeSettings BorderBiome;
+    public GameObject FallingParticlesPrefab;
 
     [Header("Area Settings")]
     public AreaSettingsFactory[] BossAreas;

@@ -44,7 +44,7 @@ public class TerrainStructure
     private readonly float _alphaNoise;
 
     public TerrainStructure(StoryStructure storyStructure, List<BiomeSettings> availableBiomes, float mapSize,
-        int heightMapResolution, int octaves, BiomeSettings borderSettings,
+        int heightMapResolution, int octaves, 
         int voronoiSamples, int lloydIterations, float heightNoise, float alphaNoise, float borderBlockerBlockerOffset)
     {
         AreaSegmentGraph = new GrammarGraph<AreaSegment>();
@@ -61,7 +61,7 @@ public class TerrainStructure
         HeightMapResolution = heightMapResolution;
         Octaves = octaves;
 
-        BorderSettings = borderSettings;
+        BorderSettings = BiomeSettings.BorderBiome;
         _lloydIterations = lloydIterations;
         _voronoiSamples = voronoiSamples;
         _heightNoise = heightNoise;

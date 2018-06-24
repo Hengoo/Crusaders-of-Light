@@ -24,9 +24,10 @@ public class LevelCreator : Singleton<LevelCreator>
     public Vector2 StartPostion;
     public bool GenerateOnPlay = false;
 
+    public Camera mainCamera;
+
     [Header("Story Settings")]
     public List<BiomeSettings> AvailableBiomes;
-    public BiomeSettings BorderBiome;
     [Range(0f, 50f)] public float BorderBlockerOffset = 20f;
 
     [Header("Terrain Settings")]
@@ -61,9 +62,10 @@ public class LevelCreator : Singleton<LevelCreator>
     public StoryStructure MyStoryStructure { get; private set; }
     public SceneryStructure MySceneryStructure { get; private set; }
 
-
     private float[,] _heightMap;
     private float[,,] _alphaMap;
+
+    private GameObject _lastParticleEffect;
 
 
     public void CreateGameLevel()
@@ -85,7 +87,7 @@ public class LevelCreator : Singleton<LevelCreator>
         Random.InitState(Seed);
 
         MyStoryStructure = new StoryStructure(0, 1, MainPathNodeCount, SidePathCount, SidePathNodeCount, new CharacterEnemy[4]);
-        MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, BorderBiome, VoronoiSamples, LloydRelaxation, HeightNoise, AlphaNoise, BorderBlockerOffset);
+        MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, VoronoiSamples, LloydRelaxation, HeightNoise, AlphaNoise, BorderBlockerOffset);
         MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure);
 
         switch (DrawMode)
@@ -223,6 +225,15 @@ public class LevelCreator : Singleton<LevelCreator>
         {
             obj.transform.parent = scenery.transform;
         }
+
+        // Attach particle system to camera
+        if(_lastParticleEffect)
+            DestroyImmediate(_lastParticleEffect);
+
+        _lastParticleEffect = Instantiate(MyTerrainStructure.BiomeSettings.FallingParticlesPrefab);
+        _lastParticleEffect.transform.parent = mainCamera.transform;
+        _lastParticleEffect.transform.localPosition = Vector3.zero;
+        _lastParticleEffect.transform.localRotation = Quaternion.Inverse(mainCamera.transform.rotation);
     }
 
     // Draw roads on alpha map
