@@ -22,3 +22,6 @@ MonoBehaviour:
     type: 2}
   RewardPedestalPrefab: {fileID: 100000, guid: e5840d48645660843bd38c7a5466ea41, type: 3}
   BuildingPrefabs: []
+  BossPrefabs:
+  - {fileID: 1695772637083046, guid: d662102707976ec49b917ac2783bd57b, type: 2}
+  - {fileID: 1574788587254294, guid: 8baf951ea5de7ee4fb781eba8a71ec4b, type: 2}

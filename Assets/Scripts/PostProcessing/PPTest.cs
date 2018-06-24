@@ -30,7 +30,7 @@ public sealed class GrayscaleRenderer : PostProcessEffectRenderer<PPTest>
 	{
 		//check if my ressources (the list) is there, else do nothing
 		//also do nothing for scene view because the transformation matrices are for the camera -> Screen space Positions are wrong
-		if(PPHelper.T == null || context.isSceneView)
+		if(PPHelper.Instance == null || context.isSceneView)
 		{
 			context.command.BlitFullscreenTriangle(context.source, context.destination);
 			return;
@@ -48,7 +48,7 @@ public sealed class GrayscaleRenderer : PostProcessEffectRenderer<PPTest>
 		//enemyPos[] test= new enemyPos[5];
 		//PPHelper.T.buffer.GetData(test);
 		//Debug.Log(test[0].factor);
-		sheet.properties.SetBuffer("buffer", PPHelper.T.buffer);
+		sheet.properties.SetBuffer("buffer", PPHelper.Instance.buffer);
 		context.command.BlitFullscreenTriangle(context.source, context.destination, sheet, 0);
 
 		

@@ -79,7 +79,7 @@ public class BossArenaSettings : AreaSettings
         arenaGateTrigger.ArenaCenter += new Vector3(0, terrain.SampleHeight(gate.GetComponent<ArenaGateTrigger>().ArenaCenter), 0);
 
         // Place portal
-        var portalPosition = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y + 5);
+        var portalPosition = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y + 10);
         portalPosition += new Vector3(0, terrain.SampleHeight(portalPosition), 0);
         var portal = Object.Instantiate(_portalPrefab, portalPosition, terrain.GetNormalRotation(portalPosition)* Quaternion.Euler(0,180,0));
         portal.transform.parent = arena.transform;

@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 4725935370812564}
   - component: {fileID: 95503543935334332}
   m_Layer: 0
-  m_Name: StoneBoss
+  m_Name: Stone_Boss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
