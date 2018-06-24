@@ -11,7 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29a2d254cdebbc04bbe971bed1afafe9, type: 3}
   m_Name: ForestSidePathFactory
   m_EditorClassIdentifier: 
-  SegmentType: 6
-  SegmentEdgeType: 2
+  SegmentType: 4
   Trees:
   - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
+  TreeDistance: 5
+  AngleTolerance: 15

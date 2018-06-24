@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using csDelaunay;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class SceneryStructure
 {
@@ -15,8 +17,6 @@ public class SceneryStructure
 
         // Assign paths to area settings
         CreatePathAreas(terrainStructure);
-
-        // TODO: fill chest areas
 
         // Assign boss area segments to area settings
         CreateBossAreas(terrainStructure);
@@ -36,6 +36,7 @@ public class SceneryStructure
         availableSegments = availableSegments.Union(_graph.FindNodesWithData(new AreaSegment(AreaSegment.EAreaSegmentType.SidePath))).ToList();
         availableSegments = availableSegments.Union(_graph.FindNodesWithData(new AreaSegment(AreaSegment.EAreaSegmentType.Start))).ToList();
         List<AreaSettingsFactory> availableSettings = terrainStructure.BiomeSettings.PathAreas.ToList();
+        availableSettings.Sort();
 
         while (availableSegments.Count > 0 && availableSettings.Count > 0)
         {

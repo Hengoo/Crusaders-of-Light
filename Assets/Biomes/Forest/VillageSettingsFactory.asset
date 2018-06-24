@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1d7b5e72fbb594a8a0fd087183815c, type: 3}
   m_Name: VillageSettingsFactory
   m_EditorClassIdentifier: 
-  PathLength: 10
+  PathLength: 8
   PathType: 1
   GenericBuildings:
   - {fileID: 1227310021806302, guid: 1779058632ef43b43bd6744064508dc8, type: 2}
