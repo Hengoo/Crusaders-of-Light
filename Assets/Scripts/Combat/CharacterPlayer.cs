@@ -229,6 +229,18 @@ public class CharacterPlayer : Character {
         }
     }
 
+    public override void FinishedCurrentSkillActivation(int WeaponSlotID, int Hindrance)
+    {
+        for (int i = 0; i < Hands.Length; i++)
+        {
+            if (Hands[i])
+            {
+                Hands[i].ResetTriggers();
+            }
+        }
+        base.FinishedCurrentSkillActivation(WeaponSlotID, Hindrance);
+    }
+
     // =================================== /SKILL ACTIVATION ====================================
 
     // =================================== RESPAWNING ====================================

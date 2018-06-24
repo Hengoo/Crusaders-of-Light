@@ -19,4 +19,11 @@ public class CharacterHand : MonoBehaviour {
         ActivateEffect[ID] = true;
     }
 	
+    public void ResetTriggers()
+    {
+        for (int i = 0; i < ActivateEffect.Length; i++)
+        {
+            ActivateEffect[i] = false;
+        }
+    }
 }

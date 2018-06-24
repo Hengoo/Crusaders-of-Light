@@ -485,8 +485,6 @@ public class Character : MonoBehaviour
     private void EquipElementVisually()
     {
         EquippedElement.transform.SetParent(CharacterHands[0], false);
-        // TODO : How exactly should the Element be displayed?
-        // TODO : Add Element Effect to Weapon!
     }
 
     public ElementItem UnequipElement()
@@ -508,6 +506,12 @@ public class Character : MonoBehaviour
             return EquippedElement;
         }
         return null;
+    }
+
+    public void SpawnAndEquipElement(ElementItem ElementToEquip)
+    {
+        ElementItem tempEle = Instantiate(ElementToEquip);
+        EquipElement(tempEle);
     }
 
     private void SpawnAndEquipStartingElement()

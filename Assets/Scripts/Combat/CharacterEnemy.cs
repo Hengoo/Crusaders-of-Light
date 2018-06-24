@@ -383,6 +383,15 @@ public class CharacterEnemy : Character {
     {
         SkillContinueActivation[WeaponSlotID] = false;
         HandAnimators[0].SetTrigger(Anim_BreakAnim);
+       
+        for (int i = 0; i < Hands.Length; i++)
+        {
+            if (Hands[i])
+            {
+                Hands[i].ResetTriggers();
+            }
+        }
+
         base.FinishedCurrentSkillActivation(WeaponSlotID, Hindrance);
     }
 

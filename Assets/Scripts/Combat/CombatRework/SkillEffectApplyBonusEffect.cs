@@ -14,6 +14,11 @@ public class SkillEffectApplyBonusEffect : SkillEffect {
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
+        if (!Owner.GetEquippedElement())
+        {
+            return;
+        }
+
         SkillEffect[] BonusEffects = Owner.GetEquippedElement().GetBonusEffectOfType(BonusEffectType).GetAdditionalEffects(OnApply);        
 
         for (int i = 0; i < BonusEffects.Length; i++)
@@ -24,6 +29,11 @@ public class SkillEffectApplyBonusEffect : SkillEffect {
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
     {
+        if (!Owner.GetEquippedElement())
+        {
+            return;
+        }
+
         SkillEffect[] BonusEffects = Owner.GetEquippedElement().GetBonusEffectOfType(BonusEffectType).GetAdditionalEffects(OnApply);
 
         for (int i = 0; i < BonusEffects.Length; i++)
