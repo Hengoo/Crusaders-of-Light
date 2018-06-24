@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum GameStateEnum
+{
+    Level,
+    Transition,
+    Menu
+}
+
 public class GameController : Singleton<GameController>
 {
     public int Seed { get; private set; }
@@ -37,8 +44,8 @@ public class GameController : Singleton<GameController>
 
     public void InitializeGameSession()
     {
-        GameState = GameStateEnum.Play;
-        SceneManager.LoadScene("TerrainGenerationTest");
+        GameState = GameStateEnum.Transition;
+        SceneManager.LoadScene("TransitionArea");
     }
 
     public void FinalizeGameSession()
@@ -46,12 +53,4 @@ public class GameController : Singleton<GameController>
         GameState = GameStateEnum.Menu;
         SceneManager.LoadScene("Menu");
     }
-}
-
-
-public enum GameStateEnum
-{
-    Play,
-    Pause,
-    Menu
 }

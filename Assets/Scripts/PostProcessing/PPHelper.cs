@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class PPHelper : MonoBehaviour {
+public class PPHelper : Singleton<PPHelper> {
 
 	public int buffersize = 200;
 
 	private Vector4[] vec4Array;
-
-	public static PPHelper T;
-
 	public ComputeBuffer buffer;
 
 //	public ComputeShader computeShader;
@@ -19,10 +16,7 @@ public class PPHelper : MonoBehaviour {
 
 	public void Awake()
 	{
-		if (T != null)
-			GameObject.Destroy(T);
-		else
-			T = this;
+		base.Awake();
 
 		//DontDestroyOnLoad(this);
 

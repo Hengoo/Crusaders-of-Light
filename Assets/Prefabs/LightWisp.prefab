@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4705979716336128}
   - component: {fileID: 198650261045707052}
   - component: {fileID: 199972011020392274}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: WhispEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4437218546465148}
   - component: {fileID: 108914542512707850}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,9 @@ GameObject:
   - component: {fileID: 195405887915390138}
   - component: {fileID: 114271838533342474}
   - component: {fileID: 114605295700996342}
-  m_Layer: 0
+  - component: {fileID: 114364487591049380}
+  - component: {fileID: 114831757606476430}
+  m_Layer: 21
   m_Name: LightWisp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -151,6 +153,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a1c5ff9ace1be644b942c932c01ece3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114364487591049380
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1719093381775514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48655c4fa24fe114880c6c70c3f0276c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerCharacters: []
+  ReviveMaxDistance: 5
+  ReviveCooldown: 5
+  HealMaxActivationDistance: 5
+  HealEffectRange: 6
+  HealPercentage: 0.25
+  HealCooldown: 5
 --- !u!114 &114605295700996342
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -166,6 +186,37 @@ MonoBehaviour:
   m_Area: 0
   m_IgnoreFromBuild: 1
   m_AffectedAgents: ffffffff
+--- !u!114 &114831757606476430
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1719093381775514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac34ca6344beb3741b3ab5b060daff0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GroupingMin: 20
+  GroupingMax: 40
+  FrequencyTimerMin: 0.04
+  FrequencyTimerMax: 0.1
+  SpawningCooldownMin: 0.3
+  SpawningCooldownMax: 5
+  SpawnRadiusMin: 25
+  SpawnRadiusMax: 26
+  SpawnAreaRadius: 15
+  EnemyPrefabs:
+  - {fileID: 114819738713999842, guid: 6495eb180172e9740bb229bd66faabc7, type: 2}
+  - {fileID: 114583063258284340, guid: 8846148987a6b8b4fb71961c6b6a373e, type: 2}
+  - {fileID: 114200920878354318, guid: bbc08281a13b8634ba83bfa46a36ae2d, type: 2}
+  EnemyWeight:
+  - 3
+  - 2
+  - 1
+  SpawnedEnemiesMaxNumber: 200
+  LayerMask: 17
+  Players: []
 --- !u!135 &135122749292927254
 SphereCollider:
   m_ObjectHideFlags: 1

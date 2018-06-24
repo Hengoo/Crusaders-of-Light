@@ -12,13 +12,16 @@ public class BossArenaSettings : AreaSettings
     private readonly Vector3 _wallScaleNoise;
     private readonly GameObject _gatePrefab;
     private readonly GameObject _towerPrefab;
+    private readonly GameObject _portalPrefab;
     private readonly GameObject _rewardPedestalPrefab;
     private readonly GameObject[] _buildingPrefabs;
+    private readonly GameObject _bossPrefab;
+
     //TODO boss and reward prefabs
 
     private Vector2[] _gateLine;
 
-    public BossArenaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, GameObject wallPrefab, float wallLength, float wallAngleLimit, Vector3 wallPositionNoise, Vector3 wallScaleNoise, GameObject gatePrefab, GameObject towerPrefab, GameObject rewardPedestalPrefab, GameObject[] buildingsPrefabs)
+    public BossArenaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, GameObject wallPrefab, float wallLength, float wallAngleLimit, Vector3 wallPositionNoise, Vector3 wallScaleNoise, GameObject gatePrefab, GameObject towerPrefab, GameObject portalPrefab, GameObject rewardPedestalPrefab, GameObject[] buildingsPrefabs, GameObject bossPrefab)
     {
 
         Name = "Boss Arena";
@@ -35,13 +38,15 @@ public class BossArenaSettings : AreaSettings
         _wallAngleLimit = wallAngleLimit;
         _towerPrefab = towerPrefab;
         _gatePrefab = gatePrefab;
+        _portalPrefab = portalPrefab;
+        _bossPrefab = bossPrefab;
     }
 
     public override GameObject GenerateAreaScenery(Terrain terrain)
     {
         var arena = new GameObject(Name);
 
-        // Find boos area center
+        // Find boss area center
         Vector2 center = Vector2.zero;
         var allData = AreaDataGraph.GetAllNodeData();
         foreach (var areaData in allData)
@@ -67,8 +72,17 @@ public class BossArenaSettings : AreaSettings
         gate.transform.position = new Vector3(gatePosition.x, terrain.SampleHeight(gatePosition), gatePosition.z);
         gate.transform.rotation = Quaternion.LookRotation(new Vector3(line.x, 0, line.y), Vector3.up);
         gate.transform.parent = arena.transform;
-        gate.GetComponent<ArenaGateTrigger>().ArenaCenter = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y);
-        gate.GetComponent<ArenaGateTrigger>().ArenaCenter += new Vector3(0, terrain.SampleHeight(gate.GetComponent<ArenaGateTrigger>().ArenaCenter), 0);
+
+        // Set arena center on gate
+        var arenaGateTrigger = gate.GetComponent<ArenaGateTrigger>();
+        arenaGateTrigger.ArenaCenter = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y);
+        arenaGateTrigger.ArenaCenter += new Vector3(0, terrain.SampleHeight(gate.GetComponent<ArenaGateTrigger>().ArenaCenter), 0);
+
+        // Place portal
+        var portalPosition = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y + 10);
+        portalPosition += new Vector3(0, terrain.SampleHeight(portalPosition), 0);
+        var portal = Object.Instantiate(_portalPrefab, portalPosition, terrain.GetNormalRotation(portalPosition)* Quaternion.Euler(0,180,0));
+        portal.transform.parent = arena.transform;
 
         // Generate Walls
         var lines = BorderPolygon.PolygonToLines(skip);
@@ -87,12 +101,19 @@ public class BossArenaSettings : AreaSettings
         navMeshModifier.overrideArea = true;
         navMeshModifier.area = NavMesh.GetAreaFromName("Not Walkable");
 
+        // Spawn boss at the arena center
+        var bossPosition = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y);
+        bossPosition += new Vector3(0, terrain.SampleHeight(bossPosition), 0);
+        var boss = Object.Instantiate(_bossPrefab, bossPosition, Quaternion.identity);
+        boss.transform.parent = arena.transform;
+        var bossTrigger = boss.AddComponent<PortalActivateTrigger>();
+        bossTrigger.Portal = portal;
+
         return arena;
     }
 
     private List<int> SplitEntranceLine(List<Vector2> points)
     {
-
         for (int i = 0; i < points.Count; i++)
         {
             var p0 = points[i];

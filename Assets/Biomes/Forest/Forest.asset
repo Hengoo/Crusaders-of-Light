@@ -14,8 +14,8 @@ MonoBehaviour:
   UniqueName: Forest
   HeightParameters:
     Persistence: 0.056
-    LocalMax: 0.466
-    LocalMin: 0.256
+    LocalMax: 0.45
+    LocalMin: 0.35
     Lacunarity: 20
     Scale: 12.5
   TerrainMaterial: {fileID: 2100000, guid: 0e6511feae21ce44799a21eaea44610f, type: 2}
@@ -44,7 +44,7 @@ MonoBehaviour:
     metallic: 0
     smoothness: 0
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 7, y: 7}
+    tileSize: {x: 3, y: 3}
   SidePathSplatPrototype:
     texture: {fileID: 2800000, guid: ad2965c7bc0de824db9980f3f0025c1c, type: 3}
     normalMap: {fileID: 2800000, guid: ca0da3ee275b2c848b03591fe7940cba, type: 3}
@@ -52,7 +52,7 @@ MonoBehaviour:
     smoothness: 0
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 10, y: 10}
-  MainPathSplatSize: 2
+  MainPathSplatSize: 1
   SidePathSplatSize: 1
   PathHalfWidth: 5
   PathBezierSegmentSize: 10

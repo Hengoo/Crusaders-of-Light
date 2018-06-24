@@ -41,6 +41,7 @@ public class CharacterPlayer : Character {
     Vector3 targetDir = Vector3.zero;
 
     [Header("Orb Input:")]
+    public LightOrbEffects LightOrbEffects;
     public float OrbInputTimer = -1f;
     public float OrbInputReviveTime = 1f;
     public float OrbInputHealMaxTime = 0.3f;
@@ -171,7 +172,7 @@ public class CharacterPlayer : Character {
         AttentionThisCharacterDied();
 
         // Update LightOrb:
-        LightOrbEffects.Instance.CharacterDied(this);
+        LightOrbEffects.CharacterDied(this);
 
         //Stop Active Coroutines and Sound
         StopAllCoroutines();
@@ -300,7 +301,7 @@ public class CharacterPlayer : Character {
         IsWalking = false;
         CameraController.Instance.GetCameraPositioner().UpdateCameraTargetsOnPlayerRespawn(this.gameObject);
         //GetComponent<Rigidbody>().isKinematic = false;
-        LightOrbEffects.Instance.CharacterRevived(this);
+        LightOrbEffects.CharacterRevived(this);
         NavAgent.enabled = true;
         this.enabled = true;
     }
@@ -511,7 +512,7 @@ public class CharacterPlayer : Character {
             {
                 if (OrbInputTimer <= OrbInputHealMaxTime)
                 {
-                    LightOrbEffects.Instance.ActivateOrbHeal(this);
+                    LightOrbEffects.ActivateOrbHeal(this);
                 }
                 OrbInputTimer = -1;
             }    
@@ -529,7 +530,7 @@ public class CharacterPlayer : Character {
             {
                 if (OrbInputButtonPressed)
                 {
-                    LightOrbEffects.Instance.ActivateOrbRevive(this);
+                    LightOrbEffects.ActivateOrbRevive(this);
                 }
                 OrbInputTimer = -1;
             }

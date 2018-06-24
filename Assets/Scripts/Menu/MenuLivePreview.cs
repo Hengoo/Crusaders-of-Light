@@ -13,7 +13,6 @@ public class MenuLivePreview : MonoBehaviour
 
 	}
 
-
 	public void UpdatePlayerCount(string count)
 	{
 		int intCount = int.Parse(count);
@@ -26,7 +25,6 @@ public class MenuLivePreview : MonoBehaviour
 	public void UpdateBrightness(float brightness)
 	{
 		RenderSettings.ambientSkyColor = Color.Lerp(Color.black, Color.white, brightness);
-		print("test");
 	}
 
 }
