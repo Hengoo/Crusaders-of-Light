@@ -131,7 +131,10 @@ public class LevelCreator : Singleton<LevelCreator>
         {
             _alphaMap = LevelDataGenerator.SmoothAlphaMap(_alphaMap, OverallAlphaSmoothSquareSize);
         }
-    }
+
+		//GPU version -> slightly offset and looks bit different?, but seems to work
+		//LevelDataGenerator.SmoothHeightMap(_alphaMap, OverallAlphaSmoothSquareSize, OverallAlphaSmoothPasses);
+	}
 
     private void SmoothHeightMap()
     {
@@ -142,7 +145,7 @@ public class LevelCreator : Singleton<LevelCreator>
 		//}
 
 		//GPU smooth:
-		LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothSquareSize,OverallAlphaSmoothPasses);
+		LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothSquareSize, OverallSmoothPasses);
 
 		// Smooth paths
 		for (int i = 0; i < PathSmoothPasses; i++)

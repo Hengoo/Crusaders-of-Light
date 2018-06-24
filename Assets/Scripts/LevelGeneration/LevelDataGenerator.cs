@@ -67,13 +67,96 @@ public static class LevelDataGenerator
         return result;
     }
 
-    /// <summary>
-    /// Smoothes the float array. Expects squared arrays
-    /// </summary>
-    /// <param name="IOArray">IO float array</param>
-    /// <param name="squareSize"></param>
-    /// <param name="loop">number of loops</param>
-    public static void SmoothHeightMap(float[,] IOArray, int squareSize, int loop)
+	/// <summary>
+	/// Smoothes the 3d arary.
+	/// </summary>
+	/// <param name="IOArray">IO float array</param>
+	/// <param name="squareSize"></param>
+	/// <param name="loop">number of loops</param>
+	public static void SmoothHeightMap(float[,,] IOArray, int squareSize, int loop)
+	{
+		//variables
+		int arraySize = IOArray.GetLength(0);
+		ComputeBuffer heightmap;
+		ComputeBuffer heightmapTmp;
+
+		//find compute shader:
+		ComputeShader computeShader = (ComputeShader)Resources.Load("Smoothing");
+
+		//set kernel ids:
+		int kernelSmooth = computeShader.FindKernel("Smooth");
+		int kernelPrepArray = computeShader.FindKernel("PrepArray");
+
+		heightmap = new ComputeBuffer(arraySize * arraySize, sizeof(float), ComputeBufferType.Default);
+		heightmapTmp = new ComputeBuffer(arraySize * arraySize, sizeof(float), ComputeBufferType.Default);
+
+
+		float[] mapTmp = new float[arraySize * arraySize];
+
+
+		for (int j =0; j< IOArray.GetLength(2); j++)
+		{
+			//i found no better war for this...
+			for (int x = 0; x < arraySize; x++)
+			{
+				for (int y = 0; y < arraySize; y++)
+				{
+					mapTmp[x + y * arraySize] = IOArray[x, y, j];
+
+				}
+			}
+
+			//better version of above but wrong oder. (it has color1,color2,color3 color1,color2,color3,...instead of a full array with color1
+			//System.Buffer.BlockCopy(arr, arraySize* arraySize * sizeof(float)*j, mapTmp, 0, arraySize* arraySize * sizeof(float));
+
+			heightmap.SetData(mapTmp);
+
+			computeShader.SetInt("arraySize", arraySize);
+			computeShader.SetInt("squareSize", squareSize);
+			computeShader.SetBuffer(kernelPrepArray, "heightmapBuffer", heightmap);
+			computeShader.SetBuffer(kernelPrepArray, "heightmapTmpBuffer", heightmapTmp);
+			computeShader.SetBuffer(kernelSmooth, "heightmapBuffer", heightmap);
+			computeShader.SetBuffer(kernelSmooth, "heightmapTmpBuffer", heightmapTmp);
+
+			for (int i = 0; i < loop; i++)
+			{
+				computeShader.Dispatch(kernelPrepArray, (arraySize * arraySize) / 64, 1, 1);
+
+				computeShader.Dispatch(kernelSmooth, arraySize / 16, arraySize / 16, 1);
+			}
+
+
+			//read data: skip this for performance testing on compoute code
+			heightmap.GetData(mapTmp);
+
+
+			//System.Buffer.BlockCopy(mapTmp, 0, arr, arraySize* arraySize * sizeof(float)*j, arraySize* arraySize * sizeof(float));
+
+			for (int x = 0; x < arraySize; x++)
+			{
+				for (int y = 0; y < arraySize; y++)
+				{
+					IOArray[x, y, j] = mapTmp[x + y * arraySize];
+				}
+			}
+		}
+
+
+
+
+
+		//cleanup afterwards:
+		heightmap.Release();
+		heightmapTmp.Release();
+	}
+
+	/// <summary>
+	/// Smoothes the float array. Expects squared arrays
+	/// </summary>
+	/// <param name="IOArray">IO float array</param>
+	/// <param name="squareSize"></param>
+	/// <param name="loop">number of loops</param>
+	public static void SmoothHeightMap(float[,] IOArray, int squareSize, int loop)
     {
         //variables
         int arraySize = IOArray.GetLength(0);
@@ -83,8 +166,8 @@ public static class LevelDataGenerator
         //find compute shader:
         ComputeShader computeShader = (ComputeShader)Resources.Load("Smoothing");
 
-        //set kernel ids:
-        int kernelSmooth = computeShader.FindKernel("Smooth");
+		//set kernel ids:
+		int kernelSmooth = computeShader.FindKernel("Smooth");
         int kernelPrepArray = computeShader.FindKernel("PrepArray");
 
         heightmap = new ComputeBuffer(arraySize * arraySize, sizeof(float), ComputeBufferType.Default);
