@@ -122,7 +122,76 @@ public class EnemySwarm : MonoBehaviour {
 
     public bool IgnoreThisSwarmlingForOthersWhenInDanger = false;
 
+    [Header("Light Orb Attraction:")]
+    public NavMeshPath NavPathLightOrb;
+    public float MinLightOrbAttractionDistance;
+    public float LightOrbAttractionReachDistance;
+    public float LightOrbAttractionSelfDestroyDistance;
+
+    public bool LightOrbAttractionMode = false;
+    public float LightOrbAttractionTimer = 8;
+    public float LightOrbAttractionCounter = -1;
+
     // ================================================================================================================
+
+    public void SwarmlingLightOrbAttractionCalculation()
+    {
+        if (LightOrbAttractionCounter > 0)
+        {
+            LightOrbAttractionCounter -= Time.deltaTime;
+
+            if (LightOrbAttractionCounter > 0)
+            {
+                return;
+            }
+            else
+            {
+                LightOrbAttractionCounter -= LightOrbAttractionTimer;
+            }
+        }
+
+        DistanceVec = SpawnedBy.transform.position - SwarmlingTransform.position;
+        DistanceVecMag = DistanceVec.sqrMagnitude;
+
+        if (LightOrbAttractionMode)
+        {
+            if (DistanceVecMag > Mathf.Pow(LightOrbAttractionSelfDestroyDistance, 2))
+            {
+                SwarmlingSuicide();
+                return;
+            }
+            else if (DistanceVecMag <= Mathf.Pow(LightOrbAttractionReachDistance, 2))
+            {
+                NMAgent.ResetPath();
+                LightOrbAttractionMode = false;
+                return;
+            }
+            else
+            {
+                NMAgent.CalculatePath(SpawnedBy.transform.position, NavPathLightOrb);
+                if (NavPathLightOrb.status != NavMeshPathStatus.PathComplete)
+                {
+                    SwarmlingSuicide();
+                }
+                NMAgent.SetPath(NavPathLightOrb);
+            }
+        }
+        else
+        {
+            if (DistanceVecMag >= Mathf.Pow(MinLightOrbAttractionDistance, 2))
+            {
+                NMAgent.CalculatePath(SpawnedBy.transform.position, NavPathLightOrb);
+                if (NavPathLightOrb.status != NavMeshPathStatus.PathComplete)
+                {
+                    SwarmlingSuicide();
+                }
+                NMAgent.SetPath(NavPathLightOrb);
+                //NMAgent.SetDestination(SpawnedBy.transform.position);
+                LightOrbAttractionMode = true;
+                return;
+            }
+        }
+    }
 
     public void SwarmlingAttractionAndDangerRuleCalculation()
     {
@@ -364,6 +433,8 @@ public class EnemySwarm : MonoBehaviour {
         Players = _Players;
         SwarmlingID = _SwarmlingID;
         NeighbourLayerMask = _NeighbourLayerMask;
+
+        NavPathLightOrb = new NavMeshPath();
     }
 
     public virtual void SwarmlingUpdate()
@@ -403,6 +474,13 @@ public class EnemySwarm : MonoBehaviour {
             NewNeighbourCounter -= Time.deltaTime;
         }
 
+
+        SwarmlingLightOrbAttractionCalculation();
+
+        if (LightOrbAttractionMode)
+        {
+            return;
+        }
 
         UpdateCounter += Time.deltaTime;
 
@@ -867,6 +945,11 @@ public class EnemySwarm : MonoBehaviour {
     {
         DesiredBaseSpeed += SpeedChange;
         DesiredRunSpeed += SpeedChange;
+    }
+
+    public void SwarmlingSuicide()
+    {
+        ThisSwarmlingCharacter.ChangeHealthCurrent(-13370); // This ensures that the Swarmling is properly removed, as it forces the system to go through all the steps of defeating and removing a character.
     }
 
     // ===============================================/ GETTERS/SETTERS /================================================

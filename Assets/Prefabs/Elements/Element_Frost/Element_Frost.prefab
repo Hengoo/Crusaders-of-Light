@@ -58,3 +58,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 178fc9dc9298bec4793d3b5768609e53, type: 2}
   - {fileID: 11400000, guid: 0b78ebb994229d74cbd9d284895a7417, type: 2}
   - {fileID: 11400000, guid: ef76ddfc91ca1d645adc7e441d09336f, type: 2}
+  ParticleEffectPrefab: {fileID: 1971827293928286, guid: 68db6c87c87d64640a7220df4b5934a8,
+    type: 2}

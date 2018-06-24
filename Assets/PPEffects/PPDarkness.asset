@@ -408,10 +408,10 @@ MonoBehaviour:
     value: 0.89
   dist:
     overrideState: 1
-    value: 0.03
+    value: -0.082
   dist2:
     overrideState: 1
-    value: 1
+    value: 0.58
   a:
     overrideState: 1
     value: 1.1

@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b646cdd733c544ea65c7ce4a2ec9a8, type: 3}
+  m_Name: Skill_IceWizard_MultiIceBall
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 1
+  ActivationIntervall: -1
+  Cooldown: 6
+  ActivationMovementModifier: -1
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects: []
+  HindranceLevel: 0
+  AnimationName: CaUn1
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: cf98425bf0f00c144b78ce5fddcbf64d, type: 2}
+  PowerLevel: 0
+  Threat:
+  - 0
+  - 0
+  - 0
+  HitTimeStart: 0
+  HitTimeStop: 0
+  HitEachCharacterOnlyOnce: 1
+  MaxHittableCharacters: -1
+  CheckForAnimationTrigger: 1
+  AnimationTrigger: no_animation_trigger
+  EffectsOnSelfOnAnimationTrigger:
+  - {fileID: 11400000, guid: 6a0d9c061fc11974abaec6acc76152fc, type: 2}
+  - {fileID: 11400000, guid: 8c3b1bed3424f7a4186a5b7757fa2115, type: 2}
+  - {fileID: 11400000, guid: af8d2b1ab35d4d548b5051e502433972, type: 2}
+  - {fileID: 11400000, guid: 902f302d383a57248b92bee2bedb4480, type: 2}
+  - {fileID: 11400000, guid: 3f648b4299e918641a796fb0a6bf9ac9, type: 2}
+  EffectsOnSelfOnAnimationTrigger2: []

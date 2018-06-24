@@ -62,6 +62,8 @@ public class SwarmSpawner : MonoBehaviour {
 
     private NavMeshHit hit;
 
+    private NavMeshPath NavPath;
+
     private void Start()
     {
         CalculateTotalWeight();
@@ -77,6 +79,11 @@ public class SwarmSpawner : MonoBehaviour {
         UpdateAllSwarmlings();
     }
 
+    private void FixedUpdate()
+    {
+        PPHelper.T.UpdateBuffer(SpawnedEnemies);
+    }
+
     public void InitializeSwarmSpawner(Character[] PlayerCharacters, int NumberActivePlayers)
     {
         Players = new Character[NumberActivePlayers];
@@ -88,6 +95,8 @@ public class SwarmSpawner : MonoBehaviour {
                 Players[i] = PlayerCharacters[i];
             }
         }
+
+        NavPath = new NavMeshPath();
     }
 
     private void SpawnEnemy()
@@ -129,6 +138,34 @@ public class SwarmSpawner : MonoBehaviour {
         SpawnedEnemiesCounter++;
         FrequencyTimerCounter = 0;
         FrequencyTimerCurrent = Random.Range(FrequencyTimerMin, FrequencyTimerMax);
+    }
+
+    public void SpawnEnemyBatch(int EnemyNumber, EnemySwarm EnemyPrefab, Vector3 AreaCenter, float AreaRadius)
+    {
+        for (int i = 0; i < EnemyNumber; i++)
+        {
+            if (SpawnedEnemiesCounter >= SpawnedEnemiesMaxNumber)
+            {
+                return;
+            }
+
+            // Decide the next enemy spawn position and check if it was possible to generate such a position:
+            if (!GenerateSpawnPosition(AreaCenter, AreaRadius))
+            {
+                return;
+            }
+
+            if (!CalculateNextSpawnNumber())
+            {
+                return;
+            }
+
+            SpawnedEnemies[SpawnedEnemiesIDCounter] = Instantiate(EnemyPrefab, spawnPos, EnemyPrefab.transform.rotation);
+            SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask);
+
+            // At this point an enemy was succesfully spawned:
+            SpawnedEnemiesCounter++;
+        }      
     }
 
     private void RandomlyDecideNextEnemyType()
@@ -184,16 +221,51 @@ public class SwarmSpawner : MonoBehaviour {
 
     private bool GenerateSpawnPosition()
     {
+        /* if (spawnPosTryCounter >= spawnPosMaxTries)
+         {
+             spawnPosTryCounter = 0;
+             return false;
+         }
+         spawnPosTryCounter++;
+
+         spawnPos = Vector3.forward * Random.Range(0, SpawnAreaRadius);
+         spawnPos = Quaternion.Euler(0, Random.Range(0, 360), 0) * spawnPos;
+         spawnPos += spawnAreaMarker;
+
+         spawnPos.y = Terr.SampleHeight(spawnPos);
+
+         NavMesh.SamplePosition(spawnPos, out hit, 3, NavMesh.AllAreas);
+
+         spawnPos = hit.position;
+
+         if (spawnPos.x == Mathf.Infinity)
+         {
+             return GenerateSpawnPosition();           
+         }
+
+         NavMesh.CalculatePath(spawnPos, transform.position, NavMesh.AllAreas, NavPath);
+
+         if (NavPath.status == NavMeshPathStatus.PathInvalid || NavPath.status == NavMeshPathStatus.PathPartial)
+         {
+             return GenerateSpawnPosition();
+         }
+         return true;*/
+        return GenerateSpawnPosition(spawnAreaMarker, SpawnAreaRadius);
+    }
+
+    private bool GenerateSpawnPosition(Vector3 AreaCenter, float AreaRadius)
+    {
         if (spawnPosTryCounter >= spawnPosMaxTries)
         {
             spawnPosTryCounter = 0;
             return false;
         }
+
         spawnPosTryCounter++;
 
-        spawnPos = Vector3.forward * Random.Range(0, SpawnAreaRadius);
+        spawnPos = Vector3.forward * Random.Range(0, AreaRadius);
         spawnPos = Quaternion.Euler(0, Random.Range(0, 360), 0) * spawnPos;
-        spawnPos += spawnAreaMarker;
+        spawnPos += AreaCenter;
 
         spawnPos.y = Terr.SampleHeight(spawnPos);
 
@@ -203,12 +275,16 @@ public class SwarmSpawner : MonoBehaviour {
 
         if (spawnPos.x == Mathf.Infinity)
         {
-            return GenerateSpawnPosition();           
+            return GenerateSpawnPosition(AreaCenter, AreaRadius);
         }
-        else
+
+        NavMesh.CalculatePath(spawnPos, transform.position, NavMesh.AllAreas, NavPath);
+
+        if (NavPath.status == NavMeshPathStatus.PathInvalid || NavPath.status == NavMeshPathStatus.PathPartial)
         {
-            return true;
+            return GenerateSpawnPosition(AreaCenter, AreaRadius);
         }
+        return true;
     }
 
     private bool GenerateSpawnMarkerPosition()
@@ -280,6 +356,17 @@ public class SwarmSpawner : MonoBehaviour {
             if (SpawnedEnemies[i])
             {
                 SpawnedEnemies[i].SwarmlingUpdate();
+            }
+        }
+    }
+
+    public void DestroyAllSwarmlings()
+    {
+        for (int i = 0; i < SpawnedEnemies.Length; i++)
+        {
+            if (SpawnedEnemies[i])
+            {
+                SpawnedEnemies[i].SwarmlingSuicide();
             }
         }
     }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PPHelper : MonoBehaviour {
 
-	private const int buffersize = 200;
+	public int buffersize = 200;
 
 	private Vector4[] vec4Array;
 
@@ -13,9 +13,7 @@ public class PPHelper : MonoBehaviour {
 
 	public ComputeBuffer buffer;
 
-	public ComputeShader computeShader;
-
-	public List<GameObject> go;
+//	public ComputeShader computeShader;
 
 	public Camera cam;
 
@@ -40,17 +38,25 @@ public class PPHelper : MonoBehaviour {
 	}
 
 
-	public void UpdateBuffer(List<GameObject> elements)
+	public void UpdateBuffer(EnemySwarm[] elements)
 	{
 
 		Vector3 tmp = Vector3.zero;
-		int len = elements.Count;
+		int len = elements.Length;
 		for(int i =0; i< buffersize; i++)
 		{
 			if(i < len)
 			{
-				tmp = cam.WorldToViewportPoint(elements[i].transform.position);
-				vec4Array[i] = new Vector4(tmp.x, tmp.y, tmp.z, 0.1f);
+				if(elements[i] != null)
+				{
+					tmp = cam.WorldToViewportPoint(elements[i].transform.position);
+					vec4Array[i] = new Vector4(tmp.x, tmp.y, tmp.z, 0.1f);
+				}
+				else
+				{
+					vec4Array[i] = new Vector4(0, 0, 0, 0);
+				}
+				
 			}else
 			{
 				vec4Array[i] = new Vector4(0, 0, 0, 0);
@@ -58,12 +64,6 @@ public class PPHelper : MonoBehaviour {
 			
 		}
 		buffer.SetData(vec4Array);
-	}
-
-	private void Update()
-	{
-		//update buffer with the gameObject list 
-		UpdateBuffer(go);
 	}
 
 
