@@ -34,8 +34,9 @@ public class BossArenaSettingsFactory : AreaSettingsFactory {
 
     public override AreaSettings[] ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
+        BossPrefabs.Shuffle();
         var arenaWalls = new BossArenaSettings(areaDataGraph, clearPolygons, borderPolygon, WallPrefab, WallLenght, WallAngleLimit,
-            WallPositionNoise, WallScaleNoise, GatePrefab, TowerPrefab, PortalPrefab, RewardPedestalPrefab, BuildingPrefabs, BossPrefabs[Random.Range(0,BossPrefabs.Length)]);
+            WallPositionNoise, WallScaleNoise, GatePrefab, TowerPrefab, PortalPrefab, RewardPedestalPrefab, BuildingPrefabs, BossPrefabs[0]);
 
         return new AreaSettings[]{arenaWalls};
     }

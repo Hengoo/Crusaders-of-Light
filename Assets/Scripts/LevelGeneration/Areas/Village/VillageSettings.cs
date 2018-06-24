@@ -54,9 +54,13 @@ public class VillageSettings : AreaSettings
         buildings.transform.parent = result.transform;
 
         // Generate trees taking buildings into consideration
-        PoissonDiskFillData poissonData = new PoissonDiskFillData(Trees, BorderPolygon.ToArray(), TreeDistance, TreeAngleTolerance, true);
-        poissonData.AddClearPolygons(ClearPolygons);
-        PoissonDataList.Add(poissonData);
+        foreach (var areaData in AreaDataGraph.GetAllNodeData())
+        {
+            PoissonDiskFillData poissonData = new PoissonDiskFillData(Trees, areaData.Polygon, TreeDistance, TreeAngleTolerance, true);
+            poissonData.AddClearPolygons(ClearPolygons);
+            PoissonDataList.Add(poissonData);
+        }
+        
 
         return result;
     }
@@ -168,7 +172,7 @@ public class VillageSettings : AreaSettings
     private GameObject FitBuilding(GameObject buildingPrefab, AreaData areaData)
     {
         var building2DPolygon = buildingPrefab.GetComponent<BoxCollider>().Get2DPolygon();
-        var border = BorderPolygon.ToArray();
+        var border = areaData.Polygon;
 
         // Try to place the building on the side of each path
         foreach (var path in areaData.Paths)

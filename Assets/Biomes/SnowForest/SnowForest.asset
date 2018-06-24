@@ -14,8 +14,8 @@ MonoBehaviour:
   UniqueName: Forest
   HeightParameters:
     Persistence: 0.056
-    LocalMax: 0.466
-    LocalMin: 0.256
+    LocalMax: 0.4
+    LocalMin: 0.35
     Lacunarity: 20
     Scale: 12.5
   TerrainMaterial: {fileID: 2100000, guid: 91f2afe0cbfccde419a0ccbc057d2c96, type: 2}
@@ -38,13 +38,14 @@ MonoBehaviour:
   PathAreas:
   - {fileID: 11400000, guid: cf55006f5f4bd49489f20a572186cc1f, type: 2}
   - {fileID: 11400000, guid: 5fecec567a36da5478a8573aaf432497, type: 2}
+  - {fileID: 11400000, guid: ae18b73a5307a0d4bb997f99df5be704, type: 2}
   MainPathSplatPrototype:
     texture: {fileID: 2800000, guid: d048b4964ec17a640a0543ae79757a34, type: 3}
     normalMap: {fileID: 2800000, guid: 03c6cb46c6faeea4da99c2845000e074, type: 3}
     metallic: 0
     smoothness: 0
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 7, y: 7}
+    tileSize: {x: 3, y: 3}
   SidePathSplatPrototype:
     texture: {fileID: 2800000, guid: ad2965c7bc0de824db9980f3f0025c1c, type: 3}
     normalMap: {fileID: 2800000, guid: ca0da3ee275b2c848b03591fe7940cba, type: 3}
@@ -52,7 +53,7 @@ MonoBehaviour:
     smoothness: 0
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 10, y: 10}
-  MainPathSplatSize: 2
+  MainPathSplatSize: 1
   SidePathSplatSize: 1
   PathHalfWidth: 5
   PathBezierSegmentSize: 10

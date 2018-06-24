@@ -52,7 +52,6 @@ public class LevelController : Singleton<LevelController>
         //Deactivate all controllers
         foreach (var player in PlayerCharacters)
             player.gameObject.SetActive(false);
-        
     }
 
     public void FinalizeLevel()
