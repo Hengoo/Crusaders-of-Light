@@ -21,6 +21,8 @@ public class SwarmSpawner : MonoBehaviour {
     private float FrequencyTimerCurrent = 0;
     private float FrequencyTimerCounter = 0;
 
+    public bool SpawningRunning = true;
+
     [Header("Spawning Cooldown:")]
     public float SpawningCooldownMin = 0.3f;
     public float SpawningCooldownMax = 5f;
@@ -64,6 +66,8 @@ public class SwarmSpawner : MonoBehaviour {
 
     private NavMeshPath NavPath;
 
+
+
     private void Start()
     {
         CalculateTotalWeight();
@@ -74,8 +78,11 @@ public class SwarmSpawner : MonoBehaviour {
 
     private void Update()
     {
-        UpdateSpawningCooldown();
-        SpawnEnemy();
+        if (SpawningRunning)
+        {
+            UpdateSpawningCooldown();
+            SpawnEnemy();
+        }
         UpdateAllSwarmlings();
     }
 
@@ -369,6 +376,17 @@ public class SwarmSpawner : MonoBehaviour {
                 SpawnedEnemies[i].SwarmlingSuicide();
             }
         }
+    }
+
+    public void SwitchSpawningOnOff(bool state)
+    {
+        SpawningRunning = state;
+    }
+    
+    public void EnteredBossArena()
+    {
+        SwitchSpawningOnOff(false);
+        DestroyAllSwarmlings();
     }
 
     public void SetTerrain(Terrain NewTerrain)
