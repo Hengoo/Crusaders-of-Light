@@ -97,7 +97,7 @@ public class CharacterPlayer : Character {
             targetDir = targetVel;
         }
 
-        targetVel = targetVel.normalized * speedfaktor * Time.deltaTime;
+        targetVel = targetVel * speedfaktor * Time.deltaTime;
 
         // Rotate towards Velocity Direction:
         if (targetDir.sqrMagnitude > 0)
