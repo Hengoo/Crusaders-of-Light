@@ -19,5 +19,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9607adb6776903c47835505ecad54170, type: 2}
   TickTime: -1
   InstanceMaximum: 1
-  VisualEffectObject: {fileID: 1533183204227754, guid: 2cd9451ee2917ba42b71fc01cf767785,
+  VisualEffectObject: {fileID: 1533183204227754, guid: c9b17812c869a334d915e860949c5e6b,
     type: 2}
