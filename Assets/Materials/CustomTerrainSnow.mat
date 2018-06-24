@@ -180,7 +180,7 @@ Material:
     - _RimPower: 9.07
     - _Scale: 2
     - _SideScale: 2
-    - _Smoothness: 0
+    - _Smoothness: 0.43
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
