@@ -12,6 +12,7 @@ TagManager:
   - EnemySwarm
   - SwarmDanger
   - SkillsPlayer
+  - EquipPoint
   layers:
   - Default
   - TransparentFX

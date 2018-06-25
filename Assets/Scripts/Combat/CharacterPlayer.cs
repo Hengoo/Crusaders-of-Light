@@ -60,6 +60,26 @@ public class CharacterPlayer : Character {
         
     }
 
+    protected override void SpawnAndEquipStartingElement()
+    {
+        if (GameController.Instance)
+        {
+            StartingElement = GameController.Instance.GetPlayerElement(PlayerID);
+        }
+
+        base.SpawnAndEquipStartingElement();
+    }
+
+    public override void SpawnAndEquipStartingWeapons()
+    {
+        if (GameController.Instance)
+        {
+            StartingWeapons[0] = GameController.Instance.GetPlayerItem(PlayerID);
+        }
+
+        base.SpawnAndEquipStartingWeapons();
+    }
+
     private UnityAction _itemPickupAction;
 
     protected override void Update()
@@ -348,13 +368,24 @@ public class CharacterPlayer : Character {
 
     private bool PickUpClosestItem()
     {
-        if (ItemsInRange.Count == 0)
+        Collider[] EquipPoints = Physics.OverlapSphere(transform.position, 3);
+
+        for (int i = 0; i < EquipPoints.Length; i++)
+        {
+            if (EquipPoints[i] && EquipPoints[i].tag == "EquipPoint")
+            {
+                EquipPoints[i].GetComponent<EquipPoint>().TriggerEquip(PlayerID);
+            }
+        }
+
+        return false;
+        /*if (ItemsInRange.Count == 0)
         {
             return false;
         }
 
-        int EquipSlotID = -1;
-
+        int EquipSlotID = 0;
+        /*
         if (Input.GetButtonDown("W1Skill1_" + PlayerID)
             && SkillCurrentlyActivating[0] < 0)
         {
@@ -369,7 +400,7 @@ public class CharacterPlayer : Character {
         {
             return false;
         }
-
+        *//*
         Item ClosestItem = ItemsInRange[0];
         float ClosestDistance = Vector3.Distance(this.transform.position, ClosestItem.transform.position);
         float CurrentDistance = ClosestDistance;
@@ -414,7 +445,7 @@ public class CharacterPlayer : Character {
         if (_itemPickupAction != null)
             _itemPickupAction.Invoke();
 
-        return true;
+        return true;*/
     }
 
     private void OnTriggerEnter(Collider other)

@@ -3495,6 +3495,7 @@ MonoBehaviour:
   Owner: {fileID: 114453238512497482, guid: 03ca168d4c080a24a874f4cadafeb222, type: 2}
   Tag: Attention
   TagHitObjects: Skills
+  TagPlayerHitObjects: SkillsPlayer
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
   PlayerHitObjectsInRange: []
@@ -4986,7 +4987,9 @@ MonoBehaviour:
   breakBeforeColorGrading: 0
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
-  m_AfterStackBundles: []
+  m_AfterStackBundles:
+  - assemblyQualifiedName: PPTest, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!82 &1175997596
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6357,6 +6360,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameState: 2
   ActivePlayers: 4
+  PlayerStartWeapons:
+  - {fileID: 114066496244682900, guid: e8f64c2ec8c75cc45842de6d2d175ef9, type: 2}
+  - {fileID: 114066496244682900, guid: e8f64c2ec8c75cc45842de6d2d175ef9, type: 2}
+  - {fileID: 114066496244682900, guid: e8f64c2ec8c75cc45842de6d2d175ef9, type: 2}
+  - {fileID: 114066496244682900, guid: e8f64c2ec8c75cc45842de6d2d175ef9, type: 2}
+  PlayerStartElements:
+  - {fileID: 114295211227383602, guid: 4da6cc8484d688b44a3112583cb12f8d, type: 2}
+  - {fileID: 114295211227383602, guid: f67b26addcb589d499a604394ec298e1, type: 2}
+  - {fileID: 114295211227383602, guid: 4da6cc8484d688b44a3112583cb12f8d, type: 2}
+  - {fileID: 114295211227383602, guid: 4da6cc8484d688b44a3112583cb12f8d, type: 2}
 --- !u!1 &1537221495
 GameObject:
   m_ObjectHideFlags: 0
@@ -6506,6 +6519,7 @@ MonoBehaviour:
   Owner: {fileID: 114771110908179300, guid: 96ae026282e76c946bca5bcfe7190f09, type: 2}
   Tag: Attention
   TagHitObjects: Skills
+  TagPlayerHitObjects: SkillsPlayer
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
   PlayerHitObjectsInRange: []
@@ -8376,6 +8390,7 @@ MonoBehaviour:
   Owner: {fileID: 114777348681451912, guid: 4b8d8093d0ffe3149bcec0590c107597, type: 2}
   Tag: Attention
   TagHitObjects: Skills
+  TagPlayerHitObjects: SkillsPlayer
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
   PlayerHitObjectsInRange: []
@@ -8471,6 +8486,7 @@ MonoBehaviour:
   Owner: {fileID: 114778956997371990, guid: 393c727cf4566af4f85bfe9231fb658e, type: 2}
   Tag: Attention
   TagHitObjects: Skills
+  TagPlayerHitObjects: SkillsPlayer
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
   PlayerHitObjectsInRange: []
