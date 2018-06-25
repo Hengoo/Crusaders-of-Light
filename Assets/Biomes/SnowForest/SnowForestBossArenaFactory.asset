@@ -17,6 +17,7 @@ MonoBehaviour:
   WallPositionNoise: {x: 0, y: 0, z: 0}
   WallScaleNoise: {x: 0.1, y: 0, z: 0}
   GatePrefab: {fileID: 1129564519391044, guid: 90b619f3de93d1e4c9b77df8dcbb9aea, type: 2}
+  GateMinimumLength: 20
   TowerPrefab: {fileID: 1231192518867186, guid: 5f7070635c8eca94dbfc5623eeb7e6ad,
     type: 2}
   PortalPrefab: {fileID: 1441201331607938, guid: 013c40d349727e64c96cd1f62a1d3307,
@@ -24,5 +25,5 @@ MonoBehaviour:
   RewardPedestalPrefab: {fileID: 100000, guid: e5840d48645660843bd38c7a5466ea41, type: 3}
   BuildingPrefabs: []
   BossPrefabs:
-  - {fileID: 1574788587254294, guid: 8baf951ea5de7ee4fb781eba8a71ec4b, type: 2}
   - {fileID: 1781491319435724, guid: 02534d5eaef82264194a3a465ade14cb, type: 2}
+  - {fileID: 1574788587254294, guid: 8baf951ea5de7ee4fb781eba8a71ec4b, type: 2}

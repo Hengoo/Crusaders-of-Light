@@ -11,6 +11,7 @@ public class BossArenaSettings : AreaSettings
     private readonly Vector3 _wallPositionNoise;
     private readonly Vector3 _wallScaleNoise;
     private readonly GameObject _gatePrefab;
+    private readonly float _gateMinimumLenght;
     private readonly GameObject _towerPrefab;
     private readonly GameObject _portalPrefab;
     private readonly GameObject _rewardPedestalPrefab;
@@ -21,7 +22,10 @@ public class BossArenaSettings : AreaSettings
 
     private Vector2[] _gateLine;
 
-    public BossArenaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, GameObject wallPrefab, float wallLength, float wallAngleLimit, Vector3 wallPositionNoise, Vector3 wallScaleNoise, GameObject gatePrefab, GameObject towerPrefab, GameObject portalPrefab, GameObject rewardPedestalPrefab, GameObject[] buildingsPrefabs, GameObject bossPrefab)
+    public BossArenaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon,
+        GameObject wallPrefab, float wallLength, float wallAngleLimit, Vector3 wallPositionNoise, Vector3 wallScaleNoise,
+        GameObject gatePrefab, float gateMinimumLength, GameObject towerPrefab, GameObject portalPrefab,
+        GameObject rewardPedestalPrefab, GameObject[] buildingsPrefabs, GameObject bossPrefab)
     {
 
         Name = "Boss Arena";
@@ -40,6 +44,7 @@ public class BossArenaSettings : AreaSettings
         _gatePrefab = gatePrefab;
         _portalPrefab = portalPrefab;
         _bossPrefab = bossPrefab;
+        _gateMinimumLenght = gateMinimumLength;
     }
 
     public override GameObject GenerateAreaScenery(Terrain terrain)
@@ -129,11 +134,20 @@ public class BossArenaSettings : AreaSettings
                     p00 += (p0 - p00) * .2f;
                     var p10 = clearPolygon.ClosestPoint(p1);
                     p10 += (p1 - p10) * .2f;
-                    points.Insert(i + 1, p00);
-                    points.Insert(i + 2, p10);
 
-                    _gateLine = new[] { p00, p10 };
-                    return new List<int> { i + 1, i + 2 }; // RETURN
+                    if ((p00 - p10).magnitude < _gateMinimumLenght)
+                    {
+                        _gateLine = new[] { p0, p1 };
+                        return new List<int> { i, i + 1 }; // RETURN
+                    }
+                    else
+                    {
+                        points.Insert(i + 1, p00);
+                        points.Insert(i + 2, p10);
+                        _gateLine = new[] { p00, p10 };
+                        return new List<int> { i + 1, i + 2 }; // RETURN
+                    }
+                    
                 }
             }
         }
