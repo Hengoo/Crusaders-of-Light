@@ -54,8 +54,17 @@ public class TerrainStructure
         SidePathLines = new List<Vector2[]>();
         PathPolygons = new List<Vector2[]>();
 
+        var filteredBiomes = availableBiomes;
         // Select a random biome out of the available ones for the current level
-        BiomeSettings = availableBiomes[Random.Range(0, availableBiomes.Count)];
+        if (GameController.Instance && availableBiomes.Count > 1)
+        {
+            filteredBiomes = availableBiomes.Where(biome => GameController.Instance.LastPlayedBiome != biome.UniqueName).ToList();
+        }
+        BiomeSettings = filteredBiomes[Random.Range(0, filteredBiomes.Count)];
+        if (GameController.Instance)
+        {
+            GameController.Instance.LastPlayedBiome = BiomeSettings.UniqueName;
+        }
 
         MapSize = mapSize;
         HeightMapResolution = heightMapResolution;

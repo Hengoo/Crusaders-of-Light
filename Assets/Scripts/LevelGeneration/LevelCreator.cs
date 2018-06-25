@@ -80,9 +80,8 @@ public class LevelCreator : Singleton<LevelCreator>
             return;
 #endif
 
-        ClearDisplay();
         Random.InitState(Seed);
-
+        ClearDisplay();
         MyStoryStructure = new StoryStructure(0, 1, MainPathNodeCount, SidePathCount, SidePathNodeCount, new CharacterEnemy[4]);
         MyTerrainStructure = new TerrainStructure(MyStoryStructure, AvailableBiomes, MapSize, HeightMapResolution, Octaves, VoronoiSamples, LloydRelaxation, HeightNoise, AlphaNoise, BorderBlockerOffset);
         MySceneryStructure = new SceneryStructure(MyStoryStructure, MyTerrainStructure);

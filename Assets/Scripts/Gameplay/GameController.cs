@@ -22,6 +22,8 @@ public class GameController : Singleton<GameController>
     public Item[] PlayerStartWeapons = new Item[4];
     public ElementItem[] PlayerStartElements = new ElementItem[4];
 
+    public string LastPlayedBiome;
+
     // Use this for initialization
     protected override void Awake () {
 		base.Awake();

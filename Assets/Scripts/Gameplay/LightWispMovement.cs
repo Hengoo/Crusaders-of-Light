@@ -8,11 +8,13 @@ public class LightWispMovement : MonoBehaviour
     private float _stoppingDistance;
     private GameObject _target;
     private NavMeshAgent _agent;
+    private float _moveSpeed;
 
     void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
         _stoppingDistance = _agent.stoppingDistance;
+        _moveSpeed = _agent.speed;
     }
 
     void Start()
@@ -30,13 +32,14 @@ public class LightWispMovement : MonoBehaviour
     {
         _target = null;
         GetComponent<Collider>().enabled = false;
-        
+        _agent.speed = 4;
     }
 
     public void ResumePlayerFollow()
     {
         GetComponent<Collider>().enabled = true;
         _agent.stoppingDistance = _stoppingDistance;
+        _agent.speed = _moveSpeed;
     }
 
     void OnTriggerEnter(Collider col)

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05ae0bf356db20f4fa891d24d57b3090, type: 3}
   m_Name: SnowForest
   m_EditorClassIdentifier: 
-  UniqueName: Forest
+  UniqueName: SnowForest
   HeightParameters:
     Persistence: 0.056
     LocalMax: 0.4

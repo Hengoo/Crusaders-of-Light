@@ -18,13 +18,13 @@ public class LevelTransitionTrigger : MonoBehaviour
             {
                 if(GameController.Instance.GameState == GameStateEnum.Transition)
                 {
-                    GameController.Instance.SetSeed(Random.Range(int.MinValue, int.MaxValue));
                     GameController.Instance.GameState = GameStateEnum.Level;
                     SceneManager.LoadScene("TerrainGeneration");
                 }
                 else
                 {
                     GameController.Instance.GameState = GameStateEnum.Transition;
+                    GameController.Instance.SetSeed(Random.Range(int.MinValue, int.MaxValue));
                     SceneManager.LoadScene("TransitionArea");
                 }
             }
