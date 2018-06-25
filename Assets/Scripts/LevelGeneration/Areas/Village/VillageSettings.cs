@@ -213,8 +213,6 @@ public class VillageSettings : AreaSettings
                 var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position,
                     Vector3.up);
                 var go = Object.Instantiate(buildingPrefab, position, rotation);
-                StructureDrawer.DrawPolygon(rightPoly, Color.red).transform.parent = go.transform;
-
                 return go;
             }
 
@@ -233,8 +231,6 @@ public class VillageSettings : AreaSettings
                 var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position,
                     Vector3.up);
                 var go = Object.Instantiate(buildingPrefab, position, rotation);
-                StructureDrawer.DrawPolygon(leftPoly, Color.green).transform.parent = go.transform;
-
                 return go;
             }
         }

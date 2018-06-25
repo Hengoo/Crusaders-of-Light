@@ -14,5 +14,5 @@ MonoBehaviour:
   SegmentType: 4
   Trees:
   - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
-  TreeDistance: 5
+  TreeDistance: 6
   AngleTolerance: 15
