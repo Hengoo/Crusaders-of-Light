@@ -11,12 +11,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cebab813fce92f40b989e69718a2f6f, type: 3}
   m_Name: Skill_Swarmling_SelfExplode_ExplosionDamage
   m_EditorClassIdentifier: 
-  DamageValueBase: 1000
+  DamageValueBase: 340
   DamageValuePerLevel: 0
   DefenseType: 1
   DamageType: 2
   DamageValueModifiers: []
-  IgnoreDefenseValueBase: 0
+  IgnoreDefenseValueBase: 5
   IgnoreDefenseValuePerLevel: 0
   IgnoreResistanceValueBase: 0
   IgnoreResistanceValuePerLevel: 0

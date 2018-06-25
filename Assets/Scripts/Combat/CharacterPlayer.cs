@@ -70,7 +70,7 @@ public class CharacterPlayer : Character {
 
     private void FixedUpdate()
     {
-        float speedfaktor = 10 * GetMovementRateModifier();
+        float speedfaktor = 7* GetMovementRateModifier();
         
         if (!GetOverrideMovement())
         {
