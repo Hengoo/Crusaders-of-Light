@@ -24,11 +24,6 @@ public class BossArenaSettingsFactory : AreaSettingsFactory {
         Graph<AreaSegment> pattern = new Graph<AreaSegment>();
 
         pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
-        pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
-        pattern.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Boss));
-        pattern.AddEdge(0, 1, (int)AreaSegment.EAreaSegmentEdgeType.BossInnerPath);
-        pattern.AddEdge(0, 2, (int)AreaSegment.EAreaSegmentEdgeType.BossInnerPath);
-        pattern.AddEdge(1, 2, (int)AreaSegment.EAreaSegmentEdgeType.BossInnerPath);
 
         return pattern;
     }

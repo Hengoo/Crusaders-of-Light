@@ -41,7 +41,6 @@ MonoBehaviour:
   PathAreas:
   - {fileID: 11400000, guid: 2ba3728689f59a847a5fa3488c223372, type: 2}
   - {fileID: 11400000, guid: 2851824dd639f3e49beb2b427e9e2198, type: 2}
-  - {fileID: 11400000, guid: 69ec5d8bfc0bb4b4dac2661c8a4d7a24, type: 2}
   MainPathSplatPrototype:
     texture: {fileID: 2800000, guid: d048b4964ec17a640a0543ae79757a34, type: 3}
     normalMap: {fileID: 2800000, guid: 03c6cb46c6faeea4da99c2845000e074, type: 3}

@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TerrainGeneration.unity
     guid: 876ff7dc90e0ef448bc67c7dc7077548
+  - enabled: 1
+    path: Assets/Scenes/TextureDump.unity
+    guid: bb2241089cc2cd24383c470039201198
   m_configObjects: {}
