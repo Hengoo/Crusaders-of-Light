@@ -422,20 +422,39 @@ public class TerrainStructure
     {
         var mainPath = new List<Vector2[]>();
         var allSidePaths = new List<Vector2[]>();
-        foreach (var edge in AreaSegmentGraph.GetAllEdges())
+        foreach (var graphEdge in AreaSegmentGraph.GetAllEdges())
         {
-            int edgeValue = AreaSegmentGraph.GetEdgeValue(edge);
-            Vector2 leftCenter = _areaSegmentCenterMap[edge.x];
-            Vector2 rightCenter = _areaSegmentCenterMap[edge.y];
+            int edgeValue = AreaSegmentGraph.GetEdgeValue(graphEdge);
+            Vector2 leftCenter = _areaSegmentCenterMap[graphEdge.x];
+            Vector2 rightCenter = _areaSegmentCenterMap[graphEdge.y];
+            Vector2f leftSite = new Vector2f(leftCenter);
+            Vector2f rightSite = new Vector2f(rightCenter);
+            Vector2 edgeCrossing = Vector2.zero;
+
+            // Get the middle point of the crossing voronoi edge -> ensure crossable point
+            foreach (var e in VoronoiDiagram.Edges)
+            {
+                if (!e.Visible())
+                    continue;
+
+                if (e.LeftSite.Coord == leftSite && e.RightSite.Coord == rightSite ||
+                    e.LeftSite.Coord == rightSite && e.RightSite.Coord == leftSite)
+                {
+                    edgeCrossing = (e.ClippedEnds[LR.LEFT] + e.ClippedEnds[LR.RIGHT]).ToUnityVector2() / 2f;
+                    break;
+                }
+            }
 
             // Add path lines
             switch (edgeValue)
             {
                 case (int)AreaSegment.EAreaSegmentEdgeType.MainPath:
-                    mainPath.Add(new[] { leftCenter, rightCenter });
+                    mainPath.Add(new[] { leftCenter, edgeCrossing });
+                    mainPath.Add(new[] { edgeCrossing, rightCenter });
                     break;
                 case (int)AreaSegment.EAreaSegmentEdgeType.SidePath:
-                    allSidePaths.Add(new[] { leftCenter, rightCenter });
+                    allSidePaths.Add(new[] { leftCenter, edgeCrossing });
+                    allSidePaths.Add(new[] { edgeCrossing, rightCenter });
                     break;
             }
         }

@@ -36,6 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4416615902031166}
   - component: {fileID: 95045012744732286}
+  - component: {fileID: 65003063373307918}
   m_Layer: 0
   m_Name: LampPost
   m_TagString: Untagged
@@ -71,7 +72,6 @@ GameObject:
   - component: {fileID: 4699429988237094}
   - component: {fileID: 33772495498222210}
   - component: {fileID: 23327525410002468}
-  - component: {fileID: 65736740988347792}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -136,7 +136,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1814071266581336}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 269.4919, y: 24.816315, z: 398.47357}
+  m_LocalPosition: {x: 187.29028, y: 30.198128, z: 156.0689}
   m_LocalScale: {x: 1.7859567, y: 1.7859567, z: 1.7859567}
   m_Children:
   - {fileID: 4699429988237094}
@@ -322,18 +322,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1863131104992714}
   m_Mesh: {fileID: 4300002, guid: 1eb020a5115487f429630e1dd6f39cd4, type: 3}
---- !u!65 &65736740988347792
+--- !u!65 &65003063373307918
 BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1863131104992714}
+  m_GameObject: {fileID: 1814071266581336}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.38, y: 0.62, z: 2.9114423}
-  m_Center: {x: 0, y: 0.01, z: 1.2881857}
+  m_Size: {x: 0.38, y: 3.13, z: 0.53}
+  m_Center: {x: 0, y: 1.288186, z: 0}
 --- !u!95 &95045012744732286
 Animator:
   serializedVersion: 3

@@ -60,7 +60,7 @@ public class VillageSettings : AreaSettings
             poissonData.AddClearPolygons(ClearPolygons);
             PoissonDataList.Add(poissonData);
         }
-        
+
 
         return result;
     }
@@ -74,7 +74,9 @@ public class VillageSettings : AreaSettings
         // Collect all roads
         foreach (var areaData in AreaDataGraph.GetAllNodeData())
         {
-            pathLines = pathLines.Union(areaData.Paths).ToList();
+            var data = areaData;
+            var validPaths = areaData.Paths.Where(path => path.All(vtx => vtx.IsInsidePolygon(data.Polygon))).ToList();
+            pathLines = pathLines.Union(validPaths).ToList();
         }
 
         // Place lamps along the paths, alternating side and skipping one
@@ -87,7 +89,7 @@ public class VillageSettings : AreaSettings
                 continue;
 
             var pathCenter = (line[0] + line[1]) / 2f;
-            var normal = spawnRight ? (Vector2)Vector3.Cross(line[0] - line[1], Vector3.back).normalized  :  (Vector2)Vector3.Cross(line[0] - line[1], Vector3.forward).normalized;
+            var normal = spawnRight ? (Vector2)Vector3.Cross(line[0] - line[1], Vector3.back).normalized : (Vector2)Vector3.Cross(line[0] - line[1], Vector3.forward).normalized;
             var position2D = pathCenter + normal * LampPathOffset;
             var position = new Vector3(position2D.x, 0, position2D.y);
             var rotation = Quaternion.LookRotation(new Vector3(pathCenter.x, 0, pathCenter.y) - position, Vector3.up);
@@ -97,6 +99,8 @@ public class VillageSettings : AreaSettings
             var lamp = Object.Instantiate(StreetLamp, position, rotation);
             lamp.CorrectAngleTolerance(LampAngleTolerance);
             lamp.transform.parent = result.transform;
+            var lampClear = lamp.GetComponent<BoxCollider>().Get2DPolygon();
+            ClearPolygons.Add(lampClear.OffsetToCenter(lampClear.GetPolygonCenter(), -1).ToArray());
 
             // Flip side
             spawnRight = !spawnRight;
@@ -177,6 +181,9 @@ public class VillageSettings : AreaSettings
         // Try to place the building on the side of each path
         foreach (var path in areaData.Paths)
         {
+            if (path.Any(vtx => !vtx.IsInsidePolygon(areaData.Polygon)))
+                continue;
+
             var pathCenter = (path[0] + path[1]) / 2f;
             var leftNormal = (Vector2)Vector3.Cross(path[0] - path[1], Vector3.forward).normalized;
             var rightNormal = -leftNormal;
@@ -212,9 +219,9 @@ public class VillageSettings : AreaSettings
             }
 
             // Try left side placement
-            bool leftInvalid = leftPoly.Any(vtx => !vtx.IsInsidePolygon(border)) || 
+            bool leftInvalid = leftPoly.Any(vtx => !vtx.IsInsidePolygon(border)) ||
                 ClearPolygons.Any(clearPoly => leftPoly.Any(vtx => vtx.IsInsidePolygon(clearPoly)) ||
-                                    clearPoly.Any(vtx=> vtx.IsInsidePolygon(leftPoly) ||
+                                    clearPoly.Any(vtx => vtx.IsInsidePolygon(leftPoly) ||
                                     leftCenter.IsInsidePolygon(clearPoly)) ||
                                     clearPoly.GetPolygonCenter().IsInsidePolygon(leftPoly));
 
