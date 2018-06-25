@@ -65,7 +65,6 @@ public class BossArenaSettings : AreaSettings
         BorderPolygon = BorderPolygon.OffsetToCenter(center, 8, skip).ToList();
 
         // Generate gate
-        var arenaCenter2D = BorderPolygon.GetPolygonCenter();
         var line = _gateLine[0] - _gateLine[1];
         var gatePosition2D = (_gateLine[0] + _gateLine[1]) / 2;
         var gatePosition = new Vector3(gatePosition2D.x, 0, gatePosition2D.y);
@@ -78,15 +77,16 @@ public class BossArenaSettings : AreaSettings
         gate.transform.rotation = Quaternion.LookRotation(new Vector3(line.x, 0, line.y), Vector3.up);
         gate.transform.parent = arena.transform;
 
-        // Set arena center on gate
+        // Set arena center on gate script
+        var arenaCenter2D = BorderPolygon.GetPolygonCenter();
         var arenaGateTrigger = gate.GetComponent<ArenaGateTrigger>();
         arenaGateTrigger.ArenaCenter = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y);
-        arenaGateTrigger.ArenaCenter += new Vector3(0, terrain.SampleHeight(gate.GetComponent<ArenaGateTrigger>().ArenaCenter), 0);
+        arenaGateTrigger.ArenaCenter += new Vector3(0, terrain.SampleHeight(gate.GetComponent<ArenaGateTrigger>().ArenaCenter), 0) + (gatePosition - arenaGateTrigger.ArenaCenter).normalized * 5;
 
         // Place portal
-        var portalPosition = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y + 10);
+        var portalPosition = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y);
         portalPosition += new Vector3(0, terrain.SampleHeight(portalPosition), 0);
-        var portal = Object.Instantiate(_portalPrefab, portalPosition, terrain.GetNormalRotation(portalPosition)* Quaternion.Euler(0,180,0));
+        var portal = Object.Instantiate(_portalPrefab, portalPosition, terrain.GetNormalRotation(portalPosition) * Quaternion.LookRotation(gatePosition - new Vector3(portalPosition.x, 0, portalPosition.z) , Vector3.up));
         portal.transform.parent = arena.transform;
 
         // Generate Walls
@@ -107,7 +107,7 @@ public class BossArenaSettings : AreaSettings
         navMeshModifier.area = NavMesh.GetAreaFromName("Not Walkable");
 
         // Spawn boss at the arena center
-        var bossPosition = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y);
+        var bossPosition = new Vector3(arenaGateTrigger.ArenaCenter.x, 0, arenaGateTrigger.ArenaCenter.z);
         bossPosition += new Vector3(0, terrain.SampleHeight(bossPosition), 0);
         var boss = Object.Instantiate(_bossPrefab, bossPosition, Quaternion.identity);
         boss.transform.parent = arena.transform;
@@ -123,29 +123,27 @@ public class BossArenaSettings : AreaSettings
         for (int i = 0; i < points.Count; i++)
         {
             var p0 = points[i];
-            var p1 = points[i != points.Count - 1 ? i + 1 : 0];
+            var p1 = points[(i + 1) % points.Count];
             var center = (p1 + p0) / 2;
 
             foreach (var clearPolygon in ClearPolygons)
             {
                 if (center.IsInsidePolygon(clearPolygon))
                 {
-                    var p00 = clearPolygon.ClosestPoint(p0);
-                    p00 += (p0 - p00) * .2f;
-                    var p10 = clearPolygon.ClosestPoint(p1);
-                    p10 += (p1 - p10) * .2f;
+                    var newP0 = p0 + (p1 - p0) * .3f;
+                    var newP1 = p1 + (p0 - p1) * .3f;
 
-                    if ((p00 - p10).magnitude < _gateMinimumLenght)
+                    if ((newP0 - newP1).magnitude < _gateMinimumLenght)
                     {
                         _gateLine = new[] { p0, p1 };
-                        return new List<int> { i, i + 1 }; // RETURN
+                        return new List<int> { i, (i + 1) % points.Count }; // RETURN
                     }
                     else
                     {
-                        points.Insert(i + 1, p00);
-                        points.Insert(i + 2, p10);
-                        _gateLine = new[] { p00, p10 };
-                        return new List<int> { i + 1, i + 2 }; // RETURN
+                        points.Insert(i + 1, newP0);
+                        points.Insert(i + 2, newP1);
+                        _gateLine = new[] { newP0, newP1 };
+                        return new List<int> { (i + 1) % points.Count, (i + 2) % points.Count }; // RETURN
                     }
                     
                 }

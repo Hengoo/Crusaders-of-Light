@@ -142,9 +142,18 @@ public static class ExtensionMethods
         return result;
     }
 
-    public static IEnumerable<Vector2> OffsetToCenter(this IEnumerable<Vector2> reference, Vector2 center, float amount, List<int> skip = null)
+    public static IEnumerable<Vector2> OffsetToCenter(this IEnumerable<Vector2> polygon, Vector2 center, float amount, List<int> skip = null)
     {
-        return reference.Select(e => e += skip != null && skip.Contains(reference.ToList().IndexOf(e)) ? Vector2.zero : (center - e).normalized * amount);
+        var list = polygon.ToList();
+        for(var i = 0; i < list.Count; i++)
+        {
+            if(skip != null && skip.Contains(i))
+                continue;
+
+            list[i] += (center - list[i]).normalized * amount;
+        }
+
+        return list;
     }
 
     public static Vector2 ClosestPoint(this Vector2[] polygon, Vector2 point)

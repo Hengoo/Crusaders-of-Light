@@ -17,7 +17,7 @@ MonoBehaviour:
   WallPositionNoise: {x: 0, y: 0, z: 0}
   WallScaleNoise: {x: 0.1, y: 0, z: 0}
   GatePrefab: {fileID: 1129564519391044, guid: 90b619f3de93d1e4c9b77df8dcbb9aea, type: 2}
-  GateMinimumLength: 20
+  GateMinimumLength: 10
   TowerPrefab: {fileID: 1231192518867186, guid: 5f7070635c8eca94dbfc5623eeb7e6ad,
     type: 2}
   PortalPrefab: {fileID: 1441201331607938, guid: 013c40d349727e64c96cd1f62a1d3307,
