@@ -65,9 +65,6 @@ public class LevelCreator : Singleton<LevelCreator>
     private float[,] _heightMap;
     private float[,,] _alphaMap;
 
-    private GameObject _lastParticleEffect;
-
-
     public void CreateGameLevel()
     {
         DrawMode = DrawModeEnum.GameLevel;
@@ -134,23 +131,23 @@ public class LevelCreator : Singleton<LevelCreator>
             _alphaMap = LevelDataGenerator.SmoothAlphaMap(_alphaMap, OverallAlphaSmoothSquareSize);
         }
 
-		//GPU version -> slightly offset and looks bit different?, but seems to work
-		//LevelDataGenerator.SmoothHeightMap(_alphaMap, OverallAlphaSmoothSquareSize, OverallAlphaSmoothPasses);
-	}
+        //GPU version -> slightly offset and looks bit different?, but seems to work
+        //LevelDataGenerator.SmoothHeightMap(_alphaMap, OverallAlphaSmoothSquareSize, OverallAlphaSmoothPasses);
+    }
 
     private void SmoothHeightMap()
     {
-		// Overall smoothing
-		//for(int i = 0; i < OverallSmoothPasses; i++)
-		//{
-		//    LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothSquareSize);
-		//}
+        // Overall smoothing
+        //for(int i = 0; i < OverallSmoothPasses; i++)
+        //{
+        //    LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothSquareSize);
+        //}
 
-		//GPU smooth:
-		LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothSquareSize, OverallSmoothPasses);
+        //GPU smooth:
+        LevelDataGenerator.SmoothHeightMap(_heightMap, OverallSmoothSquareSize, OverallSmoothPasses);
 
-		// Smooth paths
-		for (int i = 0; i < PathSmoothPasses; i++)
+        // Smooth paths
+        for (int i = 0; i < PathSmoothPasses; i++)
         {
             LevelDataGenerator.SmoothHeightMapWithLines(_heightMap, MapSize / HeightMapResolution, MyTerrainStructure.MainPathLines, MyTerrainStructure.BiomeSettings.MainPathSplatSize, PathSmoothSquaresize);
             LevelDataGenerator.SmoothHeightMapWithLines(_heightMap, MapSize / HeightMapResolution, MyTerrainStructure.SidePathLines, MyTerrainStructure.BiomeSettings.SidePathSplatSize, PathSmoothSquaresize);
@@ -227,13 +224,13 @@ public class LevelCreator : Singleton<LevelCreator>
         }
 
         // Attach particle system to camera
-        if(_lastParticleEffect)
-            DestroyImmediate(_lastParticleEffect);
-
-        _lastParticleEffect = Instantiate(MyTerrainStructure.BiomeSettings.FallingParticlesPrefab);
-        _lastParticleEffect.transform.parent = mainCamera.transform;
-        _lastParticleEffect.transform.localPosition = Vector3.zero;
-        _lastParticleEffect.transform.localRotation = Quaternion.Inverse(mainCamera.transform.rotation);
+        if (!Application.isEditor)
+        {
+            var ps = Instantiate(MyTerrainStructure.BiomeSettings.FallingParticlesPrefab);
+            ps.transform.parent = mainCamera.transform;
+            ps.transform.localPosition = Vector3.zero;
+            ps.transform.localRotation = Quaternion.Inverse(mainCamera.transform.rotation);
+        }
     }
 
     // Draw roads on alpha map

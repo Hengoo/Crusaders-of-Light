@@ -40,7 +40,7 @@ public class SceneryStructure
 
         while (availableSegments.Count > 0 && availableSettings.Count > 0)
         {
-            AreaSettingsFactory settingsFactory = availableSettings[Random.Range(0, availableSettings.Count)];
+            AreaSettingsFactory settingsFactory = availableSettings.Last();
             Dictionary<int,int> matches = _graph.MatchPattern(settingsFactory.GetPatternGraph());
 
             if (matches == null)
