@@ -18,7 +18,11 @@ public class GameController : Singleton<GameController>
     public GameStateEnum GameState = GameStateEnum.Menu;
     public int ActivePlayers = 4;
 
-	// Use this for initialization
+    // This is a quick hack for the presentation, should be done better afterwards!!!!!:
+    public Item[] PlayerStartWeapons = new Item[4];
+    public ElementItem[] PlayerStartElements = new ElementItem[4];
+
+    // Use this for initialization
     protected override void Awake () {
 		base.Awake();
         DontDestroyOnLoad(gameObject);
@@ -49,5 +53,26 @@ public class GameController : Singleton<GameController>
     {
         GameState = GameStateEnum.Menu;
         SceneManager.LoadScene("Menu");
+    }
+
+    // This is a quick hack for the presentation, should be done better afterwards!!!!!:
+    public void SetPlayerItem(int id, Item item)
+    {
+        PlayerStartWeapons[id-1] = item;
+    }
+
+    public void SetPlayerElement(int id, ElementItem element)
+    {
+        PlayerStartElements[id-1] = element;
+    }
+
+    public Item GetPlayerItem(int id)
+    {
+        return PlayerStartWeapons[id-1];
+    }
+
+    public ElementItem GetPlayerElement(int id)
+    {
+        return PlayerStartElements[id-1];
     }
 }

@@ -470,8 +470,8 @@ public class Character : MonoBehaviour
     }
 
     //Need this for quest fire wizard spawning - Jean
-    public void SpawnAndEquipStartingWeapons()
-    {
+    public virtual void SpawnAndEquipStartingWeapons()
+    { 
         Item CurrentItem = null;
         for (int i = 0; i < StartingWeapons.Length; i++)
         {
@@ -526,7 +526,7 @@ public class Character : MonoBehaviour
         EquipElement(tempEle);
     }
 
-    private void SpawnAndEquipStartingElement()
+    protected virtual void SpawnAndEquipStartingElement()
     {
         if (!StartingElement)
         {
