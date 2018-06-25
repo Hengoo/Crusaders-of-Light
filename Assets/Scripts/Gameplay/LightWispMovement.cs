@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,6 +10,7 @@ public class LightWispMovement : MonoBehaviour
     private GameObject _target;
     private NavMeshAgent _agent;
     private float _moveSpeed;
+    private Vector3 _playerDirection;
 
     void Awake()
     {
@@ -22,10 +24,19 @@ public class LightWispMovement : MonoBehaviour
         _target = LevelController.Instance.GetActivePlayers()[0];
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        if(_target)
+        if (_target)
+        {
             _agent.SetDestination(_target.transform.position);
+            _playerDirection = _target.transform.position - _agent.transform.position;
+            _playerDirection.Normalize();
+        }
+    }
+
+    public Vector3 GetPlayerHeading()
+    {
+        return _playerDirection;
     }
 
     public void StopPlayerFollow()
