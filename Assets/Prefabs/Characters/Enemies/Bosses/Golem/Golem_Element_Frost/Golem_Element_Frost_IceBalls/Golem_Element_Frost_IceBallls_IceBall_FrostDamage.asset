@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Golem_Element_Frost_IceBallls_IceBall_FrostDamage
   m_EditorClassIdentifier: 
   DamageValueBase: 90
-  DamageValuePerLevel: 50
+  DamageValuePerLevel: 0
   DefenseType: 2
   DamageType: 3
   DamageValueModifiers: []

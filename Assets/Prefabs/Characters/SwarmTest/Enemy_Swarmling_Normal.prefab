@@ -435,8 +435,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 847401a9556d47940a4dfd0459523db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 100
-  HealthMax: 100
+  HealthCurrent: 150
+  HealthMax: 150
   HealthHealingMin: 0
   HealthHealingMax: 100
   HealthHealingLostPerCount: 10
@@ -522,7 +522,7 @@ MonoBehaviour:
   SType: 1
   ThisSwarmlingCharacter: {fileID: 114510744269287126}
   SeperationDistance: 2
-  SeperationFactor: 2
+  SeperationFactor: 3
   AlignmentDistance: 8
   AlignmentFactor: 0.75
   CohesionDistance: 10
@@ -530,13 +530,13 @@ MonoBehaviour:
   DangerDistance: 6
   DangerFactor: 10
   AttractionDistance: 20
-  AttractionFactor: 0.6
+  AttractionFactor: 0.4
   Velocity: {x: 0, y: 0, z: 0}
   Acceleration: {x: 0, y: 0, z: 1}
   Friction: 0.1
   GoalFactor: 0
-  DesiredBaseSpeed: 9
-  DesiredRunSpeed: 12
+  DesiredBaseSpeed: 20
+  DesiredRunSpeed: 24
   UpdateTimer: 0.06
   UpdateCounter: 0
   SAttention: {fileID: 0}
@@ -586,9 +586,9 @@ MonoBehaviour:
   ClosestPlayerSqrDistanceBase: 9
   IgnoreThisSwarmlingForOthers: 0
   IgnoreThisSwarmlingForOthersWhenInDanger: 0
-  MinLightOrbAttractionDistance: 40
-  LightOrbAttractionReachDistance: 30
-  LightOrbAttractionSelfDestroyDistance: 50
+  MinLightOrbAttractionDistance: 30
+  LightOrbAttractionReachDistance: 20
+  LightOrbAttractionSelfDestroyDistance: 25
   LightOrbAttractionMode: 0
   LightOrbAttractionTimer: 8
   LightOrbAttractionCounter: -1
@@ -675,8 +675,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.7
-  m_Speed: 4
-  m_Acceleration: 8
+  m_Speed: 18
+  m_Acceleration: 18
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0

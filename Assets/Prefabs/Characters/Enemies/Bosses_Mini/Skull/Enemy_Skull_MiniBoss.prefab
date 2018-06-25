@@ -437,8 +437,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 3000
-  HealthMax: 3000
+  HealthCurrent: 1000
+  HealthMax: 1000
   HealthHealingMin: 0
   HealthHealingMax: 100
   HealthHealingLostPerCount: 10
@@ -446,16 +446,16 @@ MonoBehaviour:
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
-  - 0
-  - 8
-  - 8
-  - 8
-  - 8
+  - 2
+  - 4
+  - 4
+  - 4
+  - 10
   - 0
   Defenses:
-  - 6
-  - 8
-  - 15
+  - 0
+  - 0
+  - 0
   CharacterHands:
   - {fileID: 4034869968065290}
   - {fileID: 4034869968065290}

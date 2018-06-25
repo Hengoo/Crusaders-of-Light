@@ -1598,6 +1598,8 @@ MonoBehaviour:
   - {fileID: 114069213632099788}
   ItemSkillsComboStart: 0000000003000000ffffffffffffffff
   TwoHanded: 0
+  SpawnElementEffect: 0
+  ElementEffectSpawnPoint: {fileID: 0}
 --- !u!114 &114179314222304626
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1689,8 +1691,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab6778a9b3b095f4a9e6bf28617057e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 5000
-  HealthMax: 5000
+  HealthCurrent: 20000
+  HealthMax: 20000
   HealthHealingMin: 100
   HealthHealingMax: 100
   HealthHealingLostPerCount: 10
@@ -1705,9 +1707,9 @@ MonoBehaviour:
   - 5
   - 5
   Defenses:
-  - 5
-  - 5
-  - 5
+  - 0
+  - 0
+  - 0
   CharacterHands:
   - {fileID: 4328016006838216}
   - {fileID: 4657734574222628}
@@ -1761,6 +1763,7 @@ MonoBehaviour:
   DeathAnimationResetTrigger: Trigger_DeathReset
   NavAgent: {fileID: 195983202689745238}
   RotationSpeed: 5
+  LightOrbEffects: {fileID: 0}
   OrbInputTimer: -1
   OrbInputReviveTime: 1
   OrbInputHealMaxTime: 0.3
@@ -1880,6 +1883,8 @@ MonoBehaviour:
   - {fileID: 114632341946623424}
   ItemSkillsComboStart: 0000000003000000ffffffffffffffff
   TwoHanded: 0
+  SpawnElementEffect: 0
+  ElementEffectSpawnPoint: {fileID: 0}
 --- !u!114 &114506909321996648
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2110,6 +2115,8 @@ MonoBehaviour:
   - {fileID: 114564975773716044}
   ItemSkillsComboStart: 0000000003000000ffffffffffffffff
   TwoHanded: 0
+  SpawnElementEffect: 0
+  ElementEffectSpawnPoint: {fileID: 0}
 --- !u!114 &114901555575846778
 MonoBehaviour:
   m_ObjectHideFlags: 1
