@@ -12,6 +12,7 @@ public class BossArenaSettingsFactory : AreaSettingsFactory {
     public Vector3 WallPositionNoise;
     public Vector3 WallScaleNoise;
     public GameObject GatePrefab;
+    [Range(5, 50)] public float GateMinimumLength = 20f;
     public GameObject TowerPrefab;
     public GameObject PortalPrefab;
     public GameObject RewardPedestalPrefab;
@@ -36,7 +37,7 @@ public class BossArenaSettingsFactory : AreaSettingsFactory {
     {
         BossPrefabs.Shuffle();
         var arenaWalls = new BossArenaSettings(areaDataGraph, clearPolygons, borderPolygon, WallPrefab, WallLenght, WallAngleLimit,
-            WallPositionNoise, WallScaleNoise, GatePrefab, TowerPrefab, PortalPrefab, RewardPedestalPrefab, BuildingPrefabs, BossPrefabs[0]);
+            WallPositionNoise, WallScaleNoise, GatePrefab, GateMinimumLength, TowerPrefab, PortalPrefab, RewardPedestalPrefab, BuildingPrefabs, BossPrefabs[0]);
 
         return new AreaSettings[]{arenaWalls};
     }
