@@ -11,14 +11,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14426816bca77140a243d3e4ee9d82f, type: 3}
   m_Name: ForestChurchSettingsFactory
   m_EditorClassIdentifier: 
-  MiniBosses: []
+  MiniBosses:
+  - {fileID: 1269708281449342, guid: 8f55f81707bf2b746a0b84c50829976b, type: 2}
+  - {fileID: 1574788587254294, guid: 9dbe4642828005646b847b5c6714d142, type: 2}
   ChurchPrefab: {fileID: 1131378545392920, guid: 156d0128ae88d084c9fac76ee9c02b88,
     type: 2}
   AngleTolerance: 5
   GravePrefabs:
-  - {fileID: 0}
-  - {fileID: 0}
-  GraveAngleTolerance: 0
-  Trees: []
-  TreeAngleTolerance: 0
-  TreeDistance: 0
+  - {fileID: 1145523357691118, guid: d123171f0f4281d40bfa649f128b992a, type: 2}
+  - {fileID: 1282082363284216, guid: db6fe73b88c4d9f4d8e1c18c9bedf5fd, type: 2}
+  GraveAngleTolerance: 5
+  PathOffset: 8
+  Trees:
+  - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
+  TreeAngleTolerance: 15
+  TreeDistance: 8

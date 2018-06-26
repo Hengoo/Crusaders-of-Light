@@ -7,19 +7,18 @@ public class ChurchSettingsFactory : AreaSettingsFactory {
 
     public GameObject[] MiniBosses;
     public GameObject ChurchPrefab;
-    public float AngleTolerance;
+    [Range(0, 80)] public float AngleTolerance;
     public GameObject[] GravePrefabs;
-    public float GraveAngleTolerance;
+    [Range(0, 80)] public float GraveAngleTolerance;
+    [Range(0, 20)] public float PathOffset;
     public GameObject[] Trees;
-    public float TreeAngleTolerance;
-    public float TreeDistance;
+    [Range(0, 80)] public float TreeAngleTolerance;
+    [Range(1, 50)] public float TreeDistance;
 
     public override Graph<AreaSegment> GetPatternGraph()
     {
         var result = new Graph<AreaSegment>();
-        int main = result.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.MainPath));
-        int special = result.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Special));
-        result.AddEdge(main, special, (int) AreaSegment.EAreaSegmentEdgeType.SidePath);
+        result.AddNode(new AreaSegment(AreaSegment.EAreaSegmentType.Special));
 
         return result;
     }
@@ -28,7 +27,7 @@ public class ChurchSettingsFactory : AreaSettingsFactory {
     {
         return new[]
         {
-            new ChurchSettings(areaDataGraph, clearPolygons, borderPolygon, ChurchPrefab, AngleTolerance, GravePrefabs,
+            new ChurchSettings(areaDataGraph, clearPolygons, borderPolygon, ChurchPrefab, AngleTolerance, PathOffset, GravePrefabs,
                 GraveAngleTolerance, Trees, TreeAngleTolerance, TreeDistance, MiniBosses, "Church")
         };
     }
