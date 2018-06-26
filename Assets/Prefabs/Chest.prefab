@@ -36,6 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4468585595875526}
   - component: {fileID: 137829454972015056}
+  - component: {fileID: 65445386620845022}
   m_Layer: 0
   m_Name: ChestBase
   m_TagString: Untagged
@@ -208,7 +209,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1659824245891988}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 394.81912, y: 29.173079, z: 332.09668}
+  m_LocalPosition: {x: 380.24564, y: 29.666897, z: 331.47778}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4451529240094920}
@@ -218,6 +219,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!65 &65445386620845022
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1190591604245824}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.52, y: 2.2, z: 2.17}
+  m_Center: {x: 0, y: 1.05, z: -0.5}
 --- !u!95 &95422242500418680
 Animator:
   serializedVersion: 3

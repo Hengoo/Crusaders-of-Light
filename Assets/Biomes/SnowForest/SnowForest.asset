@@ -37,12 +37,12 @@ MonoBehaviour:
     type: 2}
   BossAreas:
   - {fileID: 11400000, guid: aa62ea351bbe1874aa70855e9cd80f4f, type: 2}
-  ChestAreas: []
+  SpecialAreas:
+  - {fileID: 11400000, guid: 6ad181fbf39d2bc42b1f63d2f3c5fad8, type: 2}
   PathAreas:
   - {fileID: 11400000, guid: cf55006f5f4bd49489f20a572186cc1f, type: 2}
-  - {fileID: 11400000, guid: ae18b73a5307a0d4bb997f99df5be704, type: 2}
-  - {fileID: 11400000, guid: ae18b73a5307a0d4bb997f99df5be704, type: 2}
   - {fileID: 11400000, guid: 25540aad104897643bff1987e01c4c11, type: 2}
+  - {fileID: 11400000, guid: 5fecec567a36da5478a8573aaf432497, type: 2}
   MainPathSplatPrototype:
     texture: {fileID: 2800000, guid: d048b4964ec17a640a0543ae79757a34, type: 3}
     normalMap: {fileID: 2800000, guid: 03c6cb46c6faeea4da99c2845000e074, type: 3}
