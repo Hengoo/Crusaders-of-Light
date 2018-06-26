@@ -45,6 +45,8 @@ public class ChurchSettings : AreaSettings
         if (church)
         {
             church.transform.position += new Vector3(0, terrain.SampleHeight(church.transform.position), 0);
+            church.transform.rotation = terrain.GetNormalRotation(church.transform.position) * church.transform.rotation;
+            church.CorrectAngleTolerance(AngleTolerance);
             church.transform.parent = result.transform;
         }
 
@@ -54,6 +56,11 @@ public class ChurchSettings : AreaSettings
         var pathPosition = new Vector3(data.Paths[0][0].x, 0, data.Paths[0][0].y);
         var chest = Object.Instantiate(ChestPrefab, chestPositionHeight, terrain.GetNormalRotation(chestPositionHeight) * Quaternion.LookRotation(pathPosition - chestPosition));
         chest.transform.parent = result.transform;
+        chest.GetComponent<ChestBossTrigger>().MiniBoss = MiniBosses[Random.Range(0, MiniBosses.Length)];
+
+        // Place cemetary
+        var cemetary = PlaceCemetary(data);
+        cemetary.transform.parent = result.transform;
 
         // Fill spaces with trees
         PoissonDiskFillData poissonData = new PoissonDiskFillData(Trees, BorderPolygon.ToArray(), TreeDistance, TreeAngleTolerance, true);
@@ -61,6 +68,30 @@ public class ChurchSettings : AreaSettings
         PoissonDataList.Add(poissonData);
 
         return result;
+    }
+
+    private GameObject PlaceCemetary(AreaData areaData)
+    {
+        var result = new GameObject("Graveyard");
+        foreach (var area in GetValidAreas(areaData))
+        {
+            var tombs = PlaceTombstonesInGrid(area, areaData);
+            tombs.transform.parent = result.transform;
+        }
+
+        return result;
+    }
+
+    private List<Vector2[]> GetValidAreas(AreaData areaData)
+    {
+        //TODO
+        return null;
+    }
+
+    private GameObject PlaceTombstonesInGrid(Vector2[] poly, AreaData areaData)
+    {
+        //TODO
+        return null;
     }
 
     private GameObject PlaceChurch(AreaData areaData)
