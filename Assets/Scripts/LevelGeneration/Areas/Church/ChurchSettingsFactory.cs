@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ChurchSettingsFactory", menuName = "Terrain/Areas/Church")]
-public class ChurchSettingsFactory : AreaSettingsFactory {
-
+public class ChurchSettingsFactory : AreaSettingsFactory
+{
+    public GameObject ChestPrefab;
     public GameObject[] MiniBosses;
     public GameObject ChurchPrefab;
     [Range(0, 80)] public float AngleTolerance;
@@ -28,7 +29,7 @@ public class ChurchSettingsFactory : AreaSettingsFactory {
         return new[]
         {
             new ChurchSettings(areaDataGraph, clearPolygons, borderPolygon, ChurchPrefab, AngleTolerance, PathOffset, GravePrefabs,
-                GraveAngleTolerance, Trees, TreeAngleTolerance, TreeDistance, MiniBosses, "Church")
+                GraveAngleTolerance, Trees, TreeAngleTolerance, TreeDistance, MiniBosses, ChestPrefab, "Church")
         };
     }
 }

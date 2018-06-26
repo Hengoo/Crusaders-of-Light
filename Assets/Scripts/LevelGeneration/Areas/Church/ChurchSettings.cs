@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class ChurchSettings : AreaSettings
 {
+    public readonly GameObject ChestPrefab;
     public readonly GameObject[] MiniBosses;
     public readonly GameObject ChurchPrefab;
     public readonly float AngleTolerance;
@@ -15,7 +16,7 @@ public class ChurchSettings : AreaSettings
     public readonly float TreeAngleTolerance;
     public readonly float TreeDistance;
 
-    public ChurchSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, GameObject churchPrefab, float angleTolerance, float pathOffset, GameObject[] gravePrefabs, float graveAngleTolerance, GameObject[] trees, float treeDistance, float treeAngleTolerance, GameObject[] miniBosses, string type = "")
+    public ChurchSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, GameObject churchPrefab, float angleTolerance, float pathOffset, GameObject[] gravePrefabs, float graveAngleTolerance, GameObject[] trees, float treeDistance, float treeAngleTolerance, GameObject[] miniBosses, GameObject chestPrefab, string type = "")
     {
         Name = "Forest " + type + " Area";
         AreaDataGraph = areaDataGraph;
@@ -25,6 +26,7 @@ public class ChurchSettings : AreaSettings
         Trees = trees;
         TreeAngleTolerance = treeAngleTolerance;
         MiniBosses = miniBosses;
+        ChestPrefab = chestPrefab;
         PathOffset = pathOffset;
         GravePrefabs = gravePrefabs;
         GraveAngleTolerance = graveAngleTolerance;
@@ -36,11 +38,22 @@ public class ChurchSettings : AreaSettings
     public override GameObject GenerateAreaScenery(Terrain terrain)
     {
         var result = new GameObject(Name);
+        var data = AreaDataGraph.GetNodeData(0);
 
-        // Get cemetary direction from main path
-        var church = PlaceChurch(AreaDataGraph.GetNodeData(0));
-        church.transform.position += new Vector3(0, terrain.SampleHeight(church.transform.position), 0);
-        church.transform.parent = result.transform;
+        // Create church
+        var church = PlaceChurch(data);
+        if (church)
+        {
+            church.transform.position += new Vector3(0, terrain.SampleHeight(church.transform.position), 0);
+            church.transform.parent = result.transform;
+        }
+
+        // Place chest
+        var chestPosition = new Vector3(data.Center.x, 0, data.Center.y);
+        var chestPositionHeight = chestPosition + new Vector3(0, terrain.SampleHeight(chestPosition), 0);
+        var pathPosition = new Vector3(data.Paths[0][0].x, 0, data.Paths[0][0].y);
+        var chest = Object.Instantiate(ChestPrefab, chestPositionHeight, terrain.GetNormalRotation(chestPositionHeight) * Quaternion.LookRotation(pathPosition - chestPosition));
+        chest.transform.parent = result.transform;
 
         // Fill spaces with trees
         PoissonDiskFillData poissonData = new PoissonDiskFillData(Trees, BorderPolygon.ToArray(), TreeDistance, TreeAngleTolerance, true);

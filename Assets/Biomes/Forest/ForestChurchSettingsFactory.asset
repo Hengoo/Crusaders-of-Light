@@ -11,6 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14426816bca77140a243d3e4ee9d82f, type: 3}
   m_Name: ForestChurchSettingsFactory
   m_EditorClassIdentifier: 
+  ChestPrefab: {fileID: 1659824245891988, guid: e612d936e55be174ebe55fbe2e05712a,
+    type: 2}
   MiniBosses:
   - {fileID: 1269708281449342, guid: 8f55f81707bf2b746a0b84c50829976b, type: 2}
   - {fileID: 1574788587254294, guid: 9dbe4642828005646b847b5c6714d142, type: 2}
