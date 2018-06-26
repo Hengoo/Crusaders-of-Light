@@ -38,7 +38,7 @@ MonoBehaviour:
   BossAreas:
   - {fileID: 11400000, guid: aa62ea351bbe1874aa70855e9cd80f4f, type: 2}
   SpecialAreas:
-  - {fileID: 11400000, guid: d6658e7ba171cae4b832942c5aa9cb0e, type: 2}
+  - {fileID: 11400000, guid: 6ad181fbf39d2bc42b1f63d2f3c5fad8, type: 2}
   PathAreas:
   - {fileID: 11400000, guid: cf55006f5f4bd49489f20a572186cc1f, type: 2}
   - {fileID: 11400000, guid: 25540aad104897643bff1987e01c4c11, type: 2}

@@ -38,11 +38,10 @@ public class SceneryStructure
         availableSegments = availableSegments.Union(_graph.FindNodesWithData(new AreaSegment(AreaSegment.EAreaSegmentType.SidePath))).ToList();
         availableSegments = availableSegments.Union(_graph.FindNodesWithData(new AreaSegment(AreaSegment.EAreaSegmentType.Special))).ToList();
         List<AreaSettingsFactory> availableSettings = terrainStructure.BiomeSettings.SpecialAreas.ToList();
-        availableSettings.Sort();
 
         while (availableSegments.Count > 0 && availableSettings.Count > 0)
         {
-            AreaSettingsFactory settingsFactory = availableSettings.Last();
+            AreaSettingsFactory settingsFactory = availableSettings[Random.Range(0, availableSettings.Count)];
             Dictionary<int, int> matches = _graph.MatchPattern(settingsFactory.GetPatternGraph());
 
             if (matches == null)

@@ -39,6 +39,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c61b14e114f2a4a4b822d3ad05c59e24, type: 2}
   SpecialAreas:
   - {fileID: 11400000, guid: 73fbf393fc7fc67428ad21010dcab8c9, type: 2}
+  - {fileID: 11400000, guid: bea388ee9dcb2d644823d740b0a9e9fe, type: 2}
   PathAreas:
   - {fileID: 11400000, guid: 2ba3728689f59a847a5fa3488c223372, type: 2}
   - {fileID: 11400000, guid: 077452ad8d4a93b499c33384835bcf42, type: 2}
