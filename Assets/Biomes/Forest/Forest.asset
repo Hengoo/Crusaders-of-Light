@@ -37,7 +37,8 @@ MonoBehaviour:
     type: 2}
   BossAreas:
   - {fileID: 11400000, guid: c61b14e114f2a4a4b822d3ad05c59e24, type: 2}
-  ChestAreas: []
+  SpecialAreas:
+  - {fileID: 11400000, guid: bea388ee9dcb2d644823d740b0a9e9fe, type: 2}
   PathAreas:
   - {fileID: 11400000, guid: 2ba3728689f59a847a5fa3488c223372, type: 2}
   - {fileID: 11400000, guid: 2851824dd639f3e49beb2b427e9e2198, type: 2}

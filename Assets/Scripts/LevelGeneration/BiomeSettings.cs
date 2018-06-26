@@ -25,7 +25,7 @@ public class BiomeSettings : ScriptableObject
 
     [Header("Area Settings")]
     public AreaSettingsFactory[] BossAreas;
-    public AreaSettingsFactory[] ChestAreas;
+    public AreaSettingsFactory[] SpecialAreas;
     public AreaSettingsFactory[] PathAreas;
 
     [Header("Path Settings")]
