@@ -16,19 +16,15 @@ MonoBehaviour:
   MiniBosses:
   - {fileID: 1269708281449342, guid: 8f55f81707bf2b746a0b84c50829976b, type: 2}
   - {fileID: 1574788587254294, guid: 9dbe4642828005646b847b5c6714d142, type: 2}
-  ChurchPrefab: {fileID: 1131378545392920, guid: 156d0128ae88d084c9fac76ee9c02b88,
+  ChurchPrefab: {fileID: 1099745622277562, guid: 2e833398cccc3a44f851640eebe2fc81,
     type: 2}
   AngleTolerance: 5
   GravePrefabs:
-  - {fileID: 1145523357691118, guid: d123171f0f4281d40bfa649f128b992a, type: 2}
-  - {fileID: 1282082363284216, guid: db6fe73b88c4d9f4d8e1c18c9bedf5fd, type: 2}
-  - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
-  - {fileID: 1082634219500342, guid: e843fbe01b14f354fa8ff29f7a960ac8, type: 2}
-  - {fileID: 0}
-  - {fileID: 1145523357691118, guid: d123171f0f4281d40bfa649f128b992a, type: 2}
-  - {fileID: 1282082363284216, guid: db6fe73b88c4d9f4d8e1c18c9bedf5fd, type: 2}
+  - {fileID: 1460683729714660, guid: 25260bf313d8a9b42be76c15a44b407f, type: 2}
   GraveAngleTolerance: 5
-  GraveDistance: {x: 6, y: 8}
+  GraveDistance: {x: 1, y: 2}
+  RotationNoise: {x: 5, y: 90, z: 5}
+  PositionNoise: {x: 0.3, y: 0.1, z: 0.3}
   PathOffset: 8
   Trees:
   - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}

@@ -16,11 +16,13 @@ public class ChurchSettings : AreaSettings
     public readonly GameObject[] GravePrefabs;
     public readonly float GraveAngleTolerance;
     public readonly Vector2 GraveDistance;
+    public readonly Vector3 RotationNoise;
+    public readonly Vector3 PositionNoise;
     public readonly GameObject[] Trees;
     public readonly float TreeAngleTolerance;
     public readonly float TreeDistance;
 
-    public ChurchSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, GameObject churchPrefab, float angleTolerance, float pathOffset, GameObject[] gravePrefabs, float graveAngleTolerance, Vector2 graveDistance, GameObject[] trees, float treeDistance, float treeAngleTolerance, GameObject[] miniBosses, GameObject chestPrefab, string type = "")
+    public ChurchSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon, GameObject churchPrefab, float angleTolerance, float pathOffset, GameObject[] gravePrefabs, float graveAngleTolerance, Vector2 graveDistance, Vector3 rotationNoise, Vector3 positionNoise, GameObject[] trees, float treeDistance, float treeAngleTolerance, GameObject[] miniBosses, GameObject chestPrefab, string type = "")
     {
         Name = "Forest " + type + " Area";
         AreaDataGraph = areaDataGraph;
@@ -38,6 +40,8 @@ public class ChurchSettings : AreaSettings
         ChurchPrefab = churchPrefab;
         AngleTolerance = angleTolerance;
         TreeDistance = treeDistance;
+        RotationNoise = rotationNoise;
+        PositionNoise = positionNoise;
     }
 
     public override GameObject GenerateAreaScenery(Terrain terrain)
@@ -145,7 +149,7 @@ public class ChurchSettings : AreaSettings
                 break;
 
             // Expand until not possible anymore in both directions
-            bottomRight = bottomRight - up - left;
+            bottomRight = bottomRight - up * 2 - left * 2;
             topLeft = bottomRight;
             topRight = bottomRight;
             bottomLeft = bottomRight;
@@ -194,9 +198,8 @@ public class ChurchSettings : AreaSettings
             if (!fitPossible)
                 break;
 
-            float leftGuard = 4;
             float upGuard = 4;
-            var rectangle = new[] { bottomRight, bottomLeft - left * leftGuard, topLeft - up * upGuard + left * leftGuard, topRight - up * upGuard };
+            var rectangle = new[] { bottomRight, bottomLeft, topLeft - up * upGuard, topRight - up * upGuard };
             result.Add(rectangle);
             if (wasRight)
             {
@@ -229,15 +232,15 @@ public class ChurchSettings : AreaSettings
             for (int x = 0; x < (poly[0] - poly[1]).magnitude / GraveDistance.x; x++)
             {
                 GameObject prefab = GravePrefabs[Random.Range(0, GravePrefabs.Length)];
-                if(!prefab)
+                if (!prefab)
                     continue;
 
                 var position2D = poly[0] + (left * x * GraveDistance.x) / (x == 0 ? 2 : 1) + (up * y * GraveDistance.y) / (y == 0 ? 2 : 1);
                 var position = new Vector3(position2D.x, 0, position2D.y);
                 position += new Vector3(0, terrain.SampleHeight(position), 0);
-                var tombstone = Object.Instantiate(prefab, position, terrain.GetNormalRotation(position) * Quaternion.LookRotation(-new Vector3(up.x, 0 , up.y)));
-                tombstone.transform.rotation *= Quaternion.Euler(Random.Range(-5, 5), Random.Range(-8, 8), Random.Range(-5, 5));
-                tombstone.transform.position += new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
+                var tombstone = Object.Instantiate(prefab, position, terrain.GetNormalRotation(position) * Quaternion.LookRotation(-new Vector3(up.x, 0, up.y)));
+                tombstone.transform.localPosition += new Vector3(Random.Range(-PositionNoise.x, PositionNoise.x), Random.Range(-PositionNoise.y, PositionNoise.y), Random.Range(-PositionNoise.z, PositionNoise.z));
+                tombstone.transform.localRotation *= Quaternion.Euler(Random.Range(-RotationNoise.x, RotationNoise.x), Random.Range(-RotationNoise.y, RotationNoise.y), Random.Range(-RotationNoise.z, RotationNoise.z));
                 tombstone.transform.parent = result.transform;
             }
         }

@@ -12,6 +12,8 @@ public class ChurchSettingsFactory : AreaSettingsFactory
     public GameObject[] GravePrefabs;
     [Range(0, 80)] public float GraveAngleTolerance;
     public Vector2 GraveDistance;
+    public Vector3 RotationNoise;
+    public Vector3 PositionNoise;
     [Range(0, 20)] public float PathOffset;
     public GameObject[] Trees;
     [Range(0, 80)] public float TreeAngleTolerance;
@@ -30,7 +32,7 @@ public class ChurchSettingsFactory : AreaSettingsFactory
         return new[]
         {
             new ChurchSettings(areaDataGraph, clearPolygons, borderPolygon, ChurchPrefab, AngleTolerance, PathOffset, GravePrefabs,
-                GraveAngleTolerance, GraveDistance, Trees, TreeDistance, TreeAngleTolerance, MiniBosses, ChestPrefab, "Church")
+                GraveAngleTolerance, GraveDistance, RotationNoise, PositionNoise, Trees, TreeDistance, TreeAngleTolerance, MiniBosses, ChestPrefab, "Church")
         };
     }
 }

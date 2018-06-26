@@ -29,6 +29,8 @@ MonoBehaviour:
   - {fileID: 1282082363284216, guid: db6fe73b88c4d9f4d8e1c18c9bedf5fd, type: 2}
   GraveAngleTolerance: 5
   GraveDistance: {x: 6, y: 8}
+  RotationNoise: {x: 1, y: 5, z: 1}
+  PositionNoise: {x: 5, y: 0, z: 5}
   PathOffset: 8
   Trees:
   - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
