@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 198400123630338182}
   - component: {fileID: 199871936507541614}
   m_Layer: 0
-  m_Name: Snow
+  m_Name: SnowForMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
