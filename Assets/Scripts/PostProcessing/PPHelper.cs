@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class PPHelper : Singleton<PPHelper> {
+public class PPHelper : Singleton<PPHelper>
+{
 
 	public int buffersize = 200;
 
 	private Vector4[] vec4Array;
 	public ComputeBuffer buffer;
 
-//	public ComputeShader computeShader;
+	//	public ComputeShader computeShader;
 
 	public Camera cam;
 
@@ -28,20 +29,27 @@ public class PPHelper : Singleton<PPHelper> {
 		vec4Array = new Vector4[buffersize];
 
 		//computeShader = (ComputeShader)Resources.Load("PPEffect");
-		
+
 	}
 
+	public void ChangeBufferSize(int newSize)
+	{
+		buffer.Release();
+		buffersize = newSize;
+		buffer = new ComputeBuffer(buffersize, System.Runtime.InteropServices.Marshal.SizeOf(typeof(Vector4)), ComputeBufferType.Default);
+		vec4Array = new Vector4[buffersize];
+	}
 
 	public void UpdateBuffer(EnemySwarm[] elements)
 	{
 
 		Vector3 tmp = Vector3.zero;
 		int len = elements.Length;
-		for(int i =0; i< buffersize; i++)
+		for (int i = 0; i < buffersize; i++)
 		{
-			if(i < len)
+			if (i < len)
 			{
-				if(elements[i] != null)
+				if (elements[i] != null)
 				{
 					tmp = cam.WorldToViewportPoint(elements[i].transform.position);
 					vec4Array[i] = new Vector4(tmp.x, tmp.y, tmp.z, 0.1f);
@@ -50,16 +58,16 @@ public class PPHelper : Singleton<PPHelper> {
 				{
 					vec4Array[i] = new Vector4(0, 0, 0, 0);
 				}
-				
-			}else
+
+			}
+			else
 			{
 				vec4Array[i] = new Vector4(0, 0, 0, 0);
 			}
-			
+
 		}
 		buffer.SetData(vec4Array);
 	}
-
 
 	private void OnDisable()
 	{

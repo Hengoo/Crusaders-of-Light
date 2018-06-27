@@ -30,13 +30,13 @@ public sealed class GrayscaleRenderer : PostProcessEffectRenderer<PPTest>
 	{
 		//check if my ressources (the list) is there, else do nothing
 		//also do nothing for scene view because the transformation matrices are for the camera -> Screen space Positions are wrong
-		if(PPHelper.Instance == null || context.isSceneView)
+		if (PPHelper.Instance == null || context.isSceneView)
 		{
 			context.command.BlitFullscreenTriangle(context.source, context.destination);
 			return;
 		}
 
-		
+
 		var sheet = context.propertySheets.Get(Shader.Find("Hidden/Custom/Grayscale"));
 		sheet.properties.SetFloat("_Factor", settings.blend);
 		sheet.properties.SetFloat("_Black", settings.black);
@@ -51,7 +51,7 @@ public sealed class GrayscaleRenderer : PostProcessEffectRenderer<PPTest>
 		sheet.properties.SetBuffer("buffer", PPHelper.Instance.buffer);
 		context.command.BlitFullscreenTriangle(context.source, context.destination, sheet, 0);
 
-		
+
 
 
 
