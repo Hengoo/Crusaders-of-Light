@@ -1376,6 +1376,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 050f8829fa7b24345a96e7f310371961, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &346117177 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1862596395886870, guid: 050f8829fa7b24345a96e7f310371961,
+    type: 2}
+  m_PrefabInternal: {fileID: 346117176}
 --- !u!4 &346159246 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 5ebcb49f03b482f49a8cbf9d29bd3216, type: 3}
@@ -2113,6 +2118,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3efee6274e491cc439286a290e85ad27, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &654568097 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1343212273803920, guid: 3efee6274e491cc439286a290e85ad27,
+    type: 2}
+  m_PrefabInternal: {fileID: 654568096}
 --- !u!4 &663638163 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4496125764793624, guid: 0e26e0caf0a4a0d429f63595f1a991d0,
@@ -2938,7 +2948,7 @@ GameObject:
   - component: {fileID: 819271692}
   - component: {fileID: 819271691}
   m_Layer: 0
-  m_Name: EquipPoint (2)
+  m_Name: EquipPoint_Element_Frost
   m_TagString: EquipPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2958,6 +2968,7 @@ MonoBehaviour:
   weapon: {fileID: 0}
   elementItem: {fileID: 114295211227383602, guid: daa1297875100c846acddd4190289d70,
     type: 2}
+  VisualRepresentation: {fileID: 1512724304}
 --- !u!135 &819271692
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2977,7 +2988,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 819271690}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.4, y: 0, z: 2.44}
+  m_LocalPosition: {x: 2.24, y: 0, z: 2.43}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3230,7 +3241,7 @@ GameObject:
   - component: {fileID: 922459697}
   - component: {fileID: 922459696}
   m_Layer: 0
-  m_Name: EquipPoint (1)
+  m_Name: EquipPoint_Element_Fire
   m_TagString: EquipPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3250,6 +3261,7 @@ MonoBehaviour:
   weapon: {fileID: 0}
   elementItem: {fileID: 114295211227383602, guid: 4da6cc8484d688b44a3112583cb12f8d,
     type: 2}
+  VisualRepresentation: {fileID: 346117177}
 --- !u!135 &922459697
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3269,7 +3281,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 922459695}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.6, y: 0, z: 2.44}
+  m_LocalPosition: {x: -2.78, y: 0, z: 2.39}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3770,10 +3782,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1064132786}
-  - component: {fileID: 1064132785}
   - component: {fileID: 1064132784}
+  - component: {fileID: 1064132785}
   m_Layer: 0
-  m_Name: EquipPoint (4)
+  m_Name: EquipPoint_Weapon_Sword
   m_TagString: EquipPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3792,8 +3804,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapon: {fileID: 114066496244682900, guid: e8f64c2ec8c75cc45842de6d2d175ef9, type: 2}
   elementItem: {fileID: 0}
---- !u!135 &1064132785
-SphereCollider:
+  VisualRepresentation: {fileID: 1388078610}
+--- !u!65 &1064132785
+BoxCollider:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -3802,7 +3815,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2
+  m_Size: {x: 4, y: 4, z: 6}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1064132786
 Transform:
@@ -3811,7 +3824,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1064132783}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.6, y: 0, z: -6.56}
+  m_LocalPosition: {x: -2.69, y: 0, z: -9.45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4196,10 +4209,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1185415178}
-  - component: {fileID: 1185415177}
   - component: {fileID: 1185415176}
+  - component: {fileID: 1185415177}
   m_Layer: 0
-  m_Name: EquipPoint (5)
+  m_Name: EquipPoint_Weapon_Mace
   m_TagString: EquipPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4218,8 +4231,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapon: {fileID: 114329243195837850, guid: 23b56b847bed6264390682bc5395c349, type: 2}
   elementItem: {fileID: 0}
---- !u!135 &1185415177
-SphereCollider:
+  VisualRepresentation: {fileID: 1748488552}
+--- !u!65 &1185415177
+BoxCollider:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -4228,7 +4242,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2
+  m_Size: {x: 4, y: 4, z: 6}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1185415178
 Transform:
@@ -4237,7 +4251,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1185415175}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.4, y: 0, z: -6.56}
+  m_LocalPosition: {x: 1.78, y: 0, z: -9.45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4420,6 +4434,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0854cbfa0ccd1f047a044516f2a6d96b, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1216861493 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1472116414808534, guid: 0854cbfa0ccd1f047a044516f2a6d96b,
+    type: 2}
+  m_PrefabInternal: {fileID: 1216861492}
 --- !u!4 &1246237762 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4496125764793624, guid: 0e26e0caf0a4a0d429f63595f1a991d0,
@@ -4750,7 +4769,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   PlayerDataUnlockedWeapons: 010101
-  PlayerDataUnlockElements: 010101
+  PlayerDataUnlockedElements: 000000
+  MaxNumberOfSwarmlings: 100
   LastPlayedBiome: 
 --- !u!4 &1293886181
 Transform:
@@ -5503,6 +5523,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f5325d7ea387a4844866c9d23bdc22c1, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1388078610 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1878266023316152, guid: f5325d7ea387a4844866c9d23bdc22c1,
+    type: 2}
+  m_PrefabInternal: {fileID: 1388078609}
 --- !u!4 &1388388599 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4496125764793624, guid: 0e26e0caf0a4a0d429f63595f1a991d0,
@@ -6034,6 +6059,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 748ab8dcf1e4ecb44b246b242e288d0a, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1512724304 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1603063127314166, guid: 748ab8dcf1e4ecb44b246b242e288d0a,
+    type: 2}
+  m_PrefabInternal: {fileID: 1512724303}
 --- !u!4 &1525952784 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4496125764793624, guid: 0e26e0caf0a4a0d429f63595f1a991d0,
@@ -6721,7 +6751,7 @@ GameObject:
   - component: {fileID: 1657268297}
   - component: {fileID: 1657268296}
   m_Layer: 0
-  m_Name: EquipPoint
+  m_Name: EquipPoint_Element_Shock
   m_TagString: EquipPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6741,6 +6771,7 @@ MonoBehaviour:
   weapon: {fileID: 0}
   elementItem: {fileID: 114295211227383602, guid: f67b26addcb589d499a604394ec298e1,
     type: 2}
+  VisualRepresentation: {fileID: 1216861493}
 --- !u!135 &1657268297
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6760,7 +6791,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1657268295}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.6, y: 0, z: 2.44}
+  m_LocalPosition: {x: -7.76, y: 0, z: 2.47}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -7654,6 +7685,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1abc62425dd7f7349a58cd3398f848a5, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1748488552 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1799085059913394, guid: 1abc62425dd7f7349a58cd3398f848a5,
+    type: 2}
+  m_PrefabInternal: {fileID: 1748488551}
 --- !u!1001 &1750231166
 Prefab:
   m_ObjectHideFlags: 0
@@ -8124,10 +8160,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1848008226}
-  - component: {fileID: 1848008225}
   - component: {fileID: 1848008224}
+  - component: {fileID: 1848008225}
   m_Layer: 0
-  m_Name: EquipPoint (3)
+  m_Name: EquipPoint_Weapon_Staff
   m_TagString: EquipPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8146,8 +8182,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapon: {fileID: 114126834154076376, guid: 9a934794bf3332e45ad65ede58c215da, type: 2}
   elementItem: {fileID: 0}
---- !u!135 &1848008225
-SphereCollider:
+  VisualRepresentation: {fileID: 654568097}
+--- !u!65 &1848008225
+BoxCollider:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -8156,7 +8193,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2
+  m_Size: {x: 4, y: 4, z: 6}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1848008226
 Transform:
@@ -8165,7 +8202,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1848008223}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.6, y: 0, z: -6.56}
+  m_LocalPosition: {x: -7.48, y: 0, z: -9.41}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

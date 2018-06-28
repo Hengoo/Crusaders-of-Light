@@ -7,6 +7,25 @@ public class EquipPoint : MonoBehaviour {
     public Weapon weapon;
     public ElementItem elementItem;
 
+    public GameObject VisualRepresentation;
+
+    private void Start()
+    {
+        if (GameController.Instance && VisualRepresentation)
+        {
+            if ((weapon && GameController.Instance.CheckIfWeaponUnlocked(weapon))
+                || (elementItem && GameController.Instance.CheckIfElementUnlocked(elementItem)))
+                
+            {
+                VisualRepresentation.SetActive(true);
+            }
+            else
+            {
+                VisualRepresentation.SetActive(false);
+            }
+        }
+    }
+
     public void TriggerEquipToPlayer(CharacterPlayer PlayerToEquipTo)
     {
         if (!GameController.Instance)
