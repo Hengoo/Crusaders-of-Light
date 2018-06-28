@@ -153,6 +153,7 @@ GameObject:
   - component: {fileID: 82114094614720082}
   - component: {fileID: 195833056456418158}
   - component: {fileID: 114714030959205096}
+  - component: {fileID: 114164012003331310}
   m_Layer: 8
   m_Name: Enemy_Wizard_MiniBoss
   m_TagString: Character
@@ -637,6 +638,7 @@ MonoBehaviour:
   Anim_StartWalking: StartWalking
   Anim_EndWalking: EndWalking
   Anim_BreakAnim: Trigger_BreakAnim
+  Anim_Interupt: InterruptAnim
   CharAttention: {fileID: 114985463748620512}
   Alignment: 2
   IdleSkillScore: 0.2
@@ -654,6 +656,20 @@ MonoBehaviour:
   SpawnedBy: {fileID: 0}
   NavAgent: {fileID: 195833056456418158}
   SpawnStartingWeaponsOnStart: 1
+--- !u!114 &114164012003331310
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1574788587254294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e42b397c0feb65f409f88f79bbd9b7a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GuardedChest: {fileID: 0}
+  GuardedChestDrop: {fileID: 114820948779387098, guid: 03fdaa9673364084e8af74d996f502fd,
+    type: 2}
 --- !u!114 &114714030959205096
 MonoBehaviour:
   m_ObjectHideFlags: 1

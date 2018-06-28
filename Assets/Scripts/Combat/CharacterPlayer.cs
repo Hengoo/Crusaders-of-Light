@@ -366,7 +366,66 @@ public class CharacterPlayer : Character {
 
     // =================================== ITEM PICKUP ====================================
 
-    private bool PickUpClosestItem()
+   
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Weapon"
+            && other.gameObject.GetComponent<Item>().GetOwner() == null)
+        {
+            ItemsInRange.Add(other.gameObject.GetComponent<Item>());
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Weapon"
+            && other.gameObject.GetComponent<Item>().GetOwner() == null)
+        {
+            ItemsInRange.Remove(other.gameObject.GetComponent<Item>());
+        }
+    }
+
+    public void PlayerPickUpWeapon()
+    {
+        SpawnAndEquipStartingWeapons();
+    }
+
+    public void PlayerPickUpElement()
+    {
+        SpawnAndEquipStartingElement();
+    }
+
+    public void InteractionButtonPressed()
+    {
+        if (InteractWithEquipPoint())
+        {
+            return;
+        }
+
+        if (InteractWithChest())
+        {
+            return;
+        }
+    }
+
+    private bool InteractWithChest()
+    {
+        Collider[] Chests = Physics.OverlapSphere(transform.position, 3);
+
+        for (int i = 0; i < Chests.Length; i++)
+        {
+            if (Chests[i] && Chests[i].tag == "Chest")
+            { 
+                Chests[i].GetComponent<ChestBossTrigger>().OnInteractionWithChest();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool InteractWithEquipPoint()
     {
         Collider[] EquipPoints = Physics.OverlapSphere(transform.position, 3);
 
@@ -376,6 +435,7 @@ public class CharacterPlayer : Character {
             {
                 //EquipPoints[i].GetComponent<EquipPoint>().TriggerEquip(PlayerID);
                 EquipPoints[i].GetComponent<EquipPoint>().TriggerEquipToPlayer(this);
+                return true;
             }
         }
 
@@ -449,34 +509,6 @@ public class CharacterPlayer : Character {
         return true;*/
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Weapon"
-            && other.gameObject.GetComponent<Item>().GetOwner() == null)
-        {
-            ItemsInRange.Add(other.gameObject.GetComponent<Item>());
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.tag == "Weapon"
-            && other.gameObject.GetComponent<Item>().GetOwner() == null)
-        {
-            ItemsInRange.Remove(other.gameObject.GetComponent<Item>());
-        }
-    }
-
-    public void PlayerPickUpWeapon()
-    {
-        SpawnAndEquipStartingWeapons();
-    }
-
-    public void PlayerPickUpElement()
-    {
-        SpawnAndEquipStartingElement();
-    }
-
     // =================================== /ITEM PICKUP ====================================
 
     // ========================================= INPUT =========================================
@@ -530,10 +562,7 @@ public class CharacterPlayer : Character {
         // Weapon PickUp:
         if (Input.GetButtonDown("IPickUp_" + PlayerID))
         {
-            if (PickUpClosestItem())
-            {
-                return;
-            }
+            InteractionButtonPressed();
         }
 
         // Light Orb Interaction:

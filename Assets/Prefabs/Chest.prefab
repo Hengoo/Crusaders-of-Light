@@ -100,9 +100,10 @@ GameObject:
   - component: {fileID: 4888969074397252}
   - component: {fileID: 95422242500418680}
   - component: {fileID: 114445066347980742}
+  - component: {fileID: 135717964283552938}
   m_Layer: 0
   m_Name: Chest
-  m_TagString: Untagged
+  m_TagString: Chest
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -240,7 +241,7 @@ Animator:
   m_GameObject: {fileID: 1659824245891988}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 6ea3bca612083e147b61d21e6830eaec, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a59d38cc6e9e61947b5175a090bec7f6, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -261,6 +262,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MiniBoss: {fileID: 0}
+  ChestAnimator: {fileID: 95422242500418680}
+  Anim_TryOpen: Trigger_TryOpen
+  Anim_DoesOpen: Trigger_DoesOpen
+--- !u!135 &135717964283552938
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1659824245891988}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 3
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!137 &137185301558941814
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
