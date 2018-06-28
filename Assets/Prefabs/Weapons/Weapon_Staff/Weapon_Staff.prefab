@@ -33,6 +33,7 @@ GameObject:
   - component: {fileID: 114627077475524124}
   - component: {fileID: 114123036873269748}
   - component: {fileID: 114114393772844580}
+  - component: {fileID: 114774323194432466}
   m_Layer: 13
   m_Name: Weapon_Staff
   m_TagString: Weapon
@@ -353,7 +354,8 @@ MonoBehaviour:
   - {fileID: 114627077475524124}
   - {fileID: 114123036873269748}
   - {fileID: 114114393772844580}
-  ItemSkillsComboStart: 0000000003000000ffffffffffffffff
+  - {fileID: 114774323194432466}
+  ItemSkillsComboStart: 0000000003000000ffffffff07000000
   TwoHanded: 0
   WeaponID: 2
   SpawnElementEffect: 1
@@ -436,6 +438,26 @@ MonoBehaviour:
   ComboInput:
   - {fileID: 114123036873269748}
   - {fileID: 114627077475524124}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &114774323194432466
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1005816776593156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114126834154076376}
+  SkillObject: {fileID: 11400000, guid: 467c25a5adafb8948b1bf429bec31f48, type: 2}
+  Level: 1
+  ItemSkillID: 7
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
 --- !u!114 &114888258426487036
