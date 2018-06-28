@@ -113,7 +113,7 @@ public class SkillType : ScriptableObject
         return true;
     }
 
-    protected void RemoveActivationMovementRateModifier(ItemSkill SourceItemSkill, Character Owner)
+    public void RemoveActivationMovementRateModifier(ItemSkill SourceItemSkill, Character Owner)
     {
         Owner.ChangeMovementRateModifier(-1 * ActivationMovementModifier);
         Owner.SetOverrideMovement(false);

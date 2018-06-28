@@ -54,6 +54,11 @@ public class Item : MonoBehaviour {
             audioSource.Stop();
     }
 
+    public void DestroyItem()
+    {
+        Destroy(gameObject);
+    }
+
     // Currently Unused, but might be useful later.
     public void UpdateCooldowns()
     {

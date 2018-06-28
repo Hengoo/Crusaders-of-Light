@@ -18,9 +18,14 @@ public class GameController : Singleton<GameController>
     public GameStateEnum GameState = GameStateEnum.Menu;
     public int ActivePlayers = 4;
 
-    // This is a quick hack for the presentation, should be done better afterwards!!!!!:
-    public Item[] PlayerStartWeapons = new Item[4];
-    public ElementItem[] PlayerStartElements = new ElementItem[4];
+    [Header("Player Data:")]
+    public Item[] PlayerDataSelectedWeapons = new Item[4];
+    public ElementItem[] PlayerDataSelectedElements = new ElementItem[4];
+
+    [Header("Player Unlocks:")]
+    public bool[] PlayerDataUnlockedWeapons = new bool[3];
+    public bool[] PlayerDataUnlockedElements = new bool[3];
+    
 
     public string LastPlayedBiome;
 
@@ -57,24 +62,80 @@ public class GameController : Singleton<GameController>
         SceneManager.LoadScene("Menu");
     }
 
-    // This is a quick hack for the presentation, should be done better afterwards!!!!!:
+
+    // =======================================  Player Data  =======================================
+
+    // id-1, because Player IDs are from 1-4, not 0-3:
     public void SetPlayerItem(int id, Item item)
     {
-        PlayerStartWeapons[id-1] = item;
+        PlayerDataSelectedWeapons[id-1] = item;
     }
 
     public void SetPlayerElement(int id, ElementItem element)
     {
-        PlayerStartElements[id-1] = element;
+        PlayerDataSelectedElements[id-1] = element;
     }
 
     public Item GetPlayerItem(int id)
     {
-        return PlayerStartWeapons[id-1];
+        return PlayerDataSelectedWeapons[id-1];
     }
 
     public ElementItem GetPlayerElement(int id)
     {
-        return PlayerStartElements[id-1];
+        return PlayerDataSelectedElements[id-1];
     }
+
+    public void UnlockWeapon(Weapon weaponToUnlock)
+    {
+        int tempID = weaponToUnlock.GetWeaponID();
+        if (tempID >= 0 && tempID < PlayerDataUnlockedWeapons.Length)
+        {
+            PlayerDataUnlockedWeapons[tempID] = true;
+        }
+    }
+
+    public void UnlockElement(ElementItem elementToUnlock)
+    {
+        int tempID = elementToUnlock.GetElementID();
+        if (tempID >= 0 && tempID < PlayerDataUnlockedElements.Length)
+        {
+            PlayerDataUnlockedElements[tempID] = true;
+        }
+    }
+
+    public bool CheckIfWeaponUnlocked(Weapon weaponToCheck)
+    {
+        int tempID = weaponToCheck.GetWeaponID();
+        if (tempID >= 0 && tempID < PlayerDataUnlockedWeapons.Length)
+        {
+            return PlayerDataUnlockedWeapons[tempID];
+        }
+        return false;
+    }
+
+    public bool CheckIfElementUnlocked(ElementItem elementToCheck)
+    {
+        int tempID = elementToCheck.GetElementID();
+        if (tempID >= 0 && tempID < PlayerDataUnlockedElements.Length)
+        {
+            return PlayerDataUnlockedElements[tempID];
+        }
+        return false;
+    }
+
+    public void UnlockEverything()
+    {
+        for (int i = 0; i < PlayerDataUnlockedWeapons.Length; i++)
+        {
+            PlayerDataUnlockedWeapons[i] = true;
+        }
+
+        for (int i = 0; i < PlayerDataUnlockedElements.Length; i++)
+        {
+            PlayerDataUnlockedElements[i] = true;
+        }
+    }
+
+    // ======================================/  Player Data  /======================================
 }

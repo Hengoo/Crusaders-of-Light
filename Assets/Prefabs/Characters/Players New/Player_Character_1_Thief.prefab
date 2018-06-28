@@ -1598,6 +1598,7 @@ MonoBehaviour:
   - {fileID: 114069213632099788}
   ItemSkillsComboStart: 0000000003000000ffffffffffffffff
   TwoHanded: 0
+  WeaponID: -1
   SpawnElementEffect: 0
   ElementEffectSpawnPoint: {fileID: 0}
 --- !u!114 &114179314222304626
@@ -1749,6 +1750,7 @@ MonoBehaviour:
   Anim_StartWalking: StartWalking
   Anim_EndWalking: EndWalking
   Anim_BreakAnim: Trigger_BreakAnim
+  Anim_Interupt: InterruptAnim
   CharAttention: {fileID: 114430896212687198}
   SkillActivationButtonsPressed: 00000000
   Alignment: 1
@@ -1883,6 +1885,7 @@ MonoBehaviour:
   - {fileID: 114632341946623424}
   ItemSkillsComboStart: 0000000003000000ffffffffffffffff
   TwoHanded: 0
+  WeaponID: -1
   SpawnElementEffect: 0
   ElementEffectSpawnPoint: {fileID: 0}
 --- !u!114 &114506909321996648
@@ -2115,6 +2118,7 @@ MonoBehaviour:
   - {fileID: 114564975773716044}
   ItemSkillsComboStart: 0000000003000000ffffffffffffffff
   TwoHanded: 0
+  WeaponID: -1
   SpawnElementEffect: 0
   ElementEffectSpawnPoint: {fileID: 0}
 --- !u!114 &114901555575846778

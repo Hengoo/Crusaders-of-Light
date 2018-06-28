@@ -115,6 +115,7 @@ public class Character : MonoBehaviour
     public string Anim_StartWalking = "StartWalking";
     public string Anim_EndWalking = "EndWalking";
     public string Anim_BreakAnim = "Trigger_BreakAnim";
+    public string Anim_Interupt = "InterruptAnim";
 
     //[Header("GUI (for Testing Purposes):")]
     [Header("GUI HealthBars:")]
@@ -437,6 +438,9 @@ public class Character : MonoBehaviour
         }
 
         UnEquipSkills(WeaponSlotID * SkillsPerWeapon, MaxNumberOfSkills);
+
+        // Destroy Item after Unequipping:
+        WeaponToUnequip.DestroyItem();
     }
 
 
@@ -490,7 +494,21 @@ public class Character : MonoBehaviour
 
     public void EquipElement(ElementItem ElementToEquip)
     {
+        if (EquippedElement)
+        {
+            UnequipElement();
+        }
+
         EquippedElement = ElementToEquip;
+
+        for (int i = 0; i < WeaponSlots.Length; i++)
+        {
+            if (WeaponSlots[i])
+            {
+                WeaponSlots[i].GetComponent<Weapon>().ElementEffectSpawnOnEquip();
+            }
+        }
+
         EquipElementVisually();
     }
 
@@ -499,16 +517,18 @@ public class Character : MonoBehaviour
         EquippedElement.transform.SetParent(CharacterHands[0], false);
     }
 
-    public ElementItem UnequipElement()
+    public void UnequipElement()
     {
-        ElementItem tempElement = EquippedElement;
-        EquippedElement = null;
-        return tempElement;
-    }
+        for (int i = 0; i < WeaponSlots.Length; i++)
+        {
+            if (WeaponSlots[i])
+            {
+                WeaponSlots[i].GetComponent<Weapon>().ElementEffectDestroyOnUnEquip();
+            }
+        }
 
-    public void UnequipElementAndDestroy()
-    {
-        Destroy(UnequipElement().gameObject);
+        EquippedElement.UnEquipElementItem();
+        EquippedElement = null;
     }
 
     public ElementItem GetEquippedElement()
@@ -629,6 +649,13 @@ public class Character : MonoBehaviour
 
         SkillCurrentlyActivating[WeaponSlotID] = -1;
         WeaponSlots[WeaponSlotID].SetSkillActivationTimer(0.0f);
+
+        foreach (AnimatorControllerParameter animPar in HandAnimators[WeaponSlotID].parameters)
+        {
+            animPar.defaultBool = false;
+        }
+
+        StartAnimation(Anim_Interupt, 1, WeaponSlotID);
     }
 
     public void ChangeHindranceLevel(int Change)

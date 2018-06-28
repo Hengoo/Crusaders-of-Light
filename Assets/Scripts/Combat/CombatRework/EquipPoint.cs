@@ -4,23 +4,26 @@ using UnityEngine;
 
 public class EquipPoint : MonoBehaviour {
 
-    public Item item;
+    public Weapon weapon;
     public ElementItem elementItem;
 
-    public void TriggerEquip(int PlayerID)
+    public void TriggerEquipToPlayer(CharacterPlayer PlayerToEquipTo)
     {
-        if (GameController.Instance)
+        if (!GameController.Instance)
         {
-            if (item)
-            {
-                GameController.Instance.SetPlayerItem(PlayerID, item);
+            return;
+        }
 
-            }
+        if (weapon && GameController.Instance.CheckIfWeaponUnlocked(weapon))
+        {
+            GameController.Instance.SetPlayerItem(PlayerToEquipTo.GetPlayerID(), weapon);
+            PlayerToEquipTo.PlayerPickUpWeapon();
+        }
 
-            if (elementItem)
-            {
-                GameController.Instance.SetPlayerElement(PlayerID, elementItem);
-            }
+        if (elementItem && GameController.Instance.CheckIfElementUnlocked(elementItem))
+        {
+            GameController.Instance.SetPlayerElement(PlayerToEquipTo.GetPlayerID(), elementItem);
+            PlayerToEquipTo.PlayerPickUpElement();
         }
     }
 }

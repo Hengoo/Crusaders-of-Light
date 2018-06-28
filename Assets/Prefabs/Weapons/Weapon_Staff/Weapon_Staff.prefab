@@ -355,6 +355,7 @@ MonoBehaviour:
   - {fileID: 114114393772844580}
   ItemSkillsComboStart: 0000000003000000ffffffffffffffff
   TwoHanded: 0
+  WeaponID: 2
   SpawnElementEffect: 1
   ElementEffectSpawnPoint: {fileID: 1944252774683584}
 --- !u!114 &114209286195597762

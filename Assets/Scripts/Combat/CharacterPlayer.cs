@@ -374,7 +374,8 @@ public class CharacterPlayer : Character {
         {
             if (EquipPoints[i] && EquipPoints[i].tag == "EquipPoint")
             {
-                EquipPoints[i].GetComponent<EquipPoint>().TriggerEquip(PlayerID);
+                //EquipPoints[i].GetComponent<EquipPoint>().TriggerEquip(PlayerID);
+                EquipPoints[i].GetComponent<EquipPoint>().TriggerEquipToPlayer(this);
             }
         }
 
@@ -466,6 +467,16 @@ public class CharacterPlayer : Character {
         }
     }
 
+    public void PlayerPickUpWeapon()
+    {
+        SpawnAndEquipStartingWeapons();
+    }
+
+    public void PlayerPickUpElement()
+    {
+        SpawnAndEquipStartingElement();
+    }
+
     // =================================== /ITEM PICKUP ====================================
 
     // ========================================= INPUT =========================================
@@ -517,7 +528,7 @@ public class CharacterPlayer : Character {
 
 
         // Weapon PickUp:
-        if (Input.GetButton("IPickUp_" + PlayerID))
+        if (Input.GetButtonDown("IPickUp_" + PlayerID))
         {
             if (PickUpClosestItem())
             {
@@ -535,8 +546,8 @@ public class CharacterPlayer : Character {
     private void UpdatePlayerOrbInput()
     {
         // Light Orb Interaction:
-        if (Input.GetButton("RevivePlayer_" + PlayerID))
-        {
+        if (Input.GetButton("RevivePlayer_" + PlayerID) && LightOrbEffects)
+        {         
             // Fresh button press (Timer not running):
             if (OrbInputTimer <= 0)
             {

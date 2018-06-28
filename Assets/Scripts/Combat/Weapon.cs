@@ -7,6 +7,9 @@ public class Weapon : Item {
     [Header("Weapon:")]
     public bool TwoHanded = false;
 
+    [Header("Weapon ID:")]
+    public int WeaponID = -1;
+
     [Header("Element Efects on Weapon:")]
     public bool SpawnElementEffect = false;
     public GameObject ElementEffectSpawnPoint;
@@ -78,5 +81,10 @@ public class Weapon : Item {
             Destroy(ElementEffectInstance.gameObject);
             ElementEffectInstance = null;
         }
+    }
+
+    public int GetWeaponID()
+    {
+        return WeaponID;
     }
 }

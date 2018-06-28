@@ -149,6 +149,7 @@ public class ItemSkill : MonoBehaviour {
         }
 
         ParentItem.EndSkillCurrentlyUsingItemHitBox();
+        SkillObject.RemoveActivationMovementRateModifier(this, GetCurrentOwner());
     }
 
     public List<Character> GetAllCurrentlyCollidingCharacters()
