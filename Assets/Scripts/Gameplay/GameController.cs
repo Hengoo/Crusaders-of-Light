@@ -25,7 +25,9 @@ public class GameController : Singleton<GameController>
     [Header("Player Unlocks:")]
     public bool[] PlayerDataUnlockedWeapons = new bool[3];
     public bool[] PlayerDataUnlockedElements = new bool[3];
-    
+
+    [Header("Max Swarmling Spawn Number:")]
+    public int MaxNumberOfSwarmlings = 100;
 
     public string LastPlayedBiome;
 
@@ -138,4 +140,19 @@ public class GameController : Singleton<GameController>
     }
 
     // ======================================/  Player Data  /======================================
+
+
+    // =======================================  Spawner Data  ======================================
+
+    public int GetMaxNumberSwarmlings()
+    {
+        return MaxNumberOfSwarmlings;
+    }
+
+    public void SetMaxNumberSwarmlings(int NewNumber)
+    {
+        MaxNumberOfSwarmlings = NewNumber;
+    }
+
+    // ======================================/  Spawner Data  /=====================================
 }

@@ -68,6 +68,11 @@ public class SwarmSpawner : MonoBehaviour {
 
     private void Start()
     {
+        if (GameController.Instance)
+        {
+            SpawnedEnemiesMaxNumber = GameController.Instance.GetMaxNumberSwarmlings();
+        }
+
         CalculateTotalWeight();
 
         SpawnedEnemies = new EnemySwarm[SpawnedEnemiesMaxNumber];

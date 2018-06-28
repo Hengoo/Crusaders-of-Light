@@ -16,6 +16,8 @@ public class MenuController : MonoBehaviour
     public AudioSource Music;
     public MenuLivePreview MenuPreview;
 
+    public InputField MaxNumberSwarmlings;
+
     void Start()
     {
         var players = GameController.Instance.ActivePlayers;
@@ -35,6 +37,11 @@ public class MenuController : MonoBehaviour
         {
             Random.InitState(System.DateTime.Now.GetHashCode());
             GameController.Instance.SetSeed(Random.Range(0, int.MaxValue));
+        }
+
+        if (MaxNumberSwarmlings.text.Length > 0)
+        {
+            GameController.Instance.SetMaxNumberSwarmlings(int.Parse(MaxNumberSwarmlings.text));
         }
 
         MainMenu.enabled = false;
