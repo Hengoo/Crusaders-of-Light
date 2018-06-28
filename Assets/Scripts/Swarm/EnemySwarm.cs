@@ -132,6 +132,9 @@ public class EnemySwarm : MonoBehaviour {
     public float LightOrbAttractionTimer = 8;
     public float LightOrbAttractionCounter = -1;
 
+    [Header("Spawn Effect:")]
+    public GameObject SpawnEffectPrefab;
+
     // ================================================================================================================
 
     public void SwarmlingLightOrbAttractionCalculation()
@@ -429,6 +432,7 @@ public class EnemySwarm : MonoBehaviour {
         NewNeighbourCounter = Random.Range(0, NewNeighbourTimer);
         NMAgent.updateRotation = false;
 
+        Instantiate(SpawnEffectPrefab, SwarmlingTransform.position, Quaternion.identity);
         //Players = EnemyTestSwarm.Instance.PlayerCharacters;
     }
 

@@ -584,6 +584,7 @@ MonoBehaviour:
   Anim_StartWalking: StartWalking
   Anim_EndWalking: EndWalking
   Anim_BreakAnim: Trigger_BreakAnim
+  Anim_Interupt: InterruptAnim
   CharAttention: {fileID: 0}
   Alignment: 2
   SpawnStartingWeaponsOnStart: 1
@@ -685,6 +686,8 @@ MonoBehaviour:
   LightOrbAttractionMode: 0
   LightOrbAttractionTimer: 8
   LightOrbAttractionCounter: -1
+  SpawnEffectPrefab: {fileID: 1409955995371636, guid: 763e9e532f5ae084aa19baddc6ad5b03,
+    type: 2}
   AttackDistance: 2.5
 --- !u!135 &135006269066896464
 SphereCollider:
