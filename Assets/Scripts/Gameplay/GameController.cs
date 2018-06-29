@@ -21,6 +21,8 @@ public class GameController : Singleton<GameController>
     [Header("Player Data:")]
     public Item[] PlayerDataSelectedWeapons = new Item[4];
     public ElementItem[] PlayerDataSelectedElements = new ElementItem[4];
+    public int PlayerStartHealth = 20000;
+    public float SwarmlingHealthFactor = 1;
 
     [Header("Player Unlocks:")]
     public bool[] PlayerDataUnlockedWeapons = new bool[3];
@@ -139,6 +141,16 @@ public class GameController : Singleton<GameController>
         }
     }
 
+    public void SetPlayerStartHealth(int NewStartHealth)
+    {
+        PlayerStartHealth = NewStartHealth;
+    }
+
+    public int GetPlayerStartHealth()
+    {
+        return PlayerStartHealth;
+    }
+
     // ======================================/  Player Data  /======================================
 
 
@@ -152,6 +164,16 @@ public class GameController : Singleton<GameController>
     public void SetMaxNumberSwarmlings(int NewNumber)
     {
         MaxNumberOfSwarmlings = NewNumber;
+    }
+
+    public void SetSwarmlingHealthFactor(float NewFactor)
+    {
+        SwarmlingHealthFactor = NewFactor;
+    }
+
+    public float GetSwarmlingHealthFactor()
+    {
+        return SwarmlingHealthFactor;
     }
 
     // ======================================/  Spawner Data  /=====================================

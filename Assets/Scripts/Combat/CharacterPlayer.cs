@@ -58,6 +58,10 @@ public class CharacterPlayer : Character {
         NavAgent.updateRotation = false;
         SpawnAndEquipStartingWeapons();
         
+        if (GameController.Instance)
+        {
+            SetHealthMax(GameController.Instance.GetPlayerStartHealth());
+        }
     }
 
     protected override void SpawnAndEquipStartingElement()

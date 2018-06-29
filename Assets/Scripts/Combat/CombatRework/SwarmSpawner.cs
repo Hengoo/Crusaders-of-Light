@@ -41,6 +41,8 @@ public class SwarmSpawner : MonoBehaviour {
     private float EnemyWeightCounter = 0;
     private int CurrentEnemyPrefabID = 0;
 
+    private float SwarmlingHealthFactor = 1;
+
     [Header("Spawned Enemies:")]
     public int SpawnedEnemiesMaxNumber = 300;
     private EnemySwarm[] SpawnedEnemies;
@@ -73,6 +75,7 @@ public class SwarmSpawner : MonoBehaviour {
         if (GameController.Instance)
         {
             SpawnedEnemiesMaxNumber = GameController.Instance.GetMaxNumberSwarmlings();
+            SwarmlingHealthFactor = GameController.Instance.GetSwarmlingHealthFactor();
         }
 
 
@@ -151,7 +154,7 @@ public class SwarmSpawner : MonoBehaviour {
         }
 
         SpawnedEnemies[SpawnedEnemiesIDCounter] = Instantiate(EnemyPrefabs[CurrentEnemyPrefabID], spawnPos, EnemyPrefabs[CurrentEnemyPrefabID].transform.rotation);
-        SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask);
+        SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask, SwarmlingHealthFactor);
 
         // At this point an enemy was succesfully spawned:
         SpawnedEnemiesCounter++;
@@ -180,7 +183,7 @@ public class SwarmSpawner : MonoBehaviour {
             }
 
             SpawnedEnemies[SpawnedEnemiesIDCounter] = Instantiate(EnemyPrefab, spawnPos, EnemyPrefab.transform.rotation);
-            SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask);
+            SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask, SwarmlingHealthFactor);
 
             // At this point an enemy was succesfully spawned:
             SpawnedEnemiesCounter++;

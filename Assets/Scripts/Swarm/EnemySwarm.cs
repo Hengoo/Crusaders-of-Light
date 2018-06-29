@@ -565,7 +565,7 @@ public class EnemySwarm : MonoBehaviour {
         //Players = EnemyTestSwarm.Instance.PlayerCharacters;
     }
 
-    public void InitializeSwarmling(SwarmSpawner _SpawnedBy, int _SwarmlingID, CharacterPlayer[] _Players, int _NeighbourLayerMask)
+    public void InitializeSwarmling(SwarmSpawner _SpawnedBy, int _SwarmlingID, CharacterPlayer[] _Players, int _NeighbourLayerMask, float HealthFactor)
     {
         SpawnedBy = _SpawnedBy;
         Players = _Players;
@@ -573,6 +573,8 @@ public class EnemySwarm : MonoBehaviour {
         NeighbourLayerMask = _NeighbourLayerMask;
 
         SwarmlingHomeAreaCenter = SwarmlingTransform.position;
+
+        ThisSwarmlingCharacter.SetHealthMax(Mathf.RoundToInt(ThisSwarmlingCharacter.GetHealthMax() * HealthFactor));
 
         NavPathLightOrb = new NavMeshPath();
     }

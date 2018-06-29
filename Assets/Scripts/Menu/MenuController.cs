@@ -17,6 +17,8 @@ public class MenuController : MonoBehaviour
     public MenuLivePreview MenuPreview;
 
     public InputField MaxNumberSwarmlings;
+    public InputField SwarmlingHealthFactor;
+    public InputField PlayerMaxHealth;
 
     void Start()
     {
@@ -42,6 +44,16 @@ public class MenuController : MonoBehaviour
         if (MaxNumberSwarmlings.text.Length > 0)
         {
             GameController.Instance.SetMaxNumberSwarmlings(int.Parse(MaxNumberSwarmlings.text));
+        }
+
+        if (SwarmlingHealthFactor.text.Length > 0)
+        {
+            GameController.Instance.SetSwarmlingHealthFactor(int.Parse(SwarmlingHealthFactor.text));
+        }
+
+        if (PlayerMaxHealth.text.Length > 0)
+        {
+            GameController.Instance.SetPlayerStartHealth(int.Parse(PlayerMaxHealth.text));
         }
 
         MainMenu.enabled = false;
