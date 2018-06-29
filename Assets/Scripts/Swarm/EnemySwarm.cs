@@ -158,6 +158,13 @@ public class EnemySwarm : MonoBehaviour {
 
     public bool ScaredOfPlayer = false;
 
+
+    [Header("Home Area:")]
+    public Vector3 SwarmlingHomeAreaCenter = Vector3.zero;
+    public float SwarmlingHomeAreaRadius = 40;
+    public float SwarmlingHomeAreaGoToRadius = 10;
+    public bool SwarmlingIsGoingHome = false;
+
     // ================================================================================================================
 
     public void SwarmlingLightOrbAttractionCalculation()
@@ -515,6 +522,30 @@ public class EnemySwarm : MonoBehaviour {
         ConfidenceCurrent = 1 - ConfidenceCurrent / NeighbourColliders.Length;
     }
 
+    public void SwarmlingHomeRuleCalculation()
+    {
+        DistanceVec = SwarmlingHomeAreaCenter - SwarmlingTransform.position;
+        DistanceVecMag = DistanceVec.sqrMagnitude;
+
+        if (DistanceVecMag >= Mathf.Pow(SwarmlingHomeAreaRadius,2))
+        {
+            if (!SwarmlingIsGoingHome && NMAgent.enabled)
+            {
+                SwarmlingIsGoingHome = true;
+                NMAgent.SetDestination(SwarmlingHomeAreaCenter);
+            }
+        }
+        else if (SwarmlingIsGoingHome && DistanceVecMag <= Mathf.Pow(SwarmlingHomeAreaGoToRadius,2))
+        {
+            SwarmlingIsGoingHome = false;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawSphere(SwarmlingHomeAreaCenter, SwarmlingHomeAreaRadius);
+    }
+
     public virtual void SwarmlingSpecialRuleCalculation() { }
 
     public virtual void SwarmlingAttackRuleCalculation() { }
@@ -540,6 +571,8 @@ public class EnemySwarm : MonoBehaviour {
         Players = _Players;
         SwarmlingID = _SwarmlingID;
         NeighbourLayerMask = _NeighbourLayerMask;
+
+        SwarmlingHomeAreaCenter = SwarmlingTransform.position;
 
         NavPathLightOrb = new NavMeshPath();
     }
@@ -583,8 +616,16 @@ public class EnemySwarm : MonoBehaviour {
 
 
         SwarmlingLightOrbAttractionCalculation();
+        
 
         if (LightOrbAttractionMode)
+        {
+            return;
+        }
+
+        SwarmlingHomeRuleCalculation();
+
+        if (SwarmlingIsGoingHome)
         {
             return;
         }
@@ -659,7 +700,6 @@ public class EnemySwarm : MonoBehaviour {
         return VelDesired - Velocity;
     }
 
-   
 
     // ===================================================== RULES =====================================================
 

@@ -533,7 +533,7 @@ MonoBehaviour:
   AttractionDistanceMin: 2
   AttractionDistanceMax: 20
   AttractionDistance: 2
-  AttractionFactor: 4
+  AttractionFactor: 0.7
   AttractionTooCloseDistance: 0
   TempPlayerPosition: {x: 0, y: 0, z: 0}
   Velocity: {x: 0, y: 0, z: 0}
@@ -593,8 +593,8 @@ MonoBehaviour:
   SpawnedBy: {fileID: 0}
   DoNotMove: 0
   ClosestPlayer: {fileID: 0}
-  ClosestPlayerSqrDistance: 9
-  ClosestPlayerSqrDistanceBase: 9
+  ClosestPlayerSqrDistance: 400
+  ClosestPlayerSqrDistanceBase: 400
   IgnoreThisSwarmlingForOthers: 0
   IgnoreThisSwarmlingForOthersWhenInDanger: 0
   MinLightOrbAttractionDistance: 34
@@ -608,6 +608,10 @@ MonoBehaviour:
   SpawnEffectPrefab: {fileID: 1409955995371636, guid: 763e9e532f5ae084aa19baddc6ad5b03,
     type: 2}
   ScaredOfPlayer: 0
+  SwarmlingHomeAreaCenter: {x: 0, y: 0, z: 0}
+  SwarmlingHomeAreaRadius: 25
+  SwarmlingHomeAreaGoToRadius: 2
+  SwarmlingIsGoingHome: 0
   AttackDistance: 2.5
 --- !u!135 &135006269066896464
 SphereCollider:
