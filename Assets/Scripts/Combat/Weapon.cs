@@ -37,12 +37,12 @@ public class Weapon : Item {
 
     public override void UnEquipItem()
     {
+        ElementEffectDestroyOnUnEquip();
         CurrentEquipSlot = -1;
         CurrentOwner = null;
         EquippedSlotID = -1;
         GetComponent<AudioSource>().Stop();
-        DestroyAllHitObjects();
-        ElementEffectDestroyOnUnEquip();
+        DestroyAllHitObjects();        
     }
 
     public bool IsTwoHanded()
@@ -67,10 +67,16 @@ public class Weapon : Item {
         ElementEffectDestroyInstance();
 
         ElementEffectInstance = Instantiate(EquippedElement.GetParticleEffectPrefab(), ElementEffectSpawnPoint.transform);
+
+        if (EquippedElement.GetSpecialSkill())
+        {
+            EquipSpecialSkill(EquippedElement.GetSpecialSkill());
+        }
     }
 
     public void ElementEffectDestroyOnUnEquip()
     {
+        UnEquipSpecialSkill();
         ElementEffectDestroyInstance();
     }
 

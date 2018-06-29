@@ -32,7 +32,7 @@ public class ChestBossTrigger : MonoBehaviour
 
         DropsPrefab = Drops;
 
-        if (ChestAnimator.enabled)
+        if (ChestAnimator && ChestAnimator.enabled)
         {
             ChestAnimator.SetTrigger(Anim_DoesOpen);
         }

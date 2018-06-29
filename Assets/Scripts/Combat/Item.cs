@@ -42,6 +42,8 @@ public class Item : MonoBehaviour {
     public ItemSkill[] ItemSkills = new ItemSkill[1];
     public int[] ItemSkillsComboStart = new int[4];
     private List<ItemSkill> ItemSkillsOnCooldown = new List<ItemSkill>();
+    public int SpecialSkillID = -1;
+    public int SpecialSkillButton = -1;
 
     public virtual void EquipItem(Character CharacterToEquipTo, int SlotID)
     {
@@ -330,4 +332,25 @@ public class Item : MonoBehaviour {
         }
     }
 
+    public void EquipSpecialSkill(SkillType NewSkill)
+    {
+        if (SpecialSkillID < 0)
+        {
+            return;
+        }
+
+        ItemSkills[SpecialSkillID].SetSkillObject(NewSkill);
+        ItemSkillsComboStart[SpecialSkillButton] = SpecialSkillID;
+    }
+
+    public void UnEquipSpecialSkill()
+    {
+        if (SpecialSkillID < 0)
+        {
+            return;
+        }
+
+        //ItemSkills[SpecialSkillID].InterruptSkill(true);
+        ItemSkillsComboStart[SpecialSkillButton] = -1;
+    }
 }

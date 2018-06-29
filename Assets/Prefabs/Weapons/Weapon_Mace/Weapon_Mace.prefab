@@ -391,7 +391,10 @@ MonoBehaviour:
   - {fileID: 114132575342734104}
   - {fileID: 114116254174555878}
   - {fileID: 114860756211749160}
+  - {fileID: 114103260446828130}
   ItemSkillsComboStart: 0000000003000000ffffffff04000000
+  SpecialSkillID: 5
+  SpecialSkillButton: 2
   TwoHanded: 0
   WeaponID: 1
   SpawnElementEffect: 1

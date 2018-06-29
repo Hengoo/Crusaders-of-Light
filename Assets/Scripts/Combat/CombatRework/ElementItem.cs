@@ -23,6 +23,9 @@ public class ElementItem : MonoBehaviour {
     [Header("Weapon Particle Effects:")]
     public GameObject ParticleEffectPrefab;
 
+    [Header("Special Skill:")]
+    public SkillType SpecialSkill;
+
     public ElementBonusEffect GetBonusEffectOfType(EffectType EType)
     {
         return BonusEffects[(int)EType];
@@ -41,5 +44,10 @@ public class ElementItem : MonoBehaviour {
     public int GetElementID()
     {
         return ElementID;
+    }
+
+    public SkillType GetSpecialSkill()
+    {
+        return SpecialSkill;
     }
 }

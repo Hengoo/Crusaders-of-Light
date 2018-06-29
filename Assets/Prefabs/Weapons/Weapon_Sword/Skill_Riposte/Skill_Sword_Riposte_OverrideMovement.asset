@@ -14,7 +14,7 @@ MonoBehaviour:
   OverrideMovement: 1
   OverrideMovementRelative: 1
   OverrideMovementVec: {x: 0, y: 0, z: 1}
-  OverrideMovementRateMod: 1.9
+  OverrideMovementRateMod: 2.2
   OverrideRotation: 1
   OverrideRotationRelative: 1
   OverrideRotationVec: {x: 0, y: 0, z: 1}

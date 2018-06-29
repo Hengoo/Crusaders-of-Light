@@ -4768,6 +4768,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  PlayerStartHealth: 20000
+  SwarmlingHealthFactor: 1
   PlayerDataUnlockedWeapons: 010101
   PlayerDataUnlockedElements: 000000
   MaxNumberOfSwarmlings: 100
@@ -8976,6 +8978,34 @@ Prefab:
     - target: {fileID: 4336599769981882, guid: 9eceb34c04c5f9844bba98f36fbac253, type: 2}
       propertyPath: m_LocalScale.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421940542102780, guid: 9eceb34c04c5f9844bba98f36fbac253, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421940542102780, guid: 9eceb34c04c5f9844bba98f36fbac253, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421940542102780, guid: 9eceb34c04c5f9844bba98f36fbac253, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421940542102780, guid: 9eceb34c04c5f9844bba98f36fbac253, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421940542102780, guid: 9eceb34c04c5f9844bba98f36fbac253, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421940542102780, guid: 9eceb34c04c5f9844bba98f36fbac253, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421940542102780, guid: 9eceb34c04c5f9844bba98f36fbac253, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9eceb34c04c5f9844bba98f36fbac253, type: 2}

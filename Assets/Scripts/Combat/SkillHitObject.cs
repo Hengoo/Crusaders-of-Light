@@ -55,7 +55,7 @@ public class SkillHitObject : MonoBehaviour {
 
     protected AudioSource _audioSource;
 
-    public void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
+    public virtual void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
     {
         // Link Skill User and Skill:
         Owner = _Owner;

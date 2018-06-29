@@ -326,4 +326,11 @@ public class ItemSkill : MonoBehaviour {
     {
         return SkillObject.GetThreat();
     }
+
+    public void SetSkillObject(SkillType NewSkill)
+    {
+        CurrentCooldown = 0;
+        ParentItem.EndSkillCurrentlyUsingItemHitBox();
+        SkillObject = NewSkill;
+    }
 }
