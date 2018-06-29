@@ -11,5 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c0f8c90d7a988e44979878247ead774, type: 3}
   m_Name: Skill_Staff_BasicSpell3_ElementBonus
   m_EditorClassIdentifier: 
-  BonusEffectType: 2
+  BonusEffectType: 4
   OnApply: 0
