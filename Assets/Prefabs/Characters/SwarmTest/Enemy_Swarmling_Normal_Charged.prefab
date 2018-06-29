@@ -618,19 +618,23 @@ MonoBehaviour:
   SeperationDistance: 2
   SeperationFactor: 3
   AlignmentDistance: 8
-  AlignmentFactor: 0.75
+  AlignmentFactor: 1
   CohesionDistance: 10
-  CohesionFactor: 0.6
+  CohesionFactor: 0.7
   DangerDistance: 6
-  DangerFactor: 10
-  AttractionDistance: 20
-  AttractionFactor: 0.4
+  DangerFactor: 6
+  AttractionDistanceMin: 2
+  AttractionDistanceMax: 20
+  AttractionDistance: 2
+  AttractionFactor: 4
+  AttractionTooCloseDistance: 0
+  TempPlayerPosition: {x: 0, y: 0, z: 0}
   Velocity: {x: 0, y: 0, z: 0}
   Acceleration: {x: 0, y: 0, z: 1}
-  Friction: 0.1
+  Friction: 0.2
   GoalFactor: 0
-  DesiredBaseSpeed: 20
-  DesiredRunSpeed: 24
+  DesiredBaseSpeed: 15
+  DesiredRunSpeed: 19
   UpdateTimer: 0.06
   UpdateCounter: 0
   SAttention: {fileID: 0}
@@ -663,15 +667,21 @@ MonoBehaviour:
   AlignmentNumber: 0
   DistanceVec: {x: 0, y: 0, z: 0}
   DistanceVecMag: 0
+  DistanceVec2: {x: 0, y: 0, z: 0}
+  DistanceVecMag2: 0
+  DistanceAngle: 0
   NewNeighbourTimer: 1
   NewNeighbourCounter: 0
   DangerAvoidanceVec: {x: 0, y: 0, z: 0}
   PlayerAttractionVec: {x: 0, y: 0, z: 0}
   AttractionNumber: 0
   DangerNumber: 0
-  PlayerDangerDistance: 4
+  PlayerDangerDistance: 6
   PlayerDangerThreatLevelCheck: 2
-  PlayerDangerAngle: 0.3
+  PlayerDangerAngle: 0.4
+  PlayerDangerVec: {x: 0, y: 0, z: 0}
+  PlayerDangerNumber: 0
+  PlayerDangerFactor: 6
   SwarmlingID: -1
   SpawnedBy: {fileID: 0}
   DoNotMove: 0
@@ -680,14 +690,17 @@ MonoBehaviour:
   ClosestPlayerSqrDistanceBase: 9
   IgnoreThisSwarmlingForOthers: 0
   IgnoreThisSwarmlingForOthersWhenInDanger: 0
-  MinLightOrbAttractionDistance: 30
-  LightOrbAttractionReachDistance: 20
-  LightOrbAttractionSelfDestroyDistance: 25
+  MinLightOrbAttractionDistance: 34
+  LightOrbAttractionReachDistance: 7
+  LightOrbAttractionSelfDestroyDistance: 33
   LightOrbAttractionMode: 0
-  LightOrbAttractionTimer: 8
-  LightOrbAttractionCounter: -1
+  LightOrbAttractionTimer: 5
+  LightOrbAttractionCounter: 5
+  ConfidenceCurrent: 1
+  UseConfidenceForPlayerDanger: 1
   SpawnEffectPrefab: {fileID: 1409955995371636, guid: 763e9e532f5ae084aa19baddc6ad5b03,
     type: 2}
+  ScaredOfPlayer: 0
   AttackDistance: 2.5
 --- !u!135 &135006269066896464
 SphereCollider:
@@ -770,11 +783,11 @@ NavMeshAgent:
   m_GameObject: {fileID: 1381048997237096}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.7
-  m_Speed: 18
-  m_Acceleration: 18
-  avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_Radius: 0.8
+  m_Speed: 24
+  m_Acceleration: 24
+  avoidancePriority: 45
+  m_AngularSpeed: 360
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1

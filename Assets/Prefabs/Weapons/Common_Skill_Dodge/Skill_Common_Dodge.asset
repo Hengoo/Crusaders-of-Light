@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Skill_Common_Dodge
   m_EditorClassIdentifier: 
   Cost: 0
-  ActivationTime: 1
+  ActivationTime: 0.15
   ActivationIntervall: -1
   Cooldown: 5
   ActivationMovementModifier: 0

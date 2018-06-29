@@ -22,7 +22,7 @@ public class ChestBossTrigger : MonoBehaviour
     // This function is called from the Animation: Anim_TryOpen!
     public void SpawnMiniBoss()
     {
-        MiniBossInstance = Instantiate(MiniBoss, this.transform.position, Quaternion.identity);
+        MiniBossInstance = Instantiate(MiniBoss, this.transform.position + Vector3.forward * 2, Quaternion.identity);
         MiniBossInstance.GetComponent<MiniBoss>().InitializeMiniBoss(this);
     }
 
@@ -32,7 +32,11 @@ public class ChestBossTrigger : MonoBehaviour
 
         DropsPrefab = Drops;
 
-        ChestAnimator.SetTrigger(Anim_DoesOpen);                  
+        if (ChestAnimator.enabled)
+        {
+            ChestAnimator.SetTrigger(Anim_DoesOpen);
+        }
+             
     }
 
     // This function is called from the Animation: Anim_DoesOpen!

@@ -90,7 +90,7 @@ public class CharacterPlayer : Character {
 
     private void FixedUpdate()
     {
-        float speedfaktor = 7* GetMovementRateModifier();
+        float speedfaktor = 5* GetMovementRateModifier();
         
         if (!GetOverrideMovement())
         {
@@ -722,4 +722,9 @@ public class CharacterPlayer : Character {
     }
 
     // ======================================== /EVENT =========================================
+
+    public Vector3 GetTargetVelocity()
+    {
+        return targetVel;
+    }
 }
