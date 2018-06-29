@@ -14,11 +14,17 @@ public class ElementItem : MonoBehaviour {
         SPELL_1 = 5
     }
 
+    [Header("Element ID")]
+    public int ElementID = -1;
+
     [Header("Bonus Effects:")]
     public ElementBonusEffect[] BonusEffects = new ElementBonusEffect[6];   // Needs to be exactly as big as there are effectTypes!
 
     [Header("Weapon Particle Effects:")]
     public GameObject ParticleEffectPrefab;
+
+    [Header("Special Skill:")]
+    public SkillType SpecialSkill;
 
     public ElementBonusEffect GetBonusEffectOfType(EffectType EType)
     {
@@ -28,5 +34,20 @@ public class ElementItem : MonoBehaviour {
     public GameObject GetParticleEffectPrefab()
     {
         return ParticleEffectPrefab;
+    }
+
+    public void UnEquipElementItem()
+    {
+        Destroy(this.gameObject);
+    }
+
+    public int GetElementID()
+    {
+        return ElementID;
+    }
+
+    public SkillType GetSpecialSkill()
+    {
+        return SpecialSkill;
     }
 }

@@ -19,6 +19,11 @@ public class PPHelper : Singleton<PPHelper>
 	{
 		base.Awake();
 
+        if (GameController.Instance)
+        {
+            buffersize = GameController.Instance.GetMaxNumberSwarmlings();
+        }
+
 		//DontDestroyOnLoad(this);
 
 		buffer = new ComputeBuffer(buffersize, System.Runtime.InteropServices.Marshal.SizeOf(typeof(Vector4)), ComputeBufferType.Default);

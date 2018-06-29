@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 114116254174555878}
   - component: {fileID: 114267028379617794}
   - component: {fileID: 114103260446828130}
+  - component: {fileID: 114860756211749160}
   m_Layer: 13
   m_Name: Weapon_Mace
   m_TagString: Weapon
@@ -96,7 +97,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 91afd9b96d111284bbcd8d170d961341, type: 2}
+  - {fileID: 2100000, guid: 3196d78b9db4f5b4b89cbe4f5a9b15b7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -389,8 +390,13 @@ MonoBehaviour:
   - {fileID: 114613658672761830}
   - {fileID: 114132575342734104}
   - {fileID: 114116254174555878}
-  ItemSkillsComboStart: 0000000003000000ffffffffffffffff
+  - {fileID: 114860756211749160}
+  - {fileID: 114103260446828130}
+  ItemSkillsComboStart: 0000000003000000ffffffff04000000
+  SpecialSkillID: 5
+  SpecialSkillButton: 2
   TwoHanded: 0
+  WeaponID: 1
   SpawnElementEffect: 1
   ElementEffectSpawnPoint: {fileID: 1231081674174474}
 --- !u!114 &114613658672761830
@@ -410,6 +416,26 @@ MonoBehaviour:
   ItemSkillID: 1
   ComboInput:
   - {fileID: 114132575342734104}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &114860756211749160
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1890396557792036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114329243195837850}
+  SkillObject: {fileID: 11400000, guid: 467c25a5adafb8948b1bf429bec31f48, type: 2}
+  Level: 1
+  ItemSkillID: 4
+  ComboInput:
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

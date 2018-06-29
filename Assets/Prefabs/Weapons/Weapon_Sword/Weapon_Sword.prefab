@@ -47,6 +47,8 @@ GameObject:
   - component: {fileID: 114476233673897656}
   - component: {fileID: 114833477312596484}
   - component: {fileID: 114451112127100244}
+  - component: {fileID: 114461910864815278}
+  - component: {fileID: 114344229529112444}
   m_Layer: 13
   m_Name: Weapon_Sword
   m_TagString: Weapon
@@ -331,10 +333,35 @@ MonoBehaviour:
   - {fileID: 114476233673897656}
   - {fileID: 114833477312596484}
   - {fileID: 114451112127100244}
-  ItemSkillsComboStart: 0000000003000000ffffffffffffffff
+  - {fileID: 114461910864815278}
+  - {fileID: 114344229529112444}
+  ItemSkillsComboStart: 0000000003000000ffffffff06000000
+  SpecialSkillID: 7
+  SpecialSkillButton: 2
   TwoHanded: 0
+  WeaponID: 0
   SpawnElementEffect: 1
   ElementEffectSpawnPoint: {fileID: 1084672870100784}
+--- !u!114 &114344229529112444
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1462748279215140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114066496244682900}
+  SkillObject: {fileID: 11400000, guid: 467c25a5adafb8948b1bf429bec31f48, type: 2}
+  Level: 1
+  ItemSkillID: 6
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114451112127100244
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -355,6 +382,26 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &114461910864815278
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1462748279215140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114066496244682900}
+  SkillObject: {fileID: 11400000, guid: 467c25a5adafb8948b1bf429bec31f48, type: 2}
+  Level: 1
+  ItemSkillID: 6
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114476233673897656
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -367,7 +414,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114066496244682900}
-  SkillObject: {fileID: 11400000, guid: e762c4a79fbfe6f4cae054562bee9626, type: 2}
+  SkillObject: {fileID: 11400000, guid: fca4c5a34ad69ce41b9a222960a0b11f, type: 2}
   Level: 1
   ItemSkillID: 3
   ComboInput:

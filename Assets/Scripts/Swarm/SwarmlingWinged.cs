@@ -183,5 +183,7 @@ public class SwarmlingWinged : EnemySwarm {
         TargetSearchTimeCounter = -1f;
 
         IgnoreThisSwarmlingForOthers = false;
+
+        //AttractionDistance = AttractionDistanceMin;
     }
 }

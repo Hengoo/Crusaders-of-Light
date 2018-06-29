@@ -46,7 +46,7 @@ public class MovPatTowardsPlayer : MovePattern {
 
         if (targetDir.sqrMagnitude > 0)
         {
-            Self.transform.rotation = Quaternion.Slerp(Self.transform.rotation, Quaternion.LookRotation(targetDir), Time.deltaTime * RotationSpeed);
+            Self.transform.rotation = Quaternion.Slerp(Self.transform.rotation, Quaternion.LookRotation(targetDir), Time.deltaTime * RotationSpeed * 0.01f);
         }
 
         Vector3 targetVel = targetDir * MovementSpeedFactor * Self.GetMovementRateModifier();

@@ -42,7 +42,7 @@ public class MovPatLookAtPlayer : MovePattern {
 
         if (targetDir.sqrMagnitude > 0)
         {
-            Self.transform.rotation = Quaternion.Slerp(Self.transform.rotation, Quaternion.LookRotation(targetDir), Time.deltaTime * RotationSpeed);
+            Self.transform.rotation = Quaternion.Slerp(Self.transform.rotation, Quaternion.LookRotation(targetDir), Time.deltaTime * RotationSpeed * 0.01f);
         }
 
         Self.SwitchWalkingAnimation(false);

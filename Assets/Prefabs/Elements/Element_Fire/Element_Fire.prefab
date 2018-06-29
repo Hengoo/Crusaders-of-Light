@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c94e91fde9c7e264eb5ef9b4455e6681, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ElementID: 0
   BonusEffects:
   - {fileID: 11400000, guid: 67e22b26429d6144eaf4f252ca986a36, type: 2}
   - {fileID: 0}
@@ -60,3 +61,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 354734365085fe34cac91f99e7de7037, type: 2}
   ParticleEffectPrefab: {fileID: 1080271553223644, guid: 312b1ed97868f964abf346063c735293,
     type: 2}
+  SpecialSkill: {fileID: 11400000, guid: 828fb04f8f2868c408a83842fcd9e234, type: 2}

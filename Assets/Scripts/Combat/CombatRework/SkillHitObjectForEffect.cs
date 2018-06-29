@@ -81,6 +81,22 @@ public class SkillHitObjectForEffect : SkillHitObject {
         {
             ParticlesInstance = Instantiate(ParticlesPrefab, ParticlesSpawnParent.transform);
         }
+
+        if (UseFixedTerrainHeight)
+        {
+            TerrHeightLayerMask = 1 << TerrHeightLayerMask;
+        }
+    }
+
+    public override void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
+    {
+        base.InitializeHitObject(_Owner, _SourceItemSkill, _SourceSkill, UseLevelAtActivationMoment);
+
+        // Spawn Particle System:
+        if (ParticlesPrefab)
+        {
+            ParticlesInstance = Instantiate(ParticlesPrefab, ParticlesSpawnParent.transform);
+        }
     }
 
     protected override void HitTarget(Character TargetCharacter)

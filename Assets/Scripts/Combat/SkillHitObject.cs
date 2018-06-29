@@ -22,6 +22,10 @@ public class SkillHitObject : MonoBehaviour {
     [Header("Hit Object Movement Attributes:")]
     public bool UseForceImpulse = false;
     public float ForceImpulseMagnitude = 0.0f;
+    public bool UseFixedTerrainHeight = false;
+    public float FixedTerrainHeight = 0.6f;
+    protected RaycastHit TerrHeightHit;
+    protected int TerrHeightLayerMask = 14;
 
     [Header("Hit Object Particle Systems:")]
     public ParticleSystem[] ParticleSystems = new ParticleSystem[0];
@@ -51,7 +55,7 @@ public class SkillHitObject : MonoBehaviour {
 
     protected AudioSource _audioSource;
 
-    public void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
+    public virtual void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
     {
         // Link Skill User and Skill:
         Owner = _Owner;
@@ -114,6 +118,11 @@ public class SkillHitObject : MonoBehaviour {
         {
             ApplyForceImpulse();
         }
+
+        if (UseFixedTerrainHeight)
+        {
+            TerrHeightLayerMask = 1 << TerrHeightLayerMask;
+        }
     }   
 
     public void Update()
@@ -141,6 +150,14 @@ public class SkillHitObject : MonoBehaviour {
             for (int i = 0; i < ParticleSystems.Length; i++)
             {
                 ParticleSystems[i].transform.localScale = Size;
+            }
+        }
+
+        if (UseFixedTerrainHeight)
+        { 
+            if (Physics.Raycast(transform.position, Vector3.down, out TerrHeightHit, 4, TerrHeightLayerMask))
+            {
+                transform.position = new Vector3(transform.position.x, TerrHeightHit.point.y + FixedTerrainHeight, transform.position.z);
             }
         }
 

@@ -256,6 +256,8 @@ MonoBehaviour:
   AlwaysHitOwner: 0
   UseForceImpulse: 0
   ForceImpulseMagnitude: 0
+  UseFixedTerrainHeight: 0
+  FixedTerrainHeight: 0.6
   ParticleSystems: []
   UseSizeOverTime: 0
   SizeOverTimeStart: 1

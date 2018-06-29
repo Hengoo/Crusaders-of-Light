@@ -26,6 +26,7 @@ GameObject:
   - component: {fileID: 82403599678240846}
   - component: {fileID: 195104833046936440}
   - component: {fileID: 114227709721500930}
+  - component: {fileID: 114860849098410586}
   m_Layer: 8
   m_Name: Enemy_Skull_MiniBoss
   m_TagString: Character
@@ -494,6 +495,7 @@ MonoBehaviour:
   Anim_StartWalking: StartWalking
   Anim_EndWalking: EndWalking
   Anim_BreakAnim: Trigger_BreakAnim
+  Anim_Interupt: InterruptAnim
   CharAttention: {fileID: 114627530419157108}
   Alignment: 2
   IdleSkillScore: 0.2
@@ -511,6 +513,20 @@ MonoBehaviour:
   SpawnedBy: {fileID: 0}
   NavAgent: {fileID: 195104833046936440}
   SpawnStartingWeaponsOnStart: 1
+--- !u!114 &114860849098410586
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1269708281449342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e42b397c0feb65f409f88f79bbd9b7a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GuardedChest: {fileID: 0}
+  GuardedChestDrop: {fileID: 114560823138688254, guid: 1d8eff4accf965446a89a99603b0f715,
+    type: 2}
 --- !u!135 &135558670336146390
 SphereCollider:
   m_ObjectHideFlags: 1

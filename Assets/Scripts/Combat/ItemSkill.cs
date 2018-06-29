@@ -149,6 +149,7 @@ public class ItemSkill : MonoBehaviour {
         }
 
         ParentItem.EndSkillCurrentlyUsingItemHitBox();
+        SkillObject.RemoveActivationMovementRateModifier(this, GetCurrentOwner());
     }
 
     public List<Character> GetAllCurrentlyCollidingCharacters()
@@ -324,5 +325,12 @@ public class ItemSkill : MonoBehaviour {
     public float[] AIGetThreat()
     {
         return SkillObject.GetThreat();
+    }
+
+    public void SetSkillObject(SkillType NewSkill)
+    {
+        CurrentCooldown = 0;
+        ParentItem.EndSkillCurrentlyUsingItemHitBox();
+        SkillObject = NewSkill;
     }
 }

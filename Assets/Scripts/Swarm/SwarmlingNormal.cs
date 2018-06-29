@@ -9,7 +9,7 @@ public class SwarmlingNormal : EnemySwarm {
 
     public override void SwarmlingAttackRuleCalculation()
     {
-        if (!DoNotMove && ClosestPlayer && ClosestPlayerSqrDistance < Mathf.Pow(AttackDistance,2))
+        if (!DoNotMove && !ScaredOfPlayer && ClosestPlayer && ClosestPlayerSqrDistance < Mathf.Pow(AttackDistance,2))
         {
             DoNotMove = true;
 
@@ -22,6 +22,9 @@ public class SwarmlingNormal : EnemySwarm {
     public override void SwarmlingFinishedAttack()
     {
         DoNotMove = false;
+
+      //  AttractionDistance = AttractionDistanceMax / 2;
+      //  AttractionDistanceMax = AttractionDistance;
     }
 
 }

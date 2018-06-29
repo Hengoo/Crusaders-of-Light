@@ -58,6 +58,10 @@ public class CharacterPlayer : Character {
         NavAgent.updateRotation = false;
         SpawnAndEquipStartingWeapons();
         
+        if (GameController.Instance)
+        {
+            SetHealthMax(GameController.Instance.GetPlayerStartHealth());
+        }
     }
 
     protected override void SpawnAndEquipStartingElement()
@@ -90,7 +94,7 @@ public class CharacterPlayer : Character {
 
     private void FixedUpdate()
     {
-        float speedfaktor = 7* GetMovementRateModifier();
+        float speedfaktor = 5* GetMovementRateModifier();
         
         if (!GetOverrideMovement())
         {
@@ -366,7 +370,66 @@ public class CharacterPlayer : Character {
 
     // =================================== ITEM PICKUP ====================================
 
-    private bool PickUpClosestItem()
+   
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Weapon"
+            && other.gameObject.GetComponent<Item>().GetOwner() == null)
+        {
+            ItemsInRange.Add(other.gameObject.GetComponent<Item>());
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Weapon"
+            && other.gameObject.GetComponent<Item>().GetOwner() == null)
+        {
+            ItemsInRange.Remove(other.gameObject.GetComponent<Item>());
+        }
+    }
+
+    public void PlayerPickUpWeapon()
+    {
+        SpawnAndEquipStartingWeapons();
+    }
+
+    public void PlayerPickUpElement()
+    {
+        SpawnAndEquipStartingElement();
+    }
+
+    public void InteractionButtonPressed()
+    {
+        if (InteractWithEquipPoint())
+        {
+            return;
+        }
+
+        if (InteractWithChest())
+        {
+            return;
+        }
+    }
+
+    private bool InteractWithChest()
+    {
+        Collider[] Chests = Physics.OverlapSphere(transform.position, 3);
+
+        for (int i = 0; i < Chests.Length; i++)
+        {
+            if (Chests[i] && Chests[i].tag == "Chest")
+            { 
+                Chests[i].GetComponent<ChestBossTrigger>().OnInteractionWithChest();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool InteractWithEquipPoint()
     {
         Collider[] EquipPoints = Physics.OverlapSphere(transform.position, 3);
 
@@ -374,7 +437,9 @@ public class CharacterPlayer : Character {
         {
             if (EquipPoints[i] && EquipPoints[i].tag == "EquipPoint")
             {
-                EquipPoints[i].GetComponent<EquipPoint>().TriggerEquip(PlayerID);
+                //EquipPoints[i].GetComponent<EquipPoint>().TriggerEquip(PlayerID);
+                EquipPoints[i].GetComponent<EquipPoint>().TriggerEquipToPlayer(this);
+                return true;
             }
         }
 
@@ -448,24 +513,6 @@ public class CharacterPlayer : Character {
         return true;*/
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Weapon"
-            && other.gameObject.GetComponent<Item>().GetOwner() == null)
-        {
-            ItemsInRange.Add(other.gameObject.GetComponent<Item>());
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.tag == "Weapon"
-            && other.gameObject.GetComponent<Item>().GetOwner() == null)
-        {
-            ItemsInRange.Remove(other.gameObject.GetComponent<Item>());
-        }
-    }
-
     // =================================== /ITEM PICKUP ====================================
 
     // ========================================= INPUT =========================================
@@ -517,12 +564,9 @@ public class CharacterPlayer : Character {
 
 
         // Weapon PickUp:
-        if (Input.GetButton("IPickUp_" + PlayerID))
+        if (Input.GetButtonDown("IPickUp_" + PlayerID))
         {
-            if (PickUpClosestItem())
-            {
-                return;
-            }
+            InteractionButtonPressed();
         }
 
         // Light Orb Interaction:
@@ -535,8 +579,8 @@ public class CharacterPlayer : Character {
     private void UpdatePlayerOrbInput()
     {
         // Light Orb Interaction:
-        if (Input.GetButton("RevivePlayer_" + PlayerID))
-        {
+        if (Input.GetButton("RevivePlayer_" + PlayerID) && LightOrbEffects)
+        {         
             // Fresh button press (Timer not running):
             if (OrbInputTimer <= 0)
             {
@@ -682,4 +726,9 @@ public class CharacterPlayer : Character {
     }
 
     // ======================================== /EVENT =========================================
+
+    public Vector3 GetTargetVelocity()
+    {
+        return targetVel;
+    }
 }

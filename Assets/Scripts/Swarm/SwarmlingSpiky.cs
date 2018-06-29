@@ -15,23 +15,43 @@ public class SwarmlingSpiky : EnemySwarm {
     public Vector3 BorderVec = Vector3.zero;
     public int BorderNumber = 0;
 
+    public float AttackDelayTimeMax = 3;
+    public float AttackDelayCounter = 3;
+
+    public float AttackAngle = 0.3f;
     public float DesiredGoToBorderSpeed = 16;
 
     public override void SwarmlingAttackRuleCalculation()
     {
-        if (!DoNotMove && ClosestPlayer && ClosestPlayerSqrDistance < Mathf.Pow(AttackDistance, 2))
+        if (DoNotMove) { return; }
+
+        if (ClosestPlayer && ClosestPlayerSqrDistance < Mathf.Pow(AttackDistance, 2))
         {
-            DoNotMove = true;
+            if (AttackDelayCounter <= 0 
+                && (ClosestPlayerSqrDistance < ((ClosestPlayer.transform.position - SwarmlingTransform.position).sqrMagnitude))) //ClosestPlayerSqrDistance < ((ClosestPlayer.transform.position + ClosestPlayer.GetTargetVelocity()) - SwarmlingTransform.position).sqrMagnitude)     //&& (Vector3.Dot(ClosestPlayer.GetTargetVelocity(), (ClosestPlayer.transform.position - transform.position).normalized) < AttackAngle))
+            {
+                DoNotMove = true;
 
-            ThisSwarmlingCharacter.SwarmlingStartSkillActivation();
+                ThisSwarmlingCharacter.SwarmlingStartSkillActivation();
 
-            SwarmlingTransform.rotation = Quaternion.LookRotation(ClosestPlayer.transform.position - SwarmlingTransform.position);
+                SwarmlingTransform.rotation = Quaternion.LookRotation(ClosestPlayer.transform.position - SwarmlingTransform.position);
+            }
+            else
+            {
+                AttackDelayCounter -= UpdateTimer;
+            }
+        }
+        else
+        {
+            AttackDelayCounter = Mathf.Min(AttackDelayCounter + UpdateTimer, AttackDelayTimeMax);
         }
     }
 
     public override void SwarmlingFinishedAttack()
     {
         DoNotMove = false;
+
+        //AttractionDistance = AttractionDistanceMin;
     }
 
     public override void SwarmlingSpecialRuleCalculation()

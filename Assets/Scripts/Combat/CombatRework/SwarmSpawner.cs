@@ -41,6 +41,8 @@ public class SwarmSpawner : MonoBehaviour {
     private float EnemyWeightCounter = 0;
     private int CurrentEnemyPrefabID = 0;
 
+    private float SwarmlingHealthFactor = 1;
+
     [Header("Spawned Enemies:")]
     public int SpawnedEnemiesMaxNumber = 300;
     private EnemySwarm[] SpawnedEnemies;
@@ -49,7 +51,7 @@ public class SwarmSpawner : MonoBehaviour {
     public int LayerMask = 0;
 
     [Header("Player Characters:")]
-    public Character[] Players = new Character[0];
+    public CharacterPlayer[] Players = new CharacterPlayer[0];
 
     private Terrain terrain;
     private Vector3 spawnAreaMarker = Vector3.zero;
@@ -64,10 +66,24 @@ public class SwarmSpawner : MonoBehaviour {
 
     private NavMeshPath NavPath;
 
+    [Header("Spawn Direction:")]
+    public LightWispMovement WispMovement;
 
 
     private void Start()
     {
+        if (GameController.Instance)
+        {
+            SpawnedEnemiesMaxNumber = GameController.Instance.GetMaxNumberSwarmlings();
+            SwarmlingHealthFactor = GameController.Instance.GetSwarmlingHealthFactor();
+        }
+
+
+        if (!WispMovement)
+        {
+            WispMovement = gameObject.GetComponent<LightWispMovement>();
+        }
+
         CalculateTotalWeight();
 
         SpawnedEnemies = new EnemySwarm[SpawnedEnemiesMaxNumber];
@@ -81,6 +97,7 @@ public class SwarmSpawner : MonoBehaviour {
             UpdateSpawningCooldown();
             SpawnEnemy();
         }
+
         UpdateAllSwarmlings();
     }
 
@@ -89,9 +106,9 @@ public class SwarmSpawner : MonoBehaviour {
         PPHelper.Instance.UpdateBuffer(SpawnedEnemies);
     }
 
-    public void InitializeSwarmSpawner(Character[] PlayerCharacters, int NumberActivePlayers)
+    public void InitializeSwarmSpawner(CharacterPlayer[] PlayerCharacters, int NumberActivePlayers)
     {
-        Players = new Character[NumberActivePlayers];
+        Players = new CharacterPlayer[NumberActivePlayers];
 
         for (int i = 0; i < Players.Length; i++)
         {
@@ -137,7 +154,7 @@ public class SwarmSpawner : MonoBehaviour {
         }
 
         SpawnedEnemies[SpawnedEnemiesIDCounter] = Instantiate(EnemyPrefabs[CurrentEnemyPrefabID], spawnPos, EnemyPrefabs[CurrentEnemyPrefabID].transform.rotation);
-        SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask);
+        SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask, SwarmlingHealthFactor);
 
         // At this point an enemy was succesfully spawned:
         SpawnedEnemiesCounter++;
@@ -166,7 +183,7 @@ public class SwarmSpawner : MonoBehaviour {
             }
 
             SpawnedEnemies[SpawnedEnemiesIDCounter] = Instantiate(EnemyPrefab, spawnPos, EnemyPrefab.transform.rotation);
-            SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask);
+            SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask, SwarmlingHealthFactor);
 
             // At this point an enemy was succesfully spawned:
             SpawnedEnemiesCounter++;
@@ -301,8 +318,11 @@ public class SwarmSpawner : MonoBehaviour {
         }
         spawnAreaMarkerTryCounter++;
 
-        spawnAreaMarker = Vector3.forward * Random.Range(SpawnRadiusMin, SpawnRadiusMax);
-        spawnAreaMarker = Quaternion.Euler(0, Random.Range(0, 360), 0) * spawnAreaMarker;
+        //spawnAreaMarker = Vector3.forward * Random.Range(SpawnRadiusMin, SpawnRadiusMax);
+        //spawnAreaMarker = Quaternion.Euler(0, Random.Range(0, 360), 0) * spawnAreaMarker;
+
+        spawnAreaMarker = WispMovement.GetPlayerHeading() * Random.Range(SpawnRadiusMin, SpawnRadiusMax);
+
         spawnAreaMarker += gameObject.transform.position;
 
         spawnAreaMarker.y = terrain.SampleHeight(spawnAreaMarker);
@@ -390,5 +410,10 @@ public class SwarmSpawner : MonoBehaviour {
     public void SetTerrain(Terrain NewTerrain)
     {
         terrain = NewTerrain;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawSphere(spawnAreaMarker, SpawnAreaRadius);
     }
 }

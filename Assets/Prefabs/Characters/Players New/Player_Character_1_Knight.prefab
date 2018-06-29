@@ -1520,11 +1520,12 @@ MonoBehaviour:
   StartingWeapons:
   - {fileID: 114126834154076376, guid: 9a934794bf3332e45ad65ede58c215da, type: 2}
   - {fileID: 0}
-  SkillsPerWeapon: 8
+  SkillsPerWeapon: 9
   WeaponSlots:
   - {fileID: 0}
   - {fileID: 0}
   ItemSkillSlots:
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -1550,12 +1551,13 @@ MonoBehaviour:
   Anim_StartWalking: StartWalking
   Anim_EndWalking: EndWalking
   Anim_BreakAnim: Trigger_BreakAnim
+  Anim_Interupt: InterruptAnim
   CharAttention: {fileID: 114933550133527214}
   SkillActivationButtonsPressed: 00000000
   Alignment: 1
   ItemsInRange: []
   PlayerID: 1
-  HoldDownButtonID: 1
+  HoldDownButtonID: 2
   DeathTimer: {fileID: 114173608877734114}
   RespawnMinRange: 2
   RespawnMaxRange: 5
@@ -1840,7 +1842,10 @@ MonoBehaviour:
   - {fileID: 114143931473162076}
   - {fileID: 114246534440484862}
   ItemSkillsComboStart: 0000000003000000ffffffffffffffff
+  SpecialSkillID: -1
+  SpecialSkillButton: -1
   TwoHanded: 0
+  WeaponID: -1
   SpawnElementEffect: 0
   ElementEffectSpawnPoint: {fileID: 0}
 --- !u!114 &114383146348646624
@@ -1921,7 +1926,10 @@ MonoBehaviour:
   - {fileID: 114605366354503346}
   - {fileID: 114359540148042358}
   ItemSkillsComboStart: 0000000003000000ffffffffffffffff
+  SpecialSkillID: -1
+  SpecialSkillButton: -1
   TwoHanded: 0
+  WeaponID: -1
   SpawnElementEffect: 0
   ElementEffectSpawnPoint: {fileID: 0}
 --- !u!114 &114627359242093070
@@ -2083,7 +2091,10 @@ MonoBehaviour:
   - {fileID: 114728193340025544}
   - {fileID: 114672599229500928}
   ItemSkillsComboStart: 0000000003000000ffffffffffffffff
+  SpecialSkillID: -1
+  SpecialSkillButton: -1
   TwoHanded: 0
+  WeaponID: -1
   SpawnElementEffect: 0
   ElementEffectSpawnPoint: {fileID: 0}
 --- !u!114 &114933550133527214

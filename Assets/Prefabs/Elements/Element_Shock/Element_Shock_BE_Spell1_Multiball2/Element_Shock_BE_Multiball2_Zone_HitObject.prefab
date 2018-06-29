@@ -251,11 +251,13 @@ MonoBehaviour:
   CurrentTickTime: 0
   TickTimeReached: 0
   CanHitSameTargetMultipleTime: 0
-  MaxNumberOfTargets: 17
+  MaxNumberOfTargets: 34
   HitObjectIsChildOfOwner: 0
   AlwaysHitOwner: 0
   UseForceImpulse: 0
   ForceImpulseMagnitude: 0
+  UseFixedTerrainHeight: 0
+  FixedTerrainHeight: 0.6
   ParticleSystems: []
   UseSizeOverTime: 0
   SizeOverTimeStart: 1
