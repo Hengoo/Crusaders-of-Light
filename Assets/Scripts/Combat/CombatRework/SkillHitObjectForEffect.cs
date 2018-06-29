@@ -81,6 +81,11 @@ public class SkillHitObjectForEffect : SkillHitObject {
         {
             ParticlesInstance = Instantiate(ParticlesPrefab, ParticlesSpawnParent.transform);
         }
+
+        if (UseFixedTerrainHeight)
+        {
+            TerrHeightLayerMask = 1 << TerrHeightLayerMask;
+        }
     }
 
     protected override void HitTarget(Character TargetCharacter)
