@@ -167,6 +167,7 @@ GameObject:
   - component: {fileID: 82189079080684866}
   - component: {fileID: 195814445702279934}
   - component: {fileID: 114387817092767634}
+  - component: {fileID: 114231655929137896}
   m_Layer: 8
   m_Name: Enemy_Golem_Boss
   m_TagString: Character
@@ -555,6 +556,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114231655929137896
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1781491319435724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7214392475b2d7e40a79b7f80cbdabf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  element: {fileID: 114295211227383602, guid: daa1297875100c846acddd4190289d70, type: 2}
 --- !u!114 &114387817092767634
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -671,6 +684,7 @@ MonoBehaviour:
   Anim_StartWalking: StartWalking
   Anim_EndWalking: EndWalking
   Anim_BreakAnim: Trigger_BreakAnim
+  Anim_Interupt: InterruptAnim
   CharAttention: {fileID: 114501016479707406}
   Alignment: 2
   IdleSkillScore: 0.2

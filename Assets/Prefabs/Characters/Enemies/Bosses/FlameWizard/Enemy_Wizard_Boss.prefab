@@ -153,6 +153,7 @@ GameObject:
   - component: {fileID: 82114094614720082}
   - component: {fileID: 195833056456418158}
   - component: {fileID: 114264705599847472}
+  - component: {fileID: 114216771192241842}
   m_Layer: 8
   m_Name: Enemy_Wizard_Boss
   m_TagString: Character
@@ -637,6 +638,7 @@ MonoBehaviour:
   Anim_StartWalking: StartWalking
   Anim_EndWalking: EndWalking
   Anim_BreakAnim: Trigger_BreakAnim
+  Anim_Interupt: InterruptAnim
   CharAttention: {fileID: 114985463748620512}
   Alignment: 2
   IdleSkillScore: 0.2
@@ -654,6 +656,18 @@ MonoBehaviour:
   SpawnedBy: {fileID: 0}
   NavAgent: {fileID: 195833056456418158}
   SpawnStartingWeaponsOnStart: 1
+--- !u!114 &114216771192241842
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1574788587254294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7214392475b2d7e40a79b7f80cbdabf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  element: {fileID: 114295211227383602, guid: 4da6cc8484d688b44a3112583cb12f8d, type: 2}
 --- !u!114 &114264705599847472
 MonoBehaviour:
   m_ObjectHideFlags: 1
