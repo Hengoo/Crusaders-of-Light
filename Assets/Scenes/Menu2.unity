@@ -2616,13 +2616,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 409619691}
   m_TextComponent: {fileID: 404441061}
   m_Placeholder: {fileID: 251429677}
-  m_ContentType: 2
+  m_ContentType: 3
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 4
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 1
+  m_CharacterValidation: 2
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
