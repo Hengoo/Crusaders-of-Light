@@ -38,6 +38,7 @@ public class CharacterSwarm : Character {
     {
         // If enemies are spawned by a spawner class, update that spawner class here!
 
+        Swarmling.HealPlayersOnDeath();
         base.CharacterDied();
     }
 

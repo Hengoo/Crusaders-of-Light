@@ -165,6 +165,10 @@ public class EnemySwarm : MonoBehaviour {
     public float SwarmlingHomeAreaGoToRadius = 10;
     public bool SwarmlingIsGoingHome = false;
 
+
+    [Header("Heal Players On Death:")]
+    public float HealPlayersOnDeathPerc = 0.01f;
+
     // ================================================================================================================
 
     public void SwarmlingLightOrbAttractionCalculation()
@@ -1068,6 +1072,16 @@ public class EnemySwarm : MonoBehaviour {
     // =================================================/ NEARBY LISTS /=================================================
 
 
+    // ============================================= HEAL PLAYERS ON DEATH ==============================================
+
+    public void HealPlayersOnDeath()
+    {
+        SpawnedBy.EffectHealOnEnemyDeath(HealPlayersOnDeathPerc);
+    }
+
+    // ============================================/ HEAL PLAYERS ON DEATH /=============================================
+
+
     // ================================================ GETTERS/SETTERS =================================================
 
     public float GetDesiredSpeed()
@@ -1098,6 +1112,7 @@ public class EnemySwarm : MonoBehaviour {
 
     public void SwarmlingSuicide()
     {
+        HealPlayersOnDeathPerc = 0;
         ThisSwarmlingCharacter.ChangeHealthCurrent(-13370); // This ensures that the Swarmling is properly removed, as it forces the system to go through all the steps of defeating and removing a character.
     }
 
