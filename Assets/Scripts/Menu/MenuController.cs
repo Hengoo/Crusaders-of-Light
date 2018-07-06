@@ -48,7 +48,7 @@ public class MenuController : MonoBehaviour
 
         if (SwarmlingHealthFactor.text.Length > 0)
         {
-            GameController.Instance.SetSwarmlingHealthFactor(int.Parse(SwarmlingHealthFactor.text));
+            GameController.Instance.SetSwarmlingHealthFactor(float.Parse(SwarmlingHealthFactor.text));
         }
 
         if (PlayerMaxHealth.text.Length > 0)
