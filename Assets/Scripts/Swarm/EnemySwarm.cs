@@ -294,7 +294,7 @@ public class EnemySwarm : MonoBehaviour {
                 PlayerAttractionVec += DistanceVec;
                 //PlayerAttractionVec +=  * 100;
                 AttractionNumber++;
-/*
+
                 // If in Player Attraction Range, check if in Player Danger Range:
                 if (DistanceVecMag <= Mathf.Pow(PlayerDangerDistance, 2)
                 && ClosestPlayer.GetCurrentThreatLevel(true, false) >= PlayerDangerThreatLevelCheck
@@ -312,7 +312,7 @@ public class EnemySwarm : MonoBehaviour {
                        {
                            DangerAvoidanceVec += Quaternion.AngleAxis(90 - TempAngle, TempAxis) * (DistanceVec / DistanceVecMag);
                        }
-                       DangerNumber++;*//*
+                       DangerNumber++;*/
                     if (!ScaredOfPlayer) { ScaredOfPlayer = true; }
 
                     /* if (DistanceVecMag <= Mathf.Pow(PlayerDangerDistance-1, 2))
@@ -331,17 +331,17 @@ public class EnemySwarm : MonoBehaviour {
                              DangerAvoidanceVec += -1 * DistanceVec / DistanceVecMag;
                              DangerNumber++;
                          }
-                     }*//*
+                     }*/
                     DangerAvoidanceVec += -1 * DistanceVec / DistanceVecMag;
                     DangerNumber++;
                     if (IgnoreThisSwarmlingForOthersWhenInDanger && !IgnoreThisSwarmlingForOthers)
                     {
                         IgnoreThisSwarmlingForOthers = true;
                     }
-                }*/
+                }
             }
         }
-/*
+
         // Go through all Danger Objects:
         for (int i = 0; i < DangerInRange.Count; i++)
         {
@@ -372,13 +372,13 @@ public class EnemySwarm : MonoBehaviour {
                 }
                 DangerNumber++;
                 // }
-                *//*
+                */
 
 
                 DangerAvoidanceVec += DistanceVec / DistanceVecMag;
                 DangerNumber++;
             }
-        }*/
+        }
 
         // Player Attraction:
         if (AttractionNumber > 0)
@@ -393,7 +393,7 @@ public class EnemySwarm : MonoBehaviour {
         {
             AttractionDistance = Mathf.Min(AttractionDistance + UpdateTimer * 8, AttractionDistanceMax);
         }
-        /*
+
         // Total Danger:
         if (DangerNumber > 0)
         {
@@ -404,7 +404,7 @@ public class EnemySwarm : MonoBehaviour {
             GoalFactor += DangerFactor * ConfidenceCurrent;
         }
 
-           */
+           
        
     }
 
