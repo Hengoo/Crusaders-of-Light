@@ -1552,6 +1552,11 @@ MonoBehaviour:
   Anim_EndWalking: EndWalking
   Anim_BreakAnim: Trigger_BreakAnim
   Anim_Interupt: InterruptAnim
+  DamageTakenMarkerTime: 0.07
+  CharacterMaterialBase: {fileID: 0}
+  CharacterMaterialFlash: {fileID: 0}
+  CharacterRenderers:
+  - {fileID: 137234967421446546}
   CharAttention: {fileID: 114933550133527214}
   SkillActivationButtonsPressed: 00000000
   Alignment: 1
