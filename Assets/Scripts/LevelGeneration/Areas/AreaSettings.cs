@@ -64,6 +64,7 @@ public abstract class AreaSettings
                 if (center.IsInsidePolygon(clearPolygon))
                 {
                     result.Add(new []{ p0, p1});
+                    break;
                 }
             }
         }

@@ -55,6 +55,12 @@ public class AreaArenaTrigger : MonoBehaviour
     {
         _walls = walls;
         _insidePolygon = polygon;
+
+        foreach (var wall in _walls)
+        {
+            wall.GetComponent<NavMeshObstacle>().enabled = false;
+            wall.GetComponent<ParticleSystem>().Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
     }
 
     public void OpenArena()
