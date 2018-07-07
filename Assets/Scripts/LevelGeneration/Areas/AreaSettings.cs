@@ -7,10 +7,10 @@ using UnityEngine.AI;
 public abstract class AreaSettings
 {
     public string Name = "Area";
-    public List<PoissonDiskFillData> PoissonDataList = new List<PoissonDiskFillData>();
+    public readonly List<PoissonDiskFillData> PoissonDataList = new List<PoissonDiskFillData>();
 
-    public GameObject arenaTrigger;
-    public GameObject fogGate;
+    public GameObject ArenaTriggerPrefab;
+    public GameObject FogGatePrefab;
     public Graph<AreaData> AreaDataGraph { get; protected set; }
     public List<Vector2[]> ClearPolygons { get; protected set; }
     public List<Vector2> BorderPolygon { get; protected set; }
@@ -22,7 +22,7 @@ public abstract class AreaSettings
         var center = new Vector3(data.Center.x, 0, data.Center.y);
         center += new Vector3(0, terrain.SampleHeight(center), 0);
 
-        var arena = Object.Instantiate(arenaTrigger, center, Quaternion.identity);
+        var arena = Object.Instantiate(ArenaTriggerPrefab, center, Quaternion.identity);
 
         foreach (var gateLine in data.GateLines)
         {
@@ -30,7 +30,7 @@ public abstract class AreaSettings
             var line = gateLine[0] - gateLine[1];
             var gatePosition2D = (gateLine[0] + gateLine[1]) / 2;
             var gatePosition = new Vector3(gatePosition2D.x, 0, gatePosition2D.y);
-            var gate = Object.Instantiate(fogGate);
+            var gate = Object.Instantiate(FogGatePrefab);
             var shape = gate.GetComponent<ParticleSystem>().shape;
             shape.scale += new Vector3(0, 0, line.magnitude - 1);
             gate.GetComponent<BoxCollider>().size += new Vector3(0, 0, line.magnitude - 1);

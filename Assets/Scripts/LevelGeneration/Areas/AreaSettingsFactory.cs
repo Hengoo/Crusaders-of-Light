@@ -10,6 +10,9 @@ using UnityEngine;
 
 public abstract class AreaSettingsFactory : ScriptableObject, IComparable
 {
+    public GameObject ArenaTriggerPrefab;
+    public GameObject FogGatePrefab;
+
     public abstract Graph<AreaSegment> GetPatternGraph();
 
     public abstract AreaSettings[] ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon);
