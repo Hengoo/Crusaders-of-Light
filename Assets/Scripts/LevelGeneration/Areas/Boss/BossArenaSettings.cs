@@ -68,20 +68,9 @@ public class BossArenaSettings : AreaSettings
         var line = _gateLine[0] - _gateLine[1];
         var gatePosition2D = (_gateLine[0] + _gateLine[1]) / 2;
         var gatePosition = new Vector3(gatePosition2D.x, 0, gatePosition2D.y);
-        var gate = Object.Instantiate(_gatePrefab);
-        var shape = gate.GetComponent<ParticleSystem>().shape;
-        shape.scale += new Vector3(0, 0, line.magnitude - 1);
-        gate.GetComponent<BoxCollider>().size += new Vector3(0, 0, line.magnitude - 1);
-        gate.GetComponent<NavMeshObstacle>().size += new Vector3(0, 0, line.magnitude - 1);
-        gate.transform.position = new Vector3(gatePosition.x, terrain.SampleHeight(gatePosition), gatePosition.z);
-        gate.transform.rotation = Quaternion.LookRotation(new Vector3(line.x, 0, line.y), Vector3.up);
-        gate.transform.parent = arena.transform;
 
         // Set arena center on gate script
-        var arenaCenter2D = BorderPolygon.GetPolygonCenter();
-        var arenaGateTrigger = gate.GetComponent<ArenaGateTrigger>();
-        arenaGateTrigger.ArenaCenter = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y);
-        arenaGateTrigger.ArenaCenter += new Vector3(0, terrain.SampleHeight(gate.GetComponent<ArenaGateTrigger>().ArenaCenter), 0) + (gatePosition - arenaGateTrigger.ArenaCenter).normalized * 5;
+        var arenaCenter2D = center;
 
         // Place portal
         var portalPosition = new Vector3(arenaCenter2D.x, 0, arenaCenter2D.y);
@@ -97,7 +86,7 @@ public class BossArenaSettings : AreaSettings
 
         // Generate last tower next to the gate
         var gateTower = Object.Instantiate(_towerPrefab);
-        gateTower.transform.position = gatePosition + gate.transform.rotation * new Vector3(0, 0, gate.GetComponent<NavMeshObstacle>().size.z / 2);
+        gateTower.transform.position = gatePosition + Quaternion.LookRotation(new Vector3(line.x, 0, line.y), Vector3.up) * new Vector3(0, 0, line.magnitude / 2);
         gateTower.transform.position += new Vector3(0, terrain.SampleHeight(gateTower.transform.position), 0);
         gateTower.transform.rotation = terrain.GetNormalRotation(gateTower.transform.position);
         gateTower.CorrectAngleTolerance(_wallAngleLimit);
@@ -107,7 +96,7 @@ public class BossArenaSettings : AreaSettings
         navMeshModifier.area = NavMesh.GetAreaFromName("Not Walkable");
 
         // Spawn boss at the arena center
-        var bossPosition = new Vector3(arenaGateTrigger.ArenaCenter.x, 0, arenaGateTrigger.ArenaCenter.z);
+        var bossPosition = new Vector3(portalPosition.x, 0, portalPosition.z) + 5 * new Vector3(gatePosition.x - portalPosition.x, 0 , gatePosition.z - portalPosition.z).normalized;
         bossPosition += new Vector3(0, terrain.SampleHeight(bossPosition), 0);
         var boss = Object.Instantiate(_bossPrefab, bossPosition, Quaternion.identity);
         boss.transform.parent = arena.transform;

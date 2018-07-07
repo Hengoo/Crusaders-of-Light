@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BiomeArenaTrigger : MonoBehaviour
+public class AreaArenaTrigger : MonoBehaviour
 {
     private List<GameObject> _walls;
     private NavMeshAgent _wispAgent;

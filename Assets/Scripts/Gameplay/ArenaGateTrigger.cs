@@ -44,7 +44,7 @@ public class ArenaGateTrigger : MonoBehaviour
         yield return new WaitForSeconds(3);
         yield return new WaitUntil(DestinationReached);
         _particles.Play(true);
-        _obstacle.enabled = true;
+        //_obstacle.enabled = true;
     }
 
     private bool DestinationReached()
