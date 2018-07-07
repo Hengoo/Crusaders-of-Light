@@ -22,10 +22,26 @@ public class ForestSettings : AreaSettings
 
     public override GameObject GenerateAreaScenery(Terrain terrain)
     {
-        PoissonDiskFillData poissonData = new PoissonDiskFillData(Trees, BorderPolygon.ToArray(), TreeDistance, AngleTolerance, true);
-        poissonData.AddClearPolygons(ClearPolygons);
-        PoissonDataList.Add(poissonData);
+        var result = new GameObject(Name);
 
-        return new GameObject(Name);
+        // Generate trees taking buildings into consideration
+        foreach (var areaData in AreaDataGraph.GetAllNodeData())
+        {
+            // Poisson filling
+            PoissonDiskFillData poissonData =
+                new PoissonDiskFillData(Trees, areaData.Polygon, TreeDistance, AngleTolerance, true);
+            poissonData.AddClearPolygons(ClearPolygons);
+            PoissonDataList.Add(poissonData);
+
+            // Place arenas - skip start position
+            if(areaData.Segment.Type == AreaSegment.EAreaSegmentType.Start)
+                continue;
+            
+            var arena = PlaceArena(areaData, terrain);
+            arena.transform.parent = result.transform;
+        }
+
+
+        return result;
     }
 }

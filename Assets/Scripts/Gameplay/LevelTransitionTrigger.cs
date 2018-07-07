@@ -9,24 +9,21 @@ public class LevelTransitionTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.layer == LayerMask.NameToLayer("Character"))
-        {
-            var player = col.GetComponent<CharacterPlayer>();
-            if (!player)
-                return;
+        // Not player
+        if (col.gameObject.layer != LayerMask.NameToLayer("Character"))
+            return;
 
-            _players.Add(col.GetComponent<CharacterPlayer>().PlayerID);
-            if (_players.Count >= GameController.Instance.ActivePlayers)
-            {
-                if (GameController.Instance.GameState == GameStateEnum.Transition)
-                {
-                    StartCoroutine(LevelAsync());
-                }
-                else
-                {
-                    StartCoroutine(TransitionAsync());
-                }
-            }
+        // No script
+        var player = col.GetComponent<CharacterPlayer>();
+        if (!player)
+            return;
+
+        _players.Add(player.PlayerID);
+        if (_players.Count >= GameController.Instance.ActivePlayers)
+        {
+            StartCoroutine(GameController.Instance.GameState == GameStateEnum.Transition
+                ? LevelAsync()
+                : TransitionAsync());
         }
     }
 

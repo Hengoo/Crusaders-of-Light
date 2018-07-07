@@ -69,13 +69,13 @@ public class LevelController : Singleton<LevelController>
         GameController.Instance.FinalizeGameSession();
     }
 
-    public bool CheckIfAllDead()
+    public void CheckIfAllDead()
     {
         for (var i = 0; i < GameController.Instance.ActivePlayers; i++)
             if (!PlayerCharacters[i].GetCharacterIsDead())
-                return false;
+                return;
 
-        return true;
+        GameController.Instance.LoadTransitionArea();
     }
 
     public void StartLevel()
