@@ -79,6 +79,6 @@ public class MenuController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(additionalTime);
-        GameController.Instance.InitializeGameSession();
+        GameController.Instance.LoadTransitionArea();
     }
 }

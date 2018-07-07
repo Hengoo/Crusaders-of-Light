@@ -54,7 +54,7 @@ public class GameController : Singleton<GameController>
         ActivePlayers = Mathf.Clamp(value, 1, 4);
     }
 
-    public void InitializeGameSession()
+    public void LoadTransitionArea()
     {
         GameState = GameStateEnum.Transition;
         SceneManager.LoadScene("TransitionArea");
@@ -65,7 +65,6 @@ public class GameController : Singleton<GameController>
         GameState = GameStateEnum.Menu;
         SceneManager.LoadScene("Menu");
     }
-
 
     // =======================================  Player Data  =======================================
 

@@ -1,10 +1,5 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Experimental.UIElements;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using Image = UnityEngine.UI.Image;
 
 public class LevelController : Singleton<LevelController>
 {
@@ -21,6 +16,7 @@ public class LevelController : Singleton<LevelController>
     public bool SkipIntro = true;
 
     private float _quitTimer = 0;
+    private float _transTimer = 0;
     private bool _loadingLevel = false;
 
     void Start()
@@ -40,11 +36,24 @@ public class LevelController : Singleton<LevelController>
 
         //Quit button
         if (Input.GetKey(KeyCode.Q))
+        {
             _quitTimer += Time.deltaTime;
-        if (Input.GetKeyUp(KeyCode.Q))
+            if (_quitTimer > 2 && !_loadingLevel)
+                FinalizeLevel();
+        }
+        else if (Input.GetKeyUp(KeyCode.Q))
             _quitTimer = 0;
-        if (_quitTimer > 2 && !_loadingLevel)
-            FinalizeLevel();
+
+        //Quit button
+        if (Input.GetKey(KeyCode.E))
+        {
+            _transTimer += Time.deltaTime;
+            if (_transTimer > 2 && !_loadingLevel)
+                GameController.Instance.LoadTransitionArea();
+        }
+        else if (Input.GetKeyUp(KeyCode.E))
+            _transTimer = 0;
+
     }
 
     public void InitializeLevel()
@@ -65,7 +74,7 @@ public class LevelController : Singleton<LevelController>
         for (var i = 0; i < GameController.Instance.ActivePlayers; i++)
             if (!PlayerCharacters[i].GetCharacterIsDead())
                 return false;
-        
+
         return true;
     }
 
