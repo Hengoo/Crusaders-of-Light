@@ -59,6 +59,13 @@ public class VillageSettingsFactory : AreaSettingsFactory
 
     public override AreaSettings[] ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
-        return new AreaSettings[] { new VillageSettings(areaDataGraph, clearPolygons, borderPolygon, GenericBuildings, UniqueBuildings, UniqueBuildingChance, BuildingAngleTolerance, PathOffset, Trees, TreeAngleTolerance, TreeDistance, StreetLamp, LampAngleTolerance, LampPathOffset) };
+        return new AreaSettings[]
+        {
+            new VillageSettings(areaDataGraph, clearPolygons, borderPolygon, GenericBuildings, UniqueBuildings, UniqueBuildingChance, BuildingAngleTolerance, PathOffset, Trees, TreeAngleTolerance, TreeDistance, StreetLamp, LampAngleTolerance, LampPathOffset)
+            {
+                ArenaTriggerPrefab = this.ArenaTriggerPrefab,
+                FogGatePrefab = this.FogGatePrefab
+            }
+        };
     }
 }

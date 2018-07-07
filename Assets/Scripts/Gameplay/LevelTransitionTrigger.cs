@@ -5,29 +5,25 @@ using UnityEngine.SceneManagement;
 
 public class LevelTransitionTrigger : MonoBehaviour
 {
-    private readonly HashSet<CharacterPlayer> _players = new HashSet<CharacterPlayer>();
-    private int _count = 0;
+    private readonly HashSet<int> _players = new HashSet<int>();
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.layer == LayerMask.NameToLayer("Character"))
+        // Not player
+        if (col.gameObject.layer != LayerMask.NameToLayer("Character"))
+            return;
+
+        // No script
+        var player = col.GetComponent<CharacterPlayer>();
+        if (!player)
+            return;
+
+        _players.Add(player.PlayerID);
+        if (_players.Count >= GameController.Instance.ActivePlayers)
         {
-            _players.Add(col.GetComponent<CharacterPlayer>());
-            _count = _players.Count;
-            if (_players.Count >= GameController.Instance.ActivePlayers)
-            {
-                if(GameController.Instance.GameState == GameStateEnum.Transition)
-                {
-                    GameController.Instance.GameState = GameStateEnum.Level;
-                    SceneManager.LoadScene("TerrainGeneration");
-                }
-                else
-                {
-                    GameController.Instance.GameState = GameStateEnum.Transition;
-                    GameController.Instance.SetSeed(Random.Range(int.MinValue, int.MaxValue));
-                    SceneManager.LoadScene("TransitionArea");
-                }
-            }
+            StartCoroutine(GameController.Instance.GameState == GameStateEnum.Transition
+                ? LevelAsync()
+                : TransitionAsync());
         }
     }
 
@@ -35,8 +31,29 @@ public class LevelTransitionTrigger : MonoBehaviour
     {
         if (col.gameObject.layer == LayerMask.NameToLayer("Character"))
         {
-            _count = _players.Count;
-            _players.Remove(col.GetComponent<CharacterPlayer>());
+            _players.Remove(col.GetComponent<CharacterPlayer>().PlayerID);
+        }
+    }
+
+    IEnumerator LevelAsync()
+    {
+        GameController.Instance.GameState = GameStateEnum.Level;
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("TerrainGeneration");
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+    }
+
+    IEnumerator TransitionAsync()
+    {
+        GameController.Instance.GameState = GameStateEnum.Transition;
+        GameController.Instance.SetSeed(Random.Range(int.MinValue, int.MaxValue));
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("TransitionArea");
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
         }
     }
 }

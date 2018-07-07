@@ -78,6 +78,9 @@ public class ChurchSettings : AreaSettings
         poissonData.AddClearPolygons(ClearPolygons);
         PoissonDataList.Add(poissonData);
 
+        // Place arena
+        PlaceArena(data, terrain).transform.parent = result.transform;
+
         return result;
     }
 

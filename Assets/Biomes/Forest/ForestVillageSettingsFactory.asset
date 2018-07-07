@@ -11,6 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1d7b5e72fbb594a8a0fd087183815c, type: 3}
   m_Name: ForestVillageSettingsFactory
   m_EditorClassIdentifier: 
+  ArenaTriggerPrefab: {fileID: 1977331088922286, guid: 11dc71309d99f8545a8d61b9cd52dd75,
+    type: 2}
+  FogGatePrefab: {fileID: 1129564519391044, guid: 90b619f3de93d1e4c9b77df8dcbb9aea,
+    type: 2}
   PathLength: 4
   PathType: 1
   GenericBuildings:

@@ -11,6 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14426816bca77140a243d3e4ee9d82f, type: 3}
   m_Name: ForestChurchSettingsFactory
   m_EditorClassIdentifier: 
+  ArenaTriggerPrefab: {fileID: 1977331088922286, guid: 11dc71309d99f8545a8d61b9cd52dd75,
+    type: 2}
+  FogGatePrefab: {fileID: 1129564519391044, guid: 90b619f3de93d1e4c9b77df8dcbb9aea,
+    type: 2}
   ChestPrefab: {fileID: 1659824245891988, guid: e612d936e55be174ebe55fbe2e05712a,
     type: 2}
   MiniBosses:

@@ -56,11 +56,15 @@ public class VillageSettings : AreaSettings
         // Generate trees taking buildings into consideration
         foreach (var areaData in AreaDataGraph.GetAllNodeData())
         {
+            // Poisson filling
             PoissonDiskFillData poissonData = new PoissonDiskFillData(Trees, areaData.Polygon, TreeDistance, TreeAngleTolerance, true);
             poissonData.AddClearPolygons(ClearPolygons);
             PoissonDataList.Add(poissonData);
-        }
 
+            // Place arenas
+            var arena = PlaceArena(areaData, terrain);
+            arena.transform.parent = result.transform;
+        }
 
         return result;
     }

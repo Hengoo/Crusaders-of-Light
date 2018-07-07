@@ -33,6 +33,10 @@ public class ChurchSettingsFactory : AreaSettingsFactory
         {
             new ChurchSettings(areaDataGraph, clearPolygons, borderPolygon, ChurchPrefab, AngleTolerance, PathOffset, GravePrefabs,
                 GraveAngleTolerance, GraveDistance, RotationNoise, PositionNoise, Trees, TreeDistance, TreeAngleTolerance, MiniBosses, ChestPrefab, "Church")
+            {
+                ArenaTriggerPrefab = this.ArenaTriggerPrefab,
+                FogGatePrefab = this.FogGatePrefab
+            }
         };
     }
 }

@@ -58,6 +58,7 @@ GameObject:
   - component: {fileID: 114605295700996342}
   - component: {fileID: 114364487591049380}
   - component: {fileID: 114831757606476430}
+  - component: {fileID: 54202922290718920}
   m_Layer: 21
   m_Name: LightWisp
   m_TagString: Untagged
@@ -106,6 +107,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &54202922290718920
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1719093381775514}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!108 &108914542512707850
 Light:
   m_ObjectHideFlags: 1
@@ -197,16 +213,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac34ca6344beb3741b3ab5b060daff0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GroupingMin: 20
-  GroupingMax: 40
-  FrequencyTimerMin: 0.04
-  FrequencyTimerMax: 0.1
+  GroupingMin: 5
+  GroupingMax: 10
+  FrequencyTimerMin: 0.01
+  FrequencyTimerMax: 0.04
   SpawningRunning: 1
-  SpawningCooldownMin: 0.3
-  SpawningCooldownMax: 5
-  SpawnRadiusMin: 25
+  SpawningCooldownMin: 0.1
+  SpawningCooldownMax: 1.3
+  SpawnRadiusMin: 22
   SpawnRadiusMax: 26
-  SpawnAreaRadius: 15
+  SpawnAreaRadius: 14
   EnemyPrefabs:
   - {fileID: 114819738713999842, guid: 6495eb180172e9740bb229bd66faabc7, type: 2}
   - {fileID: 114583063258284340, guid: 8846148987a6b8b4fb71961c6b6a373e, type: 2}
@@ -215,9 +231,10 @@ MonoBehaviour:
   - 3
   - 2
   - 1
-  SpawnedEnemiesMaxNumber: 200
+  SpawnedEnemiesMaxNumber: 50
   LayerMask: 17
   Players: []
+  WispMovement: {fileID: 0}
 --- !u!135 &135122749292927254
 SphereCollider:
   m_ObjectHideFlags: 1

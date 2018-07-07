@@ -11,6 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4e819ae4bc60ed4ca7534a7a76af0f8, type: 3}
   m_Name: SnowForestBossArenaFactory
   m_EditorClassIdentifier: 
+  ArenaTriggerPrefab: {fileID: 1977331088922286, guid: 11dc71309d99f8545a8d61b9cd52dd75,
+    type: 2}
+  FogGatePrefab: {fileID: 1129564519391044, guid: 90b619f3de93d1e4c9b77df8dcbb9aea,
+    type: 2}
   WallPrefab: {fileID: 1142906075304964, guid: 62b017fc7799e6d40aeaf532b62d3abd, type: 2}
   WallLenght: 17
   WallAngleLimit: 10

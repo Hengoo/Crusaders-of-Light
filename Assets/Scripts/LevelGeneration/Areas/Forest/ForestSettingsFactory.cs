@@ -22,7 +22,11 @@ public class ForestSettingsFactory : AreaSettingsFactory
     public override AreaSettings[] ProduceAreaSettings(Graph<AreaData> areaDataGraph, IEnumerable<Vector2[]> clearPolygons, Vector2[] borderPolygon)
     {
         AreaSettings forest = new ForestSettings(areaDataGraph, clearPolygons, borderPolygon,
-            Trees, TreeDistance, AngleTolerance, SegmentType.ToString());
+            Trees, TreeDistance, AngleTolerance, SegmentType.ToString())
+        {
+            ArenaTriggerPrefab = this.ArenaTriggerPrefab,
+            FogGatePrefab = this.FogGatePrefab
+        };
         return new[] {forest};
     }
 }

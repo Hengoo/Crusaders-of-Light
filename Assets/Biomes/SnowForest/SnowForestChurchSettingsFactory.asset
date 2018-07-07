@@ -11,6 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14426816bca77140a243d3e4ee9d82f, type: 3}
   m_Name: SnowForestChurchSettingsFactory
   m_EditorClassIdentifier: 
+  ArenaTriggerPrefab: {fileID: 1977331088922286, guid: 11dc71309d99f8545a8d61b9cd52dd75,
+    type: 2}
+  FogGatePrefab: {fileID: 1129564519391044, guid: 90b619f3de93d1e4c9b77df8dcbb9aea,
+    type: 2}
   ChestPrefab: {fileID: 1659824245891988, guid: e612d936e55be174ebe55fbe2e05712a,
     type: 2}
   MiniBosses:
@@ -29,6 +33,8 @@ MonoBehaviour:
   - {fileID: 1582288112837444, guid: 0ca9049fb819b3d49b8c030b7d95228f, type: 2}
   GraveAngleTolerance: 5
   GraveDistance: {x: 6, y: 8}
+  RotationNoise: {x: 0, y: 0, z: 0}
+  PositionNoise: {x: 0, y: 0, z: 0}
   PathOffset: 8
   Trees:
   - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
