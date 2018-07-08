@@ -739,7 +739,7 @@ public class Character : MonoBehaviour
     }
 
     // Note: DamageAmount is assumed to be positive!
-    public int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount, int DefenseIgnore, int ResistanceIgnore)
+    public virtual int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount, int DefenseIgnore, int ResistanceIgnore)
     {
         int FinalAmount = DamageCalculationDefense(DefenseType, Amount, DefenseIgnore);
 
@@ -756,7 +756,7 @@ public class Character : MonoBehaviour
         return FinalAmount; // Note: Currently returns the amount of Damage that would theoretically be inflicted, not the actual amount of health lost.
     }
 
-    private int DamageCalculationResistance(Resistance DamageType, int Amount, int ResistanceIgnore)
+    protected int DamageCalculationResistance(Resistance DamageType, int Amount, int ResistanceIgnore)
     {
         int DamageTypeID = (int)(DamageType);
 
@@ -771,7 +771,7 @@ public class Character : MonoBehaviour
         return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Mathf.Max(0, Resistances[DamageTypeID] - ResistanceIgnore)) / 10.0f)));
     }
 
-    private int DamageCalculationDefense(Defense DefenseType, int Amount, int DefenseIgnore)
+    protected int DamageCalculationDefense(Defense DefenseType, int Amount, int DefenseIgnore)
     {
         int DamageTypeID = (int)(DefenseType);
 

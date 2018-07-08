@@ -47,6 +47,9 @@ public class CharacterPlayer : Character {
     public float OrbInputHealMaxTime = 0.3f;
     private bool OrbInputButtonPressed = false;
 
+    [Header("Difficulty Scaling:")]
+    public float DifficultyDamageTakenScaling = 1;
+
 
  //   public float DyingPhysicsDuration = 0.8f;
  //   public bool DyingPhysicsTimerRunning = false;
@@ -730,5 +733,25 @@ public class CharacterPlayer : Character {
     public Vector3 GetTargetVelocity()
     {
         return targetVel;
+    }
+
+    // Note: DamageAmount is assumed to be positive!
+    public override int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount, int DefenseIgnore, int ResistanceIgnore)
+    {
+        int FinalAmount = DamageCalculationDefense(DefenseType, Amount, DefenseIgnore);
+
+        FinalAmount = DamageCalculationResistance(DamageType, FinalAmount, ResistanceIgnore);
+
+        FinalAmount = FinalAmount * Mathf.FloorToInt(((GameController.Instance.GetCurrentDifficultyFactor() - 1) * DifficultyDamageTakenScaling) + 1);
+
+        if (CharacterRenderers.Length > 0)
+        {
+            StopCoroutine("PlayDamageTakenMarker");
+            StartCoroutine("PlayDamageTakenMarker");
+        }
+
+        ChangeHealthCurrent(-1 * FinalAmount);
+
+        return FinalAmount; // Note: Currently returns the amount of Damage that would theoretically be inflicted, not the actual amount of health lost.
     }
 }
