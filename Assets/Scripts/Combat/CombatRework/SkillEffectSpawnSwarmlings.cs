@@ -8,8 +8,11 @@ public class SkillEffectSpawnSwarmlings : SkillEffect {
     public int NumberToSpawn = 0;
     public float SpawnRadius = 10;
 
+    public float GlobalHealMod = 1;
+
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
         LevelController.Instance.GetSwarmSpawner().SpawnEnemyBatch(NumberToSpawn, SwarmlingPrefab, SourceItemSkill.transform.position, SpawnRadius);
+        LevelController.Instance.GetSwarmSpawner().SetGlobalHealFactor(GlobalHealMod);
     }
 }

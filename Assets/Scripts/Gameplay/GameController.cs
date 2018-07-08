@@ -58,18 +58,41 @@ public class GameController : Singleton<GameController>
     public void SetActivePlayers(int value)
     {
         ActivePlayers = Mathf.Clamp(value, 1, 4);
+
+        // Update Difficulty for Playernumber:
+        DifficultyCalculateStartDiffForPlayerNumber(ActivePlayers);
     }
 
     public void LoadTransitionArea()
     {
+        // Reset Values:
+        // Technically this is also called when going from the menu to the transitionArea. 
+        // This should not be a problem, as the function should only be used to reset values.
+        ReturenedToTransitionByReset(); 
+
+        // Change Scene:
         GameState = GameStateEnum.Transition;
         SceneManager.LoadScene("TransitionArea");
     }
 
     public void FinalizeGameSession()
     {
+        // Reset Values:
+        DifficultyRestartedGame();
+
+        // Change Scene:
         GameState = GameStateEnum.Menu;
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("Menu2");
+    }
+
+    public void ReturnedToTransitionByPortal()
+    {
+        DifficultyFinishedLevel();
+    }
+
+    public void ReturenedToTransitionByReset()
+    {
+        DifficultyRestartedLevel();
     }
 
     // =======================================  Player Data  =======================================
@@ -97,6 +120,11 @@ public class GameController : Singleton<GameController>
 
     public void UnlockWeapon(Weapon weaponToUnlock)
     {
+        if (GameState != GameStateEnum.Level)
+        {
+            return;
+        }
+
         int tempID = weaponToUnlock.GetWeaponID();
         if (tempID >= 0 && tempID < PlayerDataUnlockedWeapons.Length)
         {
@@ -106,6 +134,11 @@ public class GameController : Singleton<GameController>
 
     public void UnlockElement(ElementItem elementToUnlock)
     {
+        if (GameState != GameStateEnum.Level)
+        {
+            return;
+        }
+
         int tempID = elementToUnlock.GetElementID();
         if (tempID >= 0 && tempID < PlayerDataUnlockedElements.Length)
         {
@@ -186,6 +219,12 @@ public class GameController : Singleton<GameController>
 
     // ========================================  Difficulty  ========================================
 
+    public void DifficultyCalculateStartDiffForPlayerNumber(int PlayerNumber)
+    {
+        DifficultyFactor = 1 + PlayerNumber * 0.3f;
+        DifficultyFactorCurrentLevel = DifficultyFactor;
+    }
+
     public float GetCurrentDifficultyFactor()
     {
         return DifficultyFactorCurrentLevel;
@@ -214,4 +253,6 @@ public class GameController : Singleton<GameController>
     }
 
     // =======================================/  Difficulty  /=======================================
+
+
 }

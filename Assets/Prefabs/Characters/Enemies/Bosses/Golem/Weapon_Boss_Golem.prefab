@@ -31,6 +31,7 @@ GameObject:
   - component: {fileID: 114959568132888672}
   - component: {fileID: 114910618824722246}
   - component: {fileID: 114277067249926446}
+  - component: {fileID: 114232692392627652}
   m_Layer: 13
   m_Name: Weapon_Boss_Golem
   m_TagString: Weapon
@@ -281,10 +282,34 @@ MonoBehaviour:
   - {fileID: 114959568132888672}
   - {fileID: 114910618824722246}
   - {fileID: 114277067249926446}
+  - {fileID: 114232692392627652}
   ItemSkillsComboStart: 00000000000000000000000000000000
+  SpecialSkillID: -1
+  SpecialSkillButton: -1
   TwoHanded: 0
+  WeaponID: -1
   SpawnElementEffect: 0
   ElementEffectSpawnPoint: {fileID: 1275348383016498}
+--- !u!114 &114232692392627652
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1275348383016498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114144670631923840}
+  SkillObject: {fileID: 11400000, guid: 3d88e0d6dc6951d438acf170d2c55f18, type: 2}
+  Level: 1
+  ItemSkillID: -1
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114277067249926446
 MonoBehaviour:
   m_ObjectHideFlags: 1

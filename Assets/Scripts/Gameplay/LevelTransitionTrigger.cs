@@ -49,6 +49,7 @@ public class LevelTransitionTrigger : MonoBehaviour
     {
         GameController.Instance.GameState = GameStateEnum.Transition;
         GameController.Instance.SetSeed(Random.Range(int.MinValue, int.MaxValue));
+        GameController.Instance.ReturnedToTransitionByPortal();
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("TransitionArea");
 
         while (!asyncLoad.isDone)

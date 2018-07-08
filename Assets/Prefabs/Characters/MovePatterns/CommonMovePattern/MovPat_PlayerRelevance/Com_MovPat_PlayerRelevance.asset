@@ -14,3 +14,4 @@ MonoBehaviour:
   AIDecisionMaker: {fileID: 11400000, guid: 66c43ff7d65a2b94594e4002348e6a29, type: 2}
   ViewDirection: 1
   MovementSpeedFactor: 7
+  RotationSpeed: 100

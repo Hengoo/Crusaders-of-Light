@@ -7636,9 +7636,13 @@ MonoBehaviour:
   - {fileID: 0}
   PlayerStartHealth: 20000
   SwarmlingHealthFactor: 1
-  PlayerDataUnlockedWeapons: 000001
-  PlayerDataUnlockedElements: 010000
+  PlayerDataUnlockedWeapons: 010100
+  PlayerDataUnlockedElements: 010001
   MaxNumberOfSwarmlings: 100
+  DifficultyFactor: 1
+  DifficultyFactorCurrentLevel: 1
+  DifficultyFactorModPerArena: 0.1
+  DifficultyFactorModPerLevel: 0.2
   LastPlayedBiome: 
 --- !u!1 &1537221495
 GameObject:

@@ -46,6 +46,9 @@ public class CharacterEnemy : Character {
     [Header("Enemy Testing:")]
     public bool SpawnStartingWeaponsOnStart = false;
 
+    [Header("Difficulty Scaling:")]
+    public float DifficultyScaleHealthFactor = 0.5f;
+
     protected override void Start()
     {
         PhysCont = new PhysicsController(gameObject);
@@ -56,6 +59,8 @@ public class CharacterEnemy : Character {
         }
 
         BaseMovePattern = ActiveMovePattern;
+
+        SetHealthMax(HealthMax * Mathf.FloorToInt(((GameController.Instance.GetCurrentDifficultyFactor() - 1) * DifficultyScaleHealthFactor) + 1));
     }
 
     protected override void Update()

@@ -30,6 +30,7 @@ GameObject:
   - component: {fileID: 82965436351725322}
   - component: {fileID: 114503251415346812}
   - component: {fileID: 114409341786529680}
+  - component: {fileID: 114785499380053010}
   m_Layer: 13
   m_Name: Weapon_Boss_FlameWizard
   m_TagString: Weapon
@@ -280,8 +281,14 @@ MonoBehaviour:
   - {fileID: 114363835929144508}
   - {fileID: 114503251415346812}
   - {fileID: 114409341786529680}
+  - {fileID: 114785499380053010}
   ItemSkillsComboStart: 00000000000000000000000000000000
+  SpecialSkillID: -1
+  SpecialSkillButton: -1
   TwoHanded: 0
+  WeaponID: -1
+  SpawnElementEffect: 0
+  ElementEffectSpawnPoint: {fileID: 0}
 --- !u!114 &114363835929144508
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -355,6 +362,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParentItem: {fileID: 114144670631923840}
   SkillObject: {fileID: 11400000, guid: 1d481ce9a61cd3a4980395c08456e0f8, type: 2}
+  Level: 1
+  ItemSkillID: -1
+  ComboInput:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &114785499380053010
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1275348383016498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b888ae3ba1d164493aeb0695f25f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentItem: {fileID: 114144670631923840}
+  SkillObject: {fileID: 11400000, guid: 3d88e0d6dc6951d438acf170d2c55f18, type: 2}
   Level: 1
   ItemSkillID: -1
   ComboInput:

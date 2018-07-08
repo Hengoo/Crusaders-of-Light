@@ -627,9 +627,9 @@ MonoBehaviour:
   CohesionDistance: 10
   CohesionFactor: 0.7
   DangerDistance: 6
-  DangerFactor: 6
+  DangerFactor: 4
   AttractionDistanceMin: 2
-  AttractionDistanceMax: 20
+  AttractionDistanceMax: 40
   AttractionDistance: 2
   AttractionFactor: 0.7
   AttractionTooCloseDistance: 0
@@ -691,13 +691,13 @@ MonoBehaviour:
   SpawnedBy: {fileID: 0}
   DoNotMove: 0
   ClosestPlayer: {fileID: 0}
-  ClosestPlayerSqrDistance: 400
-  ClosestPlayerSqrDistanceBase: 400
+  ClosestPlayerSqrDistance: 1600
+  ClosestPlayerSqrDistanceBase: 1600
   IgnoreThisSwarmlingForOthers: 0
   IgnoreThisSwarmlingForOthersWhenInDanger: 0
-  MinLightOrbAttractionDistance: 34
-  LightOrbAttractionReachDistance: 7
-  LightOrbAttractionSelfDestroyDistance: 33
+  MinLightOrbAttractionDistance: 40
+  LightOrbAttractionReachDistance: 30
+  LightOrbAttractionSelfDestroyDistance: 60
   LightOrbAttractionMode: 0
   LightOrbAttractionTimer: 5
   LightOrbAttractionCounter: 5

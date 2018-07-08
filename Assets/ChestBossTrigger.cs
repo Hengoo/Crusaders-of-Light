@@ -14,6 +14,8 @@ public class ChestBossTrigger : MonoBehaviour
     public string Anim_TryOpen = "Trigger_TryOpen";
     public string Anim_DoesOpen = "Trigger_DoesOpen";
 
+    private bool UpdateAreaTrigger = false;
+
     public void OnInteractionWithChest()
     {
         ChestAnimator.SetTrigger(Anim_TryOpen);
@@ -55,6 +57,15 @@ public class ChestBossTrigger : MonoBehaviour
             {
                 GameController.Instance.UnlockElement(DropsInstance.GetDroppedElement());
             }
+        }
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        if (!UpdateAreaTrigger && col.gameObject.tag == "AreaArenaTrigger")
+        {
+            UpdateAreaTrigger = true;
+            col.GetComponent<AreaArenaTrigger>().SetMiniBossChest(this);
         }
     }
 }

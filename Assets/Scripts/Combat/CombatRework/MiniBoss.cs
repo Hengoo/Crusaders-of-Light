@@ -17,10 +17,20 @@ public class MiniBoss : MonoBehaviour {
 
        // NavMesh.SamplePosition(transform.position, out hit, 3, NavMesh.AllAreas);
        // transform.position = hit.position;
+
+        if (LevelController.Instance)
+        {
+            LevelController.Instance.GetSwarmSpawner().ArenaInBossAreaStart(false);
+        }
     }
 
     private void OnDestroy()
     {
+        if (LevelController.Instance)
+        {
+            LevelController.Instance.GetSwarmSpawner().ArenaFinishedBossFight();
+        }
+
         GuardedChest.OnMiniBossGuardDeath(GuardedChestDrop);
     }
 

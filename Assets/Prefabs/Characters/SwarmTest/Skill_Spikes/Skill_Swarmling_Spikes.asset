@@ -20,6 +20,7 @@ MonoBehaviour:
   AllowTargetEnemy: 1
   Effects:
   - {fileID: 11400000, guid: 7e4a0a1e183ca0d41bba4023ea96e2b1, type: 2}
+  - {fileID: 11400000, guid: dfab0173845df584e9c9cf438be6e679, type: 2}
   HindranceLevel: 0
   AnimationName: Spikes_Attack
   OverwriteAnimationSpeedScaling: -1
@@ -32,3 +33,8 @@ MonoBehaviour:
   HitTimeStart: 0
   HitTimeStop: 1
   HitEachCharacterOnlyOnce: 0
+  MaxHittableCharacters: -1
+  CheckForAnimationTrigger: 0
+  AnimationTrigger: no_animation_trigger
+  EffectsOnSelfOnAnimationTrigger: []
+  EffectsOnSelfOnAnimationTrigger2: []

@@ -85,11 +85,16 @@ public class SwarmSpawner : MonoBehaviour {
     [Header("Arena Rules:")]
     public float ArenaKillPercentageToWin = 0.9f;
     private int ArenaWinThreshold = 0;
+    private bool ArenaBossArea = false;
 
     public int SpawnNumberMaxTotalBase = 50;                    // Base value of how many should spawn in an arena.
     public int SpawnNumberMaxTotalRemaining = 0;               // Counter for how many still need to spawn in current arena.
 
     private AreaArenaTrigger CurrentArenaTrigger;
+
+    [Header("Boss Beetles:")]
+    public float BossBeetlesHealOnDeathFactor = 3;
+    public float BossBeetlesHealthFactor = 3;
 
     private void Start()
     {
@@ -141,7 +146,7 @@ public class SwarmSpawner : MonoBehaviour {
         NavPath = new NavMeshPath();
     }
 
-    public void ArenaStartSpawning(AreaArenaTrigger NewArenaTrigger, Vector2[] AreaPolygon)
+    public void ArenaStartSpawning(AreaArenaTrigger NewArenaTrigger, Vector2[] AreaPolygon, bool IsBossArena)
     {
         CurrentArenaTrigger = NewArenaTrigger;
 
@@ -149,6 +154,30 @@ public class SwarmSpawner : MonoBehaviour {
         CalculateTotalHealthFactor();
         SpawnAreaPolygon = AreaPolygon;
 
+        SpawningCooldownCounter = 3;
+        
+        if (!IsBossArena)
+        {
+            SpawningRunning = true;
+        }
+        else
+        {
+            ArenaBossArea = true;
+        }
+    }
+
+    public void ArenaSetInBossArea(bool state)
+    {
+        ArenaBossArea = state;
+    }
+
+    public void ArenaFinishedBossFight()
+    {
+        ArenaBossArea = false;
+    }
+
+    public void ArenaInBossAreaStart(bool SpecialBeetles)
+    {
         SpawningRunning = true;
     }
 
@@ -158,6 +187,11 @@ public class SwarmSpawner : MonoBehaviour {
         {
             SpawningRunning = false; // Should not be needed, but just to make sure!
             DestroyAllSwarmlings();
+
+            SpawnAreaPolygon = new Vector2[0];
+
+            GameController.Instance.DifficultyFinishedArena();
+
             CurrentArenaTrigger.OpenArena();
             CurrentArenaTrigger = null;
         }
@@ -353,7 +387,7 @@ public class SwarmSpawner : MonoBehaviour {
 
         // If not in Spawn Polygon, try again:
         spawnPos2D = new Vector2(spawnPos.x, spawnPos.z);
-        if (!spawnPos2D.IsInsidePolygon(SpawnAreaPolygon))
+        if (SpawnAreaPolygon.Length > 0 && !spawnPos2D.IsInsidePolygon(SpawnAreaPolygon))
         {
             return GenerateSpawnPosition(AreaCenter, AreaRadius);
         }
@@ -436,9 +470,9 @@ public class SwarmSpawner : MonoBehaviour {
         SpawnedEnemiesCounter--;
 
         if (SpawnNumberMaxTotalRemaining <= 0
-            && SpawnedEnemiesCounter <= ArenaWinThreshold)
+            && SpawnedEnemiesCounter <= ArenaWinThreshold
+            && !ArenaBossArea)
         {
-            // TODO: Add check for Boss / Miniboss.
             ArenaFinished();
         }
     }
@@ -494,6 +528,11 @@ public class SwarmSpawner : MonoBehaviour {
 
 
     // ================================= EFFECT: HEAL ALL PLAYERS ================================
+
+    public void SetGlobalHealFactor(float NewFactor)
+    {
+        GlobalHealFactor = NewFactor;
+    }
 
     public void EffectHealOnEnemyDeath(float HealPerc)
     {
