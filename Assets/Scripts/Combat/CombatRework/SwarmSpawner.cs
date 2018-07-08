@@ -21,7 +21,9 @@ public class SwarmSpawner : MonoBehaviour {
     private float FrequencyTimerCurrent = 0;
     private float FrequencyTimerCounter = 0;
 
-    public bool SpawningRunning = true;
+    public bool SpawningRunning = false;
+
+
 
     [Header("Spawning Cooldown:")]
     public float SpawningCooldownMin = 0.3f;
@@ -33,6 +35,8 @@ public class SwarmSpawner : MonoBehaviour {
     public float SpawnRadiusMax = 30f;  // Max Distance of the AreaMarker to the LightOrb
     public float SpawnAreaRadius = 3f;  // Max Distance of spawn position from the AreaMarker
 
+    private Vector2[] SpawnAreaPolygon = new Vector2[0];
+
     [Header("Enemies To Spawn:")]
     public EnemySwarm[] EnemyPrefabs = new EnemySwarm[3];
     public float[] EnemyWeight = new float[3];
@@ -42,6 +46,8 @@ public class SwarmSpawner : MonoBehaviour {
     private int CurrentEnemyPrefabID = 0;
 
     private float SwarmlingHealthFactor = 1;
+
+    public float DifficultySwarmlingHealthFactor = 1;
 
     [Header("Spawned Enemies:")]
     public int SpawnedEnemiesMaxNumber = 300;
@@ -60,6 +66,7 @@ public class SwarmSpawner : MonoBehaviour {
     private int spawnAreaMarkerTryCounter = 0;
 
     private Vector3 spawnPos = Vector3.zero;
+    private Vector2 spawnPos2D = Vector2.zero;
     private int spawnPosMaxTries = 10;
     private int spawnPosTryCounter = 0;
 
@@ -70,6 +77,19 @@ public class SwarmSpawner : MonoBehaviour {
     [Header("Spawn Direction:")]
     public LightWispMovement WispMovement;
 
+    [Header("Difficulty Scaling:")]
+    public float DifficultyScaleSpawnNumber = 0.5f;     // (Diff - 1) * Scale + 1. Example: Diff is 1.5, Scale is 0.5 => BaseNumber * 1.25
+    public float DifficultyScaleHealthFactor = 0.2f;    // Example: Diff is 1.5, Scale is 0.2 => BaseHealth * 1.1
+    private float TotalHealthFactor = 1;
+
+    [Header("Arena Rules:")]
+    public float ArenaKillPercentageToWin = 0.9f;
+    private int ArenaWinThreshold = 0;
+
+    public int SpawnNumberMaxTotalBase = 50;                    // Base value of how many should spawn in an arena.
+    public int SpawnNumberMaxTotalRemaining = 0;               // Counter for how many still need to spawn in current arena.
+
+    private AreaArenaTrigger CurrentArenaTrigger;
 
     private void Start()
     {
@@ -78,7 +98,6 @@ public class SwarmSpawner : MonoBehaviour {
             SpawnedEnemiesMaxNumber = GameController.Instance.GetMaxNumberSwarmlings();
             SwarmlingHealthFactor = GameController.Instance.GetSwarmlingHealthFactor();
         }
-
 
         if (!WispMovement)
         {
@@ -122,8 +141,36 @@ public class SwarmSpawner : MonoBehaviour {
         NavPath = new NavMeshPath();
     }
 
+    public void ArenaStartSpawning(AreaArenaTrigger NewArenaTrigger, Vector2[] AreaPolygon)
+    {
+        CurrentArenaTrigger = NewArenaTrigger;
+
+        CalculateArenaSpawnNumber();
+        CalculateTotalHealthFactor();
+        SpawnAreaPolygon = AreaPolygon;
+
+        SpawningRunning = true;
+    }
+
+    private void ArenaFinished()
+    {
+        if (CurrentArenaTrigger)
+        {
+            SpawningRunning = false; // Should not be needed, but just to make sure!
+            DestroyAllSwarmlings();
+            CurrentArenaTrigger.OpenArena();
+            CurrentArenaTrigger = null;
+        }
+    }
+
     private void SpawnEnemy()
     {
+        if (SpawnNumberMaxTotalRemaining <= 0)
+        {
+            SpawningRunning = false;
+            return;
+        }
+
         if (FrequencyTimerCounter < FrequencyTimerCurrent)
         {
             FrequencyTimerCounter += Time.deltaTime;
@@ -161,6 +208,7 @@ public class SwarmSpawner : MonoBehaviour {
         SpawnedEnemiesCounter++;
         FrequencyTimerCounter = 0;
         FrequencyTimerCurrent = Random.Range(FrequencyTimerMin, FrequencyTimerMax);
+        SpawnNumberMaxTotalRemaining--;
     }
 
     public void SpawnEnemyBatch(int EnemyNumber, EnemySwarm EnemyPrefab, Vector3 AreaCenter, float AreaRadius)
@@ -296,17 +344,30 @@ public class SwarmSpawner : MonoBehaviour {
 
         spawnPos = hit.position;
 
+        // If not on Terrain/Navmesh, try again:
         if (spawnPos.x == Mathf.Infinity)
         {
             return GenerateSpawnPosition(AreaCenter, AreaRadius);
         }
+        // -> It is on the terrain:
 
+        // If not in Spawn Polygon, try again:
+        spawnPos2D = new Vector2(spawnPos.x, spawnPos.z);
+        if (!spawnPos2D.IsInsidePolygon(SpawnAreaPolygon))
+        {
+            return GenerateSpawnPosition(AreaCenter, AreaRadius);
+        }
+        // -> It is in the polygon:
+
+        // Check if enemy can reach Spawner (Wisp), if not, try again:
         NavMesh.CalculatePath(spawnPos, transform.position, NavMesh.AllAreas, NavPath);
 
         if (NavPath.status == NavMeshPathStatus.PathInvalid || NavPath.status == NavMeshPathStatus.PathPartial)
         {
             return GenerateSpawnPosition(AreaCenter, AreaRadius);
         }
+        // -> Enemy could reach Spawner:
+
         return true;
     }
 
@@ -373,6 +434,13 @@ public class SwarmSpawner : MonoBehaviour {
     {
         SpawnedEnemies[SwarmlingID] = null;
         SpawnedEnemiesCounter--;
+
+        if (SpawnNumberMaxTotalRemaining <= 0
+            && SpawnedEnemiesCounter <= ArenaWinThreshold)
+        {
+            // TODO: Add check for Boss / Miniboss.
+            ArenaFinished();
+        }
     }
 
     private void UpdateAllSwarmlings()
@@ -411,6 +479,17 @@ public class SwarmSpawner : MonoBehaviour {
     public void SetTerrain(Terrain NewTerrain)
     {
         terrain = NewTerrain;
+    }
+
+    public void CalculateTotalHealthFactor()
+    {
+        TotalHealthFactor = SwarmlingHealthFactor * (((GameController.Instance.GetCurrentDifficultyFactor() - 1) * DifficultyScaleHealthFactor) + 1);
+    }
+
+    public void CalculateArenaSpawnNumber()
+    {
+        SpawnNumberMaxTotalRemaining = Mathf.FloorToInt(SpawnNumberMaxTotalBase * (((GameController.Instance.GetCurrentDifficultyFactor() - 1) * DifficultyScaleSpawnNumber) + 1));
+        ArenaWinThreshold = Mathf.CeilToInt(SpawnNumberMaxTotalRemaining * ArenaKillPercentageToWin);
     }
 
 

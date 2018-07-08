@@ -31,6 +31,12 @@ public class GameController : Singleton<GameController>
     [Header("Max Swarmling Spawn Number:")]
     public int MaxNumberOfSwarmlings = 100;
 
+    [Header("Difficulty:")]
+    public float DifficultyFactor = 1;
+    public float DifficultyFactorCurrentLevel = 1;
+    public float DifficultyFactorModPerArena = 0.1f;
+    public float DifficultyFactorModPerLevel = 0.2f;
+
     public string LastPlayedBiome;
 
     // Use this for initialization
@@ -176,4 +182,36 @@ public class GameController : Singleton<GameController>
     }
 
     // ======================================/  Spawner Data  /=====================================
+
+
+    // ========================================  Difficulty  ========================================
+
+    public float GetCurrentDifficultyFactor()
+    {
+        return DifficultyFactorCurrentLevel;
+    }
+
+    public void DifficultyFinishedArena() // Difficulty increase after each arena.
+    {
+        DifficultyFactorCurrentLevel += DifficultyFactorModPerArena;
+    }
+
+    public void DifficultyFinishedLevel() // Difficulty increase after each beaten level.
+    {
+        DifficultyFactorCurrentLevel += DifficultyFactorModPerLevel;
+        DifficultyFactor = DifficultyFactorCurrentLevel;
+    }
+
+    public void DifficultyRestartedLevel() // Reset difficulty to that at the start of current level if players restart level.
+    {
+        DifficultyFactorCurrentLevel = DifficultyFactor;
+    }
+
+    public void DifficultyRestartedGame() // Reset difficulty to base value if whole game is restarted.
+    {
+        DifficultyFactor = 1;
+        DifficultyFactorCurrentLevel = DifficultyFactor;
+    }
+
+    // =======================================/  Difficulty  /=======================================
 }

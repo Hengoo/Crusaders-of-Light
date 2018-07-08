@@ -49,6 +49,16 @@ public class AreaArenaTrigger : MonoBehaviour
     {
         // TODO: florian
         // BTW: you can check if a bug is inside the arena in the same way I did with the players in the "OnTriggerEnter" function
+
+        // Get Spawner from Wisp agent with GetComponent
+        _wispAgent.GetComponent<SwarmSpawner>().ArenaStartSpawning(this, _insidePolygon);
+
+        // Call Spawn Function
+        // -> This should start the spawning progress as it is so far, but with the new Polygon Check. Also, a counter so it only spawns until a total number is reached.
+
+        // For Beetle AI: Increase Player Search Radius over time (currently done, but maybe slower and to a larger radius?)
+        // Also, no more Kill Range, instead reenable them walking towards the wisp. But only to the outer general area, at which point the player attention should trigger!
+        // With player attention and wisp attention, both should have a certain time until they trigger to give the bugs some time to formate.
     }
 
     public void Initialize(List<GameObject> walls, Vector2[] polygon)
