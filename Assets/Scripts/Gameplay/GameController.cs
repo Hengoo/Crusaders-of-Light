@@ -62,14 +62,34 @@ public class GameController : Singleton<GameController>
 
     public void LoadTransitionArea()
     {
+        // Reset Values:
+        // Technically this is also called when going from the menu to the transitionArea. 
+        // This should not be a problem, as the function should only be used to reset values.
+        ReturenedToTransitionByReset(); 
+
+        // Change Scene:
         GameState = GameStateEnum.Transition;
         SceneManager.LoadScene("TransitionArea");
     }
 
     public void FinalizeGameSession()
     {
+        // Reset Values:
+        DifficultyRestartedGame();
+
+        // Change Scene:
         GameState = GameStateEnum.Menu;
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("Menu2");
+    }
+
+    public void ReturnedToTransitionByPortal()
+    {
+        DifficultyFinishedLevel();
+    }
+
+    public void ReturenedToTransitionByReset()
+    {
+        DifficultyRestartedLevel();
     }
 
     // =======================================  Player Data  =======================================
@@ -214,4 +234,6 @@ public class GameController : Singleton<GameController>
     }
 
     // =======================================/  Difficulty  /=======================================
+
+
 }
