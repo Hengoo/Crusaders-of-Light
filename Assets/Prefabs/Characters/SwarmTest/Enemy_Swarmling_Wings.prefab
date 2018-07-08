@@ -628,6 +628,7 @@ MonoBehaviour:
   SwarmlingHomeAreaRadius: 25
   SwarmlingHomeAreaGoToRadius: 2
   SwarmlingIsGoingHome: 0
+  HealPlayersOnDeathPerc: 0.03
   AttackDistance: 17
   AttackDistanceMin: 14
   AttackTargetMoveRadius: 1.6
@@ -718,6 +719,12 @@ MonoBehaviour:
   Anim_EndWalking: EndWalking
   Anim_BreakAnim: Trigger_BreakAnim
   Anim_Interupt: InterruptAnim
+  DamageTakenMarkerTime: 0.07
+  CharacterMaterialBase: {fileID: 0}
+  CharacterMaterialFlash: {fileID: 0}
+  CharacterRenderers:
+  - {fileID: 137395200953975354}
+  - {fileID: 137289611407208462}
   CharAttention: {fileID: 0}
   Alignment: 2
   SpawnStartingWeaponsOnStart: 1

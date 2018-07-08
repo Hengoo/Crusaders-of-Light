@@ -52,6 +52,7 @@ public class SwarmSpawner : MonoBehaviour {
 
     [Header("Player Characters:")]
     public CharacterPlayer[] Players = new CharacterPlayer[0];
+    public float GlobalHealFactor = 1f;
 
     private Terrain terrain;
     private Vector3 spawnAreaMarker = Vector3.zero;
@@ -411,6 +412,22 @@ public class SwarmSpawner : MonoBehaviour {
     {
         terrain = NewTerrain;
     }
+
+
+    // ================================= EFFECT: HEAL ALL PLAYERS ================================
+
+    public void EffectHealOnEnemyDeath(float HealPerc)
+    {
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i].gameObject.layer == CharacterPlayer.CharacterLayerID) // This checks if the Player is still alive.
+            {
+                Players[i].Heal(Players[i].GetHealthPercentageAbsoluteValue(HealPerc * GlobalHealFactor));
+            }
+        }
+    }
+
+    // ================================/ EFFECT: HEAL ALL PLAYERS /===============================
 
     private void OnDrawGizmosSelected()
     {

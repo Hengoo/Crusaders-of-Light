@@ -563,6 +563,12 @@ MonoBehaviour:
   Anim_EndWalking: EndWalking
   Anim_BreakAnim: Trigger_BreakAnim
   Anim_Interupt: InterruptAnim
+  DamageTakenMarkerTime: 0.07
+  CharacterMaterialBase: {fileID: 0}
+  CharacterMaterialFlash: {fileID: 0}
+  CharacterRenderers:
+  - {fileID: 137744497180722350}
+  - {fileID: 137596997439374562}
   CharAttention: {fileID: 0}
   Alignment: 2
   SpawnStartingWeaponsOnStart: 1
@@ -671,6 +677,7 @@ MonoBehaviour:
   SwarmlingHomeAreaRadius: 25
   SwarmlingHomeAreaGoToRadius: 2
   SwarmlingIsGoingHome: 0
+  HealPlayersOnDeathPerc: 0.05
   AttackDistance: 8
   BorderOn: 0
   BorderDistance: 4
@@ -816,7 +823,7 @@ NavMeshAgent:
   m_Radius: 0.8
   m_Speed: 24
   m_Acceleration: 24
-  avoidancePriority: 47
+  avoidancePriority: 60
   m_AngularSpeed: 360
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1

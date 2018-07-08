@@ -121,6 +121,12 @@ public class Character : MonoBehaviour
     [Header("GUI HealthBars:")]
     protected GUICharacterFollow GUIChar;
 
+    [Header("Damage Taken Marker:")]
+    public float DamageTakenMarkerTime = 0.5f;
+    public Material CharacterMaterialBase;
+    public Material CharacterMaterialFlash;
+    public SkinnedMeshRenderer[] CharacterRenderers = new SkinnedMeshRenderer[0];
+
     // Attention:
     [Header("Attention:")]
     public CharacterAttention CharAttention;
@@ -739,6 +745,11 @@ public class Character : MonoBehaviour
 
         FinalAmount = DamageCalculationResistance(DamageType, FinalAmount, ResistanceIgnore);
 
+        if (CharacterRenderers.Length > 0)
+        {
+            StopCoroutine("PlayDamageTakenMarker");
+            StartCoroutine("PlayDamageTakenMarker");
+        }
 
         ChangeHealthCurrent(-1 * FinalAmount);
 
@@ -807,6 +818,33 @@ public class Character : MonoBehaviour
         }
 
         return Defenses[DefenseTypeID];
+    }
+
+    IEnumerator PlayDamageTakenMarker()
+    {
+        for (int i = 0; i < CharacterRenderers.Length; i++)
+        {
+            CharacterRenderers[i].material.EnableKeyword("_EMISSION");
+        }
+
+        yield return new WaitForSeconds(DamageTakenMarkerTime);
+        for (int i = 0; i < CharacterRenderers.Length; i++)
+        {
+            CharacterRenderers[i].material.DisableKeyword("_EMISSION");
+        }
+        /*  while (duration > 0f)
+          {
+              duration -= Time.deltaTime;
+
+              //toggle renderer
+              renderer.enabled = !renderer.enabled;
+
+              //wait for a bit
+              yield return new WaitForSeconds(blinkTime);
+          }
+
+          //make sure renderer is enabled when we exit
+          renderer.enabled = true;*/
     }
 
     // =================================== /EFFECT INTERACTION ===================================

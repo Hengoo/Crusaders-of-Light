@@ -16,15 +16,17 @@ public class SwarmlingNormal : EnemySwarm {
             ThisSwarmlingCharacter.SwarmlingStartSkillActivation();
 
             SwarmlingTransform.rotation = Quaternion.LookRotation(ClosestPlayer.transform.position - SwarmlingTransform.position);
+
+            NMAgent.avoidancePriority = 40;
         }
     }
 
     public override void SwarmlingFinishedAttack()
     {
         DoNotMove = false;
-
-      //  AttractionDistance = AttractionDistanceMax / 2;
-      //  AttractionDistanceMax = AttractionDistance;
+        NMAgent.avoidancePriority = 60;
+        //  AttractionDistance = AttractionDistanceMax / 2;
+        //  AttractionDistanceMax = AttractionDistance;
     }
 
 }

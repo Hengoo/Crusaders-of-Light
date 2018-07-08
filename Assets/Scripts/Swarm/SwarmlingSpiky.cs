@@ -35,6 +35,8 @@ public class SwarmlingSpiky : EnemySwarm {
                 ThisSwarmlingCharacter.SwarmlingStartSkillActivation();
 
                 SwarmlingTransform.rotation = Quaternion.LookRotation(ClosestPlayer.transform.position - SwarmlingTransform.position);
+
+                NMAgent.avoidancePriority = 40;
             }
             else
             {
@@ -51,6 +53,7 @@ public class SwarmlingSpiky : EnemySwarm {
     {
         DoNotMove = false;
 
+        NMAgent.avoidancePriority = 60;
         //AttractionDistance = AttractionDistanceMin;
     }
 

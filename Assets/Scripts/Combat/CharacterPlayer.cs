@@ -587,7 +587,7 @@ public class CharacterPlayer : Character {
                 OrbInputButtonPressed = true;
                 OrbInputTimer = 0;
             }
-            // Press Button again after pressing it shortly before (Timer still running):
+         /*   // Press Button again after pressing it shortly before (Timer still running):
             else if (!OrbInputButtonPressed)
             {
                 if (OrbInputTimer <= OrbInputHealMaxTime)
@@ -595,7 +595,7 @@ public class CharacterPlayer : Character {
                     LightOrbEffects.ActivateOrbHeal(this);
                 }
                 OrbInputTimer = -1;
-            }    
+            }   */
         }
         else if (OrbInputButtonPressed)
         {

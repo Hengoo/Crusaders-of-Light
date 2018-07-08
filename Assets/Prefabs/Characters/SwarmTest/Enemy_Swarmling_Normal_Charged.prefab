@@ -585,6 +585,11 @@ MonoBehaviour:
   Anim_EndWalking: EndWalking
   Anim_BreakAnim: Trigger_BreakAnim
   Anim_Interupt: InterruptAnim
+  DamageTakenMarkerTime: 0.07
+  CharacterMaterialBase: {fileID: 0}
+  CharacterMaterialFlash: {fileID: 0}
+  CharacterRenderers:
+  - {fileID: 137054985836081190}
   CharAttention: {fileID: 0}
   Alignment: 2
   SpawnStartingWeaponsOnStart: 1
@@ -705,6 +710,7 @@ MonoBehaviour:
   SwarmlingHomeAreaRadius: 25
   SwarmlingHomeAreaGoToRadius: 2
   SwarmlingIsGoingHome: 0
+  HealPlayersOnDeathPerc: 0.04
   AttackDistance: 2.5
 --- !u!135 &135006269066896464
 SphereCollider:
