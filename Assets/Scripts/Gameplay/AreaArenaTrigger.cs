@@ -9,6 +9,8 @@ public class AreaArenaTrigger : MonoBehaviour
     private NavMeshAgent _wispAgent;
     private Vector2[] _insidePolygon;
 
+    private ChestBossTrigger _miniBossChest;
+
     void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.layer == LayerMask.NameToLayer("LightWisp"))
@@ -51,7 +53,15 @@ public class AreaArenaTrigger : MonoBehaviour
         // BTW: you can check if a bug is inside the arena in the same way I did with the players in the "OnTriggerEnter" function
 
         // Get Spawner from Wisp agent with GetComponent
-        _wispAgent.GetComponent<SwarmSpawner>().ArenaStartSpawning(this, _insidePolygon);
+        if (_miniBossChest)
+        {
+            _wispAgent.GetComponent<SwarmSpawner>().ArenaStartSpawning(this, _insidePolygon, true);
+        }
+        else
+        {
+            _wispAgent.GetComponent<SwarmSpawner>().ArenaStartSpawning(this, _insidePolygon, false);
+        }
+
 
         // Call Spawn Function
         // -> This should start the spawning progress as it is so far, but with the new Polygon Check. Also, a counter so it only spawns until a total number is reached.
@@ -82,6 +92,11 @@ public class AreaArenaTrigger : MonoBehaviour
 
             _wispAgent.GetComponent<LightWispMovement>().ResumePlayerFollow();
         }
+    }
+
+    public void SetMiniBossChest(ChestBossTrigger NewMiniBossChest)
+    {
+        _miniBossChest = NewMiniBossChest;
     }
 
 }

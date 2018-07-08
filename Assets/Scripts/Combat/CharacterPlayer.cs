@@ -415,7 +415,7 @@ public class CharacterPlayer : Character {
 
     private bool InteractWithChest()
     {
-        Collider[] Chests = Physics.OverlapSphere(transform.position, 3);
+        Collider[] Chests = Physics.OverlapSphere(transform.position, 4);
 
         for (int i = 0; i < Chests.Length; i++)
         {

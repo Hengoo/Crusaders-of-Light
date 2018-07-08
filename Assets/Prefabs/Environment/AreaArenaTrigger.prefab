@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114119560798036928}
   m_Layer: 21
   m_Name: AreaArenaTrigger
-  m_TagString: Untagged
+  m_TagString: AreaArenaTrigger
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

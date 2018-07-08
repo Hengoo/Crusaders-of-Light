@@ -12,5 +12,10 @@ public class EndBoss : MonoBehaviour {
         {
             GameController.Instance.UnlockElement(element);
         }
+
+        if (LevelController.Instance)
+        {
+            LevelController.Instance.GetSwarmSpawner().SetGlobalHealFactor(1);
+        }
     }
 }
