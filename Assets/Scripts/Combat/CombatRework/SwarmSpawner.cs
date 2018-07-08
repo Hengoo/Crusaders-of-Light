@@ -188,6 +188,8 @@ public class SwarmSpawner : MonoBehaviour {
             SpawningRunning = false; // Should not be needed, but just to make sure!
             DestroyAllSwarmlings();
 
+            SpawnAreaPolygon = new Vector2[0];
+
             GameController.Instance.DifficultyFinishedArena();
 
             CurrentArenaTrigger.OpenArena();
@@ -385,7 +387,7 @@ public class SwarmSpawner : MonoBehaviour {
 
         // If not in Spawn Polygon, try again:
         spawnPos2D = new Vector2(spawnPos.x, spawnPos.z);
-        if (!spawnPos2D.IsInsidePolygon(SpawnAreaPolygon))
+        if (SpawnAreaPolygon.Length > 0 && !spawnPos2D.IsInsidePolygon(SpawnAreaPolygon))
         {
             return GenerateSpawnPosition(AreaCenter, AreaRadius);
         }
