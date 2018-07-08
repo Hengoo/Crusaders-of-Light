@@ -58,6 +58,9 @@ public class GameController : Singleton<GameController>
     public void SetActivePlayers(int value)
     {
         ActivePlayers = Mathf.Clamp(value, 1, 4);
+
+        // Update Difficulty for Playernumber:
+        DifficultyCalculateStartDiffForPlayerNumber(ActivePlayers);
     }
 
     public void LoadTransitionArea()
@@ -117,6 +120,11 @@ public class GameController : Singleton<GameController>
 
     public void UnlockWeapon(Weapon weaponToUnlock)
     {
+        if (GameState != GameStateEnum.Level)
+        {
+            return;
+        }
+
         int tempID = weaponToUnlock.GetWeaponID();
         if (tempID >= 0 && tempID < PlayerDataUnlockedWeapons.Length)
         {
@@ -126,6 +134,11 @@ public class GameController : Singleton<GameController>
 
     public void UnlockElement(ElementItem elementToUnlock)
     {
+        if (GameState != GameStateEnum.Level)
+        {
+            return;
+        }
+
         int tempID = elementToUnlock.GetElementID();
         if (tempID >= 0 && tempID < PlayerDataUnlockedElements.Length)
         {
@@ -205,6 +218,12 @@ public class GameController : Singleton<GameController>
 
 
     // ========================================  Difficulty  ========================================
+
+    public void DifficultyCalculateStartDiffForPlayerNumber(int PlayerNumber)
+    {
+        DifficultyFactor = 1 + PlayerNumber * 0.3f;
+        DifficultyFactorCurrentLevel = DifficultyFactor;
+    }
 
     public float GetCurrentDifficultyFactor()
     {

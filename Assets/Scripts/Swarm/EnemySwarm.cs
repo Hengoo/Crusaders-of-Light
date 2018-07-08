@@ -338,10 +338,10 @@ public class EnemySwarm : MonoBehaviour {
                      }*/
                     DangerAvoidanceVec += -1 * DistanceVec / DistanceVecMag;
                     DangerNumber++;
-                    if (IgnoreThisSwarmlingForOthersWhenInDanger && !IgnoreThisSwarmlingForOthers)
+                  /*  if (IgnoreThisSwarmlingForOthersWhenInDanger && !IgnoreThisSwarmlingForOthers)
                     {
                         IgnoreThisSwarmlingForOthers = true;
-                    }
+                    }*/
                 }
             }
         }
@@ -401,6 +401,11 @@ public class EnemySwarm : MonoBehaviour {
         // Total Danger:
         if (DangerNumber > 0)
         {
+            if (IgnoreThisSwarmlingForOthersWhenInDanger && !IgnoreThisSwarmlingForOthers)
+            {
+                IgnoreThisSwarmlingForOthers = true;
+            }
+
             DangerAvoidanceVec = DangerAvoidanceVec.normalized * GetDesiredRunSpeed();
 
             DangerAvoidanceVec = Steer(DangerAvoidanceVec);
@@ -442,6 +447,11 @@ public class EnemySwarm : MonoBehaviour {
 
             if (CurrentSwarmling.IgnoreThisSwarmlingForOthers)
             {
+                if (DistanceVecMag <= Mathf.Pow(AlignmentDistance, 2)) // Could be optimized by storing the pow2 distance!
+                {
+                    ConfidenceCurrent++;
+                }
+
                 continue;
             }
 
@@ -523,7 +533,7 @@ public class EnemySwarm : MonoBehaviour {
             GoalFactor += AlignmentFactor;
         }
 
-        ConfidenceCurrent = 1 - ConfidenceCurrent / NeighbourColliders.Length;
+        ConfidenceCurrent = 1 - ConfidenceCurrent / (NeighbourColliders.Length - 1);
     }
 
     public void SwarmlingHomeRuleCalculation()
@@ -629,12 +639,12 @@ public class EnemySwarm : MonoBehaviour {
             return;
         }
 
-        SwarmlingHomeRuleCalculation();
+        /*SwarmlingHomeRuleCalculation();
 
         if (SwarmlingIsGoingHome)
         {
             return;
-        }
+        }*/
 
         UpdateCounter += Time.deltaTime;
 

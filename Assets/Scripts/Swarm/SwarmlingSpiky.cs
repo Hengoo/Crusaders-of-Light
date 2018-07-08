@@ -27,8 +27,9 @@ public class SwarmlingSpiky : EnemySwarm {
 
         if (ClosestPlayer && ClosestPlayerSqrDistance < Mathf.Pow(AttackDistance, 2))
         {
-            if (AttackDelayCounter <= 0 
-                && (ClosestPlayerSqrDistance < ((ClosestPlayer.transform.position - SwarmlingTransform.position).sqrMagnitude))) //ClosestPlayerSqrDistance < ((ClosestPlayer.transform.position + ClosestPlayer.GetTargetVelocity()) - SwarmlingTransform.position).sqrMagnitude)     //&& (Vector3.Dot(ClosestPlayer.GetTargetVelocity(), (ClosestPlayer.transform.position - transform.position).normalized) < AttackAngle))
+            // Attack if player is really close, or if AttackDelayCounter is reached and Player is moving in the Beetles direction.
+            if ((ClosestPlayerSqrDistance <= 4)
+                || (AttackDelayCounter <= 0 && (ClosestPlayerSqrDistance < ((ClosestPlayer.transform.position - SwarmlingTransform.position).sqrMagnitude)))) //ClosestPlayerSqrDistance < ((ClosestPlayer.transform.position + ClosestPlayer.GetTargetVelocity()) - SwarmlingTransform.position).sqrMagnitude)     //&& (Vector3.Dot(ClosestPlayer.GetTargetVelocity(), (ClosestPlayer.transform.position - transform.position).normalized) < AttackAngle))
             {
                 DoNotMove = true;
 
@@ -40,7 +41,7 @@ public class SwarmlingSpiky : EnemySwarm {
             }
             else
             {
-                AttackDelayCounter -= UpdateTimer;
+                AttackDelayCounter = Mathf.Max(AttackDelayCounter - UpdateTimer, 0);
             }
         }
         else

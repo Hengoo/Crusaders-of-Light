@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Name: Element_Frost_BE_Explosion_InflictFreezing
   m_EditorClassIdentifier: 
   ConditionToApply: {fileID: 11400000, guid: 005015b187b0ae449a9ac87b62c6298e, type: 2}
-  DurationBase: 1.25
+  DurationBase: 3
   DurationPerLevel: 0
   DurationModifiers: []
