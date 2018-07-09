@@ -25,6 +25,7 @@ public class LevelCreator : Singleton<LevelCreator>
     public bool GenerateOnPlay = false;
 
     public Camera mainCamera;
+    public Light sun;
 
     [Header("Story Settings")]
     public List<BiomeSettings> AvailableBiomes;
@@ -156,6 +157,9 @@ public class LevelCreator : Singleton<LevelCreator>
     // Create Terrain
     private void GenerateTerrain()
     {
+        // Adjust light
+        sun.intensity = MyTerrainStructure.BiomeSettings.SunIntensity;
+
         // Create Terrain Data
         var terrainData = new TerrainData
         {
