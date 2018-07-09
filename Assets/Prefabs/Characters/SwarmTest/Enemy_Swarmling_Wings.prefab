@@ -545,7 +545,7 @@ MonoBehaviour:
   CohesionDistance: 10
   CohesionFactor: 0.7
   DangerDistance: 6
-  DangerFactor: 5
+  DangerFactor: 8
   AttractionDistanceMin: 2
   AttractionDistanceMax: 40
   AttractionDistance: 2
@@ -557,7 +557,7 @@ MonoBehaviour:
   Friction: 0.2
   GoalFactor: 0
   DesiredBaseSpeed: 8
-  DesiredRunSpeed: 10
+  DesiredRunSpeed: 14
   UpdateTimer: 0.06
   UpdateCounter: 0
   SAttention: {fileID: 0}
