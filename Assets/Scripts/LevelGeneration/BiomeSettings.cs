@@ -22,6 +22,7 @@ public class BiomeSettings : ScriptableObject
     public Vector3 BlockerScaleNoise = Vector3.zero;
     public BiomeSettings BorderBiome;
     public GameObject FallingParticlesPrefab;
+    public float SunIntensity;
 
     [Header("Area Settings")]
     public AreaSettingsFactory[] BossAreas;

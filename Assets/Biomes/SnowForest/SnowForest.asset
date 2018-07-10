@@ -35,6 +35,7 @@ MonoBehaviour:
   BorderBiome: {fileID: 11400000}
   FallingParticlesPrefab: {fileID: 1293742887795584, guid: 874fda9cb57756f4084cab34fa750d69,
     type: 2}
+  SunIntensity: 0.4
   BossAreas:
   - {fileID: 11400000, guid: aa62ea351bbe1874aa70855e9cd80f4f, type: 2}
   SpecialAreas:
