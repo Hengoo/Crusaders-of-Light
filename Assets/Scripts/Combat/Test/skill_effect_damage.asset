@@ -13,4 +13,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DamageValueBase: 10
   DamageValuePerLevel: 0
+  DefenseType: -1
   DamageType: 0
+  DamageValueModifiers: []
+  IgnoreDefenseValueBase: 0
+  IgnoreDefenseValuePerLevel: 0
+  IgnoreResistanceValueBase: 0
+  IgnoreResistanceValuePerLevel: 0
+  IgnoreValueModifiers: []
+  HitSound: {fileID: 0}
+  BlockedSound: {fileID: 0}
