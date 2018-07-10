@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18060583, g: 0.22610056, b: 0.30709997, a: 1}
+  m_IndirectSpecularColor: {r: 0.18060532, g: 0.22610001, b: 0.30709875, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2979,7 +2979,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 0.4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &819271693
 Transform:
@@ -3272,7 +3272,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 0.4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &922459698
 Transform:
@@ -3815,7 +3815,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4, y: 4, z: 6}
+  m_Size: {x: 1, y: 1, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1064132786
 Transform:
@@ -4242,7 +4242,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4, y: 4, z: 6}
+  m_Size: {x: 1, y: 1, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1185415178
 Transform:
@@ -4768,11 +4768,17 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  PlayerBaseWeapon: {fileID: 0}
+  PlayerBaseElement: {fileID: 0}
   PlayerStartHealth: 20000
   SwarmlingHealthFactor: 1
   PlayerDataUnlockedWeapons: 010101
   PlayerDataUnlockedElements: 000000
   MaxNumberOfSwarmlings: 100
+  DifficultyFactor: 1
+  DifficultyFactorCurrentLevel: 1
+  DifficultyFactorModPerArena: 0.1
+  DifficultyFactorModPerLevel: 0.2
   LastPlayedBiome: 
 --- !u!4 &1293886181
 Transform:
@@ -6784,7 +6790,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 0.4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1657268298
 Transform:
@@ -8195,7 +8201,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4, y: 4, z: 6}
+  m_Size: {x: 1, y: 1, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1848008226
 Transform:

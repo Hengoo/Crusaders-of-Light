@@ -7634,10 +7634,14 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  PlayerBaseWeapon: {fileID: 114066496244682900, guid: e8f64c2ec8c75cc45842de6d2d175ef9,
+    type: 2}
+  PlayerBaseElement: {fileID: 114295211227383602, guid: 4da6cc8484d688b44a3112583cb12f8d,
+    type: 2}
   PlayerStartHealth: 20000
   SwarmlingHealthFactor: 1
   PlayerDataUnlockedWeapons: 010100
-  PlayerDataUnlockedElements: 010001
+  PlayerDataUnlockedElements: 010100
   MaxNumberOfSwarmlings: 100
   DifficultyFactor: 1
   DifficultyFactorCurrentLevel: 1

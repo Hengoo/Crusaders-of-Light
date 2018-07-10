@@ -169,6 +169,8 @@ public class EnemySwarm : MonoBehaviour {
     [Header("Heal Players On Death:")]
     public float HealPlayersOnDeathPerc = 0.01f;
 
+    public List<GameObject> DangerInRangeClear = new List<GameObject>();
+
     // ================================================================================================================
 
     public void SwarmlingLightOrbAttractionCalculation()
@@ -351,6 +353,7 @@ public class EnemySwarm : MonoBehaviour {
         {
             if (!DangerInRange[i])
             {
+                DangerInRangeClear.Add(DangerInRange[i]);
                 continue;
             }
 
@@ -413,7 +416,11 @@ public class EnemySwarm : MonoBehaviour {
             GoalFactor += DangerFactor * ConfidenceCurrent;
         }
 
-           
+        for (int i = 0; i < DangerInRangeClear.Count; i++)
+        {
+            DangerInRange.Remove(DangerInRangeClear[i]);
+        }
+        DangerInRangeClear.Clear();
        
     }
 
@@ -579,7 +586,7 @@ public class EnemySwarm : MonoBehaviour {
         //Players = EnemyTestSwarm.Instance.PlayerCharacters;
     }
 
-    public void InitializeSwarmling(SwarmSpawner _SpawnedBy, int _SwarmlingID, CharacterPlayer[] _Players, int _NeighbourLayerMask, float HealthFactor)
+    public void InitializeSwarmling(SwarmSpawner _SpawnedBy, int _SwarmlingID, CharacterPlayer[] _Players, int _NeighbourLayerMask, float HealthFactor, float PlayerHealFactor)
     {
         SpawnedBy = _SpawnedBy;
         Players = _Players;
@@ -587,6 +594,8 @@ public class EnemySwarm : MonoBehaviour {
         NeighbourLayerMask = _NeighbourLayerMask;
 
         SwarmlingHomeAreaCenter = SwarmlingTransform.position;
+
+        HealPlayersOnDeathPerc *= PlayerHealFactor;
 
         ThisSwarmlingCharacter.SetHealthMax(Mathf.RoundToInt(ThisSwarmlingCharacter.GetHealthMax() * HealthFactor));
 

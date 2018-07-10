@@ -21,12 +21,19 @@ public class GameController : Singleton<GameController>
     [Header("Player Data:")]
     public Item[] PlayerDataSelectedWeapons = new Item[4];
     public ElementItem[] PlayerDataSelectedElements = new ElementItem[4];
+
+    public Item PlayerBaseWeapon;
+    public ElementItem PlayerBaseElement;
+
     public int PlayerStartHealth = 20000;
     public float SwarmlingHealthFactor = 1;
 
     [Header("Player Unlocks:")]
     public bool[] PlayerDataUnlockedWeapons = new bool[3];
     public bool[] PlayerDataUnlockedElements = new bool[3];
+
+    private bool[] PlayerDataUnlockedWeaponsBase = new bool[3];
+    private bool[] PlayerDataUnlockedElementsBase = new bool[3];
 
     [Header("Max Swarmling Spawn Number:")]
     public int MaxNumberOfSwarmlings = 100;
@@ -43,7 +50,18 @@ public class GameController : Singleton<GameController>
     protected override void Awake () {
 		base.Awake();
         DontDestroyOnLoad(gameObject);
-	}
+
+
+        for (int i = 0; i < PlayerDataUnlockedElements.Length; i++)
+        {
+            PlayerDataUnlockedElementsBase[i] = PlayerDataUnlockedElements[i];
+        }
+
+        for (int i = 0; i < PlayerDataUnlockedWeapons.Length; i++)
+        {
+            PlayerDataUnlockedWeaponsBase[i] = PlayerDataUnlockedWeapons[i];
+        }
+    }
     
     public void SetSeed(int value)
     {
@@ -80,6 +98,26 @@ public class GameController : Singleton<GameController>
         // Reset Values:
         DifficultyRestartedGame();
 
+        for (int i = 0; i < PlayerDataUnlockedElements.Length; i++)
+        {
+            PlayerDataUnlockedElements[i] = PlayerDataUnlockedElementsBase[i];
+        }
+
+        for (int i = 0; i < PlayerDataUnlockedWeapons.Length; i++)
+        {
+            PlayerDataUnlockedWeapons[i] = PlayerDataUnlockedWeaponsBase[i];
+        }
+
+        for (int i = 0; i < PlayerDataSelectedWeapons.Length; i++)
+        {
+            PlayerDataSelectedWeapons[i] = null;
+        }
+
+        for (int i = 0; i < PlayerDataSelectedElements.Length; i++)
+        {
+            PlayerDataSelectedElements[i] = null;
+        }
+
         // Change Scene:
         GameState = GameStateEnum.Menu;
         SceneManager.LoadScene("Menu2");
@@ -110,12 +148,30 @@ public class GameController : Singleton<GameController>
 
     public Item GetPlayerItem(int id)
     {
-        return PlayerDataSelectedWeapons[id-1];
+        if (PlayerDataSelectedWeapons[id - 1])
+        {
+            return PlayerDataSelectedWeapons[id - 1];
+        }
+
+        if (GameState == GameStateEnum.Level)
+        {
+            return PlayerBaseWeapon;
+        }
+        return null;
     }
 
     public ElementItem GetPlayerElement(int id)
     {
-        return PlayerDataSelectedElements[id-1];
+        if (PlayerDataSelectedElements[id - 1])
+        {
+            return PlayerDataSelectedElements[id - 1];
+        }
+
+        if (GameState == GameStateEnum.Level)
+        {
+            return PlayerBaseElement;
+        }
+        return null;
     }
 
     public void UnlockWeapon(Weapon weaponToUnlock)

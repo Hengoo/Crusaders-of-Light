@@ -567,7 +567,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7214392475b2d7e40a79b7f80cbdabf1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  element: {fileID: 114295211227383602, guid: daa1297875100c846acddd4190289d70, type: 2}
+  element: {fileID: 114295211227383602, guid: f67b26addcb589d499a604394ec298e1, type: 2}
 --- !u!114 &114387817092767634
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -710,6 +710,7 @@ MonoBehaviour:
   SpawnedBy: {fileID: 0}
   NavAgent: {fileID: 195814445702279934}
   SpawnStartingWeaponsOnStart: 1
+  DifficultyScaleHealthFactor: 0.5
 --- !u!135 &135263340605476682
 SphereCollider:
   m_ObjectHideFlags: 1

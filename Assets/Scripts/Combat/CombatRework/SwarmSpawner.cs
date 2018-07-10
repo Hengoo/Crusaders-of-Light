@@ -236,7 +236,7 @@ public class SwarmSpawner : MonoBehaviour {
         }
 
         SpawnedEnemies[SpawnedEnemiesIDCounter] = Instantiate(EnemyPrefabs[CurrentEnemyPrefabID], spawnPos, EnemyPrefabs[CurrentEnemyPrefabID].transform.rotation);
-        SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask, SwarmlingHealthFactor);
+        SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask, SwarmlingHealthFactor, 1);
 
         // At this point an enemy was succesfully spawned:
         SpawnedEnemiesCounter++;
@@ -266,7 +266,7 @@ public class SwarmSpawner : MonoBehaviour {
             }
 
             SpawnedEnemies[SpawnedEnemiesIDCounter] = Instantiate(EnemyPrefab, spawnPos, EnemyPrefab.transform.rotation);
-            SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask, SwarmlingHealthFactor);
+            SpawnedEnemies[SpawnedEnemiesIDCounter].InitializeSwarmling(this, SpawnedEnemiesIDCounter, Players, LayerMask, SwarmlingHealthFactor, BossBeetlesHealOnDeathFactor);
 
             // At this point an enemy was succesfully spawned:
             SpawnedEnemiesCounter++;

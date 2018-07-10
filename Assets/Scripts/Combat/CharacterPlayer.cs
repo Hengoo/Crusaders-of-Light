@@ -330,6 +330,9 @@ public class CharacterPlayer : Character {
         //GetComponent<Rigidbody>().isKinematic = false;
         LightOrbEffects.CharacterRevived(this);
         NavAgent.enabled = true;
+
+        SpawnAndEquipStartingWeapons(); // Technically, it would be better (and possibly also would work) to disable the weapon dropping on death, however, this guarantees that the player is not stuck in activating a skill from before dying!
+
         this.enabled = true;
     }
 

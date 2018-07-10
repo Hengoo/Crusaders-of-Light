@@ -518,6 +518,7 @@ MonoBehaviour:
   SpawnedBy: {fileID: 0}
   NavAgent: {fileID: 195104833046936440}
   SpawnStartingWeaponsOnStart: 1
+  DifficultyScaleHealthFactor: 0.5
 --- !u!114 &114860849098410586
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -530,7 +531,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GuardedChest: {fileID: 0}
-  GuardedChestDrop: {fileID: 114560823138688254, guid: 1d8eff4accf965446a89a99603b0f715,
+  GuardedChestDrop: {fileID: 114820948779387098, guid: 03fdaa9673364084e8af74d996f502fd,
     type: 2}
 --- !u!135 &135558670336146390
 SphereCollider:
