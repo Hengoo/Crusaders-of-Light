@@ -13,3 +13,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AIDecisionMaker: {fileID: 11400000, guid: 32b7774f9f1cbdc4dbc43fc07e7dbc78, type: 2}
   ViewDirection: 1
+  RotationSpeed: 100

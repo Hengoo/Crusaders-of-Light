@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b7002d963efd5947a3d87e859e9a884, type: 3}
+  m_Name: Golem_Element_Frost_Icebeam_SpawnHitObject
+  m_EditorClassIdentifier: 
+  HitObjectPrefab: {fileID: 114778787771397240, guid: d04f958fcc4bfc04fa7bc0c033c718f4,
+    type: 2}
+  UseSkillLevelAtActivationMoment: 1
+  Threat:
+  - 0
+  - 3
+  - 0
+  AllowTarget: 0001
+  SkillEffects:
+  - {fileID: 11400000, guid: 26607ab7d4a023b49a195244fffa9465, type: 2}
+  - {fileID: 11400000, guid: 13918efbbfd955742bc19716bca84d46, type: 2}
+  UseRotationOffset: 0
+  RotationOffset: {x: 0, y: 0, z: 0}
+  SpawnAtTargetPosition: 1
+  SpawnSound: {fileID: 0}
+  LoopSound: 0

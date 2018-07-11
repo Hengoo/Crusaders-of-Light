@@ -1,17 +1,17 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(MapGenerator))]
+[CustomEditor(typeof(LevelCreator))]
 public class MapPreviewEditor : Editor {
     public override void OnInspectorGUI()
     {
-        MapGenerator mapGenerator = (MapGenerator)target;
+        LevelCreator levelCreator = (LevelCreator)target;
 
         DrawDefaultInspector();
 
         if (GUILayout.Button("Generate"))
         {
-            mapGenerator.GeneratePreview();
+            levelCreator.GenerateLevel();
         }
     }
 }

@@ -15,6 +15,8 @@ public class SkillTypeChannelSelf : SkillType
     public string IdleAnimation = "Channel_Idle";
     public string ReleaseAnimation = "Channel_Released";
 
+    public AudioClip ChanellingSound;
+
     public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime < ActivationTime)
@@ -25,7 +27,7 @@ public class SkillTypeChannelSelf : SkillType
         if (!SourceItemSkill.GetEffectOnlyOnceBool(0))
         {
             SourceItemSkill.SetEffectOnlyOnceBool(0, true);
-            
+
             for (int i = 0; i < EffectsStart.Length; i++)
             {
                 EffectsStart[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
@@ -37,6 +39,14 @@ public class SkillTypeChannelSelf : SkillType
         if (ActivationIntervallReached)
         {
             ApplyEffects(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+            var audioSource = SourceItemSkill.GetComponent<AudioSource>();
+
+            if (ChanellingSound)
+            {
+                audioSource.clip = ChanellingSound;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
         }
 
         if (!StillActivating || (ActivationTimeMax > 0 && CurrentActivationTime >= ActivationTimeMax))
@@ -52,8 +62,12 @@ public class SkillTypeChannelSelf : SkillType
             if (Cooldown > 0)
             {
                 SourceItemSkill.SetCurrentCooldown(Cooldown);
+
+                if (ChanellingSound)
+                    SourceItemSkill.GetComponent<AudioSource>().Stop();
             }
             RemoveActivationMovementRateModifier(SourceItemSkill, SourceItemSkill.GetCurrentOwner());
+            SourceItemSkill.StoppedActivatingSkillWithHitObjects(this);
             SourceItemSkill.FinishedSkillActivation();
         }
     }

@@ -10,15 +10,40 @@ public class GUICharacterFollow : MonoBehaviour {
     Character Character;
 
     public Image HealthBarCurrent;
+    public Image HealthHealingBarCurrent;
+
+    public Sprite HealthBarPlayerSprite;
 
     public void Initialize(Character Char)
     {
         Character = Char;
+
+        HealthBarCurrent.sprite = HealthBarPlayerSprite;
+
+        if (Character.GetAlignment() == Character.TeamAlignment.PLAYERS)
+        {
+            HealthBarCurrent.sprite = HealthBarPlayerSprite;
+        }
+        /*
+        if (Character.GetAlignment() == Character.TeamAlignment.PLAYERS)
+        {
+            HealthBarCurrent.sprite = HealthBarPlayerSprite;
+        }
+        else
+        {
+            HealthHealingBarCurrent.enabled = false;
+            gameObject.SetActive(false);
+        }*/
     }
 
     public void UpdateHealthBar(float NormalizedHealthValue)
     {
         HealthBarCurrent.fillAmount = NormalizedHealthValue;
+    }
+
+    public void UpdateHealthHealingBar(float NormalizedHealthHealingValue)
+    {
+        HealthHealingBarCurrent.fillAmount = NormalizedHealthHealingValue;
     }
 
     public void UpdateGUIPosition()
@@ -38,6 +63,11 @@ public class GUICharacterFollow : MonoBehaviour {
                                                     (ViewPortPos.y * CanvasRectTrans.sizeDelta.y) - (CanvasRectTrans.sizeDelta.y * 0.45f),
                                                     (ViewPortPos.z));
         RectTrans.localPosition = WorldObjectScreenPos;
+    }
+
+    public void SwitchGUIActive(bool state)
+    {
+        gameObject.SetActive(state);
     }
 
     // Only Destroys the GUI, Character might still have a reference:

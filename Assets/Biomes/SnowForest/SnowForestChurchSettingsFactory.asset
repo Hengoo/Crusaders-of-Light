@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b14426816bca77140a243d3e4ee9d82f, type: 3}
+  m_Name: SnowForestChurchSettingsFactory
+  m_EditorClassIdentifier: 
+  ArenaTriggerPrefab: {fileID: 1977331088922286, guid: 11dc71309d99f8545a8d61b9cd52dd75,
+    type: 2}
+  FogGatePrefab: {fileID: 1129564519391044, guid: 90b619f3de93d1e4c9b77df8dcbb9aea,
+    type: 2}
+  ChestPrefab: {fileID: 1659824245891988, guid: e612d936e55be174ebe55fbe2e05712a,
+    type: 2}
+  MiniBosses:
+  - {fileID: 1269708281449342, guid: 8f55f81707bf2b746a0b84c50829976b, type: 2}
+  - {fileID: 1574788587254294, guid: 9dbe4642828005646b847b5c6714d142, type: 2}
+  ChurchPrefab: {fileID: 1131378545392920, guid: 156d0128ae88d084c9fac76ee9c02b88,
+    type: 2}
+  AngleTolerance: 5
+  GravePrefabs:
+  - {fileID: 1211222305493320, guid: feacb33ad69693141825d392ae882274, type: 2}
+  - {fileID: 1582288112837444, guid: 0ca9049fb819b3d49b8c030b7d95228f, type: 2}
+  - {fileID: 1906794642983550, guid: e5a38d585b9dc5f439fbcd5328376c6e, type: 2}
+  - {fileID: 1801696341269266, guid: 98900fade5941ff4b96cdcbca07b9e78, type: 2}
+  - {fileID: 0}
+  - {fileID: 1211222305493320, guid: feacb33ad69693141825d392ae882274, type: 2}
+  - {fileID: 1582288112837444, guid: 0ca9049fb819b3d49b8c030b7d95228f, type: 2}
+  GraveAngleTolerance: 5
+  GraveDistance: {x: 6, y: 8}
+  RotationNoise: {x: 0, y: 0, z: 0}
+  PositionNoise: {x: 0, y: 0, z: 0}
+  PathOffset: 8
+  Trees:
+  - {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
+  TreeAngleTolerance: 15
+  TreeDistance: 6

@@ -8,10 +8,6 @@ public class Item : MonoBehaviour {
     public Character CurrentOwner;
     public int CurrentEquipSlot = -1;
 
-    [Header("Item Skills:")]
-    public ItemSkill[] ItemSkills = new ItemSkill[1];
-    private List<ItemSkill> ItemSkillsOnCooldown = new List<ItemSkill>();
-
     [Header("Item Skill Activation (Do not set - for Testing only):")]
     public float SkillActivationTimer;
 
@@ -33,11 +29,21 @@ public class Item : MonoBehaviour {
     public List<Character> AlreadyHitCharacters = new List<Character>();
     public Character.TeamAlignment CurrentItemHitBoxAlignment = Character.TeamAlignment.NONE;
 
+    public int MaxHittableCharacters = -1;
+    public int MaxHittableCharactersCounter = -2;
+
     public int EquippedSlotID = -1;
 
     [Header("Item AI:")]
     public int ItemPowerLevel = 0; // Only for the Item itself, the Skills it grants is already calculated through it's skills.
     public MovePattern[] ItemMovePatterns = new MovePattern[0];
+
+    [Header("Item Skills:")]
+    public ItemSkill[] ItemSkills = new ItemSkill[1];
+    public int[] ItemSkillsComboStart = new int[4];
+    private List<ItemSkill> ItemSkillsOnCooldown = new List<ItemSkill>();
+    public int SpecialSkillID = -1;
+    public int SpecialSkillButton = -1;
 
     public virtual void EquipItem(Character CharacterToEquipTo, int SlotID)
     {
@@ -45,6 +51,14 @@ public class Item : MonoBehaviour {
 
     public virtual void UnEquipItem()
     {
+        var audioSource = GetComponent<AudioSource>();
+        if(audioSource)
+            audioSource.Stop();
+    }
+
+    public void DestroyItem()
+    {
+        Destroy(gameObject);
     }
 
     // Currently Unused, but might be useful later.
@@ -59,6 +73,11 @@ public class Item : MonoBehaviour {
     public ItemSkill[] GetItemSkills()
     {
         return ItemSkills;
+    }
+
+    public int GetItemSkillComboStart(int ID)
+    {
+        return ItemSkillsComboStart[ID];
     }
 
     public Character GetOwner()
@@ -182,11 +201,30 @@ public class Item : MonoBehaviour {
         }
     }
 
+    public void StartSkillCurrentlyUsingItemHitBox(ItemSkill SourceItemSkill, SkillType SourceSkill, bool HitEachCharacterOnce, int MaxNumberOfCharactersHittable)
+    {
+        
+        if (MaxNumberOfCharactersHittable > 0)
+        {
+            MaxHittableCharacters = MaxNumberOfCharactersHittable;
+            MaxHittableCharactersCounter = 0;
+        }
+        else
+        {
+            MaxHittableCharacters = -1;
+            MaxHittableCharactersCounter = -2;
+        }
+        
+        StartSkillCurrentlyUsingItemHitBox(SourceItemSkill, SourceSkill, HitEachCharacterOnce);
+    }
+
     public void EndSkillCurrentlyUsingItemHitBox()
     {
         SkillCurrentlyUsingItemHitBox = null;
         ItemSkillCurrentlyUsingItemHitBox = null;
         AlreadyHitCharacters = new List<Character>();
+        MaxHittableCharacters = -1;
+        MaxHittableCharactersCounter = -2;
     }
 
     public bool CheckIfSkillIsUsingHitBox(ItemSkill SkillToCheck)
@@ -220,9 +258,19 @@ public class Item : MonoBehaviour {
 
     private void ApplyCurrentSkillEffectsToCharacter(Character HitCharacter)
     {
+        if (MaxHittableCharactersCounter >= MaxHittableCharacters)
+        {
+            return;
+        }
+
         if (CurrentItemHitBoxAlignment == Character.TeamAlignment.ALL
                     || CurrentItemHitBoxAlignment == HitCharacter.GetAlignment())
         {
+            if (MaxHittableCharactersCounter >= 0)
+            {
+                MaxHittableCharactersCounter++;
+            }
+
             SkillCurrentlyUsingItemHitBox.ApplyEffects(CurrentOwner, ItemSkillCurrentlyUsingItemHitBox, HitCharacter);
         }
     }
@@ -282,5 +330,27 @@ public class Item : MonoBehaviour {
         {
             ItemSkills[i].DestroyAllHitObjects();
         }
+    }
+
+    public void EquipSpecialSkill(SkillType NewSkill)
+    {
+        if (SpecialSkillID < 0)
+        {
+            return;
+        }
+
+        ItemSkills[SpecialSkillID].SetSkillObject(NewSkill);
+        ItemSkillsComboStart[SpecialSkillButton] = SpecialSkillID;
+    }
+
+    public void UnEquipSpecialSkill()
+    {
+        if (SpecialSkillID < 0)
+        {
+            return;
+        }
+
+        //ItemSkills[SpecialSkillID].InterruptSkill(true);
+        ItemSkillsComboStart[SpecialSkillButton] = -1;
     }
 }

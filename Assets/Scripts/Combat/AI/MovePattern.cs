@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MovePattern : ScriptableObject {
 
@@ -14,5 +15,10 @@ public class MovePattern : ScriptableObject {
     public virtual void UpdateMovePattern(PhysicsController PhysCont, CharacterEnemy Self, Character TargetCharacter)
     {
 
+    }
+
+    public virtual void UpdateMovePattern(NavMeshAgent NavAgent, CharacterEnemy Self, Character TargetCharacter)
+    {
+        
     }
 }

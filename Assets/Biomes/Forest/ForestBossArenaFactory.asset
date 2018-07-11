@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4e819ae4bc60ed4ca7534a7a76af0f8, type: 3}
+  m_Name: ForestBossArenaFactory
+  m_EditorClassIdentifier: 
+  ArenaTriggerPrefab: {fileID: 1977331088922286, guid: 11dc71309d99f8545a8d61b9cd52dd75,
+    type: 2}
+  FogGatePrefab: {fileID: 1129564519391044, guid: 90b619f3de93d1e4c9b77df8dcbb9aea,
+    type: 2}
+  WallPrefab: {fileID: 100000, guid: d554421290ac96f498804985e06e0c78, type: 3}
+  WallLenght: 17
+  WallAngleLimit: 10
+  WallPositionNoise: {x: 0, y: 0, z: 0}
+  WallScaleNoise: {x: 0.1, y: 0, z: 0}
+  GatePrefab: {fileID: 1129564519391044, guid: 90b619f3de93d1e4c9b77df8dcbb9aea, type: 2}
+  GateMinimumLength: 10
+  TowerPrefab: {fileID: 100000, guid: bef39439d44a74f40b476a7b16219795, type: 3}
+  PortalPrefab: {fileID: 1441201331607938, guid: 013c40d349727e64c96cd1f62a1d3307,
+    type: 2}
+  RewardPedestalPrefab: {fileID: 100000, guid: e5840d48645660843bd38c7a5466ea41, type: 3}
+  BuildingPrefabs: []
+  BossPrefabs:
+  - {fileID: 1574788587254294, guid: 8baf951ea5de7ee4fb781eba8a71ec4b, type: 2}
+  - {fileID: 1781491319435724, guid: 02534d5eaef82264194a3a465ade14cb, type: 2}

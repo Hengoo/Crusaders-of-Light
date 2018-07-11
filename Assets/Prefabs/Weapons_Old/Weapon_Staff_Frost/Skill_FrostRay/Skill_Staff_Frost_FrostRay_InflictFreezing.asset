@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc274bbccb92fc345bf88a4c79edb4ec, type: 3}
+  m_Name: Skill_Staff_Frost_FrostRay_InflictFreezing
+  m_EditorClassIdentifier: 
+  ConditionToApply: {fileID: 11400000, guid: 8334ef3d7b9a0954e8cd4a778c9fd778, type: 2}
+  DurationBase: 1.25
+  DurationPerLevel: 0
+  DurationModifiers: []

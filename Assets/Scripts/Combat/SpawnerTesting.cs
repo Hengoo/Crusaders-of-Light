@@ -8,7 +8,6 @@ public class SpawnerTesting : MonoBehaviour {
 
     public int LevelMin = 0;    // Minimum Level of Weapons
     public int LevelMax = 0;    // Maximum Level of Weapons
-    public int TestSeed = 0;
     public SpawnerOrder[] TestOrders = new SpawnerOrder[0];
     public int PowerlevelAllowance = 0;
     public Vector3[] Positions = new Vector3[0];
@@ -18,7 +17,6 @@ public class SpawnerTesting : MonoBehaviour {
 
     private void Start()
     {
-        Random.InitState(TestSeed);
         SpawnerToTest.Initialize(true, PowerlevelAllowance, LevelMin, LevelMax, Positions, Rotations, TagsBiome, TestOrders, FixSpawns);
     }
 }

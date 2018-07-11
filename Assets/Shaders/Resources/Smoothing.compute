@@ -1,0 +1,72 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel Smooth
+#pragma kernel SmoothMask
+#pragma kernel PrepArray
+
+#include "UnityCG.cginc"
+
+//the 3 buffers:
+//Heightmap
+RWStructuredBuffer<float> heightmapBuffer;
+RWStructuredBuffer<float> heightmapTmpBuffer;
+
+//mask:
+RWStructuredBuffer<float> maskBuffer;
+
+int squareSize;
+int arraySize;
+//test for the hardcoded 3x3 -> should require way less memory reads
+groupshared float sData[18*18];
+
+
+inline int getIndex(int x, int y)
+{
+	return max(min(y,arraySize-1),0) * arraySize + max(min(x,arraySize-1),0);
+}
+
+[numthreads(64,1,1)]
+void PrepArray (uint id : SV_DispatchThreadID)
+{
+	heightmapTmpBuffer[id] = heightmapBuffer[id];
+	//heightmapBuffer[id] = 0;
+}
+
+
+// 100000 times on  512 * 512 ~ 2130 ms
+[numthreads(16,16,1)]
+void Smooth (uint2 id : SV_DispatchThreadID)
+{
+	float tmp =0;
+
+	for(int i = - squareSize; i < squareSize+1; i++)
+	{
+		for(int j = - squareSize; j < squareSize+1; j++)
+		{
+			tmp += heightmapTmpBuffer[getIndex(id.x+j,id.y+i)];
+		}
+	}
+	heightmapBuffer[getIndex(id.x,id.y)] = tmp / ((squareSize*2+1) *(squareSize*2+1));
+	//heightmapBuffer[getIndex(id.x,id.y)] = getIndex(id.x,id.y);
+}
+
+[numthreads(16,16,1)]
+void SmoothMask (uint2 id : SV_DispatchThreadID)
+{
+	float tmp =0;
+	float tmp2 = heightmapTmpBuffer[getIndex(id.x,id.y)];
+	float mask = maskBuffer[getIndex(id.x,id.y)];
+	if(mask == 0)
+	{
+		return;
+	}
+
+	for(int i = - squareSize; i < squareSize+1; i++)
+	{
+		for(int j = - squareSize; j < squareSize+1; j++)
+		{
+			tmp += heightmapTmpBuffer[getIndex(id.x+j,id.y+i)];
+		}
+	}
+	heightmapBuffer[getIndex(id.x,id.y)] = tmp2 + (tmp / ((squareSize*2+1) *(squareSize*2+1)) - tmp2) * mask;
+	//heightmapBuffer[getIndex(id.x,id.y)] = getIndex(id.x,id.y);
+}

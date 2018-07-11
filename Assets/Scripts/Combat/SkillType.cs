@@ -83,7 +83,7 @@ public class SkillType : ScriptableObject
         return (int)(HindranceLevel);
     }
 
-    public bool StartSkillActivation(ItemSkill SourceItemSkill, Character Owner)
+    public virtual bool StartSkillActivation(ItemSkill SourceItemSkill, Character Owner)
     {
         if (!Owner.CheckHindrance(HindranceLevel))
         {
@@ -113,9 +113,11 @@ public class SkillType : ScriptableObject
         return true;
     }
 
-    protected void RemoveActivationMovementRateModifier(ItemSkill SourceItemSkill, Character Owner)
+    public void RemoveActivationMovementRateModifier(ItemSkill SourceItemSkill, Character Owner)
     {
         Owner.ChangeMovementRateModifier(-1 * ActivationMovementModifier);
+        Owner.SetOverrideMovement(false);
+        Owner.SetOverrideRotation(false);
     }
 
 
@@ -124,13 +126,13 @@ public class SkillType : ScriptableObject
         // Can Activation Cost be paid?
         if (Owner.GetEnergyCurrent() < Cost)
         {
-            Debug.Log(Owner + " can not activate Skill " + this + "! Reason: Not enough Energy!");
+           // Debug.Log(Owner + " can not activate Skill " + this + "! Reason: Not enough Energy!");
             return false;
         }
 
         if (SourceItemSkill.IsCurrentlyOnCooldown())
         {
-            Debug.Log(Owner + " can not activate Skill " + this + "! Reason: Skill is on Cooldown!");
+           // Debug.Log(Owner + " can not activate Skill " + this + "! Reason: Skill is on Cooldown!");
             return false;
         }
 

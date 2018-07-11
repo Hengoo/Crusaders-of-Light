@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05ae0bf356db20f4fa891d24d57b3090, type: 3}
+  m_Name: Forest
+  m_EditorClassIdentifier: 
+  UniqueName: Forest
+  HeightParameters:
+    Persistence: 0.056
+    LocalMax: 0.4
+    LocalMin: 0.35
+    Lacunarity: 20
+    Scale: 12.5
+  TerrainMaterial: {fileID: 2100000, guid: 0e6511feae21ce44799a21eaea44610f, type: 2}
+  Splat:
+    texture: {fileID: 2800000, guid: 4db768defe966a444bc8c35c6187bf33, type: 3}
+    normalMap: {fileID: 2800000, guid: 747a92c0f5889d445ad1414a0f6d4c2d, type: 3}
+    metallic: 0
+    smoothness: 0
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 10, y: 10}
+  Blocker: {fileID: 1112269765805042, guid: 0e26e0caf0a4a0d429f63595f1a991d0, type: 2}
+  BlockerPole: {fileID: 0}
+  BlockerLength: 3
+  BlockerAngleLimit: 15
+  BlockerPositionNoise: {x: 1, y: 0, z: 1}
+  BlockerScaleNoise: {x: 0.1, y: 0.5, z: 0.1}
+  BorderBiome: {fileID: 11400000, guid: 4f027a98eb4994444ac81ba131ac5cfa, type: 2}
+  FallingParticlesPrefab: {fileID: 1086359337144890, guid: 72345429fa745884eb0407d9a5c1cfea,
+    type: 2}
+  SunIntensity: 0.7
+  BossAreas:
+  - {fileID: 11400000, guid: c61b14e114f2a4a4b822d3ad05c59e24, type: 2}
+  SpecialAreas:
+  - {fileID: 11400000, guid: 73fbf393fc7fc67428ad21010dcab8c9, type: 2}
+  - {fileID: 11400000, guid: bea388ee9dcb2d644823d740b0a9e9fe, type: 2}
+  PathAreas:
+  - {fileID: 11400000, guid: 2ba3728689f59a847a5fa3488c223372, type: 2}
+  - {fileID: 11400000, guid: 077452ad8d4a93b499c33384835bcf42, type: 2}
+  - {fileID: 11400000, guid: 69ec5d8bfc0bb4b4dac2661c8a4d7a24, type: 2}
+  MainPathSplatPrototype:
+    texture: {fileID: 2800000, guid: d048b4964ec17a640a0543ae79757a34, type: 3}
+    normalMap: {fileID: 2800000, guid: 03c6cb46c6faeea4da99c2845000e074, type: 3}
+    metallic: 0
+    smoothness: 0
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 3, y: 3}
+  SidePathSplatPrototype:
+    texture: {fileID: 2800000, guid: ad2965c7bc0de824db9980f3f0025c1c, type: 3}
+    normalMap: {fileID: 2800000, guid: ca0da3ee275b2c848b03591fe7940cba, type: 3}
+    metallic: 0
+    smoothness: 0
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 10, y: 10}
+  MainPathSplatSize: 1
+  SidePathSplatSize: 1
+  PathHalfWidth: 5
+  PathBezierSegmentSize: 10

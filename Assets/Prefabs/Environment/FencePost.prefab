@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4851222438308926}
   - component: {fileID: 33151655421672606}
   - component: {fileID: 23467861025338536}
-  - component: {fileID: 136751415865178252}
+  - component: {fileID: 65909334577102000}
   m_Layer: 0
   m_Name: FencePost
   m_TagString: Untagged
@@ -36,7 +36,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1624022019104524}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 176.45308, y: 18.698793, z: 695.7806}
+  m_LocalPosition: {x: 115.389084, y: 28.098816, z: 324.64908}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -55,6 +55,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: a22f616d51594894598902fb4b3f0e64, type: 2}
   m_StaticBatchInfo:
@@ -83,16 +84,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1624022019104524}
   m_Mesh: {fileID: 4300000, guid: cbd4cbf0ded63d64f8612ef1911943c7, type: 3}
---- !u!136 &136751415865178252
-CapsuleCollider:
+--- !u!65 &65909334577102000
+BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1624022019104524}
-  m_Material: {fileID: 13400000, guid: 7cce50619d8397f4286efdf9a6b17a67, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.43
-  m_Height: 20
-  m_Direction: 1
-  m_Center: {x: 0, y: 1.4409945, z: 0}
+  serializedVersion: 2
+  m_Size: {x: 0.627874, y: 3.5777109, z: 0.725006}
+  m_Center: {x: 0, y: 1.0839545, z: 0}

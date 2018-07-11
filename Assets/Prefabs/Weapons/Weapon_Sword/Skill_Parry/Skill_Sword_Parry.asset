@@ -20,9 +20,9 @@ MonoBehaviour:
   AllowTargetEnemy: 0
   Effects: []
   HindranceLevel: 1
-  AnimationName: Melee_Block
+  AnimationName: S_Pa
   OverwriteAnimationSpeedScaling: -1
-  AIDecisionMaker: {fileID: 11400000, guid: 124d128c2e3d23842b5c9a4fa3d16de5, type: 2}
+  AIDecisionMaker: {fileID: 0}
   PowerLevel: 0
   Threat:
   - 0
@@ -30,8 +30,9 @@ MonoBehaviour:
   - 0
   ActivationTimeMax: -1
   EffectsStart:
-  - {fileID: 11400000, guid: 8f4b2c7d7120dc14e86d04b0cb31d973, type: 2}
+  - {fileID: 11400000, guid: c3acf9f711e759946b21daf31025eebd, type: 2}
   EffectsEnd:
-  - {fileID: 11400000, guid: b2a46d64dada9544c95cb8448a0603b4, type: 2}
+  - {fileID: 11400000, guid: d1993268298a5af4c88aec17bb876c97, type: 2}
   IdleAnimation: Channel_Idle
   ReleaseAnimation: Channel_Released
+  ChanellingSound: {fileID: 0}

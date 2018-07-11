@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc8ac6d6aa73e8f4e9906ea71de04c7b, type: 3}
+  m_Name: Element_Frost_SpecialSkill_Beam
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.3
+  ActivationIntervall: -1
+  Cooldown: 1
+  ActivationMovementModifier: -1
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: 231485c8f08a6de4485506369567f91e, type: 2}
+  - {fileID: 11400000, guid: a23864044c94b8748905ce2aacb30933, type: 2}
+  HindranceLevel: 0
+  AnimationName: C_Beam
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 0}
+  PowerLevel: 0
+  Threat:
+  - 3
+  - 0
+  - 0
+  ActivationTimeMax: -1
+  EffectsStart: []
+  EffectsEnd: []
+  AtStartHitObjectPrefabs:
+  - {fileID: 114265363168623370, guid: 714cf6acab8a8664088a03d2c2bd0345, type: 2}
+  IntervallHitObjectPrefabs: []
+  AtEndHitObjectPrefabs: []
+  UseSkillLevelAtActivationMoment: 1
+  IdleAnimation: Channel_Idle
+  ReleaseAnimation: Channel_Released
+  ChanellingLoop: {fileID: 8300000, guid: 3b3c2e9b4e6938741915cec182c6f665, type: 3}
+  ChanellingRelease: {fileID: 0}

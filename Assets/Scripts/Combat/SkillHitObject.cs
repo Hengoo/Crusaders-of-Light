@@ -6,7 +6,7 @@ public class SkillHitObject : MonoBehaviour {
 
     [Header("Hit Object Attributes:")]
     public float MaxTimeAlive = 0;
-    private float TimeAliveCounter = 0;
+    protected float TimeAliveCounter = 0;
 
     public float TickTime = 0;
     public float CurrentTickTime = 0.0f;
@@ -14,6 +14,7 @@ public class SkillHitObject : MonoBehaviour {
 
     public bool CanHitSameTargetMultipleTime = false;
     public int MaxNumberOfTargets = -1;
+    protected int MaxNumberOfTargetsCounter = 0;
     public bool HitObjectIsChildOfOwner = false;
 
     public bool AlwaysHitOwner = false;
@@ -21,6 +22,19 @@ public class SkillHitObject : MonoBehaviour {
     [Header("Hit Object Movement Attributes:")]
     public bool UseForceImpulse = false;
     public float ForceImpulseMagnitude = 0.0f;
+    public bool UseFixedTerrainHeight = false;
+    public float FixedTerrainHeight = 0.6f;
+    protected RaycastHit TerrHeightHit;
+    protected int TerrHeightLayerMask = 14;
+
+    [Header("Hit Object Particle Systems:")]
+    public ParticleSystem[] ParticleSystems = new ParticleSystem[0];
+
+    [Header("Size Over Time:")]
+    public bool UseSizeOverTime = false;
+    public float SizeOverTimeStart = 1f;
+    public float SizeOverTimeEnd = 1f;
+    public float SizeOverTimeDuration = 0f;
 
     [Header("Hit Object - Does not need to be set in Editor!:")]
     public Character Owner;
@@ -37,13 +51,19 @@ public class SkillHitObject : MonoBehaviour {
 
     public List<CharacterAttention> InCharactersAttentions = new List<CharacterAttention>();
 
-    public void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
+    [HideInInspector] public bool FadeSound;
+
+    protected AudioSource _audioSource;
+
+    public virtual void InitializeHitObject(Character _Owner, ItemSkill _SourceItemSkill, SkillType _SourceSkill, bool UseLevelAtActivationMoment)
     {
         // Link Skill User and Skill:
         Owner = _Owner;
         SourceSkill = _SourceSkill;
         SourceItemSkill = _SourceItemSkill;
-        
+        _audioSource = GetComponent<AudioSource>();
+
+
         if (UseLevelAtActivationMoment)
         {
             FixedLevel = SourceItemSkill.GetSkillLevel();
@@ -98,20 +118,48 @@ public class SkillHitObject : MonoBehaviour {
         {
             ApplyForceImpulse();
         }
-    }
+
+        if (UseFixedTerrainHeight)
+        {
+            TerrHeightLayerMask = 1 << TerrHeightLayerMask;
+        }
+    }   
 
     public void Update()
     {
-        if (MaxTimeAlive > 0)
-        {
-            TimeAliveCounter += Time.deltaTime;
+        TimeAliveCounter += Time.deltaTime;
 
-            if (TimeAliveCounter >= MaxTimeAlive)
+        if (MaxTimeAlive > 0
+            && TimeAliveCounter >= MaxTimeAlive)
+        {
+            HitObjectTimeOut();
+            return;
+        }
+
+        var soundValue = MaxTimeAlive - TimeAliveCounter;
+        if (_audioSource && FadeSound && soundValue < 3f)
+        {
+            _audioSource.volume = soundValue / 3f;
+        }
+
+        if (UseSizeOverTime)
+        {
+            Vector3 Size = Vector3.one * Mathf.Lerp(SizeOverTimeStart, SizeOverTimeEnd, (Mathf.Clamp01(TimeAliveCounter / SizeOverTimeDuration)));
+            transform.localScale = Size;
+
+            for (int i = 0; i < ParticleSystems.Length; i++)
             {
-                HitObjectTimeOut();
-                return;
+                ParticleSystems[i].transform.localScale = Size;
             }
-        }    
+        }
+
+        if (UseFixedTerrainHeight)
+        { 
+            if (Physics.Raycast(transform.position, Vector3.down, out TerrHeightHit, 4, TerrHeightLayerMask))
+            {
+                transform.position = new Vector3(transform.position.x, TerrHeightHit.point.y + FixedTerrainHeight, transform.position.z);
+            }
+        }
 
         if (TickTime > 0)
         {
@@ -121,7 +169,7 @@ public class SkillHitObject : MonoBehaviour {
             {
                 TickTimeReached = true;
 
-                if (AlwaysHitOwner)
+                if (AlwaysHitOwner && HitCharacters.Contains(Owner))
                 {
                     HitTarget(Owner);
                 }
@@ -168,6 +216,11 @@ public class SkillHitObject : MonoBehaviour {
 
     protected virtual void HitTarget(Character TargetCharacter)
     {
+        if (MaxNumberOfTargets > 0 && MaxNumberOfTargetsCounter >= MaxNumberOfTargets)
+        {
+            return;
+        }
+
         if (!CanHitSameTargetMultipleTime && AlreadyHitCharacters.Contains(TargetCharacter))
         {
             return;
@@ -179,7 +232,8 @@ public class SkillHitObject : MonoBehaviour {
             return;
         }
 
-        AlreadyHitCharacters.Add(TargetCharacter);
+        if(!AlreadyHitCharacters.Contains(TargetCharacter))
+            AlreadyHitCharacters.Add(TargetCharacter);
 
         if (FixedLevel >= 0)
         {
@@ -190,10 +244,21 @@ public class SkillHitObject : MonoBehaviour {
             SourceSkill.ApplyEffects(Owner, SourceItemSkill, TargetCharacter);
         }
 
-        if (MaxNumberOfTargets > 0
+
+
+   /*     if (MaxNumberOfTargets > 0
             && MaxNumberOfTargets >= AlreadyHitCharacters.Count)
         {
             ReachedMaxNumberOfTargets();
+        }*/
+        if (MaxNumberOfTargets > 0)
+        {
+            MaxNumberOfTargetsCounter++;
+
+            if (MaxNumberOfTargetsCounter >= MaxNumberOfTargets)
+            {
+                ReachedMaxNumberOfTargets();
+            }
         }
     }
     
@@ -216,7 +281,7 @@ public class SkillHitObject : MonoBehaviour {
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    protected void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Character")
         {
@@ -270,7 +335,9 @@ public class SkillHitObject : MonoBehaviour {
     {
         Vector3 ForceDirection = Vector3.zero;
 
-        ForceDirection = Owner.transform.rotation * Vector3.forward;
+        //ForceDirection = Owner.transform.rotation * Vector3.forward;
+
+        ForceDirection = transform.rotation * Vector3.forward;
 
         float FinalMagnitude = ForceImpulseMagnitude;
 

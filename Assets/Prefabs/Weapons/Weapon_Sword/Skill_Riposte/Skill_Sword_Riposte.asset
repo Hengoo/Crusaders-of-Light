@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b646cdd733c544ea65c7ce4a2ec9a8, type: 3}
+  m_Name: Skill_Sword_Riposte
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.75
+  ActivationIntervall: -1
+  Cooldown: -1
+  ActivationMovementModifier: -0.9
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: 53001cbdafca7a749984aa35ae827cbb, type: 2}
+  HindranceLevel: 0
+  AnimationName: S_Rip
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 0}
+  PowerLevel: 0
+  Threat:
+  - 0
+  - 0
+  - 0
+  HitTimeStart: 0.495
+  HitTimeStop: 0.6975
+  HitEachCharacterOnlyOnce: 1
+  MaxHittableCharacters: -1
+  CheckForAnimationTrigger: 1
+  AnimationTrigger: S_LiSw1
+  EffectsOnSelfOnAnimationTrigger:
+  - {fileID: 11400000, guid: c6864f68bbc20f54c83637f0457d6477, type: 2}
+  EffectsOnSelfOnAnimationTrigger2:
+  - {fileID: 11400000, guid: b7740d3ba1991ea42907cd41a2f66ee6, type: 2}

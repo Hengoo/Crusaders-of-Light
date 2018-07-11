@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc8ac6d6aa73e8f4e9906ea71de04c7b, type: 3}
+  m_Name: Skill_Staff_Flames_Burn
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.3
+  ActivationIntervall: -1
+  Cooldown: 5
+  ActivationMovementModifier: -0.8
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: aaad8043e2f74d940b274f204f66ab3d, type: 2}
+  HindranceLevel: 1
+  AnimationName: Melee_Block
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: 2c4db351f8d43a549a671b3f7698a2ed, type: 2}
+  PowerLevel: 0
+  Threat:
+  - 3
+  - 0
+  - 0
+  ActivationTimeMax: -1
+  EffectsStart: []
+  EffectsEnd: []
+  AtStartHitObjectPrefabs:
+  - {fileID: 114908530064051912, guid: 179e54ea2f215d048a2e20c99c3c576a, type: 2}
+  IntervallHitObjectPrefabs: []
+  AtEndHitObjectPrefabs: []
+  UseSkillLevelAtActivationMoment: 1
+  IdleAnimation: Channel_Idle
+  ReleaseAnimation: Channel_Released
+  ChanellingLoop: {fileID: 8300000, guid: b6867356e26f63e48992a06430472b11, type: 3}
+  ChanellingRelease: {fileID: 0}

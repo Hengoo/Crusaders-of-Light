@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b7002d963efd5947a3d87e859e9a884, type: 3}
+  m_Name: Skill_Golem_HitCombo_SpawnHitObject
+  m_EditorClassIdentifier: 
+  HitObjectPrefab: {fileID: 114064170519462796, guid: cbc82c3571468cf47b6a238f3a67fe4a,
+    type: 2}
+  UseSkillLevelAtActivationMoment: 1
+  Threat:
+  - 0
+  - 3
+  - 0
+  AllowTarget: 0001
+  SkillEffects:
+  - {fileID: 11400000, guid: f5a28fdf53f6e8741bc56a9a248149bd, type: 2}
+  UseRotationOffset: 0
+  RotationOffset: {x: 0, y: 0, z: 0}
+  SpawnAtTargetPosition: 1
+  SpawnSound: {fileID: 0}
+  LoopSound: 0

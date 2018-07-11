@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46bb924257699d240846c00a1f0a2b9c, type: 3}
+  m_Name: Condition_Freezing
+  m_EditorClassIdentifier: 
+  Name: Freezing
+  OnApply:
+  - {fileID: 11400000, guid: 0f554fbf3b24eb347ab0f7dd6c4b0c0b, type: 2}
+  OnTick: []
+  OnEnd:
+  - {fileID: 11400000, guid: 9607adb6776903c47835505ecad54170, type: 2}
+  TickTime: -1
+  InstanceMaximum: 1
+  VisualEffectObject: {fileID: 1533183204227754, guid: c9b17812c869a334d915e860949c5e6b,
+    type: 2}

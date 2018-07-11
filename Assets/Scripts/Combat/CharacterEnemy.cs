@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CharacterEnemy : Character {
 
@@ -39,11 +40,18 @@ public class CharacterEnemy : Character {
 
     public Spawner SpawnedBy;
 
+    [Header("Enemy Nav Mesh Movement:")]
+    public NavMeshAgent NavAgent;
+
     [Header("Enemy Testing:")]
     public bool SpawnStartingWeaponsOnStart = false;
 
+    [Header("Difficulty Scaling:")]
+    public float DifficultyScaleHealthFactor = 0.5f;
+
     protected override void Start()
     {
+        PhysCont = new PhysicsController(gameObject);
         base.Start();
         if (SpawnStartingWeaponsOnStart)
         {
@@ -51,6 +59,8 @@ public class CharacterEnemy : Character {
         }
 
         BaseMovePattern = ActiveMovePattern;
+
+        SetHealthMax(HealthMax * Mathf.FloorToInt(((GameController.Instance.GetCurrentDifficultyFactor() - 1) * DifficultyScaleHealthFactor) + 1));
     }
 
     protected override void Update()
@@ -64,11 +74,12 @@ public class CharacterEnemy : Character {
         }
         UpdateMovePattern();
     }
-
+    
 
     private void FixedUpdate()
     {
-        ActiveMovePattern.UpdateMovePattern(PhysCont, this, TargetCharacter);
+        //ActiveMovePattern.UpdateMovePattern(PhysCont, this, TargetCharacter);
+        ActiveMovePattern.UpdateMovePattern(NavAgent, this, TargetCharacter);
     }
 
     public override TeamAlignment GetAlignment()
@@ -376,6 +387,15 @@ public class CharacterEnemy : Character {
     public override void FinishedCurrentSkillActivation(int WeaponSlotID, int Hindrance)
     {
         SkillContinueActivation[WeaponSlotID] = false;
+        HandAnimators[0].SetTrigger(Anim_BreakAnim);
+       
+        for (int i = 0; i < Hands.Length; i++)
+        {
+            if (Hands[i])
+            {
+                Hands[i].ResetTriggers();
+            }
+        }
 
         base.FinishedCurrentSkillActivation(WeaponSlotID, Hindrance);
     }
@@ -416,7 +436,6 @@ public class CharacterEnemy : Character {
 
         return true;
     }
-
 
     // =================================== /SKILL ACTIVATION ====================================
 

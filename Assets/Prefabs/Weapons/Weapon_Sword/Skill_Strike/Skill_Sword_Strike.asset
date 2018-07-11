@@ -19,9 +19,8 @@ MonoBehaviour:
   AllowTargetFriendly: 0
   AllowTargetEnemy: 1
   Effects:
-  - {fileID: 11400000, guid: 19c3ba0107273c24faeda4f506e8b5b9, type: 2}
-  - {fileID: 11400000, guid: a040615aa39e9bd4ba41f728f1f7476a, type: 2}
-  - {fileID: 11400000, guid: 336c2429ed4610e458db408622d082e8, type: 2}
+  - {fileID: 11400000, guid: 4d9f2894475461448b09df56e89df5cc, type: 2}
+  - {fileID: 11400000, guid: 33546d2770e0d9a4dba10ddebce88ac8, type: 2}
   HindranceLevel: 2
   AnimationName: Melee_ChargeUp_Swing
   OverwriteAnimationSpeedScaling: -1
@@ -41,6 +40,9 @@ MonoBehaviour:
   MinModifier: 1
   MaxModifier: 1
   EffectsSelfOnMinimumActivationTimeEnd: []
-  EffectsSelfOnRelease: []
+  EffectsSelfOnRelease:
+  - {fileID: 11400000, guid: f1e8c3399e0abcd45953b0924e79e703, type: 2}
   EffectsSelfOnEnd: []
   ReleaseAnimation: Charge_Released
+  ChargeUp: {fileID: 0}
+  ChargeRelease: {fileID: 8300000, guid: bba10404074522b44818af4335801766, type: 3}

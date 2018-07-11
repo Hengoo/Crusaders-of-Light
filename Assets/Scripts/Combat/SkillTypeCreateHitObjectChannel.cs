@@ -21,6 +21,9 @@ public class SkillTypeCreateHitObjectChannel : SkillType {
     public string IdleAnimation = "Channel_Idle";
     public string ReleaseAnimation = "Channel_Released";
 
+    public AudioClip ChanellingLoop;
+    public AudioClip ChanellingRelease;
+
     public override void UpdateSkillActivation(ItemSkill SourceItemSkill, float CurrentActivationTime, bool StillActivating, bool ActivationIntervallReached)
     {
         if (CurrentActivationTime < ActivationTime)
@@ -31,6 +34,15 @@ public class SkillTypeCreateHitObjectChannel : SkillType {
         if (!SourceItemSkill.GetEffectOnlyOnceBool(0))
         {
             SourceItemSkill.SetEffectOnlyOnceBool(0, true);
+
+            SourceItemSkill.StopAllCoroutines();
+            if (ChanellingLoop)
+            {
+                var audioSource = SourceItemSkill.GetComponent<AudioSource>();
+                audioSource.clip = ChanellingLoop;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
 
             SkillHitObject SpawnedHitObjectStart;
 
@@ -45,7 +57,7 @@ public class SkillTypeCreateHitObjectChannel : SkillType {
                 SpawnedHitObjectStart = Instantiate(AtStartHitObjectPrefabs[i], SourceItemSkill.transform.position, SourceItemSkill.GetCurrentOwner().transform.rotation);
                 SpawnedHitObjectStart.InitializeHitObject(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, this, UseSkillLevelAtActivationMoment);
             }
-
+            
             SourceItemSkill.GetCurrentOwner().StartAnimation(IdleAnimation, 1, SourceItemSkill.GetParentItemEquipmentSlot());
         }
 
@@ -70,6 +82,20 @@ public class SkillTypeCreateHitObjectChannel : SkillType {
                 EffectsEnd[i].ApplyEffect(SourceItemSkill.GetCurrentOwner(), SourceItemSkill, SourceItemSkill.GetCurrentOwner());
             }
 
+
+            var audioSource = SourceItemSkill.GetComponent<AudioSource>();
+            SourceItemSkill.StopAllCoroutines();
+            if (ChanellingRelease)
+            {
+                audioSource.clip = ChanellingRelease;
+                audioSource.loop = false;
+                audioSource.Play();
+            }
+            else
+            {
+                SourceItemSkill.StartCoroutine(FadeSoundOutAndStop(audioSource, .3f));
+            }
+
             SkillHitObject SpawnedHitObjectEnd;
 
             for (int i = 0; i < AtEndHitObjectPrefabs.Length; i++)
@@ -90,6 +116,30 @@ public class SkillTypeCreateHitObjectChannel : SkillType {
             SourceItemSkill.StoppedActivatingSkillWithHitObjects(this);
             SourceItemSkill.FinishedSkillActivation();
         }
+    }
+
+    private IEnumerator FadeSoundIn(AudioSource source, float seconds)
+    {
+        source.volume = 0;
+        var stepPerSecond = 1.0f / seconds;
+        while (source.volume < 1.0f)
+        {
+            yield return new WaitForEndOfFrame();
+            source.volume += stepPerSecond * Time.deltaTime;
+        }
+        source.volume = 1;
+    }
+
+    private IEnumerator FadeSoundOutAndStop(AudioSource source, float seconds)
+    {
+        var stepPerSecond = 1.0f / seconds;
+        while (source.volume > 0)
+        {
+            yield return new WaitForEndOfFrame();
+            source.volume -= stepPerSecond * Time.deltaTime;
+        }
+        source.volume = 0;
+        source.Stop();
     }
 }
 

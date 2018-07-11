@@ -12,13 +12,17 @@ public class ItemSkill : MonoBehaviour {
     public int Level;
 
     [Header("Item Skill (Do not set - Shown for testing only):")]
-    public float CurrentCooldown;
+    private float CurrentCooldown;
 
-    public float ActivationIntervallTimer = 0.0f;
+    private float ActivationIntervallTimer = 0.0f;
 
-    public bool[] EffectOnlyOnceBool = { false, false };
-    public float EffectFloat = 0.0f;
-    public List<SkillHitObject> EffectSkillHitObjects = new List<SkillHitObject>();
+    private bool[] EffectOnlyOnceBool = { false, false };
+    private float EffectFloat = 0.0f;
+    private List<SkillHitObject> EffectSkillHitObjects = new List<SkillHitObject>();
+
+    [Header("Combo System")]
+    public int ItemSkillID = -1;
+    public ItemSkill[] ComboInput = new ItemSkill[4];
 
     //[Header("Animation:")]
     //public string AnimationName = "no_animation";
@@ -145,6 +149,7 @@ public class ItemSkill : MonoBehaviour {
         }
 
         ParentItem.EndSkillCurrentlyUsingItemHitBox();
+        SkillObject.RemoveActivationMovementRateModifier(this, GetCurrentOwner());
     }
 
     public List<Character> GetAllCurrentlyCollidingCharacters()
@@ -155,6 +160,11 @@ public class ItemSkill : MonoBehaviour {
     public void StartSkillCurrentlyUsingItemHitBox(bool HitEachCharacterOnce)
     {
         ParentItem.StartSkillCurrentlyUsingItemHitBox(this, SkillObject, HitEachCharacterOnce);
+    }
+
+    public void StartSkillCurrentlyUsingItemHitBox(bool HitEachCharacterOnce, int MaxNumberHittableCharacters)
+    {
+        ParentItem.StartSkillCurrentlyUsingItemHitBox(this, SkillObject, HitEachCharacterOnce, MaxNumberHittableCharacters);
     }
 
     public void EndSkillCurrentlyUsingItemHitBox()
@@ -271,6 +281,27 @@ public class ItemSkill : MonoBehaviour {
     }
 
 
+    // =================================== COMBO SYSTEM ====================================
+
+    public int GetItemSkillIDFromComboInput(int SlotID)
+    {
+        if (ComboInput[SlotID])
+        {
+            return ComboInput[SlotID].GetItemSkillID();
+        }
+
+        return -1;
+    }
+
+    public int GetItemSkillID()
+    {
+        return ItemSkillID;
+    }
+
+
+    // ==================================/ COMBO SYSTEM /===================================
+
+
     public DecisionMaker.AIDecision AICalculateSkillScoreAndApplication()
     {
         return SkillObject.AICalculateSkillScoreAndApplication(this, GetCurrentOwner());
@@ -294,5 +325,12 @@ public class ItemSkill : MonoBehaviour {
     public float[] AIGetThreat()
     {
         return SkillObject.GetThreat();
+    }
+
+    public void SetSkillObject(SkillType NewSkill)
+    {
+        CurrentCooldown = 0;
+        ParentItem.EndSkillCurrentlyUsingItemHitBox();
+        SkillObject = NewSkill;
     }
 }

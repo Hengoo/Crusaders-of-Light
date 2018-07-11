@@ -23,6 +23,8 @@ public class SkillEffectDamage : SkillEffect
     [Header("Skill Effect Damage Ignore Armor Value Modifier:")]
     public SkillEffectValueModifier[] IgnoreValueModifiers = new SkillEffectValueModifier[0];
 
+    public AudioClip HitSound;
+    public AudioClip BlockedSound;
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target)
     {
@@ -38,7 +40,10 @@ public class SkillEffectDamage : SkillEffect
         int FinalIgnoreDefenseValue = CalculateIgnoreDefense(Owner, SourceItemSkill, Target, SourceItemSkill.GetSkillLevel());
         int FinalIgnoreResistanceValue = CalculateIgnoreResistance(Owner, SourceItemSkill, Target, SourceItemSkill.GetSkillLevel());
 
-        Target.InflictDamage(DefenseType, DamageType, FinalDamageValue, FinalIgnoreDefenseValue, FinalIgnoreResistanceValue);
+        var damageAmount = Target.InflictDamage(DefenseType, DamageType, FinalDamageValue, FinalIgnoreDefenseValue,
+            FinalIgnoreResistanceValue);
+
+        playSound(Target.GetComponent<AudioSource>(), damageAmount);
     }
 
     public override void ApplyEffect(Character Owner, ItemSkill SourceItemSkill, Character Target, int FixedLevel)
@@ -55,7 +60,18 @@ public class SkillEffectDamage : SkillEffect
         int FinalIgnoreDefenseValue = CalculateIgnoreDefense(Owner, SourceItemSkill, Target, FixedLevel);
         int FinalIgnoreResistanceValue = CalculateIgnoreResistance(Owner, SourceItemSkill, Target, FixedLevel);
 
-        Target.InflictDamage(DefenseType, DamageType, FinalDamageValue, FinalIgnoreDefenseValue, FinalIgnoreResistanceValue);
+        
+        playSound(Target.GetComponent<AudioSource>(), Target.InflictDamage(DefenseType, DamageType, FinalDamageValue, FinalIgnoreDefenseValue, FinalIgnoreResistanceValue));
+    }
+
+    private void playSound(AudioSource source, int damageAmount)
+    {
+        if (!source.enabled) return;
+
+        if(!(HitSound && BlockedSound)) return;
+
+        source.clip = damageAmount > 60 ? HitSound : BlockedSound;
+        source.Play();
     }
 
     private int CalculateIgnoreDefense(Character Owner, ItemSkill SourceItemSkill, Character Target, int Level)

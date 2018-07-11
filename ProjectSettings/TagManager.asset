@@ -9,6 +9,12 @@ TagManager:
   - Attention
   - Spawner
   - Skills
+  - EnemySwarm
+  - SwarmDanger
+  - SkillsPlayer
+  - EquipPoint
+  - Chest
+  - AreaArenaTrigger
   layers:
   - Default
   - TransparentFX
@@ -22,18 +28,18 @@ TagManager:
   - Attention
   - Spawner
   - Skills
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - DeadCharacter
+  - Weapon
+  - Terrain
+  - EnemySwarm
+  - AttentionEnemy
+  - CharacterEnemy
+  - AttentionSwarm
+  - SwarmDanger
+  - PostProcessing
+  - LightWisp
+  - WeaponEnemy
+  - Chest
   - 
   - 
   - 

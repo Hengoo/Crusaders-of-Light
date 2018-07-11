@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 136407235697152850}
   - component: {fileID: 114301975722172286}
   - component: {fileID: 54499927805860204}
+  - component: {fileID: 82947239840552552}
   m_Layer: 8
   m_Name: Enemy_Wizard
   m_TagString: Character
@@ -539,6 +540,92 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!82 &82947239840552552
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1437983783161170}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 0
+  MinDistance: 25
+  MaxDistance: 60
+  Pan2D: 0
+  rolloffMode: 2
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0.41666666
+      value: 1.0039062
+      inSlope: -4.7147455
+      outSlope: -4.7147455
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.8333333
+      value: 0.0748291
+      inSlope: -0.8747611
+      outSlope: -0.8747611
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: -0.41683316
+      outSlope: -0.41683316
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!95 &95021089899738254
 Animator:
   serializedVersion: 3
@@ -607,6 +694,7 @@ MonoBehaviour:
   PlayersInAttentionRange: []
   EnemiesInAttentionRange: []
   PlayerHitObjectsInRange: []
+  CharacterDeadLayerID: 12
 --- !u!114 &114301975722172286
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -620,6 +708,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthCurrent: 1000
   HealthMax: 1000
+  HealthHealingMin: 0
+  HealthHealingMax: 100
+  HealthHealingLostPerCount: 10
+  HealthHealingCounter: 0
   EnergyCurrent: 100
   EnergyMax: 100
   Resistances:
@@ -652,9 +744,13 @@ MonoBehaviour:
   SkillCurrentlyActivating: ffffffffffffffff
   HindranceLevel: 0
   ActiveConditions: []
+  MovementRateModfier: 1
   HandAnimators:
   - {fileID: 95021089899738254}
   - {fileID: 95518203912687654}
+  BodyAnimator: {fileID: 0}
+  Anim_StartWalking: StartWalking
+  Anim_EndWalking: EndWalking
   CharAttention: {fileID: 114014889118848740}
   Alignment: 2
   IdleSkillScore: 0.2
@@ -693,9 +789,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.7
-  m_Height: 2.61
+  m_Height: 4
   m_Direction: 1
-  m_Center: {x: 0, y: 1.18, z: 0}
+  m_Center: {x: 0, y: 1.9, z: 0}
 --- !u!136 &136861117136682790
 CapsuleCollider:
   m_ObjectHideFlags: 1

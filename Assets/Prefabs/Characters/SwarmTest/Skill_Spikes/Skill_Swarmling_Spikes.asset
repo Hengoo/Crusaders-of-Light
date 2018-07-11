@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b646cdd733c544ea65c7ce4a2ec9a8, type: 3}
+  m_Name: Skill_Swarmling_Spikes
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 1.5
+  ActivationIntervall: -1
+  Cooldown: -1
+  ActivationMovementModifier: 0
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: 7e4a0a1e183ca0d41bba4023ea96e2b1, type: 2}
+  - {fileID: 11400000, guid: dfab0173845df584e9c9cf438be6e679, type: 2}
+  HindranceLevel: 0
+  AnimationName: Spikes_Attack
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 0}
+  PowerLevel: 0
+  Threat:
+  - 0
+  - 0
+  - 0
+  HitTimeStart: 0
+  HitTimeStop: 1
+  HitEachCharacterOnlyOnce: 0
+  MaxHittableCharacters: -1
+  CheckForAnimationTrigger: 0
+  AnimationTrigger: no_animation_trigger
+  EffectsOnSelfOnAnimationTrigger: []
+  EffectsOnSelfOnAnimationTrigger2: []

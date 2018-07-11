@@ -16,9 +16,11 @@ MonoBehaviour:
   DefenseType: 0
   DamageType: 0
   DamageValueModifiers:
-  - {fileID: 11400000, guid: faa28a693202a5b4a933c6456ee07721, type: 2}
+  - {fileID: 11400000, guid: 6a73942d4b3a3eb429e53b70c3dc7117, type: 2}
   IgnoreDefenseValueBase: 0
   IgnoreDefenseValuePerLevel: 0
   IgnoreResistanceValueBase: 0
   IgnoreResistanceValuePerLevel: 0
   IgnoreValueModifiers: []
+  HitSound: {fileID: 0}
+  BlockedSound: {fileID: 0}

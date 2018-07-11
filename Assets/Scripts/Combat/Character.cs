@@ -22,7 +22,7 @@ public class Character : MonoBehaviour
         FIRE = 2,
         COLD = 3,
         SHOCK = 4,
-        POISON = 5
+        POISON = 5                  
     }
 
     public enum Defense
@@ -33,25 +33,39 @@ public class Character : MonoBehaviour
         MAGIC = 2
     }
 
+    [Header("Static:")]
+    public static float HealthHealingMinimumPerc = 1.0f;
+    public static float HealthHealingLostPerCountMaxPerc = 0.01f;
+
     [Header("Character Attributes:")]
+    [Header("Health and Healing:")]
     public int HealthCurrent = 100;
     public int HealthMax = 100;
-    private bool CharacterIsDead = false;     // To Check if the Character already died, but was not removed yet. (Happened with GUI).
+    protected bool CharacterIsDead = false;     // To Check if the Character already died, but was not removed yet. (Happened with GUI).
 
+    public int HealthHealingMin = 0;
+    public int HealthHealingMax = 100;
+    public int HealthHealingLostPerCount = 10;
+    public float HealthHealingCounter = 0f;
+    protected float HealthHealingCounterTimer = 1f;
+
+    [Header("Energy (Currently Unused!)")]
     public int EnergyCurrent = 100;
     public int EnergyMax = 100;
 
+    [Header("Defenses and Resistances:")]
     public float[] Resistances = new float[6]; // Resistances[Enum Resistance], Check for Resistance.NONE!
     public float[] Defenses = new float[3];     // Defenses[Enum Defense], Check for Defense.NONE!
-
-    public int SkillLevelModifier = 0;
+   
+    private int SkillLevelModifier = 0;
 
     [Header("Equipment:")]
-    public Transform[] CharacterHands = new Transform[2]; // Note: 0 : Left Hand, 1 : Right Hand
+    public Transform[] CharacterHands = new Transform[2]; // Note: 0 : Left Hand, 1 : Right Hand -> Now reversed!
+    public CharacterHand[] Hands = new CharacterHand[2];
     public Item[] StartingWeapons = new Item[0];    // Note: Slot in Array corresponds to Hand it is holding. Up to 2 Starting Weapons!
 
     [Header("Equipment (for Testing):")]
-    public int SkillsPerWeapon = 2;                 // Note: Number of Skills granted by each equipped weapon. The ItemSkillSlots[] has to take that number into account. Weapons with less Skills are allowed to exist!
+    public int SkillsPerWeapon = 8;                 // Note: Number of Skills granted by each equipped weapon. The ItemSkillSlots[] has to take that number into account. Weapons with less Skills are allowed to exist!
     public Item[] WeaponSlots = new Item[2];        // Note: [0]: Left Hand,  [1]: Right Hand
     protected bool TwoHandedWeaponEquipped = false;
     // public Item[] ItemSlots = new Item[0];       // Note: Currently Unused, define which slot equals which type of item if more item types that are equipable are implemented.
@@ -60,38 +74,75 @@ public class Character : MonoBehaviour
     // CURRENT IDEA: 2 Weapon Skill Slots: Left Hand [0], Right Hand [1], but if other Slot empty: Write Second Skill (Primary Skill always, Secondary if possible(ie. no other Skill).
     // Two Handed: Write Both (unequip other weapon!).
 
-    public ItemSkill[] ItemSkillSlots = new ItemSkill[4];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
+    public ItemSkill[] ItemSkillSlots = new ItemSkill[8];       // Here all Skills that the Character has access to are saved. For Players, match the Controller Buttons to these Slots for skill activation. 
 
+    [Header("Element:")]
+    public ElementItem EquippedElement;
+    public ElementItem StartingElement;
 
-    public int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
+    [Header("Skill Activation:")]
+    protected int[] SkillCurrentlyActivating = { -1, -1 }; // Character is currently activating a Skill.
+    protected int LastSkillActivated = -1;
+    protected float LastSkillActivatedTimer = -1f;
+    public float LastSkillActivatedStartTime = 0f;
+
     //public float SkillActivationTimer = 0.0f;
 
-    public int HindranceLevel = 0;
+    protected int HindranceLevel = 0;
 
     [Header("Active Conditions:")]
-    public List<ActiveCondition> ActiveConditions = new List<ActiveCondition>();
+    protected List<ActiveCondition> ActiveConditions = new List<ActiveCondition>();
 
     [Header("Physics Controller:")]
+    public float MovementRateModfier = 1.0f;
     protected PhysicsController PhysCont;
-    protected float MovementRateModfier = 1.0f;
+
+    [Header("Non-Physics Special Movement:")]
+    public bool OverrideMovement = false;
+    public Vector3 OverrideMovementVec = Vector3.zero;
+
+    public bool OverrideRotation = false;
+    public Vector3 OverrideRotationVec = Vector3.zero;
+
+    public float OverrideMovementRateModifier = 0.0f;
+
 
     [Header("Animation:")]
     public Animator[] HandAnimators = new Animator[2]; // Note: 0 : Left Hand, 1 : Right Hand
+    public Animator BodyAnimator;
+
+    protected bool IsWalking = false;
+    public string Anim_StartWalking = "StartWalking";
+    public string Anim_EndWalking = "EndWalking";
+    public string Anim_BreakAnim = "Trigger_BreakAnim";
+    public string Anim_Interupt = "InterruptAnim";
 
     //[Header("GUI (for Testing Purposes):")]
-    private GUICharacterFollow GUIChar;
+    [Header("GUI HealthBars:")]
+    protected GUICharacterFollow GUIChar;
+
+    [Header("Damage Taken Marker:")]
+    public float DamageTakenMarkerTime = 0.5f;
+    public Material CharacterMaterialBase;
+    public Material CharacterMaterialFlash;
+    public SkinnedMeshRenderer[] CharacterRenderers = new SkinnedMeshRenderer[0];
 
     // Attention:
     [Header("Attention:")]
     public CharacterAttention CharAttention;
     
-    private UnityAction _onCharacterDeathAction; // Event system for character death
+    protected UnityAction _onCharacterDeathAction; // Event system for character death
+
+    
 
     protected virtual void Start()
     {
-        PhysCont = new PhysicsController(gameObject);
+        HealthHealingMax = HealthCurrent;
+        CalculateHealthHealingMin();
+        //PhysCont = new PhysicsController(gameObject);
         CreateCharacterFollowGUI();     // Could be changed to when entering camera view or close to players, etc... as optimization.
         // SpawnAndEquipStartingWeapons();
+        SpawnAndEquipStartingElement();
     }
 
     protected virtual void Update()
@@ -99,7 +150,8 @@ public class Character : MonoBehaviour
         UpdateAllConditions();
         UpdateCurrentSkillActivation();
         UpdateAllCooldowns();
-
+        UpdateHealthHealingMax();
+        UpdateLastSkillActivated();
     }
 
     protected void LateUpdate()
@@ -114,7 +166,7 @@ public class Character : MonoBehaviour
     public void SetHealthCurrent(int NewValue)
     {
         HealthCurrent = Mathf.Clamp(NewValue, 0, HealthMax);
-        if (!CheckIfCharacterDied())
+        if (!CheckIfCharacterDied() && GUIChar)
         {
             GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
         }
@@ -123,7 +175,7 @@ public class Character : MonoBehaviour
     public void ChangeHealthCurrent(int Value)
     {
         HealthCurrent = Mathf.Clamp(HealthCurrent + Value, 0, HealthMax);
-        if (!CheckIfCharacterDied())
+        if (!CheckIfCharacterDied() && GUIChar)
         {
             GUIChar.UpdateHealthBar(GetHealthCurrentPercentage());
         }
@@ -146,6 +198,7 @@ public class Character : MonoBehaviour
     {
         CharacterIsDead = true;
 
+        /*      ### Project 2: Characters should no longer drop Weapons on death! ###
         // Unequip Weapons (so they drop on the gound):
         for (int i = 0; i < WeaponSlots.Length; i++)
         {
@@ -154,6 +207,7 @@ public class Character : MonoBehaviour
                 UnEquipWeapon(i);
             }
         }
+        */
 
         // Update Attention:
         AttentionThisCharacterDied();
@@ -164,6 +218,23 @@ public class Character : MonoBehaviour
 
         // Destroy this Character:
         Destroy(this.gameObject);
+    }
+
+    public bool GetCharacterIsDead()
+    {
+        return CharacterIsDead;
+    }
+
+    void OnDisable()
+    {
+        if (GUIChar)
+            GUIChar.gameObject.SetActive(false);
+    }
+
+    void OnEnable()
+    {
+        if(GUIChar)
+            GUIChar.gameObject.SetActive(true);
     }
 
     void OnDestroy()
@@ -188,17 +259,51 @@ public class Character : MonoBehaviour
     {
         int change = NewValue - HealthMax;
         ChangeHealthMax(change);
+        CalculateHealthHealingMin();
     }
 
     public void ChangeHealthMax(int Value)
     {
         HealthMax += Value;
         ChangeHealthCurrent(Value);
+        CalculateHealthHealingMin();
     }
 
     public int GetHealthMax()
     {
         return HealthMax;
+    }
+
+    public void CalculateHealthHealingMin()
+    {
+        HealthHealingMin = Mathf.RoundToInt(HealthHealingMinimumPerc * GetHealthMax());
+        HealthHealingLostPerCount = Mathf.RoundToInt(HealthHealingLostPerCountMaxPerc * GetHealthMax());
+    }
+
+    public float GetHealthHealingPercentage()
+    {
+        return (float)HealthHealingMax / (float)GetHealthMax();
+    }
+
+    public void UpdateHealthHealingMax()
+    {
+        if (HealthHealingMax <= HealthCurrent || HealthHealingMax <= HealthHealingMin || CharacterIsDead)
+        {
+            return;
+        }
+
+        HealthHealingCounter += Time.deltaTime;
+
+        if (HealthHealingCounter >= HealthHealingCounterTimer)
+        {
+            HealthHealingCounter -= HealthHealingCounterTimer;
+
+            HealthHealingMax = Mathf.Max(HealthHealingMin, HealthHealingMax - HealthHealingLostPerCount, HealthCurrent);
+            if (GUIChar)
+            {
+                GUIChar.UpdateHealthHealingBar(GetHealthHealingPercentage());
+            }
+        }
     }
 
     // Energy:
@@ -252,7 +357,7 @@ public class Character : MonoBehaviour
         return Mathf.Max(0, MovementRateModfier);
     }
 
-    public void ChangeMovementRateModifier(float Change)
+    public virtual void ChangeMovementRateModifier(float Change)
     {
         MovementRateModfier += Change;
     }
@@ -339,6 +444,9 @@ public class Character : MonoBehaviour
         }
 
         UnEquipSkills(WeaponSlotID * SkillsPerWeapon, MaxNumberOfSkills);
+
+        // Destroy Item after Unequipping:
+        WeaponToUnequip.DestroyItem();
     }
 
 
@@ -372,8 +480,8 @@ public class Character : MonoBehaviour
     }
 
     //Need this for quest fire wizard spawning - Jean
-    public void SpawnAndEquipStartingWeapons()
-    {
+    public virtual void SpawnAndEquipStartingWeapons()
+    { 
         Item CurrentItem = null;
         for (int i = 0; i < StartingWeapons.Length; i++)
         {
@@ -386,6 +494,77 @@ public class Character : MonoBehaviour
     }
 
     // ===================================  /EQUIPMENT SLOTS ===================================
+
+
+    // =======================================  ELEMENT  =======================================
+
+    public void EquipElement(ElementItem ElementToEquip)
+    {
+        if (EquippedElement)
+        {
+            UnequipElement();
+        }
+
+        EquippedElement = ElementToEquip;
+
+        for (int i = 0; i < WeaponSlots.Length; i++)
+        {
+            if (WeaponSlots[i])
+            {
+                WeaponSlots[i].GetComponent<Weapon>().ElementEffectSpawnOnEquip();
+            }
+        }
+
+        EquipElementVisually();
+    }
+
+    private void EquipElementVisually()
+    {
+        EquippedElement.transform.SetParent(CharacterHands[0], false);
+    }
+
+    public void UnequipElement()
+    {
+        for (int i = 0; i < WeaponSlots.Length; i++)
+        {
+            if (WeaponSlots[i])
+            {
+                WeaponSlots[i].GetComponent<Weapon>().ElementEffectDestroyOnUnEquip();
+            }
+        }
+
+        EquippedElement.UnEquipElementItem();
+        EquippedElement = null;
+    }
+
+    public ElementItem GetEquippedElement()
+    {
+        if(EquippedElement)
+        {
+            return EquippedElement;
+        }
+        return null;
+    }
+
+    public void SpawnAndEquipElement(ElementItem ElementToEquip)
+    {
+        ElementItem tempEle = Instantiate(ElementToEquip);
+        EquipElement(tempEle);
+    }
+
+    protected virtual void SpawnAndEquipStartingElement()
+    {
+        if (!StartingElement)
+        {
+            return;
+        }
+
+        ElementItem tempEle = Instantiate(StartingElement);
+        EquipElement(tempEle);
+    }
+
+    // ======================================= /ELEMENT  =======================================
+
 
     // ======================================  ALIGNMENT =======================================
 
@@ -417,11 +596,13 @@ public class Character : MonoBehaviour
         {
             SkillCurrentlyActivating[0] = WeaponSkillSlotID;
             WeaponSlots[0].SetSkillActivationTimer(0.0f);
+            ResetLastSkillActivated();
         }
         else
         {
             SkillCurrentlyActivating[1] = WeaponSkillSlotID;
             WeaponSlots[1].SetSkillActivationTimer(0.0f);
+            ResetLastSkillActivated();
         }
     }
 
@@ -444,7 +625,11 @@ public class Character : MonoBehaviour
             return;
         }*/
         ChangeHindranceLevel(Hindrance);
+
+        SetLastSkillActivated(SkillCurrentlyActivating[WeaponSlotID]);
+
         SkillCurrentlyActivating[WeaponSlotID] = -1;
+        
         // SkillActivationTimer = 0.0f; // Now handled in ItemSkill/Item
     }
 
@@ -470,6 +655,13 @@ public class Character : MonoBehaviour
 
         SkillCurrentlyActivating[WeaponSlotID] = -1;
         WeaponSlots[WeaponSlotID].SetSkillActivationTimer(0.0f);
+
+        foreach (AnimatorControllerParameter animPar in HandAnimators[WeaponSlotID].parameters)
+        {
+            animPar.defaultBool = false;
+        }
+
+        StartAnimation(Anim_Interupt, 1, WeaponSlotID);
     }
 
     public void ChangeHindranceLevel(int Change)
@@ -500,24 +692,71 @@ public class Character : MonoBehaviour
         return true;
     }
 
+    public virtual void UpdateLastSkillActivated()
+    {
+        if (LastSkillActivatedTimer > 0)
+        {
+            LastSkillActivatedTimer -= Time.deltaTime;
+
+            if (LastSkillActivatedTimer <= 0)
+            {
+                LastSkillActivated = -1;
+            }
+        }
+    }
+
+    public void SetLastSkillActivated(int SkillSlotID)
+    {
+        LastSkillActivated = SkillSlotID;
+        LastSkillActivatedTimer = LastSkillActivatedStartTime;
+    }
+
+    public void ResetLastSkillActivated()
+    {
+        LastSkillActivated = -1;
+        LastSkillActivatedTimer = -1;
+    }
+
     // =================================== /SKILL ACTIVATION ====================================
 
     // =================================== EFFECT INTERACTION ===================================
 
+    public void Heal(int Amount)
+    {
+        if (Amount + GetHealthCurrent() > HealthHealingMax)
+        {
+            SetHealthCurrent(HealthHealingMax);
+        }
+        else
+        {
+            ChangeHealthCurrent(Amount);
+        }
+    }
+
+    public int GetHealthPercentageAbsoluteValue(float HealthPercentage)
+    {
+        return Mathf.RoundToInt(HealthPercentage * GetHealthMax());
+    }
+
     // Note: DamageAmount is assumed to be positive!
-    public int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount, int DefenseIgnore, int ResistanceIgnore)
+    public virtual int InflictDamage(Defense DefenseType, Resistance DamageType, int Amount, int DefenseIgnore, int ResistanceIgnore)
     {
         int FinalAmount = DamageCalculationDefense(DefenseType, Amount, DefenseIgnore);
 
         FinalAmount = DamageCalculationResistance(DamageType, FinalAmount, ResistanceIgnore);
 
+        if (CharacterRenderers.Length > 0)
+        {
+            StopCoroutine("PlayDamageTakenMarker");
+            StartCoroutine("PlayDamageTakenMarker");
+        }
 
         ChangeHealthCurrent(-1 * FinalAmount);
 
         return FinalAmount; // Note: Currently returns the amount of Damage that would theoretically be inflicted, not the actual amount of health lost.
     }
 
-    private int DamageCalculationResistance(Resistance DamageType, int Amount, int ResistanceIgnore)
+    protected int DamageCalculationResistance(Resistance DamageType, int Amount, int ResistanceIgnore)
     {
         int DamageTypeID = (int)(DamageType);
 
@@ -532,7 +771,7 @@ public class Character : MonoBehaviour
         return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Mathf.Max(0, Resistances[DamageTypeID] - ResistanceIgnore)) / 10.0f)));
     }
 
-    private int DamageCalculationDefense(Defense DefenseType, int Amount, int DefenseIgnore)
+    protected int DamageCalculationDefense(Defense DefenseType, int Amount, int DefenseIgnore)
     {
         int DamageTypeID = (int)(DefenseType);
 
@@ -544,7 +783,7 @@ public class Character : MonoBehaviour
         // return Mathf.Max(0, Amount - Mathf.RoundToInt(Amount * Defenses[DamageTypeID])); // Defense as Percentage Reduction.
 
         // Damage: At 0: Damage Value / At 10: 0.5 Value / At 20: 0.25 Value / At 30: 0.125 Value / ... At -10: 2 Value / At -20: 4 Value / ...
-        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Mathf.Max(Defenses[DamageTypeID] - DefenseIgnore)) / 10.0f)));
+        return Mathf.RoundToInt(Amount * Mathf.Pow(2, (-1f * (Mathf.Max(0, Defenses[DamageTypeID] - DefenseIgnore)) / 10.0f)));
     }
 
     public void ChangeResistance(Resistance ResistanceType, float Amount)
@@ -579,6 +818,33 @@ public class Character : MonoBehaviour
         }
 
         return Defenses[DefenseTypeID];
+    }
+
+    IEnumerator PlayDamageTakenMarker()
+    {
+        for (int i = 0; i < CharacterRenderers.Length; i++)
+        {
+            CharacterRenderers[i].material.EnableKeyword("_EMISSION");
+        }
+
+        yield return new WaitForSeconds(DamageTakenMarkerTime);
+        for (int i = 0; i < CharacterRenderers.Length; i++)
+        {
+            CharacterRenderers[i].material.DisableKeyword("_EMISSION");
+        }
+        /*  while (duration > 0f)
+          {
+              duration -= Time.deltaTime;
+
+              //toggle renderer
+              renderer.enabled = !renderer.enabled;
+
+              //wait for a bit
+              yield return new WaitForSeconds(blinkTime);
+          }
+
+          //make sure renderer is enabled when we exit
+          renderer.enabled = true;*/
     }
 
     // =================================== /EFFECT INTERACTION ===================================
@@ -662,7 +928,7 @@ public class Character : MonoBehaviour
 
         public bool RepresentsThisCondition(Condition ConditionToCheck)
         {
-            if (Cond = ConditionToCheck)
+            if (Cond == ConditionToCheck)
             {
                 return true;
             }
@@ -737,6 +1003,16 @@ public class Character : MonoBehaviour
         ConditionsEnded.Clear();
     }
 
+    protected void EndAllConditions()
+    {
+        for (int i = 0; i < ActiveConditions.Count; i++)
+        {
+            ActiveConditions[i].RemoveThisCondition();    
+        }
+
+        ActiveConditions = new List<ActiveCondition>();
+    }
+
     public int CheckIfConditionExists(Condition ConditionToCheck)
     {
         int NumberConditions = 0;
@@ -778,19 +1054,24 @@ public class Character : MonoBehaviour
 
     // =========================================== ATTENTION ==========================================
 
-    public CharacterAttention GetAttention()
+    public virtual CharacterAttention GetAttention()
     {
         return CharAttention;
     }
 
-    public void AttentionThisCharacterDied()
+    public virtual void AttentionThisCharacterDied()
     {
         CharAttention.OwnerDied();
     }
 
-    public void AttentionCharacterDied(Character CharDied)
+    public virtual void AttentionCharacterDied(Character CharDied)
     {
         CharAttention.CharacterDied(CharDied);
+    }
+
+    public virtual void AttentionPlayerRespawned(Character CharRespawned)
+    {
+        CharAttention.PlayerEntersAttentionRange(CharRespawned);
     }
 
     // ========================================== /ATTENTION ==========================================
@@ -799,8 +1080,65 @@ public class Character : MonoBehaviour
 
     public void StartAnimation(string AnimationName, float AnimationSpeed, int HandID)
     {
-        HandAnimators[HandID].SetTrigger("Trigger_" + AnimationName);
         HandAnimators[HandID].speed = 1 / AnimationSpeed;
+        HandAnimators[HandID].SetTrigger("Trigger_" + AnimationName);
+       
+    }
+
+    public void StartBodyAnimation(string AnimationName, float AnimationSpeed)
+    {
+        BodyAnimator.SetTrigger("Trigger_" + AnimationName);
+        BodyAnimator.speed = 1 / AnimationSpeed;
+    }
+
+    public void StartBodyAnimation(string AnimationName)
+    {
+        BodyAnimator.SetTrigger("Trigger_" + AnimationName);
+    }
+
+    public void StartBodyAnimation(float AnimationSpeed)
+    {
+        BodyAnimator.speed = AnimationSpeed;
+    }
+
+    public void SetIsWalking(bool state)
+    {
+        IsWalking = state;
+    }
+
+    public bool GetIsWalking()
+    {
+        return IsWalking;
+    }
+
+    public void SwitchWalkingAnimation(bool state)
+    {
+        if (state)
+        {
+            if (!IsWalking)
+            {
+                IsWalking = true;
+                StartBodyAnimation(Anim_StartWalking);
+            }
+        }
+        else
+        {
+            if (IsWalking)
+            {
+                IsWalking = false;
+                StartBodyAnimation(Anim_EndWalking);
+            }
+        }
+    }
+
+    public Animator GetHandAnimator(int HandID)
+    {
+        return HandAnimators[HandID];
+    }
+
+    public CharacterHand GetHand(int HandID)
+    {
+        return Hands[HandID];
     }
 
     // ========================================== /ANIMATION ==========================================
@@ -839,9 +1177,9 @@ public class Character : MonoBehaviour
 
     // =========================================== GUI ==========================================
 
-    private void CreateCharacterFollowGUI()
+    protected virtual void CreateCharacterFollowGUI()
     {
-        if (!GUIChar)
+        if (!GUIChar && GUIController.Instance)
         {
             GUIChar = GUIController.Instance.GenerateGUICharacterFollow();
             GUIChar.Initialize(this);
@@ -850,7 +1188,10 @@ public class Character : MonoBehaviour
 
     private void UpdateCharacterFollowGUI()
     {
-        GUIChar.UpdateGUIPosition();
+        if (GUIChar)
+        {
+            GUIChar.UpdateGUIPosition();
+        }
     }
 
     private void RemoveCharacterFollowGUI()
@@ -860,7 +1201,104 @@ public class Character : MonoBehaviour
         GUIChar = null;
     }
 
+    protected void SwitchActiveStateCharacterFollowGUI(bool state)
+    {
+        if(GUIChar)
+        {
+            GUIChar.SwitchGUIActive(state);
+        }
+    }
+
     // ========================================== /GUI ==========================================
+
+
+    // ==================================== MOVEMENT OVERRIDE ===================================
+
+    public void SetOverrideMovement(bool state)
+    {
+        OverrideMovement = state;
+
+        if (!OverrideMovement)
+        {
+            UpdateOverrideMovementSpeedModifier(0);
+        }
+    }
+
+    public void SetOverrideMovement(Vector3 NewMovement)
+    {
+        OverrideMovementVec = NewMovement;
+    }
+
+    public void SetOverrideMovement(bool state, Vector3 NewMovement)
+    {
+        SetOverrideMovement(state);
+        OverrideMovementVec = NewMovement;
+    }
+
+    public void SwitchOverrideMovement(bool state, Vector3 NewRotation)
+    {
+        if (OverrideMovement && state)
+        {
+            SetOverrideMovement(false);
+        }
+        else
+        {
+            SetOverrideMovement(state, NewRotation);
+        }
+    }
+
+    public bool GetOverrideMovement()
+    {
+        return OverrideMovement;
+    }
+
+    public void SetOverrideRotation(bool state)
+    {
+        OverrideRotation = state;
+    }
+
+    public void SetOverrideRotation(Vector3 NewRotation)
+    {
+        OverrideRotationVec = NewRotation;
+    }
+
+    public void SetOverrideRotation(bool state, Vector3 NewRotation)
+    {
+        SetOverrideRotation(state);
+        OverrideRotationVec = NewRotation;
+    }
+
+    public void SwitchOverrideRotation(bool state, Vector3 NewRotation)
+    {
+        if (OverrideRotation && state)
+        {
+            SetOverrideRotation(false);
+        }
+        else
+        {
+            SetOverrideRotation(state, NewRotation);
+        }
+    }
+
+    public bool GetOverrideRotation()
+    {
+        return OverrideRotation;
+    }
+
+    public void OverrideMovementAddModifier(float NewModifier)
+    {
+        OverrideMovementRateModifier += NewModifier;
+        ChangeMovementRateModifier(NewModifier);
+    }
+
+    private void UpdateOverrideMovementSpeedModifier(float NewModifier)
+    {
+        ChangeMovementRateModifier(-1 * OverrideMovementRateModifier);
+        OverrideMovementRateModifier = NewModifier;
+        ChangeMovementRateModifier(OverrideMovementRateModifier);
+    }
+
+    // ===================================/ MOVEMENT OVERRIDE /==================================
 
 
     // =========================================== EVENTS ==========================================

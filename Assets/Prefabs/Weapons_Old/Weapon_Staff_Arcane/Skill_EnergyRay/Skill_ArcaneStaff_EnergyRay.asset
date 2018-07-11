@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc8ac6d6aa73e8f4e9906ea71de04c7b, type: 3}
+  m_Name: Skill_ArcaneStaff_EnergyRay
+  m_EditorClassIdentifier: 
+  Cost: 0
+  ActivationTime: 0.3
+  ActivationIntervall: -1
+  Cooldown: 1
+  ActivationMovementModifier: -0.8
+  AllowTargetFriendly: 0
+  AllowTargetEnemy: 1
+  Effects:
+  - {fileID: 11400000, guid: c3cd52871c2478940b6398f2c785cf0f, type: 2}
+  - {fileID: 11400000, guid: fafe43780176fbe40b9b7eaac87a7fef, type: 2}
+  HindranceLevel: 1
+  AnimationName: Melee_Block
+  OverwriteAnimationSpeedScaling: -1
+  AIDecisionMaker: {fileID: 11400000, guid: 4cc9ba42263db36448e9057edd48ed3b, type: 2}
+  PowerLevel: 0
+  Threat:
+  - 3
+  - 0
+  - 0
+  ActivationTimeMax: -1
+  EffectsStart: []
+  EffectsEnd: []
+  AtStartHitObjectPrefabs:
+  - {fileID: 114908530064051912, guid: cb0c45fb7f9805f49895fa59ad7c3545, type: 2}
+  IntervallHitObjectPrefabs: []
+  AtEndHitObjectPrefabs: []
+  UseSkillLevelAtActivationMoment: 1
+  IdleAnimation: Channel_Idle
+  ReleaseAnimation: Channel_Released
+  ChanellingLoop: {fileID: 8300000, guid: c7b57c9ed5be820488d5c7c2be84d91a, type: 3}
+  ChanellingRelease: {fileID: 0}
