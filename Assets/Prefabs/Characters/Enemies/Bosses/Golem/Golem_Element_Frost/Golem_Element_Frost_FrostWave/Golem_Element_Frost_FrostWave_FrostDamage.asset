@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cebab813fce92f40b989e69718a2f6f, type: 3}
   m_Name: Golem_Element_Frost_FrostWave_FrostDamage
   m_EditorClassIdentifier: 
-  DamageValueBase: 90
+  DamageValueBase: 70
   DamageValuePerLevel: 0
   DefenseType: 2
   DamageType: 3

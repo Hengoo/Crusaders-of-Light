@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cebab813fce92f40b989e69718a2f6f, type: 3}
   m_Name: Skill_Skull_SwarmlingExplosion_Explosion_ShockDamage
   m_EditorClassIdentifier: 
-  DamageValueBase: 350
+  DamageValueBase: 300
   DamageValuePerLevel: 0
   DefenseType: 2
   DamageType: 4

@@ -581,8 +581,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 1500
-  HealthMax: 1500
+  HealthCurrent: 1300
+  HealthMax: 1300
   HealthHealingMin: 0
   HealthHealingMax: 100
   HealthHealingLostPerCount: 10
@@ -593,7 +593,7 @@ MonoBehaviour:
   - 0
   - 5
   - 5
-  - 10
+  - 7
   - 5
   - 0
   Defenses:
@@ -664,6 +664,7 @@ MonoBehaviour:
   SpawnedBy: {fileID: 0}
   NavAgent: {fileID: 195833056456418158}
   SpawnStartingWeaponsOnStart: 1
+  DifficultyScaleHealthFactor: 0.5
 --- !u!114 &114164012003331310
 MonoBehaviour:
   m_ObjectHideFlags: 1

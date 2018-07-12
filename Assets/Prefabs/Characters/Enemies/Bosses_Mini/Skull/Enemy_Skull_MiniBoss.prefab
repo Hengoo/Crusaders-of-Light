@@ -438,8 +438,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a935e568f634743b2bd3cea12d5346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthCurrent: 1500
-  HealthMax: 1500
+  HealthCurrent: 1300
+  HealthMax: 1300
   HealthHealingMin: 0
   HealthHealingMax: 100
   HealthHealingLostPerCount: 10
@@ -451,7 +451,7 @@ MonoBehaviour:
   - 4
   - 4
   - 4
-  - 10
+  - 8
   - 0
   Defenses:
   - 0

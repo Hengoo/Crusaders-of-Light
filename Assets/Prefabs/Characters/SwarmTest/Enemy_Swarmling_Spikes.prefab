@@ -677,7 +677,7 @@ MonoBehaviour:
   SwarmlingHomeAreaRadius: 25
   SwarmlingHomeAreaGoToRadius: 2
   SwarmlingIsGoingHome: 0
-  HealPlayersOnDeathPerc: 0.01
+  HealPlayersOnDeathPerc: 0.03
   DangerInRangeClear: []
   AttackDistance: 8
   BorderOn: 0
