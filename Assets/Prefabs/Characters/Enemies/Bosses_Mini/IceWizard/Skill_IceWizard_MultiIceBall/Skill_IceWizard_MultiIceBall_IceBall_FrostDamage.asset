@@ -11,8 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cebab813fce92f40b989e69718a2f6f, type: 3}
   m_Name: Skill_IceWizard_MultiIceBall_IceBall_FrostDamage
   m_EditorClassIdentifier: 
-  DamageValueBase: 90
-  DamageValuePerLevel: 50
+  DamageValueBase: 70
+  DamageValuePerLevel: 0
   DefenseType: 2
   DamageType: 3
   DamageValueModifiers: []
